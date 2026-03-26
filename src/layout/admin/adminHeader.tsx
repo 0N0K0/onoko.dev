@@ -16,6 +16,10 @@ export default function AdminHeader() {
         <Button color="inherit" component={Link} to="/admin/account">
           Mon compte
         </Button>
+        <Button color="inherit" component={Link} to="/logout">
+          Me déconnecter
+          {/* @TODO: show confirmation alert before logging out */}
+        </Button>
       </Toolbar>
     </AppBar>
   );

@@ -7,6 +7,7 @@ import Dashboard from "./pages/admin/dashboardPage";
 import Account from "./pages/admin/accountPage";
 import Login from "./pages/public/loginPage";
 import ResetPassword from "./pages/public/resetPasswordPage";
+import LogoutPage from "./pages/public/logoutPage";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
           }
         />
         <Route path="/4ntjnra6" element={<Login />} />
+        <Route path="/logout" element={<LogoutPage />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         {/* Admin routes */}
         <Route

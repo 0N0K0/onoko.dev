@@ -75,9 +75,15 @@ export default function Account() {
     }
   };
 
+  const handleSubmit = () => {
+    // @TODO: Implémenter la logique de soumission du formulaire (vérification du mot de passe actuel, mise à jour des informations, etc.)
+  };
+
   return (
-    <ResponsiveStack rowGap={6} width="100%">
-      <ResponsiveTitle variant="h1">Mon compte</ResponsiveTitle>
+    <ResponsiveStack rowGap={6} width="100%" alignItems="end">
+      <ResponsiveTitle variant="h1" width="100%">
+        Mon compte
+      </ResponsiveTitle>
       <ResponsiveStack rowGap={3} width="100%">
         <ResponsiveStack direction="row" rowGap={2} columnGap={2} width="100%">
           <TextField
@@ -218,8 +224,8 @@ export default function Account() {
         </ResponsiveStack>
       </ResponsiveStack>
       <Button
+        onClick={handleSubmit}
         variant="contained"
-        color="primary"
         sx={{ mt: 3, width: "fit-content" }}
         disabled={
           (login === initialLogin &&
