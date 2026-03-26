@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
+import Home from "./pages/public/homePage";
+import PublicLayout from "./layout/public/publicLayout";
+import AdminLayout from "./layout/admin/adminLayout";
+import Dashboard from "./pages/admin/dashboardPage";
 
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Router>
+      <Routes>
+        {/* FrontOffice routes */}
+        <Route
+          path="/*"
+          element={
+            <PublicLayout>
+              <Routes>
+                <Route path="/" element={<Home />} />
+              </Routes>
+            </PublicLayout>
+          }
+        />
+        {/* Admin routes */}
+        <Route
+          path="/admin/*"
+          element={
+            <AdminLayout>
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+              </Routes>
+            </AdminLayout>
+          }
+        />
+      </Routes>
+    </Router>
+  );
 }
-
-export default App
