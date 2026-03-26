@@ -19,6 +19,8 @@ export default function AdminLayout({
           flexDirection: "column",
           paddingX: 4,
         }}
+        square
+        elevation={0}
       >
         {children}
       </ResponsivePaper>
