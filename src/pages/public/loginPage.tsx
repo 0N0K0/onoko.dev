@@ -14,12 +14,34 @@ import {
 } from "../../components/ResponsiveLayout";
 import RootPaper from "../../layout/rootPaper";
 import ResponsiveTitle from "../../components/responsiveTitle";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import ResponsiveBodyTypography from "../../components/responsiveBodyTypography";
+import { loginApi } from "../../services/authService";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
   const handleTogglePassword = () => setShowPassword((v) => !v);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const token = await loginApi(login, password);
+      localStorage.setItem("token", token);
+      navigate("/admin");
+    } catch (err: any) {
+      setError(err.message || "Erreur de connexion");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <RootPaper
@@ -30,6 +52,7 @@ export default function Login() {
     >
       <ResponsivePaper
         component="form"
+        onSubmit={handleSubmit}
         paddingY={3}
         rowGap={6}
         sx={{
@@ -50,11 +73,24 @@ export default function Login() {
           Accéder à l'espace Administrateur
         </ResponsiveTitle>
         <ResponsiveStack rowGap={3} width="100%">
-          <TextField label="Identifiant" fullWidth />
+          <TextField
+            label="Identifiant"
+            fullWidth
+            value={login}
+            onChange={(e) => setLogin(e.target.value)}
+            autoComplete="username"
+            disabled={loading}
+            required
+          />
           <TextField
             label="Mot de passe"
             type={showPassword ? "text" : "password"}
             fullWidth
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            disabled={loading}
+            required
             slotProps={{
               input: {
                 endAdornment: (
@@ -80,6 +116,15 @@ export default function Login() {
             }}
           />
         </ResponsiveStack>
+        {error && (
+          <ResponsiveBodyTypography
+            variant="bodyXs"
+            color="error"
+            textAlign="center"
+          >
+            {error}
+          </ResponsiveBodyTypography>
+        )}
         <ResponsiveStack rowGap={3} width="100%" alignItems="end">
           <ResponsiveStack
             direction="row"
@@ -93,11 +138,18 @@ export default function Login() {
               sx={{ textWrap: "nowrap" }}
               component={RouterLink}
               to="/"
+              disabled={loading}
             >
               Revenir au site
             </Button>
-            <Button variant="contained" color="primary" fullWidth>
-              Me connecter
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              type="submit"
+              disabled={loading || !login || !password}
+            >
+              {loading ? "Connexion..." : "Me connecter"}
             </Button>
           </ResponsiveStack>
           <ResponsiveBodyTypography variant="bodyXs">
