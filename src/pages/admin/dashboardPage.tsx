@@ -1,3 +1,5 @@
+import { Typography } from "@mui/material";
+
 export default function Dashboard() {
-  return <h1>Espace Admin</h1>;
+  return <Typography variant="h1">Espace Admin</Typography>;
 }

@@ -1,3 +1,5 @@
+import { Typography } from "@mui/material";
+
 export default function PublicFooter() {
-  return <p>Pied de page</p>;
+  return <Typography>Pied de page</Typography>;
 }
