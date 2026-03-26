@@ -1,5 +1,5 @@
-import { Typography } from "@mui/material";
+import ResponsiveTitle from "../../components/responsiveTitle";
 
 export default function Dashboard() {
-  return <Typography variant="h1">Espace Admin</Typography>;
+  return <ResponsiveTitle variant="h1">Espace Admin</ResponsiveTitle>;
 }

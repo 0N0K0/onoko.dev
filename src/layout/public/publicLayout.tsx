@@ -1,5 +1,7 @@
 import PublicHeader from "./publicHeader";
 import PublicFooter from "./publicFooter";
+import RootPaper from "../rootPaper";
+import { ResponsivePaper } from "../../components/ResponsiveLayout";
 
 export default function PublicLayout({
   children,
@@ -7,10 +9,21 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <RootPaper>
       <PublicHeader />
-      <main>{children}</main>
+      <ResponsivePaper
+        component="main"
+        paddingY={3}
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          paddingX: 4,
+        }}
+      >
+        {children}
+      </ResponsivePaper>
       <PublicFooter />
-    </>
+    </RootPaper>
   );
 }

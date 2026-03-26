@@ -1,5 +1,6 @@
-import { Paper } from "@mui/material";
 import AdminHeader from "./adminHeader";
+import RootPaper from "../rootPaper";
+import { ResponsivePaper } from "../../components/ResponsiveLayout";
 
 export default function AdminLayout({
   children,
@@ -7,9 +8,20 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Paper style={{ minHeight: "100vh" }} square>
+    <RootPaper>
       <AdminHeader />
-      <main>{children}</main>
-    </Paper>
+      <ResponsivePaper
+        component="main"
+        paddingY={3}
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          paddingX: 4,
+        }}
+      >
+        {children}
+      </ResponsivePaper>
+    </RootPaper>
   );
 }
