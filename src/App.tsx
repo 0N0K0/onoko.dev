@@ -4,6 +4,9 @@ import Home from "./pages/public/homePage";
 import PublicLayout from "./layout/public/publicLayout";
 import AdminLayout from "./layout/admin/adminLayout";
 import Dashboard from "./pages/admin/dashboardPage";
+import Account from "./pages/admin/accountPage";
+import Login from "./pages/public/loginPage";
+import ResetPassword from "./pages/public/resetPasswordPage";
 
 export default function App() {
   return (
@@ -20,6 +23,8 @@ export default function App() {
             </PublicLayout>
           }
         />
+        <Route path="/4ntjnra6" element={<Login />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         {/* Admin routes */}
         <Route
           path="/admin/*"
@@ -27,6 +32,7 @@ export default function App() {
             <AdminLayout>
               <Routes>
                 <Route path="/" element={<Dashboard />} />
+                <Route path="/account" element={<Account />} />
               </Routes>
             </AdminLayout>
           }
