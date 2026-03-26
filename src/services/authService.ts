@@ -1,9 +1,12 @@
+import { API_URL, LOGIN_ROUTE } from "../constants/apiConstants";
+import { joinUrl } from "../utils/urlUtils";
+
 export async function loginApi(
   login: string,
   password: string,
 ): Promise<string> {
   try {
-    const response = await fetch("http://localhost:4000/4ntjnra6", {
+    const response = await fetch(joinUrl(API_URL, LOGIN_ROUTE), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,12 +1,4 @@
-import {
-  TextField,
-  IconButton,
-  InputAdornment,
-  Button,
-  Link,
-} from "@mui/material";
-import Icon from "@mdi/react";
-import { mdiEyeOff, mdiEye } from "@mdi/js";
+import { TextField, Button } from "@mui/material";
 import {
   ResponsivePaper,
   ResponsiveStack,
@@ -14,7 +6,7 @@ import {
 import RootPaper from "../../layout/rootPaper";
 import ResponsiveTitle from "../../components/responsiveTitle";
 import { Link as RouterLink } from "react-router-dom";
-import ResponsiveBodyTypography from "../../components/responsiveBodyTypography";
+import { LOGIN_ROUTE } from "../../constants/apiConstants";
 
 export default function ResetPassword() {
   return (
@@ -60,7 +52,7 @@ export default function ResetPassword() {
               fullWidth
               sx={{ textWrap: "nowrap" }}
               component={RouterLink}
-              to="/4ntjnra6"
+              to={`/${LOGIN_ROUTE}`}
             >
               Revenir à la page de connexion
             </Button>

@@ -8,6 +8,7 @@ import Login from "./pages/public/loginPage";
 import ResetPassword from "./pages/public/resetPasswordPage";
 import LogoutPage from "./pages/public/logoutPage";
 import RequireAuth from "./pages/admin/requireAuth";
+import { LOGIN_ROUTE } from "./constants/apiConstants";
 
 export default function App() {
   return (
@@ -24,7 +25,7 @@ export default function App() {
             </PublicLayout>
           }
         />
-        <Route path="/4ntjnra6" element={<Login />} />
+        <Route path={`/${LOGIN_ROUTE}`} element={<Login />} />
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         {/* Admin routes */}
