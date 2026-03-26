@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
 import Home from "./pages/public/homePage";
 import PublicLayout from "./layout/public/publicLayout";
 import AdminLayout from "./layout/admin/adminLayout";
@@ -8,6 +7,7 @@ import Account from "./pages/admin/accountPage";
 import Login from "./pages/public/loginPage";
 import ResetPassword from "./pages/public/resetPasswordPage";
 import LogoutPage from "./pages/public/logoutPage";
+import RequireAuth from "./pages/admin/requireAuth";
 
 export default function App() {
   return (
@@ -31,12 +31,14 @@ export default function App() {
         <Route
           path="/admin/*"
           element={
-            <AdminLayout>
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/account" element={<Account />} />
-              </Routes>
-            </AdminLayout>
+            <RequireAuth>
+              <AdminLayout>
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/account" element={<Account />} />
+                </Routes>
+              </AdminLayout>
+            </RequireAuth>
           }
         />
       </Routes>
