@@ -3,6 +3,9 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 
+/**
+ * Entête de l'espace admin, avec des liens vers les différentes sections et la déconnexion.
+ */
 export default function AdminHeader() {
   return (
     <AppBar position="static" elevation={1}>

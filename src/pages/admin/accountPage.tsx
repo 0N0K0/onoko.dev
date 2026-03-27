@@ -6,24 +6,31 @@ import PasswordField from "../../components/passwordField";
 import ResetPasswordLink from "../../components/resetPasswordLink";
 import NewPasswordFields from "../../components/newPasswordFields";
 
+/**
+ * Page de gestion du compte utilisateur dans l'espace admin.
+ * Permet de voir et modifier le login, l'email et le mot de passe du compte.
+ */
 export default function Account() {
-  const [login, setLogin] = useState("");
-  const [email, setEmail] = useState("");
+  const [loadingUser, setLoadingUser] = useState(true);
   const [initialUser, setInitialUser] = useState<{
     login: string;
     email: string;
   } | null>(null);
-  const [loadingUser, setLoadingUser] = useState(true);
+  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
   const [userError, setUserError] = useState("");
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [submitError, setSubmitError] = useState("");
-  const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [newPasswordError, setNewPasswordError] = useState("");
 
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newPasswordError, setNewPasswordError] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
+  const [submitError, setSubmitError] = useState("");
+
+  // Récupération des informations du compte à l'affichage de la page, avec gestion du chargement et des erreurs.
   useEffect(() => {
     const fetchUserInfo = async () => {
       setLoadingUser(true);
@@ -51,12 +58,14 @@ export default function Account() {
     fetchUserInfo();
   }, []);
 
+  // Gestion des changements du mot de passe actuel pour valider les changements de compte.
   const handleCurrentPasswordChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setCurrentPassword(e.target.value);
   };
 
+  // Gestion de la soumission du formulaire de mise à jour du compte, avec validation et affichage des erreurs/succès.
   const handleSubmit = async () => {
     setSubmitError("");
     setSubmitSuccess(null);

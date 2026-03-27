@@ -1,6 +1,11 @@
 import { API_URL, LOGIN_ROUTE } from "../constants/apiConstants";
 import { joinUrl } from "../utils/urlUtils";
 
+/**
+ * Service d'authentification pour gérer les interactions avec l'API d'authentification.
+ * Fournit une fonction de login qui envoie les identifiants de l'utilisateur au backend et récupère un token d'authentification en cas de succès.
+ * Gère également les erreurs de connexion, notamment les problèmes de réseau ou les réponses invalides du serveur.
+ */
 export async function loginApi(
   login: string,
   password: string,

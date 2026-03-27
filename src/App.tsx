@@ -17,7 +17,7 @@ export default function App() {
     <Router>
       <AuthProvider>
         <Routes>
-          {/* FrontOffice routes */}
+          {/* Routes publiques */}
           <Route
             path="/*"
             element={
@@ -28,6 +28,8 @@ export default function App() {
               </PublicLayout>
             }
           />
+
+          {/* Routes d'authentification */}
           <Route path={`/${LOGIN_ROUTE}`} element={<Login />} />
           <Route path="/logout" element={<LogoutPage />} />
           <Route
@@ -39,7 +41,8 @@ export default function App() {
             element={<RequestResetPassword />}
           />
           <Route path="/reset-password" element={<ResetPassword />} />
-          {/* Admin routes */}
+
+          {/* Routes admin */}
           <Route
             path="/admin/*"
             element={

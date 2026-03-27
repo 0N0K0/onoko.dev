@@ -3,6 +3,10 @@ import PublicFooter from "./publicFooter";
 import RootPaper from "../rootPaper";
 import { ResponsivePaper } from "../../components/ResponsiveLayout";
 
+/**
+ * Layout principal pour les pages publiques (accueil, connexion, etc.).
+ * Affiche une entête, un pied de page et une zone de contenu centrale.
+ */
 export default function PublicLayout({
   children,
 }: {

@@ -3,13 +3,15 @@ import Box, { type BoxProps } from "@mui/material/Box";
 import Stack, { type StackProps } from "@mui/material/Stack";
 import Paper, { type PaperProps } from "@mui/material/Paper";
 import ImageList, { type ImageListProps } from "@mui/material/ImageList";
-import type { ResponsiveLayoutProps } from "../types/responsiveComponents";
+import type { ResponsiveLayoutProps } from "../types/responsiveTypes";
 import { getResponsiveSx } from "../utils/responsiveUtils";
 
 /**
  * Composant générique pour appliquer un layout responsive à n'importe quel composant MUI
- * @param Component Le composant cible (Box, Stack, Paper, etc.)
- * @param props Les props du composant cible + marginY/paddingY/rowGap
+ * @param {ComponentProps} Component Le composant cible (Box, Stack, Paper, etc.)
+ * @param {number | string} props.marginY Marge verticale (peut être un nombre multiplié par 8px ou une string CSS)
+ * @param {number | string} props.paddingY Padding vertical (peut être un nombre multiplié par 8px ou une string CSS)
+ * @param {number | string} props.rowGap Espace entre les lignes (peut être un nombre multiplié par 8px ou une string CSS)
  */
 export function ResponsiveLayout<ComponentProps extends { sx?: any }>(
   Component: React.ElementType,

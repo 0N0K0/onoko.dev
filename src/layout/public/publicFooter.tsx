@@ -1,6 +1,10 @@
 import { Toolbar } from "@mui/material";
 import ResponsiveBodyTypography from "../../components/responsiveBodyTypography";
 
+/**
+ * Pied de page pour les pages publiques, affichant un message de copyright.
+ * Utilisé sur les pages d'accueil, de connexion, etc.
+ */
 export default function PublicFooter() {
   return (
     <Toolbar component="footer">

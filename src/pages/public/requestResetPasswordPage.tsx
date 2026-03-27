@@ -7,16 +7,23 @@ import RootPaper from "../../layout/rootPaper";
 import ResponsiveTitle from "../../components/responsiveTitle";
 import { Link as RouterLink } from "react-router-dom";
 import { API_URL, LOGIN_ROUTE } from "../../constants/apiConstants";
-import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
 
+/**
+ * Page de demande de réinitialisation du mot de passe.
+ * Permet aux utilisateurs de demander un lien de réinitialisation en fournissant leur adresse e-mail.
+ */
 export default function RequestResetPassword() {
-  const { isAuthenticated } = useAuth ? useAuth() : { isAuthenticated: false };
-  const [email, setEmail] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState("");
-  const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
+  const { isAuthenticated } = useAuth();
 
+  const [email, setEmail] = useState("");
+
+  const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
+  const [submitError, setSubmitError] = useState("");
+
+  // Gère la soumission du formulaire de réinitialisation, en envoyant une requête au backend avec le token et le nouveau mot de passe, et en gérant les réponses pour afficher les messages appropriés.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError("");

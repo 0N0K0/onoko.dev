@@ -7,3 +7,14 @@ export interface PasswordFieldProps {
   errorText?: string;
   required?: boolean;
 }
+
+export interface NewPasswordFieldsProps {
+  newPassword: string;
+  setNewPassword: (pwd: string) => void;
+  confirmPassword: string;
+  setConfirmPassword: (pwd: string) => void;
+  newPasswordError: string;
+  setNewPasswordError: (msg: string) => void;
+  confirmPasswordError: string;
+  setConfirmPasswordError: (msg: string) => void;
+}

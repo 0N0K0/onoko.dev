@@ -16,3 +16,17 @@ export type ResponsiveLayoutProps<P> = P & {
   rowGap?: string | number;
   children: React.ReactNode;
 };
+
+export type GetResponsiveSxProps = {
+  marginY?: string;
+  paddingY?: string;
+  rowGap?: string;
+};
+
+export type ResponsiveSxProps = {
+  maxWidth: number;
+  marginY: { xs: string; sm: string; md: string };
+  paddingY: { xs: string; sm: string; md: string };
+  rowGap: { xs: string; sm: string; md: string };
+  [key: string]: any;
+};

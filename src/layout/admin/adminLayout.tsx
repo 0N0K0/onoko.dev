@@ -2,6 +2,10 @@ import AdminHeader from "./adminHeader";
 import RootPaper from "../rootPaper";
 import { ResponsivePaper } from "../../components/ResponsiveLayout";
 
+/**
+ * Layout principal de l'espace admin, avec une entête et une zone de contenu.
+ * Utilisé pour les pages de l'espace admin.
+ */
 export default function AdminLayout({
   children,
 }: {

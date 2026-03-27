@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Page de déconnexion. Supprime les tokens d'authentification et redirige vers la page d'accueil.
+ * Utilisée pour permettre aux utilisateurs de se déconnecter proprement de l'application.
+ */
 export default function LogoutPage() {
   const navigate = useNavigate();
   useEffect(() => {

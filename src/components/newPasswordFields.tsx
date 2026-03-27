@@ -1,5 +1,18 @@
+import type { NewPasswordFieldsProps } from "../types/baseComponent";
 import PasswordField from "./passwordField";
 
+/**
+ * Composant pour les champs de saisie du nouveau mot de passe et de sa confirmation.
+ * Gère la validation du mot de passe et l'affichage des erreurs associées.
+ * @param props.newPassword Le mot de passe saisi par l'utilisateur.
+ * @param props.setNewPassword Fonction pour mettre à jour le mot de passe saisi.
+ * @param props.confirmPassword Le mot de passe de confirmation saisi par l'utilisateur.
+ * @param props.setConfirmPassword Fonction pour mettre à jour le mot de passe de confirmation.
+ * @param props.newPasswordError Message d'erreur lié au mot de passe saisi.
+ * @param props.setNewPasswordError Fonction pour mettre à jour le message d'erreur du mot de passe.
+ * @param props.confirmPasswordError Message d'erreur lié au mot de passe de confirmation.
+ * @param props.setConfirmPasswordError Fonction pour mettre à jour le message d'erreur du mot de passe de confirmation.
+ */
 export default function NewPasswordFields({
   newPassword,
   setNewPassword,
@@ -9,16 +22,8 @@ export default function NewPasswordFields({
   setNewPasswordError,
   confirmPasswordError,
   setConfirmPasswordError,
-}: {
-  newPassword: string;
-  setNewPassword: (pwd: string) => void;
-  confirmPassword: string;
-  setConfirmPassword: (pwd: string) => void;
-  newPasswordError: string;
-  setNewPasswordError: (msg: string) => void;
-  confirmPasswordError: string;
-  setConfirmPasswordError: (msg: string) => void;
-}) {
+}: NewPasswordFieldsProps) {
+  // Fonction de validation du mot de passe selon les critères définis.
   const validatePassword = (pwd: string) => {
     if (!pwd) return "";
     if (pwd.length < 20) {
@@ -39,6 +44,7 @@ export default function NewPasswordFields({
     return "";
   };
 
+  // Gestion du changement de valeur du champ de nouveau mot de passe, avec validation en temps réel.
   const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setNewPassword(value);
@@ -51,6 +57,7 @@ export default function NewPasswordFields({
     }
   };
 
+  // Gestion du changement de valeur du champ de confirmation du mot de passe, avec validation en temps réel.
   const handleConfirmPasswordChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {

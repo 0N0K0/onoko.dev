@@ -8,19 +8,22 @@ import RootPaper from "../../layout/rootPaper";
 import ResponsiveTitle from "../../components/responsiveTitle";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import ResponsiveBodyTypography from "../../components/responsiveBodyTypography";
-import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
 import PasswordField from "../../components/passwordField";
 import ResetPasswordLink from "../../components/resetPasswordLink";
+import { useAuth } from "../../hooks/useAuth";
 
+/**
+ * Page de connexion à l'espace admin.
+ * Permet aux utilisateurs autorisés de se connecter pour accéder à l'administration du site.
+ */
 export default function Login() {
-  const [login, setLogin] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
   const { login: loginContext, loading, isAuthenticated } = useAuth();
+
+  const navigate = useNavigate();
   const [redirecting, setRedirecting] = useState(false);
 
+  // Redirige automatiquement vers l'espace admin si l'utilisateur est déjà authentifié, avec gestion du chargement et de la redirection.
   useEffect(() => {
     if (isAuthenticated) {
       setRedirecting(true);
@@ -28,6 +31,12 @@ export default function Login() {
     }
   }, [isAuthenticated, navigate]);
 
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [error, setError] = useState("");
+
+  // Gère la soumission du formulaire de connexion, en appelant la fonction de login du contexte d'authentification et en gérant les erreurs éventuelles.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");

@@ -7,18 +7,16 @@ import {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginApi } from "../services/authService";
+import type { AuthContextType } from "../types/authTypes";
 
-interface AuthContextType {
-  isAuthenticated: boolean;
-  loading: boolean;
-  user: any;
-  login: (login: string, password: string) => Promise<boolean>;
-  logout: () => void;
-  checkAuth: () => Promise<boolean>;
-}
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined,
+);
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
+/**
+ * Fournit le contexte d'authentification pour l'application, gérant l'état de l'utilisateur, les fonctions de login/logout, et la vérification du token.
+ * @param {React.ReactNode} children Les composants enfants qui auront accès au contexte d'authentification.
+ */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -98,7 +96,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await checkAuth();
       setLoading(false);
     })();
-    // eslint-disable-next-line
   }, []);
 
   return (
@@ -108,10 +105,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
-  return ctx;
 }

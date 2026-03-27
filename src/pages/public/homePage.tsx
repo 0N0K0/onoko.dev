@@ -3,9 +3,12 @@ import ResponsiveTitle from "../../components/responsiveTitle";
 import ResponsiveBodyTypography from "../../components/responsiveBodyTypography";
 import { ResponsivePaper } from "../../components/ResponsiveLayout";
 
+/**
+ * Page d'accueil publique du site.
+ */
 export default function Home() {
   const theme = useTheme();
-  console.log(theme);
+
   return (
     <>
       <ResponsiveTitle variant="h1">Hello World !</ResponsiveTitle>
