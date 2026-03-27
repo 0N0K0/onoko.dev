@@ -4,16 +4,20 @@ import { useState, useEffect } from "react";
 import { ResponsiveStack } from "../../components/ResponsiveLayout";
 import ResponsiveBodyTypography from "../../components/responsiveBodyTypography";
 import PasswordField from "../../components/passwordField";
+import ResetPasswordLink from "../../components/resetPasswordLink";
 
 export default function Account() {
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
-  const [initialUser, setInitialUser] = useState<{login: string; email: string} | null>(null);
+  const [initialUser, setInitialUser] = useState<{
+    login: string;
+    email: string;
+  } | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [userError, setUserError] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [submitError, setSubmitError] = useState("");
-  const [submitSuccess, setSubmitSuccess] = useState<boolean|null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -189,20 +193,19 @@ export default function Account() {
                 value={currentPassword}
                 onChange={handleCurrentPasswordChange}
                 error={
-                  !!(initialUser && (login !== initialUser.login ||
-                    email !== initialUser.email ||
-                    newPassword !== "" ||
-                    confirmPassword !== "") &&
-                    !currentPassword)
+                  !!(
+                    initialUser &&
+                    (login !== initialUser.login ||
+                      email !== initialUser.email ||
+                      newPassword !== "" ||
+                      confirmPassword !== "") &&
+                    !currentPassword
+                  )
                 }
+                required
                 errorText="Le mot de passe est obligatoire pour valider les changements."
               />
-              <ResponsiveBodyTypography variant="bodyXs">
-                Mot de passe oublié ?{" "}
-                <Link href="/reset-password">
-                  Réinitialiser mon mot de passe
-                </Link>
-              </ResponsiveBodyTypography>
+              <ResetPasswordLink />
             </ResponsiveStack>
             <ResponsiveStack rowGap={3} width="100%">
               <PasswordField
@@ -227,28 +230,32 @@ export default function Account() {
         <div style={{ color: "red", marginTop: 16 }}>{submitError}</div>
       )}
       {submitSuccess && (
-        <div style={{ color: "green", marginTop: 16 }}>Mise à jour réussie !</div>
+        <div style={{ color: "green", marginTop: 16 }}>
+          Mise à jour réussie !
+        </div>
       )}
       <Button
         onClick={handleSubmit}
         variant="contained"
         sx={{ mt: 3, width: "fit-content" }}
-        disabled={!!(
-          submitting ||
-          (initialUser &&
-            login === initialUser.login &&
-            email === initialUser.email &&
-            newPassword === "" &&
-            confirmPassword === "") ||
-          passwordError ||
-          newPasswordError ||
-          (initialUser &&
-            (login !== initialUser.login ||
-              email !== initialUser.email ||
-              newPassword !== "" ||
-              confirmPassword !== "") &&
-            !currentPassword)
-        )}
+        disabled={
+          !!(
+            submitting ||
+            (initialUser &&
+              login === initialUser.login &&
+              email === initialUser.email &&
+              newPassword === "" &&
+              confirmPassword === "") ||
+            passwordError ||
+            newPasswordError ||
+            (initialUser &&
+              (login !== initialUser.login ||
+                email !== initialUser.email ||
+                newPassword !== "" ||
+                confirmPassword !== "") &&
+              !currentPassword)
+          )
+        }
       >
         {submitting ? "Envoi..." : "Valider"}
       </Button>

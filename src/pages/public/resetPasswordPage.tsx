@@ -7,8 +7,11 @@ import RootPaper from "../../layout/rootPaper";
 import ResponsiveTitle from "../../components/responsiveTitle";
 import { Link as RouterLink } from "react-router-dom";
 import { LOGIN_ROUTE } from "../../constants/apiConstants";
+import { useAuth } from "../../context/AuthContext";
 
 export default function ResetPassword() {
+  const { isAuthenticated } = useAuth ? useAuth() : { isAuthenticated: false };
+
   return (
     <RootPaper
       sx={{
@@ -50,11 +53,12 @@ export default function ResetPassword() {
             <Button
               color="primary"
               fullWidth
-              sx={{ textWrap: "nowrap" }}
               component={RouterLink}
-              to={`/${LOGIN_ROUTE}`}
+              to={`../${LOGIN_ROUTE}`}
             >
-              Revenir à la page de connexion
+              {isAuthenticated
+                ? "Revenir à l'espace administrateur"
+                : "Revenir à la page de connexion"}
             </Button>
             <Button variant="contained" color="primary" fullWidth>
               Réinitialiser

@@ -5,4 +5,5 @@ export interface PasswordFieldProps {
   error?: boolean;
   helperText?: string;
   errorText?: string;
+  required?: boolean;
 }

@@ -11,6 +11,7 @@ export default function PasswordField({
   error,
   helperText,
   errorText,
+  required,
 }: PasswordFieldProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -19,7 +20,7 @@ export default function PasswordField({
       label={label}
       type={showPassword ? "text" : "password"}
       fullWidth
-      required
+      required={required}
       value={value}
       onChange={onChange}
       error={error}

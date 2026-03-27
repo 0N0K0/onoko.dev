@@ -18,6 +18,8 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import ResponsiveBodyTypography from "../../components/responsiveBodyTypography";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
+import PasswordField from "../../components/passwordField";
+import ResetPasswordLink from "../../components/resetPasswordLink";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -93,38 +95,13 @@ export default function Login() {
             disabled={loading}
             required
           />
-          <TextField
+          <PasswordField
             label="Mot de passe"
-            type={showPassword ? "text" : "password"}
-            fullWidth
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-            disabled={loading}
+            error={!!error}
+            errorText={error}
             required
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleTogglePassword}
-                      edge="end"
-                      aria-label={
-                        showPassword
-                          ? "Masquer le mot de passe"
-                          : "Afficher le mot de passe"
-                      }
-                    >
-                      {showPassword ? (
-                        <Icon path={mdiEyeOff} size={1} />
-                      ) : (
-                        <Icon path={mdiEye} size={1} />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              },
-            }}
           />
         </ResponsiveStack>
         {error && (
@@ -163,10 +140,7 @@ export default function Login() {
               {loading ? "Connexion..." : "Me connecter"}
             </Button>
           </ResponsiveStack>
-          <ResponsiveBodyTypography variant="bodyXs">
-            Mot de passe oublié ?{" "}
-            <Link href="/reset-password">Réinitialiser mon mot de passe</Link>
-          </ResponsiveBodyTypography>
+          <ResetPasswordLink />
         </ResponsiveStack>
       </ResponsivePaper>
     </RootPaper>
