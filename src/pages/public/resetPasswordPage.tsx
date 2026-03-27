@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Alert, Button, Snackbar } from "@mui/material";
 import {
   ResponsivePaper,
   ResponsiveStack,
@@ -99,12 +99,26 @@ export default function ResetPassword() {
           />
         </ResponsiveStack>
         {submitError && (
-          <div style={{ color: "red", marginTop: 8 }}>{submitError}</div>
+          <Snackbar
+            open={true}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            sx={{ mt: 10 }}
+          >
+            <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
+              {submitError}
+            </Alert>
+          </Snackbar>
         )}
         {submitSuccess && (
-          <div style={{ color: "green", marginTop: 8 }}>
-            Votre mot de passe a été réinitialisé avec succès.
-          </div>
+          <Snackbar
+            open={true}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            sx={{ mt: 10 }}
+          >
+            <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
+              Votre mot de passe a été réinitialisé avec succès.
+            </Alert>
+          </Snackbar>
         )}
         <ResponsiveStack rowGap={3} width="100%" alignItems="end">
           <ResponsiveStack

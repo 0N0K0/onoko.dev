@@ -1,4 +1,10 @@
-import { Button, TextField } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  TextField,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import ResponsiveTitle from "../../components/responsiveTitle";
 import { useState, useEffect } from "react";
 import { ResponsiveStack } from "../../components/ResponsiveLayout";
@@ -105,122 +111,139 @@ export default function Account() {
   };
 
   return (
-    <ResponsiveStack rowGap={6} width="100%" alignItems="end">
+    <ResponsiveStack
+      rowGap={6}
+      width="100%"
+      alignItems={loadingUser ? "center" : "end"}
+    >
       <ResponsiveTitle variant="h1" width="100%">
         Mon compte
       </ResponsiveTitle>
-      {loadingUser ? (
-        <div style={{ width: "100%", textAlign: "center", margin: "2em 0" }}>
-          Chargement...
-        </div>
-      ) : userError ? (
-        <div
-          style={{
-            color: "red",
-            width: "100%",
-            textAlign: "center",
-            margin: "2em 0",
-          }}
+      {loadingUser ? <CircularProgress /> : null}
+      {userError && (
+        <Snackbar
+          open={true}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          sx={{ mt: 2 }}
         >
-          {userError}
-        </div>
-      ) : (
-        <ResponsiveStack rowGap={3} width="100%">
-          <ResponsiveStack
-            direction="row"
-            rowGap={2}
-            columnGap={2}
-            width="100%"
-          >
-            <TextField
-              label="Nom d'utilisateur"
-              fullWidth
-              value={login}
-              onChange={(e) => setLogin(e.target.value)}
-            />
-            <TextField
-              label="Adresse e-mail"
-              fullWidth
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </ResponsiveStack>
-
-          <ResponsiveStack
-            direction="row"
-            rowGap={2}
-            columnGap={2}
-            width="100%"
-          >
-            <ResponsiveStack rowGap={3} width="100%">
-              <PasswordField
-                label="Mot de passe actuel"
-                value={currentPassword}
-                onChange={handleCurrentPasswordChange}
-                error={
-                  !!(
-                    initialUser &&
-                    (login !== initialUser.login ||
-                      email !== initialUser.email ||
-                      newPassword !== "" ||
-                      confirmPassword !== "") &&
-                    !currentPassword
-                  )
-                }
-                required
-                errorText="Le mot de passe est obligatoire pour valider les changements."
-              />
-              <ResetPasswordLink />
-            </ResponsiveStack>
-            <ResponsiveStack rowGap={3} width="100%">
-              <NewPasswordFields
-                newPassword={newPassword}
-                setNewPassword={setNewPassword}
-                confirmPassword={confirmPassword}
-                setConfirmPassword={setConfirmPassword}
-                newPasswordError={newPasswordError}
-                setNewPasswordError={setNewPasswordError}
-                confirmPasswordError={passwordError}
-                setConfirmPasswordError={setPasswordError}
-              />
-            </ResponsiveStack>
-          </ResponsiveStack>
-        </ResponsiveStack>
+          <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
+            {userError}
+          </Alert>
+        </Snackbar>
       )}
       {submitError && (
-        <div style={{ color: "red", marginTop: 16 }}>{submitError}</div>
+        <Snackbar
+          open={true}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          sx={{ mt: 10 }}
+        >
+          <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
+            {submitError}
+          </Alert>
+        </Snackbar>
       )}
       {submitSuccess && (
-        <div style={{ color: "green", marginTop: 16 }}>
-          Mise à jour réussie !
-        </div>
+        <Snackbar
+          open={true}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          sx={{ mt: 10 }}
+        >
+          <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
+            Les informations du compte ont été mises à jour avec succès.
+          </Alert>
+        </Snackbar>
       )}
-      <Button
-        onClick={handleSubmit}
-        variant="contained"
-        sx={{ mt: 3, width: "fit-content" }}
-        disabled={
-          !!(
-            submitting ||
-            (initialUser &&
-              login === initialUser.login &&
-              email === initialUser.email &&
-              newPassword === "" &&
-              confirmPassword === "") ||
-            passwordError ||
-            newPasswordError ||
-            (initialUser &&
-              (login !== initialUser.login ||
-                email !== initialUser.email ||
-                newPassword !== "" ||
-                confirmPassword !== "") &&
-              !currentPassword)
-          )
-        }
-      >
-        {submitting ? "Envoi..." : "Valider"}
-      </Button>
+      {!loadingUser && (
+        <>
+          <ResponsiveStack rowGap={3} width="100%">
+            <ResponsiveStack
+              direction="row"
+              rowGap={2}
+              columnGap={2}
+              width="100%"
+            >
+              <TextField
+                label="Nom d'utilisateur"
+                fullWidth
+                value={login}
+                onChange={(e) => setLogin(e.target.value)}
+              />
+              <TextField
+                label="Adresse e-mail"
+                fullWidth
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </ResponsiveStack>
+
+            <ResponsiveStack
+              direction="row"
+              rowGap={2}
+              columnGap={2}
+              width="100%"
+            >
+              <ResponsiveStack rowGap={3} width="100%">
+                <PasswordField
+                  label="Mot de passe actuel"
+                  value={currentPassword}
+                  onChange={handleCurrentPasswordChange}
+                  error={
+                    !!(
+                      initialUser &&
+                      (login !== initialUser.login ||
+                        email !== initialUser.email ||
+                        newPassword !== "" ||
+                        confirmPassword !== "") &&
+                      !currentPassword
+                    )
+                  }
+                  required
+                  errorText="Le mot de passe est obligatoire pour valider les changements."
+                />
+                <ResetPasswordLink />
+              </ResponsiveStack>
+              <ResponsiveStack rowGap={3} width="100%">
+                <NewPasswordFields
+                  newPassword={newPassword}
+                  setNewPassword={setNewPassword}
+                  confirmPassword={confirmPassword}
+                  setConfirmPassword={setConfirmPassword}
+                  newPasswordError={newPasswordError}
+                  setNewPasswordError={setNewPasswordError}
+                  confirmPasswordError={passwordError}
+                  setConfirmPasswordError={setPasswordError}
+                />
+              </ResponsiveStack>
+            </ResponsiveStack>
+          </ResponsiveStack>
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            sx={{ mt: 3, width: "fit-content" }}
+            disabled={
+              !!(
+                submitting ||
+                (initialUser &&
+                  login === initialUser.login &&
+                  email === initialUser.email &&
+                  newPassword === "" &&
+                  confirmPassword === "") ||
+                passwordError ||
+                newPasswordError ||
+                (initialUser &&
+                  (login !== initialUser.login ||
+                    email !== initialUser.email ||
+                    newPassword !== "" ||
+                    confirmPassword !== "") &&
+                  !currentPassword)
+              )
+            }
+          >
+            {submitting ? "Envoi..." : "Valider"}
+          </Button>
+        </>
+      )}
     </ResponsiveStack>
   );
 }

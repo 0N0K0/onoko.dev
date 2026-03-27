@@ -1,4 +1,4 @@
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, Snackbar, Alert } from "@mui/material";
 import {
   ResponsivePaper,
   ResponsiveStack,
@@ -80,6 +80,28 @@ export default function RequestResetPassword() {
           Demander la&nbsp;réinitialisation
           de&nbsp;mon&nbsp;mot&nbsp;de&nbsp;passe
         </ResponsiveTitle>
+        {submitError && (
+          <Snackbar
+            open={true}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            sx={{ mt: 10 }}
+          >
+            <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
+              {submitError}
+            </Alert>
+          </Snackbar>
+        )}
+        {submitSuccess && (
+          <Snackbar
+            open={true}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            sx={{ mt: 10 }}
+          >
+            <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
+              Si l'adresse existe, un e-mail de réinitialisation a été envoyé.
+            </Alert>
+          </Snackbar>
+        )}
         <ResponsiveStack rowGap={3} width="100%">
           <TextField
             label="Adresse e-mail"
@@ -91,14 +113,6 @@ export default function RequestResetPassword() {
             disabled={submitting}
           />
         </ResponsiveStack>
-        {submitError && (
-          <div style={{ color: "red", marginTop: 8 }}>{submitError}</div>
-        )}
-        {submitSuccess && (
-          <div style={{ color: "green", marginTop: 8 }}>
-            Si l'adresse existe, un e-mail de réinitialisation a été envoyé.
-          </div>
-        )}
         <ResponsiveStack rowGap={3} width="100%" alignItems="end">
           <ResponsiveStack
             direction="row"

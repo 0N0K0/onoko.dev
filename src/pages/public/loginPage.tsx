@@ -1,4 +1,4 @@
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, Snackbar, Alert } from "@mui/material";
 import { useState } from "react";
 import {
   ResponsivePaper,
@@ -75,6 +75,17 @@ export default function Login() {
         }}
         elevation={1}
       >
+        {error && (
+          <Snackbar
+            open={true}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            sx={{ mt: 10 }}
+          >
+            <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
+              {error}
+            </Alert>
+          </Snackbar>
+        )}
         <ResponsiveTitle
           variant="h5"
           textAlign="center"
@@ -102,15 +113,6 @@ export default function Login() {
             required
           />
         </ResponsiveStack>
-        {error && (
-          <ResponsiveBodyTypography
-            variant="bodyXs"
-            color="error"
-            textAlign="center"
-          >
-            {error}
-          </ResponsiveBodyTypography>
-        )}
         <ResponsiveStack rowGap={3} width="100%" alignItems="end">
           <ResponsiveStack
             direction="row"
