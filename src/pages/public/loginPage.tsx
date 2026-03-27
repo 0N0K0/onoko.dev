@@ -16,32 +16,43 @@ import RootPaper from "../../layout/rootPaper";
 import ResponsiveTitle from "../../components/responsiveTitle";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import ResponsiveBodyTypography from "../../components/responsiveBodyTypography";
-import { loginApi } from "../../services/authService";
+import { useAuth } from "../../context/AuthContext";
+import { useEffect } from "react";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login: loginContext, loading, isAuthenticated } = useAuth();
+  const [redirecting, setRedirecting] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      setRedirecting(true);
+      navigate("/admin", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleTogglePassword = () => setShowPassword((v) => !v);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
     try {
-      const token = await loginApi(login, password);
-      localStorage.setItem("token", token);
-      navigate("/admin");
+      const ok = await loginContext(login, password);
+      if (ok) {
+        navigate("/admin");
+      } else {
+        setError("Échec de l'authentification");
+      }
     } catch (err: any) {
       setError(err.message || "Erreur de connexion");
-    } finally {
-      setLoading(false);
     }
   };
+
+  if (loading || redirecting) return null;
 
   return (
     <RootPaper
