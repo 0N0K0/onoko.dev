@@ -5,6 +5,7 @@ import AdminLayout from "./layout/admin/adminLayout";
 import Dashboard from "./pages/admin/dashboardPage";
 import Account from "./pages/admin/accountPage";
 import Login from "./pages/public/loginPage";
+import RequestResetPassword from "./pages/public/requestResetPasswordPage";
 import ResetPassword from "./pages/public/resetPasswordPage";
 import LogoutPage from "./pages/public/logoutPage";
 import RequireAuth from "./pages/admin/requireAuth";
@@ -29,6 +30,14 @@ export default function App() {
           />
           <Route path={`/${LOGIN_ROUTE}`} element={<Login />} />
           <Route path="/logout" element={<LogoutPage />} />
+          <Route
+            path="/request-reset-password"
+            element={<RequestResetPassword />}
+          />
+          <Route
+            path="/request-reset-password"
+            element={<RequestResetPassword />}
+          />
           <Route path="/reset-password" element={<ResetPassword />} />
           {/* Admin routes */}
           <Route

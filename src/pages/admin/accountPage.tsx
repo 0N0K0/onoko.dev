@@ -1,10 +1,10 @@
-import { Button, Link, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import ResponsiveTitle from "../../components/responsiveTitle";
 import { useState, useEffect } from "react";
 import { ResponsiveStack } from "../../components/ResponsiveLayout";
-import ResponsiveBodyTypography from "../../components/responsiveBodyTypography";
 import PasswordField from "../../components/passwordField";
 import ResetPasswordLink from "../../components/resetPasswordLink";
+import NewPasswordFields from "../../components/newPasswordFields";
 
 export default function Account() {
   const [login, setLogin] = useState("");
@@ -51,53 +51,10 @@ export default function Account() {
     fetchUserInfo();
   }, []);
 
-  const validatePassword = (pwd: string) => {
-    if (!pwd) return "";
-    if (pwd.length < 20) {
-      return "Au moins 20 caractères.";
-    }
-    if (!/[A-Z]/.test(pwd)) {
-      return "Au moins une majuscule.";
-    }
-    if (!/[a-z]/.test(pwd)) {
-      return "Au moins une minuscule.";
-    }
-    if (!/[0-9]/.test(pwd)) {
-      return "Au moins un chiffre.";
-    }
-    if (!/[^A-Za-z0-9]/.test(pwd)) {
-      return "Au moins un caractère spécial.";
-    }
-    return "";
-  };
-
   const handleCurrentPasswordChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setCurrentPassword(e.target.value);
-  };
-
-  const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setNewPassword(value);
-    const validationMsg = validatePassword(value);
-    setNewPasswordError(validationMsg);
-    if (value !== confirmPassword) {
-      setPasswordError("Les mots de passe doivent être identiques.");
-    } else {
-      setPasswordError("");
-    }
-  };
-
-  const handleConfirmPasswordChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setConfirmPassword(e.target.value);
-    if (newPassword && e.target.value !== newPassword) {
-      setPasswordError("Les mots de passe doivent être identiques.");
-    } else {
-      setPasswordError("");
-    }
   };
 
   const handleSubmit = async () => {
@@ -208,19 +165,15 @@ export default function Account() {
               <ResetPasswordLink />
             </ResponsiveStack>
             <ResponsiveStack rowGap={3} width="100%">
-              <PasswordField
-                label="Nouveau mot de passe"
-                value={newPassword}
-                onChange={handleNewPasswordChange}
-                error={!!newPasswordError}
-                errorText={newPasswordError}
-              />
-              <PasswordField
-                label="Confirmer le nouveau mot de passe"
-                value={confirmPassword}
-                onChange={handleConfirmPasswordChange}
-                error={!!passwordError}
-                errorText={passwordError}
+              <NewPasswordFields
+                newPassword={newPassword}
+                setNewPassword={setNewPassword}
+                confirmPassword={confirmPassword}
+                setConfirmPassword={setConfirmPassword}
+                newPasswordError={newPasswordError}
+                setNewPasswordError={setNewPasswordError}
+                confirmPasswordError={passwordError}
+                setConfirmPasswordError={setPasswordError}
               />
             </ResponsiveStack>
           </ResponsiveStack>

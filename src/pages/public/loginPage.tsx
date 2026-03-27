@@ -1,13 +1,5 @@
-import {
-  TextField,
-  IconButton,
-  InputAdornment,
-  Button,
-  Link,
-} from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import { useState } from "react";
-import Icon from "@mdi/react";
-import { mdiEyeOff, mdiEye } from "@mdi/js";
 import {
   ResponsivePaper,
   ResponsiveStack,
@@ -22,7 +14,6 @@ import PasswordField from "../../components/passwordField";
 import ResetPasswordLink from "../../components/resetPasswordLink";
 
 export default function Login() {
-  const [showPassword, setShowPassword] = useState(false);
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -36,8 +27,6 @@ export default function Login() {
       navigate("/admin", { replace: true });
     }
   }, [isAuthenticated, navigate]);
-
-  const handleTogglePassword = () => setShowPassword((v) => !v);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

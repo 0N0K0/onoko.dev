@@ -1,46 +1,37 @@
-import { Button } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import {
   ResponsivePaper,
   ResponsiveStack,
 } from "../../components/ResponsiveLayout";
-import ResponsiveTitle from "../../components/responsiveTitle";
 import RootPaper from "../../layout/rootPaper";
-import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import NewPasswordFields from "../../components/newPasswordFields";
-import { useAuth } from "../../context/AuthContext";
+import ResponsiveTitle from "../../components/responsiveTitle";
 import { Link as RouterLink } from "react-router-dom";
 import { API_URL, LOGIN_ROUTE } from "../../constants/apiConstants";
+import { useAuth } from "../../context/AuthContext";
+import { useState } from "react";
 
-export default function ResetPassword() {
+export default function RequestResetPassword() {
   const { isAuthenticated } = useAuth ? useAuth() : { isAuthenticated: false };
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get("token") || "";
-
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [newPasswordError, setNewPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
-
-  const [submitError, setSubmitError] = useState("");
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError("");
-    setSubmitSuccess(false);
+    setSubmitSuccess(null);
     setSubmitting(true);
     try {
-      const res = await fetch(`${API_URL}/auth/reset/confirm`, {
+      const res = await fetch(`${API_URL}/auth/reset`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, newPassword }),
+        body: JSON.stringify({ email }),
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
         throw new Error(
-          data.message || "Échec de la réinitialisation du mot de passe",
+          data.message || "Échec de la demande de réinitialisation",
         );
       }
       setSubmitSuccess(true);
@@ -79,18 +70,18 @@ export default function ResetPassword() {
           component="h1"
           width="100%"
         >
-          Réinitialiser mon mot de passe
+          Demander la&nbsp;réinitialisation
+          de&nbsp;mon&nbsp;mot&nbsp;de&nbsp;passe
         </ResponsiveTitle>
         <ResponsiveStack rowGap={3} width="100%">
-          <NewPasswordFields
-            newPassword={newPassword}
-            setNewPassword={setNewPassword}
-            confirmPassword={confirmPassword}
-            setConfirmPassword={setConfirmPassword}
-            newPasswordError={newPasswordError}
-            setNewPasswordError={setNewPasswordError}
-            confirmPasswordError={confirmPasswordError}
-            setConfirmPasswordError={setConfirmPasswordError}
+          <TextField
+            label="Adresse e-mail"
+            fullWidth
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={submitting}
           />
         </ResponsiveStack>
         {submitError && (
@@ -98,7 +89,7 @@ export default function ResetPassword() {
         )}
         {submitSuccess && (
           <div style={{ color: "green", marginTop: 8 }}>
-            Votre mot de passe a été réinitialisé avec succès.
+            Si l'adresse existe, un e-mail de réinitialisation a été envoyé.
           </div>
         )}
         <ResponsiveStack rowGap={3} width="100%" alignItems="end">
@@ -126,11 +117,9 @@ export default function ResetPassword() {
               color="primary"
               fullWidth
               type="submit"
-              disabled={
-                submitting || !!newPasswordError || !!confirmPasswordError
-              }
+              disabled={submitting || !email}
             >
-              {submitting ? "Réinitialisation..." : "Réinitialiser"}
+              {submitting ? "Envoi..." : "Envoyer"}
             </Button>
           </ResponsiveStack>
         </ResponsiveStack>

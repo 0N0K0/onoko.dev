@@ -5,7 +5,7 @@ export default function ResetPasswordLink() {
   return (
     <ResponsiveBodyTypography variant="bodyXs">
       Mot de passe oublié ?{" "}
-      <Link href="/reset-password">Réinitialiser mon mot de passe</Link>
+      <Link href="/request-reset-password">Réinitialiser mon mot de passe</Link>
     </ResponsiveBodyTypography>
   );
 }
