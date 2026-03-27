@@ -84,9 +84,9 @@ export default function RequestResetPassword() {
           <Snackbar
             open={true}
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            sx={{ mt: 10 }}
+            sx={{ mt: 9 }}
           >
-            <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
+            <Alert severity="error" variant="outlined" sx={{ width: "100%" }}>
               {submitError}
             </Alert>
           </Snackbar>
@@ -95,9 +95,9 @@ export default function RequestResetPassword() {
           <Snackbar
             open={true}
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            sx={{ mt: 10 }}
+            sx={{ mt: 9 }}
           >
-            <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
+            <Alert severity="success" variant="outlined" sx={{ width: "100%" }}>
               Si l'adresse existe, un e-mail de réinitialisation a été envoyé.
             </Alert>
           </Snackbar>

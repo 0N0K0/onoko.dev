@@ -79,9 +79,9 @@ export default function Login() {
           <Snackbar
             open={true}
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            sx={{ mt: 10 }}
+            sx={{ mt: 9 }}
           >
-            <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
+            <Alert severity="error" variant="outlined" sx={{ width: "100%" }}>
               {error}
             </Alert>
           </Snackbar>
