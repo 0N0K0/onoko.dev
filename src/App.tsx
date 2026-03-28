@@ -7,7 +7,7 @@ import Account from "./pages/admin/accountPage";
 import Login from "./pages/auth/loginPage";
 import RequestResetPassword from "./pages/auth/requestResetPasswordPage";
 import ResetPassword from "./pages/auth/resetPasswordPage";
-import LogoutPage from "./pages/admin/logoutPage";
+import LogoutPage from "./pages/auth/logoutPage";
 import RequireAuth from "./pages/admin/requireAuth";
 import { LOGIN_ROUTE } from "./constants/apiConstants";
 import { AuthProvider } from "./context/AuthContext";
