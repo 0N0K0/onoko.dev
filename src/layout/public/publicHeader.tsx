@@ -11,10 +11,15 @@ export default function PublicHeader() {
   return (
     <AppBar position="static" elevation={1}>
       <Toolbar>
-        <Button color="inherit" component={RouterLink} to="/">
+        <Button variant="text" color="inherit" component={RouterLink} to="/">
           Accueil
         </Button>
-        <Button color="inherit" component={RouterLink} to="/admin">
+        <Button
+          variant="text"
+          color="inherit"
+          component={RouterLink}
+          to="/admin"
+        >
           Espace Admin
         </Button>
       </Toolbar>

@@ -1,4 +1,4 @@
-import { TextField, Button, Snackbar, Alert } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import { useState } from "react";
 import {
   ResponsivePaper,
@@ -7,11 +7,11 @@ import {
 import RootPaper from "../../layout/rootPaper";
 import ResponsiveTitle from "../../components/responsiveTitle";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import ResponsiveBodyTypography from "../../components/responsiveBodyTypography";
 import { useEffect } from "react";
 import PasswordField from "../../components/passwordField";
 import ResetPasswordLink from "../../components/resetPasswordLink";
 import { useAuth } from "../../hooks/useAuth";
+import CustomSnackbar from "../../components/customSnackBar";
 
 /**
  * Page de connexion à l'espace admin.
@@ -76,15 +76,7 @@ export default function Login() {
         elevation={1}
       >
         {error && (
-          <Snackbar
-            open={true}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            sx={{ mt: 9 }}
-          >
-            <Alert severity="error" variant="outlined" sx={{ width: "100%" }}>
-              {error}
-            </Alert>
-          </Snackbar>
+          <CustomSnackbar open={true} message={error} severity="error" />
         )}
         <ResponsiveTitle
           variant="h5"
@@ -121,6 +113,7 @@ export default function Login() {
             width="100%"
           >
             <Button
+              variant="text"
               color="primary"
               fullWidth
               sx={{ textWrap: "nowrap" }}

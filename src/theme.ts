@@ -85,6 +85,129 @@ const baseTheme = createTheme({
         },
       },
     },
+    MuiTextField: {
+      defaultProps: {
+        variant: "outlined",
+        fullWidth: true,
+      },
+      styleOverrides: {
+        root: {
+          "& .MuiInputLabel-root": {
+            fontSize: "1rem",
+            lineHeight: 1,
+            letterSpacing: "normal",
+            "&.MuiInputLabel-shrink": {
+              transform: "translate(14px, -6px) scale(0.75) ",
+            },
+            "&.Mui-focused": {
+              transform: "translate(14px, -6px) scale(0.75) ",
+            },
+          },
+          "& .MuiInputBase-root": {
+            borderRadius: "4px",
+            fontSize: "1rem",
+            lineHeight: 1,
+            letterSpacing: "normal",
+            "& .MuiInputBase-input": {
+              padding: "12px 16px",
+              minHeight: "1.5rem",
+              "&.MuiInputBase-inputAdornedEnd": {
+                paddingRight: "8px",
+              },
+            },
+            "&.MuiInputBase-adornedEnd": {
+              paddingRight: "0px",
+
+              "& .MuiInputAdornment-root": {
+                margin: "0px",
+              },
+            },
+          },
+          "& .MuiFormHelperText-root": {
+            fontSize: "0.75rem",
+            lineHeight: 2,
+            marginTop: "0px",
+          },
+        },
+      },
+    },
+    MuiButton: {
+      defaultProps: {
+        variant: "contained",
+      },
+      styleOverrides: {
+        root: {
+          borderRadius: "4px",
+          fontSize: "1rem",
+          lineHeight: 1.5,
+          letterSpacing: "normal",
+          marginTop: "4px",
+          marginBottom: "4px",
+          padding: "8px 16px",
+          textAlign: "center",
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          "&.MuiIconButton-sizeMedium": {
+            margin: "4px",
+          },
+          "&.MuiIconButton-sizeSmall": {
+            padding: "6px",
+            fontSize: "1.25rem",
+          },
+          "& .MuiSvgIcon-root": {
+            fontSize: "inherit",
+          },
+        },
+      },
+    },
+    MuiCircularProgress: {
+      defaultProps: {
+        size: "48px",
+        thickness: 2,
+      },
+    },
+    MuiSnackbar: {
+      defaultProps: {
+        anchorOrigin: { vertical: "bottom", horizontal: "right" },
+      },
+      styleOverrides: {
+        root: {
+          right: "16px !important",
+        },
+      },
+    },
+    MuiAlert: {
+      defaultProps: {
+        variant: "outlined",
+        severity: "info",
+      },
+      styleOverrides: {
+        root: {
+          borderRadius: "4px",
+          fontSize: "1rem",
+          lineHeight: 1.5,
+          letterSpacing: "normal",
+          padding: "7.2px 15.2px",
+          gap: "8px",
+          "& .MuiAlert-icon": {
+            fontSize: "1.25rem",
+            margin: "0px",
+            padding: "6px 0px",
+          },
+          "& .MuiAlert-message": {
+            padding: "4px 0px",
+          },
+          "& .MuiAlert-action": {
+            margin: "0px -6px",
+            padding: "0px",
+          },
+        },
+      },
+    },
   },
 });
 

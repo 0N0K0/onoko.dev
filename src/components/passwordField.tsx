@@ -22,6 +22,7 @@ export default function PasswordField({
   helperText,
   errorText,
   required,
+  autoComplete,
 }: PasswordFieldProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -35,6 +36,7 @@ export default function PasswordField({
       onChange={onChange}
       error={error}
       helperText={error ? errorText || "Ce champ est requis" : helperText || ""}
+      autoComplete={autoComplete}
       slotProps={{
         input: {
           endAdornment: (

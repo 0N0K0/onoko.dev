@@ -17,11 +17,13 @@ export default function AdminLayout({
       <ResponsivePaper
         component="main"
         paddingY={3}
+        rowGap={6}
         sx={{
           flex: 1,
           display: "flex",
           flexDirection: "column",
           paddingX: 4,
+          alignItems: "center",
         }}
         square
         elevation={0}

@@ -11,6 +11,8 @@ import NewPasswordFields from "../../components/newPasswordFields";
 import { Link as RouterLink } from "react-router-dom";
 import { API_URL, LOGIN_ROUTE } from "../../constants/apiConstants";
 import { useAuth } from "../../hooks/useAuth";
+import ClosableSnackbar from "../../components/closableSnackbar";
+import CustomSnackbar from "../../components/customSnackBar";
 
 /**
  * Page de réinitialisation du mot de passe. Permet aux utilisateurs de réinitialiser leur mot de passe en fournissant un nouveau mot de passe et une confirmation, après avoir cliqué sur le lien de réinitialisation reçu par e-mail.
@@ -64,6 +66,15 @@ export default function ResetPassword() {
         justifyContent: "center !important",
       }}
     >
+      {submitError && (
+        <CustomSnackbar open={true} message={submitError} severity="error" />
+      )}
+      <ClosableSnackbar
+        open={submitSuccess}
+        setOpen={setSubmitSuccess}
+        message="Votre mot de passe a été réinitialisé avec succès."
+        severity="success"
+      />
       <ResponsivePaper
         component="form"
         onSubmit={handleSubmit}
@@ -98,28 +109,6 @@ export default function ResetPassword() {
             setConfirmPasswordError={setConfirmPasswordError}
           />
         </ResponsiveStack>
-        {submitError && (
-          <Snackbar
-            open={true}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            sx={{ mt: 9 }}
-          >
-            <Alert severity="error" variant="outlined" sx={{ width: "100%" }}>
-              {submitError}
-            </Alert>
-          </Snackbar>
-        )}
-        {submitSuccess && (
-          <Snackbar
-            open={true}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            sx={{ mt: 9 }}
-          >
-            <Alert severity="success" variant="outlined" sx={{ width: "100%" }}>
-              Votre mot de passe a été réinitialisé avec succès.
-            </Alert>
-          </Snackbar>
-        )}
         <ResponsiveStack rowGap={3} width="100%" alignItems="end">
           <ResponsiveStack
             direction="row"
@@ -128,6 +117,7 @@ export default function ResetPassword() {
             width="100%"
           >
             <Button
+              variant="text"
               color="primary"
               fullWidth
               component={RouterLink}

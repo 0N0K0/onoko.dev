@@ -1,3 +1,5 @@
+import type { SnackbarCloseReason } from "@mui/material";
+
 export interface PasswordFieldProps {
   label: string;
   value: string;
@@ -6,6 +8,7 @@ export interface PasswordFieldProps {
   helperText?: string;
   errorText?: string;
   required?: boolean;
+  autoComplete?: string;
 }
 
 export interface NewPasswordFieldsProps {
@@ -17,4 +20,19 @@ export interface NewPasswordFieldsProps {
   setNewPasswordError: (msg: string) => void;
   confirmPasswordError: string;
   setConfirmPasswordError: (msg: string) => void;
+}
+
+export interface CustomSnackbarProps {
+  open: boolean;
+  message: string;
+  severity?: "success" | "error" | "warning" | "info";
+  onClose?: (
+    event: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason,
+  ) => void;
+  autohideDuration?: number;
+}
+
+export interface ClosableSnackbarProps extends CustomSnackbarProps {
+  setOpen: (open: boolean) => void;
 }

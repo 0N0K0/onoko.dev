@@ -1,4 +1,4 @@
-import { TextField, Button, Snackbar, Alert } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import {
   ResponsivePaper,
   ResponsiveStack,
@@ -9,6 +9,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { API_URL, LOGIN_ROUTE } from "../../constants/apiConstants";
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import CustomSnackbar from "../../components/customSnackBar";
+import ClosableSnackbar from "../../components/closableSnackbar";
 
 /**
  * Page de demande de réinitialisation du mot de passe.
@@ -20,14 +22,14 @@ export default function RequestResetPassword() {
   const [email, setEmail] = useState("");
 
   const [submitting, setSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
   const [submitError, setSubmitError] = useState("");
+
+  const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
 
   // Gère la soumission du formulaire de réinitialisation, en envoyant une requête au backend avec le token et le nouveau mot de passe, et en gérant les réponses pour afficher les messages appropriés.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError("");
-    setSubmitSuccess(null);
     setSubmitting(true);
     try {
       const res = await fetch(`${API_URL}/auth/reset`, {
@@ -41,10 +43,9 @@ export default function RequestResetPassword() {
           data.message || "Échec de la demande de réinitialisation",
         );
       }
-      setSubmitSuccess(true);
+      setSuccessSnackbarOpen(true);
     } catch (e: any) {
       setSubmitError(e.message || "Erreur inconnue");
-      setSubmitSuccess(false);
     } finally {
       setSubmitting(false);
     }
@@ -57,6 +58,15 @@ export default function RequestResetPassword() {
         justifyContent: "center !important",
       }}
     >
+      {submitError && (
+        <CustomSnackbar open={true} message={submitError} severity="error" />
+      )}
+      <ClosableSnackbar
+        open={successSnackbarOpen}
+        setOpen={setSuccessSnackbarOpen}
+        message="Si l'adresse existe, un e-mail de réinitialisation a été envoyé."
+        severity="success"
+      />
       <ResponsivePaper
         component="form"
         onSubmit={handleSubmit}
@@ -67,7 +77,7 @@ export default function RequestResetPassword() {
           flexDirection: "column",
           justifyContent: "center",
           paddingX: 4,
-          width: "calc((100% - 15 * 16px) / 12 * 4 + 5 * 16px)", // 4 columns + 3 gaps
+          maxWidth: "calc((100% - 15 * 16px) / 12 * 4 + 5 * 16px)", // 4 columns + 3 gaps
         }}
         elevation={1}
       >
@@ -80,28 +90,6 @@ export default function RequestResetPassword() {
           Demander la&nbsp;réinitialisation
           de&nbsp;mon&nbsp;mot&nbsp;de&nbsp;passe
         </ResponsiveTitle>
-        {submitError && (
-          <Snackbar
-            open={true}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            sx={{ mt: 9 }}
-          >
-            <Alert severity="error" variant="outlined" sx={{ width: "100%" }}>
-              {submitError}
-            </Alert>
-          </Snackbar>
-        )}
-        {submitSuccess && (
-          <Snackbar
-            open={true}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            sx={{ mt: 9 }}
-          >
-            <Alert severity="success" variant="outlined" sx={{ width: "100%" }}>
-              Si l'adresse existe, un e-mail de réinitialisation a été envoyé.
-            </Alert>
-          </Snackbar>
-        )}
         <ResponsiveStack rowGap={3} width="100%">
           <TextField
             label="Adresse e-mail"
@@ -111,6 +99,7 @@ export default function RequestResetPassword() {
             onChange={(e) => setEmail(e.target.value)}
             required
             disabled={submitting}
+            autoComplete="email"
           />
         </ResponsiveStack>
         <ResponsiveStack rowGap={3} width="100%" alignItems="end">
@@ -121,6 +110,7 @@ export default function RequestResetPassword() {
             width="100%"
           >
             <Button
+              variant="text"
               color="primary"
               fullWidth
               component={RouterLink}

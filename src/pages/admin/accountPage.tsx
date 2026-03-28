@@ -1,16 +1,12 @@
-import {
-  Button,
-  CircularProgress,
-  TextField,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { Button, CircularProgress, Container, TextField } from "@mui/material";
 import ResponsiveTitle from "../../components/responsiveTitle";
 import { useState, useEffect } from "react";
 import { ResponsiveStack } from "../../components/ResponsiveLayout";
 import PasswordField from "../../components/passwordField";
 import ResetPasswordLink from "../../components/resetPasswordLink";
 import NewPasswordFields from "../../components/newPasswordFields";
+import ClosableSnackbar from "../../components/closableSnackbar";
+import CustomSnackbar from "../../components/customSnackBar";
 
 /**
  * Page de gestion du compte utilisateur dans l'espace admin.
@@ -35,6 +31,9 @@ export default function Account() {
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
   const [submitError, setSubmitError] = useState("");
+
+  const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
+  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
 
   // Récupération des informations du compte à l'affichage de la page, avec gestion du chargement et des erreurs.
   useEffect(() => {
@@ -110,51 +109,40 @@ export default function Account() {
     }
   };
 
+  // Affichage des snackbars de succès ou d'erreur en fonction des résultats des actions de mise à jour du compte ou de récupération des informations, avec gestion de l'ouverture et de la fermeture.
+  useEffect(() => {
+    if (submitSuccess) setSuccessSnackbarOpen(true);
+    if (userError || submitError) setErrorSnackbarOpen(true);
+  }, [submitSuccess, userError, submitError]);
+
   return (
-    <ResponsiveStack
-      rowGap={6}
-      width="100%"
-      alignItems={loadingUser ? "center" : "end"}
-    >
+    <>
       <ResponsiveTitle variant="h1" width="100%">
         Mon compte
       </ResponsiveTitle>
-      {loadingUser ? <CircularProgress /> : null}
-      {userError && (
-        <Snackbar
-          open={true}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          sx={{ mt: 9 }}
+      <ClosableSnackbar
+        open={successSnackbarOpen}
+        setOpen={setSuccessSnackbarOpen}
+        message="Les informations du compte ont été mises à jour avec succès."
+        severity="success"
+      />
+      <CustomSnackbar
+        open={errorSnackbarOpen}
+        message={userError || submitError || "Erreur inconnue"}
+        severity="error"
+      />
+      {loadingUser ? (
+        <CircularProgress />
+      ) : (
+        <Container
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 3,
+            maxWidth: "calc((100% - 15 * 16px) / 12 * 4 + 5 * 16px)",
+          }}
+          component="form"
         >
-          <Alert severity="error" variant="outlined" sx={{ width: "100%" }}>
-            {userError}
-          </Alert>
-        </Snackbar>
-      )}
-      {submitError && (
-        <Snackbar
-          open={true}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          sx={{ mt: 9 }}
-        >
-          <Alert severity="error" variant="outlined" sx={{ width: "100%" }}>
-            {submitError}
-          </Alert>
-        </Snackbar>
-      )}
-      {submitSuccess && (
-        <Snackbar
-          open={true}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          sx={{ mt: 9 }}
-        >
-          <Alert severity="success" variant="outlined" sx={{ width: "100%" }}>
-            Les informations du compte ont été mises à jour avec succès.
-          </Alert>
-        </Snackbar>
-      )}
-      {!loadingUser && (
-        <>
           <ResponsiveStack rowGap={3} width="100%">
             <ResponsiveStack
               direction="row"
@@ -167,6 +155,7 @@ export default function Account() {
                 fullWidth
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
+                autoComplete="username"
               />
               <TextField
                 label="Adresse e-mail"
@@ -174,6 +163,7 @@ export default function Account() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
               />
             </ResponsiveStack>
 
@@ -183,7 +173,7 @@ export default function Account() {
               columnGap={2}
               width="100%"
             >
-              <ResponsiveStack rowGap={3} width="100%">
+              <ResponsiveStack width="100%" alignItems="end">
                 <PasswordField
                   label="Mot de passe actuel"
                   value={currentPassword}
@@ -200,6 +190,7 @@ export default function Account() {
                   }
                   required
                   errorText="Le mot de passe est obligatoire pour valider les changements."
+                  autoComplete="password"
                 />
                 <ResetPasswordLink />
               </ResponsiveStack>
@@ -220,7 +211,6 @@ export default function Account() {
           <Button
             onClick={handleSubmit}
             variant="contained"
-            sx={{ mt: 3, width: "fit-content" }}
             disabled={
               !!(
                 submitting ||
@@ -239,11 +229,12 @@ export default function Account() {
                   !currentPassword)
               )
             }
+            sx={{ alignSelf: "flex-end" }}
           >
             {submitting ? "Envoi..." : "Valider"}
           </Button>
-        </>
+        </Container>
       )}
-    </ResponsiveStack>
+    </>
   );
 }
