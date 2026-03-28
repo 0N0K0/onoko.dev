@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useEffect, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginApi } from "../services/authService";
 import type { AuthContextType } from "../types/authTypes";
@@ -21,7 +15,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [lastActivity, setLastActivity] = useState(Date.now());
+  const [tokenExp, setTokenExp] = useState<number | null>(null);
   const navigate = useNavigate();
+
+  // Détecte l'activité de l'utilisateur pour le rafraîchissement du token
+  useEffect(() => {
+    const updateActivity = () => setLastActivity(Date.now());
+    window.addEventListener("mousemove", updateActivity);
+    window.addEventListener("keydown", updateActivity);
+    window.addEventListener("mousedown", updateActivity);
+    window.addEventListener("touchstart", updateActivity);
+    return () => {
+      window.removeEventListener("mousemove", updateActivity);
+      window.removeEventListener("keydown", updateActivity);
+      window.removeEventListener("mousedown", updateActivity);
+      window.removeEventListener("touchstart", updateActivity);
+    };
+  }, []);
 
   // Vérifie le token auprès de l'API
   const checkAuth = async (): Promise<boolean> => {
@@ -29,9 +40,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!token) {
       setIsAuthenticated(false);
       setUser(null);
+      setTokenExp(null);
       return false;
     }
     try {
+      // Décoder l'expiration du token
+      const payload = (() => {
+        try {
+          const p = token.split(".")[1];
+          return JSON.parse(atob(p.replace(/-/g, "+").replace(/_/g, "/")));
+        } catch {
+          return null;
+        }
+      })();
+      if (payload && payload.exp) {
+        setTokenExp(payload.exp);
+      } else {
+        setTokenExp(null);
+      }
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
       const url = new URL("/verify-token", apiUrl).href;
       const res = await fetch(url, {
@@ -52,12 +78,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         setIsAuthenticated(false);
         setUser(null);
+        setTokenExp(null);
         localStorage.removeItem("token");
         return false;
       }
     } catch (err) {
       setIsAuthenticated(false);
       setUser(null);
+      setTokenExp(null);
       localStorage.removeItem("token");
       return false;
     }
@@ -72,6 +100,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const token = await loginApi(loginValue, password);
       localStorage.setItem("token", token);
+      // Décoder l'expiration du token dès le login
+      const payload = (() => {
+        try {
+          const p = token.split(".")[1];
+          return JSON.parse(atob(p.replace(/-/g, "+").replace(/_/g, "/")));
+        } catch {
+          return null;
+        }
+      })();
+      if (payload && payload.exp) {
+        setTokenExp(payload.exp);
+      } else {
+        setTokenExp(null);
+      }
       const ok = await checkAuth();
       setLoading(false);
       return ok;
@@ -97,6 +139,61 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     })();
   }, []);
+
+  const checkAndRefresh = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    try {
+      const payload = (() => {
+        try {
+          const p = token.split(".")[1];
+          return JSON.parse(atob(p.replace(/-/g, "+").replace(/_/g, "/")));
+        } catch {
+          return null;
+        }
+      })();
+      if (!payload || !payload.exp) return;
+      const now = Math.floor(Date.now() / 1000);
+      const timeLeft = payload.exp - now;
+      // Si actif dans les 10 dernières minutes et token expire dans moins de 5mn
+      if (
+        Date.now() - lastActivity < 10 * 60 * 1000 &&
+        timeLeft < 5 * 60 &&
+        timeLeft > 0
+      ) {
+        // Appel API pour rafraîchir le token (supposé route /refresh-token)
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
+        const url = new URL("/refresh-token", apiUrl).href;
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.token) {
+            localStorage.setItem("token", data.token);
+            await checkAuth();
+          }
+        }
+      }
+    } catch {}
+  };
+
+  // Planifie le rafraîchissement du token 5 minutes avant son expiration, si l'utilisateur est actif
+  useEffect(() => {
+    if (!isAuthenticated || !tokenExp) return;
+    // Calcul du délai avant expiration - 5mn
+    const now = Math.floor(Date.now() / 1000);
+    const msBeforeRefresh = (tokenExp - 5 * 60 - now) * 1000;
+    if (msBeforeRefresh <= 0) return; // trop tard ou déjà expiré
+    const timeout = setTimeout(() => {
+      // Rafraîchir seulement si actif dans les 10 dernières minutes
+      if (Date.now() - lastActivity < 10 * 60 * 1000) {
+        checkAndRefresh();
+      }
+    }, msBeforeRefresh);
+    return () => clearTimeout(timeout);
+  }, [isAuthenticated, tokenExp, lastActivity]);
 
   return (
     <AuthContext.Provider
