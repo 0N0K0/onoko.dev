@@ -1,4 +1,4 @@
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, useTheme } from "@mui/material";
 import {
   ResponsivePaper,
   ResponsiveStack,
@@ -17,6 +17,8 @@ import ClosableSnackbar from "../../components/closableSnackbar";
  * Permet aux utilisateurs de demander un lien de réinitialisation en fournissant leur adresse e-mail.
  */
 export default function RequestResetPassword() {
+  const theme = useTheme();
+
   const { isAuthenticated } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -77,7 +79,7 @@ export default function RequestResetPassword() {
           flexDirection: "column",
           justifyContent: "center",
           paddingX: 4,
-          maxWidth: "calc((100% - 15 * 16px) / 12 * 4 + 5 * 16px)", // 4 columns + 3 gaps
+          maxWidth: theme.breakpoints.values.md,
         }}
         elevation={1}
       >
@@ -118,9 +120,9 @@ export default function RequestResetPassword() {
             >
               Revenir à
               {isAuthenticated ? (
-                <> l'espace administrateur</>
+                <>&nbsp;l'espace administrateur</>
               ) : (
-                <> la&nbsp;page de&nbsp;connexion</>
+                <>&nbsp;la&nbsp;page de&nbsp;connexion</>
               )}
             </Button>
             <Button

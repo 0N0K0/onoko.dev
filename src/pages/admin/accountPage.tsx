@@ -139,9 +139,9 @@ export default function Account() {
             display: "flex",
             flexDirection: "column",
             gap: 3,
-            maxWidth: "calc((100% - 15 * 16px) / 12 * 4 + 5 * 16px)",
           }}
           component="form"
+          maxWidth="lg"
         >
           <ResponsiveStack rowGap={3} width="100%">
             <ResponsiveStack

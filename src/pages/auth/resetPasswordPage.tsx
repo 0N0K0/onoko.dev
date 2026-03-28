@@ -1,4 +1,4 @@
-import { Alert, Button, Snackbar } from "@mui/material";
+import { Alert, Button, Snackbar, useTheme } from "@mui/material";
 import {
   ResponsivePaper,
   ResponsiveStack,
@@ -19,6 +19,8 @@ import CustomSnackbar from "../../components/customSnackBar";
  * Gère la validation des champs, l'envoi de la requête de réinitialisation au backend et l'affichage des messages de succès ou d'erreur.
  */
 export default function ResetPassword() {
+  const theme = useTheme();
+
   const { isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token") || "";
@@ -85,7 +87,7 @@ export default function ResetPassword() {
           flexDirection: "column",
           justifyContent: "center",
           paddingX: 4,
-          width: "calc((100% - 15 * 16px) / 12 * 4 + 5 * 16px)", // 4 columns + 3 gaps
+          maxWidth: theme.breakpoints.values.md,
         }}
         elevation={1}
       >
@@ -95,7 +97,7 @@ export default function ResetPassword() {
           component="h1"
           width="100%"
         >
-          Réinitialiser mon mot de passe
+          Réinitialiser mon&nbsp;mot&nbsp;de&nbsp;passe
         </ResponsiveTitle>
         <ResponsiveStack rowGap={3} width="100%">
           <NewPasswordFields
@@ -125,9 +127,9 @@ export default function ResetPassword() {
             >
               Revenir à
               {isAuthenticated ? (
-                <> l'espace administrateur</>
+                <>&nbsp;l'espace administrateur</>
               ) : (
-                <> la&nbsp;page de&nbsp;connexion</>
+                <>&nbsp;la&nbsp;page de&nbsp;connexion</>
               )}
             </Button>
             <Button

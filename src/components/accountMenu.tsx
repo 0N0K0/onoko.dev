@@ -13,6 +13,7 @@ export default function AccountMenu() {
     setAnchorEl(null);
   };
   const location = useLocation();
+
   return (
     <>
       <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} color="inherit">

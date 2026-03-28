@@ -1,4 +1,4 @@
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, useTheme } from "@mui/material";
 import { useState } from "react";
 import {
   ResponsivePaper,
@@ -18,6 +18,8 @@ import CustomSnackbar from "../../components/customSnackBar";
  * Permet aux utilisateurs autorisés de se connecter pour accéder à l'administration du site.
  */
 export default function Login() {
+  const theme = useTheme();
+
   const { login: loginContext, loading, isAuthenticated } = useAuth();
 
   const navigate = useNavigate();
@@ -71,7 +73,7 @@ export default function Login() {
           flexDirection: "column",
           justifyContent: "center",
           paddingX: 4,
-          width: "calc((100% - 15 * 16px) / 12 * 4 + 5 * 16px)", // 4 columns + 3 gaps
+          maxWidth: theme.breakpoints.values.md,
         }}
         elevation={1}
       >
