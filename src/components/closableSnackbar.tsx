@@ -21,6 +21,7 @@ export default function ClosableSnackbar({
   severity,
   autohideDuration = 6000,
 }: ClosableSnackbarProps) {
+  // Fonction de gestion de la fermeture du snackbar, qui peut être déclenchée manuellement ou automatiquement, et qui ignore les fermetures dues à un clic à l'extérieur du snackbar (clickaway).
   const handleClose = (
     _: React.SyntheticEvent | Event,
     reason?: SnackbarCloseReason,

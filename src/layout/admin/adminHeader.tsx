@@ -3,13 +3,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
+import CustomDialog from "../../components/customDialog";
 
 /**
  * Entête de l'espace admin, avec des liens vers les différentes sections et la déconnexion.
@@ -45,23 +39,22 @@ export default function AdminHeader() {
           </Button>
         </Toolbar>
       </AppBar>
-      <Dialog open={logoutConfirm} onClose={() => setLogoutConfirm(false)}>
-        <DialogTitle>Voulez-vous vous déconnecter ?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Vous devrez vous reconnecter pour accéder à nouveau à l'espace
-            administrateur.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="text" onClick={() => setLogoutConfirm(false)}>
-            Annuler
-          </Button>
-          <Button component={Link} to="/logout">
-            Me déconnecter
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <CustomDialog
+        open={logoutConfirm}
+        onClose={() => setLogoutConfirm(false)}
+        title="Voulez-vous vous déconnecter ?"
+        content="Vous devrez vous reconnecter pour accéder à nouveau à l'espace administrateur."
+        actions={
+          <>
+            <Button variant="text" onClick={() => setLogoutConfirm(false)}>
+              Annuler
+            </Button>
+            <Button component={Link} to="/logout">
+              Me déconnecter
+            </Button>
+          </>
+        }
+      />
     </>
   );
 }
