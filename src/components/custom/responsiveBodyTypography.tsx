@@ -1,8 +1,15 @@
 import Typography from "@mui/material/Typography";
-import { verticalMediaQuery } from "../theme";
+import { verticalMediaQuery } from "../../theme";
 import { useTheme } from "@mui/material";
-import type { ResponsiveBodyTypographyProps } from "../types/responsiveComponents";
+import type { ResponsiveBodyTypographyProps } from "../../types/responsiveTypes";
 
+/**
+ * Composant de typographie pour le corps de texte avec une taille de police responsive.
+ * La taille de la police s'adapte en fonction de la taille de l'écran, avec des limites pour éviter que le texte ne devienne trop petit ou trop grand.
+ * @param {string} props.variant Le variant de typographie à utiliser (ex: "body1", "body2", etc.).
+ * @param {React.ReactNode} props.children Le contenu à afficher à l'intérieur du composant.
+ * @param {object} props.props Propriétés supplémentaires à passer au composant Typography.
+ */
 export default function ResponsiveBodyTypography({
   variant,
   children,

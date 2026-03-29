@@ -1,18 +1,56 @@
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import Button from "@mui/material/Button";
-import { Link as RouterLink } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
+import AccountMenu from "../../components/accountMenu";
+import { IconButton, MenuItem } from "@mui/material";
+import Icon from "@mdi/react";
+import { mdiHome } from "@mdi/js";
+import CustomMenu from "../../components/custom/customMenu";
 
+/**
+ * Entête de l'espace admin, avec des liens vers les différentes sections et la déconnexion.
+ */
 export default function AdminHeader() {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const location = useLocation();
+
   return (
-    <AppBar position="static" elevation={1}>
-      <Toolbar>
-        <Button color="inherit" component={RouterLink} to="/">
-          Accueil
-        </Button>
-        <Button color="inherit" component={RouterLink} to="/admin">
-          Espace Admin
-        </Button>
+    <AppBar position="sticky" elevation={1}>
+      <Toolbar
+        sx={{ minHeight: "0px !important", justifyContent: "space-between" }}
+      >
+        <IconButton
+          size="adminMenu"
+          onClick={(e) => setAnchorEl(e.currentTarget)}
+          color="inherit"
+        >
+          <Icon path={mdiHome} size="1rem" />
+        </IconButton>
+        <CustomMenu
+          id="home-menu"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+        >
+          <MenuItem
+            component={Link}
+            to="/"
+            onClick={() => setAnchorEl(null)}
+            selected={location.pathname === "/"}
+          >
+            Site
+          </MenuItem>
+          <MenuItem
+            component={Link}
+            to="/admin"
+            onClick={() => setAnchorEl(null)}
+            selected={location.pathname === "/admin"}
+          >
+            Tableau de bord
+          </MenuItem>
+        </CustomMenu>
+        <AccountMenu />
       </Toolbar>
     </AppBar>
   );

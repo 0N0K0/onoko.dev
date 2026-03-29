@@ -1,7 +1,11 @@
 import AdminHeader from "./adminHeader";
 import RootPaper from "../rootPaper";
-import { ResponsivePaper } from "../../components/ResponsiveLayout";
+import { ResponsivePaper } from "../../components/custom/responsiveLayout";
 
+/**
+ * Layout principal de l'espace admin, avec une entête et une zone de contenu.
+ * Utilisé pour les pages de l'espace admin.
+ */
 export default function AdminLayout({
   children,
 }: {
@@ -13,11 +17,13 @@ export default function AdminLayout({
       <ResponsivePaper
         component="main"
         paddingY={3}
+        rowGap={6}
         sx={{
           flex: 1,
           display: "flex",
           flexDirection: "column",
           paddingX: 4,
+          alignItems: "center",
         }}
         square
         elevation={0}
