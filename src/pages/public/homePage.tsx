@@ -39,31 +39,6 @@ export default function Home() {
             Sed dolores ducimus qui dolores atque est minus suscipit. In eveniet
             voluptatum aut placeat nobis eum corrupti delectus.{" "}
           </p>
-          <p>
-            Et unde molestias ad provident consequatur qui saepe dolor non earum
-            iusto quo aliquid sapiente. Sed consequatur dolore qui nihil
-            nesciunt et molestiae ducimus? Hic possimus dolore quo labore
-            perferendis ad facilis dolorem quo sapiente quam eos maxime
-            doloremque?{" "}
-          </p>
-          <p>
-            Aut velit dicta cum numquam quibusdam est corrupti natus in error
-            voluptatibus non ipsa quasi sed accusantium delectus. Et voluptate
-            mollitia vel voluptatum accusantium et ullam expedita in odio
-            galisum ex odio obcaecati ut doloribus adipisci. Ut possimus
-            consectetur sed omnis dolore sed voluptatum aperiam ut quas rerum id
-            dolores molestiae ut nulla consequatur est eveniet esse. In
-            voluptatem quia eum quos voluptatem et sapiente corporis hic galisum
-            aliquam et quod cumque et quidem ipsum At libero quod?{" "}
-          </p>
-          <p>
-            In voluptates internos non nisi natus aut reprehenderit aperiam in
-            magnam debitis. Sit voluptatem assumenda eos unde fugit qui enim
-            corporis a mollitia dolor sed ullam iste non eius nemo est
-            voluptatem maiores. Vel amet maxime et dolores excepturi rem
-            asperiores magnam ex necessitatibus galisum sed voluptatum
-            nihil.{" "}
-          </p>
         </ResponsiveBodyTypography>
       </ResponsivePaper>
     </>
