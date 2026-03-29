@@ -1,26 +1,21 @@
-import { Alert, Button, Snackbar, useTheme } from "@mui/material";
-import {
-  ResponsivePaper,
-  ResponsiveStack,
-} from "../../components/ResponsiveLayout";
-import ResponsiveTitle from "../../components/responsiveTitle";
-import RootPaper from "../../layout/rootPaper";
+import { Button } from "@mui/material";
+import { ResponsiveStack } from "../../components/custom/responsiveLayout";
+import ResponsiveTitle from "../../components/custom/responsiveTitle";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import NewPasswordFields from "../../components/newPasswordFields";
 import { Link as RouterLink } from "react-router-dom";
 import { API_URL, LOGIN_ROUTE } from "../../constants/apiConstants";
 import { useAuth } from "../../hooks/useAuth";
-import ClosableSnackbar from "../../components/closableSnackbar";
-import CustomSnackbar from "../../components/customSnackBar";
+import ClosableSnackbar from "../../components/custom/closableSnackbar";
+import CustomSnackbar from "../../components/custom/customSnackBar";
+import AuthLayout from "../../layout/auth/authLayout";
 
 /**
  * Page de réinitialisation du mot de passe. Permet aux utilisateurs de réinitialiser leur mot de passe en fournissant un nouveau mot de passe et une confirmation, après avoir cliqué sur le lien de réinitialisation reçu par e-mail.
  * Gère la validation des champs, l'envoi de la requête de réinitialisation au backend et l'affichage des messages de succès ou d'erreur.
  */
 export default function ResetPassword() {
-  const theme = useTheme();
-
   const { isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token") || "";
@@ -62,12 +57,7 @@ export default function ResetPassword() {
   };
 
   return (
-    <RootPaper
-      sx={{
-        alignItems: "center",
-        justifyContent: "center !important",
-      }}
-    >
+    <AuthLayout component="form" onSubmit={handleSubmit}>
       {submitError && (
         <CustomSnackbar open={true} message={submitError} severity="error" />
       )}
@@ -77,75 +67,55 @@ export default function ResetPassword() {
         message="Votre mot de passe a été réinitialisé avec succès."
         severity="success"
       />
-      <ResponsivePaper
-        component="form"
-        onSubmit={handleSubmit}
-        paddingY={3}
-        rowGap={6}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          paddingX: 4,
-          maxWidth: theme.breakpoints.values.md,
-        }}
-        elevation={1}
+      <ResponsiveTitle
+        variant="h5"
+        textAlign="center"
+        component="h1"
+        width="100%"
       >
-        <ResponsiveTitle
-          variant="h5"
-          textAlign="center"
-          component="h1"
-          width="100%"
-        >
-          Réinitialiser mon&nbsp;mot&nbsp;de&nbsp;passe
-        </ResponsiveTitle>
-        <ResponsiveStack rowGap={3} width="100%">
-          <NewPasswordFields
-            newPassword={newPassword}
-            setNewPassword={setNewPassword}
-            confirmPassword={confirmPassword}
-            setConfirmPassword={setConfirmPassword}
-            newPasswordError={newPasswordError}
-            setNewPasswordError={setNewPasswordError}
-            confirmPasswordError={confirmPasswordError}
-            setConfirmPasswordError={setConfirmPasswordError}
-          />
-        </ResponsiveStack>
-        <ResponsiveStack rowGap={3} width="100%" alignItems="end">
-          <ResponsiveStack
-            direction="row"
-            rowGap={2}
-            columnGap={2}
-            width="100%"
+        Réinitialiser mon&nbsp;mot&nbsp;de&nbsp;passe
+      </ResponsiveTitle>
+      <ResponsiveStack rowGap={3} width="100%">
+        <NewPasswordFields
+          newPassword={newPassword}
+          setNewPassword={setNewPassword}
+          confirmPassword={confirmPassword}
+          setConfirmPassword={setConfirmPassword}
+          newPasswordError={newPasswordError}
+          setNewPasswordError={setNewPasswordError}
+          confirmPasswordError={confirmPasswordError}
+          setConfirmPasswordError={setConfirmPasswordError}
+        />
+      </ResponsiveStack>
+      <ResponsiveStack rowGap={3} width="100%" alignItems="end">
+        <ResponsiveStack direction="row" rowGap={2} columnGap={2} width="100%">
+          <Button
+            variant="text"
+            color="primary"
+            fullWidth
+            component={RouterLink}
+            to={`../${LOGIN_ROUTE}`}
           >
-            <Button
-              variant="text"
-              color="primary"
-              fullWidth
-              component={RouterLink}
-              to={`../${LOGIN_ROUTE}`}
-            >
-              Revenir à
-              {isAuthenticated ? (
-                <>&nbsp;l'espace administrateur</>
-              ) : (
-                <>&nbsp;la&nbsp;page de&nbsp;connexion</>
-              )}
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              type="submit"
-              disabled={
-                submitting || !!newPasswordError || !!confirmPasswordError
-              }
-            >
-              {submitting ? "Réinitialisation..." : "Réinitialiser"}
-            </Button>
-          </ResponsiveStack>
+            Revenir à
+            {isAuthenticated ? (
+              <>&nbsp;l'espace administrateur</>
+            ) : (
+              <>&nbsp;la&nbsp;page de&nbsp;connexion</>
+            )}
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            type="submit"
+            disabled={
+              submitting || !!newPasswordError || !!confirmPasswordError
+            }
+          >
+            {submitting ? "Réinitialisation..." : "Réinitialiser"}
+          </Button>
         </ResponsiveStack>
-      </ResponsivePaper>
-    </RootPaper>
+      </ResponsiveStack>
+    </AuthLayout>
   );
 }

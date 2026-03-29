@@ -1,5 +1,5 @@
 import type { NewPasswordFieldsProps } from "../types/baseComponent";
-import PasswordField from "./passwordField";
+import PasswordField from "./custom/passwordField";
 
 /**
  * Composant pour les champs de saisie du nouveau mot de passe et de sa confirmation.

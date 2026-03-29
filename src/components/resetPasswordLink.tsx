@@ -1,5 +1,5 @@
 import { Link } from "@mui/material";
-import ResponsiveBodyTypography from "./responsiveBodyTypography";
+import ResponsiveBodyTypography from "./custom/responsiveBodyTypography";
 
 /**
  * Composant de lien pour la réinitialisation du mot de passe.

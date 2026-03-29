@@ -2,7 +2,7 @@ import { IconButton, InputAdornment, TextField } from "@mui/material";
 import Icon from "@mdi/react";
 import { mdiEyeOff, mdiEye } from "@mdi/js";
 import { useState } from "react";
-import type { PasswordFieldProps } from "../types/baseComponent";
+import type { PasswordFieldProps } from "../../types/baseComponent";
 
 /**
  * Composant de champ de mot de passe avec option d'affichage du mot de passe.

@@ -3,8 +3,8 @@ import Box, { type BoxProps } from "@mui/material/Box";
 import Stack, { type StackProps } from "@mui/material/Stack";
 import Paper, { type PaperProps } from "@mui/material/Paper";
 import ImageList, { type ImageListProps } from "@mui/material/ImageList";
-import type { ResponsiveLayoutProps } from "../types/responsiveTypes";
-import { getResponsiveSx } from "../utils/responsiveUtils";
+import type { ResponsiveLayoutProps } from "../../types/responsiveTypes";
+import { getResponsiveSx } from "../../utils/responsiveUtils";
 
 /**
  * Composant générique pour appliquer un layout responsive à n'importe quel composant MUI

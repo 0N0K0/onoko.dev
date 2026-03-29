@@ -1,5 +1,5 @@
 import { Toolbar } from "@mui/material";
-import ResponsiveBodyTypography from "../../components/responsiveBodyTypography";
+import ResponsiveBodyTypography from "../../components/custom/responsiveBodyTypography";
 
 /**
  * Pied de page pour les pages publiques, affichant un message de copyright.

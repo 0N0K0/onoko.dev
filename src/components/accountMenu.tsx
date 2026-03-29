@@ -7,10 +7,10 @@ import {
   ListItemText,
   MenuItem,
 } from "@mui/material";
-import CustomDialog from "./customDialog";
+import CustomDialog from "./custom/customDialog";
 import { Link, useLocation } from "react-router";
 import { useState } from "react";
-import CustomMenu from "./customMenu";
+import CustomMenu from "./custom/customMenu";
 
 export default function AccountMenu() {
   const [logoutConfirm, setLogoutConfirm] = useState(false);

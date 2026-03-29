@@ -6,7 +6,7 @@ import AccountMenu from "../../components/accountMenu";
 import { IconButton, MenuItem } from "@mui/material";
 import Icon from "@mdi/react";
 import { mdiHome } from "@mdi/js";
-import CustomMenu from "../../components/customMenu";
+import CustomMenu from "../../components/custom/customMenu";
 
 /**
  * Entête de l'espace admin, avec des liens vers les différentes sections et la déconnexion.

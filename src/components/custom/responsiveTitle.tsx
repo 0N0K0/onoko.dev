@@ -1,7 +1,7 @@
 import Typography from "@mui/material/Typography";
-import { verticalMediaQuery } from "../theme";
+import { verticalMediaQuery } from "../../theme";
 import { useTheme } from "@mui/material";
-import type { ResponsiveTitleProps } from "../types/responsiveTypes";
+import type { ResponsiveTitleProps } from "../../types/responsiveTypes";
 
 /**
  * Composant de typographie pour les titres avec une taille de police responsive.

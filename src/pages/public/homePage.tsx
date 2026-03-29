@@ -1,7 +1,7 @@
 import { useTheme } from "@mui/material";
-import ResponsiveTitle from "../../components/responsiveTitle";
-import ResponsiveBodyTypography from "../../components/responsiveBodyTypography";
-import { ResponsivePaper } from "../../components/ResponsiveLayout";
+import ResponsiveTitle from "../../components/custom/responsiveTitle";
+import ResponsiveBodyTypography from "../../components/custom/responsiveBodyTypography";
+import { ResponsivePaper } from "../../components/custom/responsiveLayout";
 
 /**
  * Page d'accueil publique du site.

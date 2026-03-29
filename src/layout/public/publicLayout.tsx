@@ -1,7 +1,7 @@
 import PublicHeader from "./publicHeader";
 import PublicFooter from "./publicFooter";
 import RootPaper from "../rootPaper";
-import { ResponsivePaper } from "../../components/ResponsiveLayout";
+import { ResponsivePaper } from "../../components/custom/responsiveLayout";
 import { useAuth } from "../../hooks/useAuth";
 import AdminHeader from "../admin/adminHeader";
 

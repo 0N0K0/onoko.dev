@@ -1,12 +1,12 @@
 import { Button, CircularProgress, Container, TextField } from "@mui/material";
-import ResponsiveTitle from "../../components/responsiveTitle";
+import ResponsiveTitle from "../../components/custom/responsiveTitle";
 import { useState, useEffect } from "react";
-import { ResponsiveStack } from "../../components/ResponsiveLayout";
-import PasswordField from "../../components/passwordField";
+import { ResponsiveStack } from "../../components/custom/responsiveLayout";
+import PasswordField from "../../components/custom/passwordField";
 import ResetPasswordLink from "../../components/resetPasswordLink";
 import NewPasswordFields from "../../components/newPasswordFields";
-import ClosableSnackbar from "../../components/closableSnackbar";
-import CustomSnackbar from "../../components/customSnackBar";
+import ClosableSnackbar from "../../components/custom/closableSnackbar";
+import CustomSnackbar from "../../components/custom/customSnackBar";
 
 /**
  * Page de gestion du compte utilisateur dans l'espace admin.
