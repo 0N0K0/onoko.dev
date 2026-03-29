@@ -1,5 +1,5 @@
-import { API_URL, LOGIN_ROUTE } from "../constants/apiConstants";
-import { joinUrl } from "../utils/urlUtils";
+import apolloClient from "./appolloClient";
+import { LOGIN_MUTATION } from "./authMutations";
 
 /**
  * Service d'authentification pour gérer les interactions avec l'API d'authentification.
@@ -11,27 +11,15 @@ export async function loginApi(
   password: string,
 ): Promise<string> {
   try {
-    const response = await fetch(joinUrl(API_URL, LOGIN_ROUTE), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ login, password }),
+    const { data } = await apolloClient.mutate<{ login: { token: string } }>({
+      mutation: LOGIN_MUTATION,
+      variables: { login, password },
     });
-    if (!response.ok) {
-      throw new Error("Échec de l'authentification");
+    if (!data?.login?.token) {
+      throw new Error("Token manquant dans la réponse GraphQL");
     }
-    const data = await response.json();
-    if (!data.token) {
-      throw new Error("Token manquant dans la réponse");
-    }
-    return data.token;
+    return data.login.token;
   } catch (err: any) {
-    if (err instanceof TypeError && err.message === "Failed to fetch") {
-      throw new Error(
-        "Impossible de contacter l'API. Vérifiez que le serveur est bien démarré et que CORS est autorisé.",
-      );
-    }
-    throw err;
+    throw new Error(err.message || "Erreur inconnue lors du login GraphQL");
   }
 }

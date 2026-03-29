@@ -1,6 +1,11 @@
 import { createContext, useEffect, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginApi } from "../services/authService";
+import apolloClient from "../services/appolloClient";
+import {
+  VERIFY_TOKEN_MUTATION,
+  REFRESH_TOKEN_MUTATION,
+} from "../services/authMutations";
 import type { AuthContextType } from "../types/authTypes";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -58,22 +63,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         setTokenExp(null);
       }
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
-      const url = new URL("/verify-token", apiUrl).href;
-      const res = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      // Vérification du token via GraphQL
+      const { data } = await apolloClient.mutate<{ verifyToken: boolean }>({
+        mutation: VERIFY_TOKEN_MUTATION,
+        variables: { token },
       });
-      if (res.ok) {
+      if (data && typeof data.verifyToken === "boolean" && data.verifyToken) {
         setIsAuthenticated(true);
-        try {
-          const data = await res.json();
-          setUser(data.user || null);
-        } catch {
-          setUser(null);
-        }
+        setUser(null); // Pas d'info user dans la réponse
         return true;
       } else {
         setIsAuthenticated(false);
@@ -161,19 +158,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         timeLeft < 5 * 60 &&
         timeLeft > 0
       ) {
-        // Appel API pour rafraîchir le token (supposé route /refresh-token)
-        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000";
-        const url = new URL("/refresh-token", apiUrl).href;
-        const res = await fetch(url, {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
+        // Rafraîchir le token via GraphQL
+        const { data } = await apolloClient.mutate<{
+          refreshToken: { token: string };
+        }>({
+          mutation: REFRESH_TOKEN_MUTATION,
+          variables: { token },
         });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.token) {
-            localStorage.setItem("token", data.token);
-            await checkAuth();
-          }
+        if (data && data.refreshToken && data.refreshToken.token) {
+          localStorage.setItem("token", data.refreshToken.token);
+          await checkAuth();
         }
       }
     } catch {}
