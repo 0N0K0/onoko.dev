@@ -51,12 +51,14 @@ const baseTheme = createTheme({
   typography: {
     fontSize: 16,
     htmlFontSize: 16,
-    h1: { fontSize: "5rem", lineHeight: 1.2 },
-    h2: { fontSize: "4rem", lineHeight: 1.125 },
-    h3: { fontSize: "3rem", lineHeight: 1 },
-    h4: { fontSize: "2.5rem", lineHeight: 1.2 },
-    h5: { fontSize: "2rem", lineHeight: 1.5 },
-    h6: { fontSize: "1.5rem", lineHeight: 1 },
+    h1: { fontSize: "5rem", lineHeight: 1.2, letterSpacing: "normal" },
+    h2: { fontSize: "4rem", lineHeight: 1.125, letterSpacing: "normal" },
+    h3: { fontSize: "3rem", lineHeight: 1, letterSpacing: "normal" },
+    h4: { fontSize: "2.5rem", lineHeight: 1.2, letterSpacing: "normal" },
+    h5: { fontSize: "2rem", lineHeight: 1.5, letterSpacing: "normal" },
+    h6: { fontSize: "1.5rem", lineHeight: 1, letterSpacing: "normal" },
+    body1: { fontSize: "1rem", lineHeight: 1.5, letterSpacing: "normal" },
+    body2: { fontSize: "0.75rem", lineHeight: 2, letterSpacing: "normal" },
     bodyLg: { fontSize: "2rem", lineHeight: 1.5 },
     bodyMd: { fontSize: "1.25rem", lineHeight: 1.2 },
     bodySm: { fontSize: "1rem", lineHeight: 1.5 },
@@ -256,6 +258,42 @@ const baseTheme = createTheme({
             marginLeft: "0px",
             marginRight: "0px",
           },
+        },
+      },
+    },
+    MuiMenu: {
+      styleOverrides: {
+        paper: {
+          borderRadius: "4px",
+        },
+        list: {
+          padding: "0px",
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          fontSize: "1rem",
+          lineHeight: 1.5,
+          letterSpacing: "normal",
+          gap: "8px",
+        },
+      },
+    },
+    MuiListItemIcon: {
+      styleOverrides: {
+        root: {
+          minWidth: "0px !important",
+        },
+      },
+    },
+    MuiListItemText: {
+      styleOverrides: {
+        root: {
+          fontSize: "1rem",
+          lineHeight: 1.5,
+          letterSpacing: "normal",
         },
       },
     },

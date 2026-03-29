@@ -1,13 +1,12 @@
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import Button from "@mui/material/Button";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import CustomDialog from "../../components/customDialog";
 import AccountMenu from "../../components/accountMenu";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { IconButton, MenuItem } from "@mui/material";
 import Icon from "@mdi/react";
 import { mdiHome } from "@mdi/js";
+import CustomMenu from "../../components/customMenu";
 
 /**
  * Entête de l'espace admin, avec des liens vers les différentes sections et la déconnexion.
@@ -25,11 +24,12 @@ export default function AdminHeader() {
         >
           <Icon path={mdiHome} size={1} />
         </IconButton>
-        <Menu
-          id="account-menu"
+        <CustomMenu
+          id="home-menu"
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
+          PaperProps={{ sx: { mt: "4px" } }}
         >
           <MenuItem
             component={Link}
@@ -47,7 +47,7 @@ export default function AdminHeader() {
           >
             Tableau de bord
           </MenuItem>
-        </Menu>
+        </CustomMenu>
         <AccountMenu />
       </Toolbar>
     </AppBar>

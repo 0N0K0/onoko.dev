@@ -1,9 +1,16 @@
-import { mdiAccount } from "@mdi/js";
+import { mdiAccount, mdiAccountCog, mdiLogout } from "@mdi/js";
 import Icon from "@mdi/react";
-import { Button, IconButton, Menu, MenuItem } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+} from "@mui/material";
 import CustomDialog from "./customDialog";
 import { Link, useLocation } from "react-router";
 import { useState } from "react";
+import CustomMenu from "./customMenu";
 
 export default function AccountMenu() {
   const [logoutConfirm, setLogoutConfirm] = useState(false);
@@ -19,11 +26,12 @@ export default function AccountMenu() {
       <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} color="inherit">
         <Icon path={mdiAccount} size={1} />
       </IconButton>
-      <Menu
+      <CustomMenu
         id="account-menu"
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
+        PaperProps={{ sx: { mt: "4px" } }}
       >
         <MenuItem
           component={Link}
@@ -31,12 +39,18 @@ export default function AccountMenu() {
           onClick={() => setAnchorEl(null)}
           selected={location.pathname === "/admin/account"}
         >
-          Mon compte
+          <ListItemIcon>
+            <Icon path={mdiAccountCog} size={1} />
+          </ListItemIcon>
+          <ListItemText>Mon compte</ListItemText>
         </MenuItem>
         <MenuItem onClick={() => setLogoutConfirm(true)}>
-          Me déconnecter
+          <ListItemIcon>
+            <Icon path={mdiLogout} size={1} />
+          </ListItemIcon>
+          <ListItemText>Me déconnecter</ListItemText>
         </MenuItem>
-      </Menu>
+      </CustomMenu>
       <CustomDialog
         open={logoutConfirm}
         onClose={handleCloseDialog}

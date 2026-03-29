@@ -8,8 +8,10 @@ import ResponsiveBodyTypography from "./responsiveBodyTypography";
 export default function ResetPasswordLink() {
   return (
     <ResponsiveBodyTypography variant="bodyXs">
-      Mot de passe oublié ?{" "}
-      <Link href="/request-reset-password">Réinitialiser mon mot de passe</Link>
+      Mot&nbsp;de&nbsp;passe&nbsp;oublié&nbsp;?{" "}
+      <Link href="/request-reset-password">
+        Réinitialiser&nbsp;mon&nbsp;mot&nbsp;de&nbsp;passe
+      </Link>
     </ResponsiveBodyTypography>
   );
 }
