@@ -5,7 +5,9 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import NewPasswordFields from "../../components/newPasswordFields";
 import { Link as RouterLink } from "react-router-dom";
-import { API_URL, LOGIN_ROUTE } from "../../constants/apiConstants";
+import { LOGIN_ROUTE } from "../../constants/apiConstants";
+import apolloClient from "../../services/appolloClient";
+import { RESET_PASSWORD_MUTATION } from "../../services/accountMutations";
 import { useAuth } from "../../hooks/useAuth";
 import ClosableSnackbar from "../../components/custom/closableSnackbar";
 import CustomSnackbar from "../../components/custom/customSnackBar";
@@ -30,23 +32,16 @@ export default function ResetPassword() {
   const [submitting, setSubmitting] = useState(false);
 
   // Gère la soumission du formulaire de réinitialisation, en envoyant une requête au backend avec le token et le nouveau mot de passe, et en gérant les réponses pour afficher les messages appropriés.
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setSubmitError("");
     setSubmitSuccess(false);
     setSubmitting(true);
     try {
-      const res = await fetch(`${API_URL}/auth/reset/confirm`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, newPassword }),
+      await apolloClient.mutate({
+        mutation: RESET_PASSWORD_MUTATION,
+        variables: { token, newPassword },
       });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(
-          data.message || "Échec de la réinitialisation du mot de passe",
-        );
-      }
       setSubmitSuccess(true);
     } catch (e: any) {
       setSubmitError(e.message || "Erreur inconnue");

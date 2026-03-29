@@ -1,6 +1,9 @@
 import { Button, CircularProgress, Container, TextField } from "@mui/material";
 import ResponsiveTitle from "../../components/custom/responsiveTitle";
 import { useState, useEffect } from "react";
+import apolloClient from "../../services/appolloClient";
+import { ACCOUNT_QUERY } from "../../services/accountQueries";
+import { UPDATE_ACCOUNT_MUTATION } from "../../services/accountMutations";
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
 import PasswordField from "../../components/custom/passwordField";
 import ResetPasswordLink from "../../components/resetPasswordLink";
@@ -35,31 +38,33 @@ export default function Account() {
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
   const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
 
+  const fetchUserInfo = async () => {
+    setLoadingUser(true);
+    setUserError("");
+    try {
+      const { data } = await apolloClient.query<{
+        account: { login: string; email: string };
+      }>({
+        query: ACCOUNT_QUERY,
+        fetchPolicy: "no-cache",
+      });
+      if (!data || !data.account)
+        throw new Error("Erreur lors de la récupération du compte");
+      setLogin(data.account.login || "");
+      setEmail(data.account.email || "");
+      setInitialUser({
+        login: data.account.login || "",
+        email: data.account.email || "",
+      });
+    } catch (e: any) {
+      setUserError(e.message || "Erreur inconnue");
+    } finally {
+      setLoadingUser(false);
+    }
+  };
+
   // Récupération des informations du compte à l'affichage de la page, avec gestion du chargement et des erreurs.
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      setLoadingUser(true);
-      setUserError("");
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) throw new Error("Token manquant");
-        const res = await fetch("http://localhost:4000/account", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!res.ok)
-          throw new Error("Erreur lors de la récupération du compte");
-        const data = await res.json();
-        setLogin(data.login || "");
-        setEmail(data.email || "");
-        setInitialUser({ login: data.login || "", email: data.email || "" });
-      } catch (e: any) {
-        setUserError(e.message || "Erreur inconnue");
-      } finally {
-        setLoadingUser(false);
-      }
-    };
     fetchUserInfo();
   }, []);
 
@@ -77,27 +82,27 @@ export default function Account() {
     setSubmitting(true);
     try {
       if (!initialUser) throw new Error("Utilisateur non chargé");
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Token manquant");
-      const payload: any = { oldPassword: currentPassword };
-      if (login !== initialUser.login) payload.login = login;
-      if (email !== initialUser.email) payload.email = email;
-      if (newPassword) payload.newPassword = newPassword;
-      const res = await fetch("http://localhost:4000/account", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
+      const variables: any = { oldPassword: currentPassword };
+      if (login !== initialUser.login) variables.login = login;
+      if (email !== initialUser.email) variables.email = email;
+      if (newPassword) variables.newPassword = newPassword;
+      const { data } = await apolloClient.mutate<{
+        updateAccount: { login: string; email: string };
+      }>({
+        mutation: UPDATE_ACCOUNT_MUTATION,
+        variables,
       });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Échec de la mise à jour");
+      if (!data || !data.updateAccount) {
+        throw new Error("Échec de la mise à jour");
       }
       setSubmitSuccess(true);
-      // Mettre à jour l'état initial pour refléter les nouvelles valeurs
-      setInitialUser({ login, email });
+      // Mettre à jour l'état initial pour refléter les nouvelles valeurs retournées
+      setInitialUser({
+        login: data.updateAccount.login,
+        email: data.updateAccount.email,
+      });
+      setLogin(data.updateAccount.login);
+      setEmail(data.updateAccount.email);
       setNewPassword("");
       setConfirmPassword("");
       setCurrentPassword("");

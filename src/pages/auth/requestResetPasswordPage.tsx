@@ -2,7 +2,9 @@ import { TextField, Button } from "@mui/material";
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
 import ResponsiveTitle from "../../components/custom/responsiveTitle";
 import { Link as RouterLink } from "react-router-dom";
-import { API_URL, LOGIN_ROUTE } from "../../constants/apiConstants";
+import { LOGIN_ROUTE } from "../../constants/apiConstants";
+import apolloClient from "../../services/appolloClient";
+import { REQUEST_PASSWORD_RESET_MUTATION } from "../../services/accountMutations";
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import CustomSnackbar from "../../components/custom/customSnackBar";
@@ -24,22 +26,15 @@ export default function RequestResetPassword() {
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
 
   // Gère la soumission du formulaire de réinitialisation, en envoyant une requête au backend avec le token et le nouveau mot de passe, et en gérant les réponses pour afficher les messages appropriés.
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setSubmitError("");
     setSubmitting(true);
     try {
-      const res = await fetch(`${API_URL}/auth/reset`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+      await apolloClient.mutate({
+        mutation: REQUEST_PASSWORD_RESET_MUTATION,
+        variables: { email },
       });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(
-          data.message || "Échec de la demande de réinitialisation",
-        );
-      }
       setSuccessSnackbarOpen(true);
     } catch (e: any) {
       setSubmitError(e.message || "Erreur inconnue");
