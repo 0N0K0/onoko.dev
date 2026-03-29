@@ -278,6 +278,7 @@ const baseTheme = createTheme({
           lineHeight: 1.5,
           letterSpacing: "normal",
           gap: "8px",
+          padding: "12px 16px",
         },
       },
     },
