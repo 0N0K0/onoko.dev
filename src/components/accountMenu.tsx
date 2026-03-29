@@ -23,15 +23,18 @@ export default function AccountMenu() {
 
   return (
     <>
-      <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} color="inherit">
-        <Icon path={mdiAccount} size={1} />
+      <IconButton
+        onClick={(e) => setAnchorEl(e.currentTarget)}
+        color="inherit"
+        size="adminMenu"
+      >
+        <Icon path={mdiAccount} size="1rem" />
       </IconButton>
       <CustomMenu
         id="account-menu"
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
-        PaperProps={{ sx: { mt: "4px" } }}
       >
         <MenuItem
           component={Link}

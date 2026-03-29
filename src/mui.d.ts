@@ -31,3 +31,9 @@ declare module "@mui/material/Typography" {
     bodyXs: true;
   }
 }
+
+declare module "@mui/material/IconButton" {
+  interface IconButtonPropsSizeOverrides {
+    adminMenu: true;
+  }
+}

@@ -16,6 +16,7 @@ export default function RootPaper({
   return (
     <ResponsivePaper
       style={{
+        position: "relative",
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",

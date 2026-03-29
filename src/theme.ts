@@ -163,6 +163,18 @@ const baseTheme = createTheme({
           "& .MuiSvgIcon-root": {
             fontSize: "inherit",
           },
+          variants: [
+            {
+              props: { size: "adminMenu" },
+              style: {
+                minWidth: "0px !important",
+                fontSize: "1rem",
+                lineHeight: 1,
+                letterSpacing: "normal",
+                padding: "4px",
+              },
+            },
+          ],
         },
       },
     },

@@ -16,20 +16,22 @@ export default function AdminHeader() {
   const location = useLocation();
 
   return (
-    <AppBar position="static" elevation={1}>
-      <Toolbar>
+    <AppBar position="sticky" elevation={1}>
+      <Toolbar
+        sx={{ minHeight: "0px !important", justifyContent: "space-between" }}
+      >
         <IconButton
+          size="adminMenu"
           onClick={(e) => setAnchorEl(e.currentTarget)}
           color="inherit"
         >
-          <Icon path={mdiHome} size={1} />
+          <Icon path={mdiHome} size="1rem" />
         </IconButton>
         <CustomMenu
           id="home-menu"
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
-          PaperProps={{ sx: { mt: "4px" } }}
         >
           <MenuItem
             component={Link}

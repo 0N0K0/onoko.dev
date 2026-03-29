@@ -2,6 +2,8 @@ import PublicHeader from "./publicHeader";
 import PublicFooter from "./publicFooter";
 import RootPaper from "../rootPaper";
 import { ResponsivePaper } from "../../components/ResponsiveLayout";
+import { useAuth } from "../../hooks/useAuth";
+import AdminHeader from "../admin/adminHeader";
 
 /**
  * Layout principal pour les pages publiques (accueil, connexion, etc.).
@@ -12,8 +14,11 @@ export default function PublicLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { isAuthenticated } = useAuth();
+
   return (
     <RootPaper>
+      {isAuthenticated ? <AdminHeader /> : null}
       <PublicHeader />
       <ResponsivePaper
         component="main"

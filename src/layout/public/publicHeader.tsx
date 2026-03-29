@@ -2,7 +2,6 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import { Link as RouterLink } from "react-router-dom";
-import AccountMenu from "../../components/accountMenu";
 import { useAuth } from "../../hooks/useAuth";
 
 /**
@@ -13,24 +12,15 @@ export default function PublicHeader() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <AppBar position="static" elevation={1}>
+    <AppBar
+      position="sticky"
+      sx={{ top: isAuthenticated ? "24px" : "0" }}
+      elevation={1}
+    >
       <Toolbar>
         <Button variant="text" color="inherit" component={RouterLink} to="/">
           Accueil
         </Button>
-        {isAuthenticated && (
-          <>
-            <Button
-              variant="text"
-              color="inherit"
-              component={RouterLink}
-              to="/admin"
-            >
-              Espace Admin
-            </Button>
-            <AccountMenu />
-          </>
-        )}
       </Toolbar>
     </AppBar>
   );

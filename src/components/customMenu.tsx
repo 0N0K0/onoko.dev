@@ -9,7 +9,7 @@ export default function CustomMenu(props: MenuProps & { PaperProps?: any }) {
     },
   };
   return (
-    <Menu {...props} slotProps={slotProps}>
+    <Menu marginThreshold={8} {...props} slotProps={slotProps}>
       {props.children}
     </Menu>
   );
