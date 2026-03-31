@@ -107,7 +107,7 @@ export default function Account() {
       setConfirmPassword("");
       setCurrentPassword("");
     } catch (e: any) {
-      setSubmitError(e.message || "Erreur inconnue");
+      setSubmitError(e.message || "Une erreur est survenue");
       setSubmitSuccess(false);
     } finally {
       setSubmitting(false);
@@ -133,7 +133,7 @@ export default function Account() {
       />
       <CustomSnackbar
         open={errorSnackbarOpen}
-        message={userError || submitError || "Erreur inconnue"}
+        message={userError || submitError || "Une erreur est survenue"}
         severity="error"
       />
       {loadingUser ? (

@@ -15,7 +15,7 @@ export default function CustomDialog({
 }: {
   open: boolean;
   onClose?: () => void;
-  content: string;
+  content: React.ReactNode;
   title?: string;
   actions?: React.ReactNode;
 }) {
@@ -27,7 +27,11 @@ export default function CustomDialog({
     >
       {title && <DialogTitle>{title}</DialogTitle>}
       <DialogContent>
-        <DialogContentText>{content}</DialogContentText>
+        {typeof content === "string" ? (
+          <DialogContentText>{content}</DialogContentText>
+        ) : (
+          content
+        )}
       </DialogContent>
       {actions && <DialogActions>{actions}</DialogActions>}
     </Dialog>
