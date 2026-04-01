@@ -1,3 +1,4 @@
+import { c } from "@apollo/client/react/internal/compiler-runtime";
 import { createTheme, type Theme } from "@mui/material/styles";
 
 // Breakpoints verticaux basés sur la hauteur de l'écran, en complément des breakpoints horizontaux classiques.
@@ -29,6 +30,16 @@ export const verticalMediaQuery = (
 
 // Thème personnalisé pour l'application, basé sur le thème sombre de Material-UI avec des couleurs et des typographies adaptées.
 const baseTheme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 496,
+      md: 720,
+      lg: 1056,
+      xl: 1392,
+      xxl: 1920,
+    },
+  },
   palette: {
     mode: "dark",
     background: {
@@ -48,6 +59,9 @@ const baseTheme = createTheme({
       900: "#17181C",
     },
   },
+  shape: {
+    borderRadius: "8px",
+  },
   typography: {
     fontSize: 16,
     htmlFontSize: 16,
@@ -63,19 +77,6 @@ const baseTheme = createTheme({
     bodyMd: { fontSize: "1.25rem", lineHeight: 1.2 },
     bodySm: { fontSize: "1rem", lineHeight: 1.5 },
     bodyXs: { fontSize: "0.75rem", lineHeight: 2 },
-  },
-  shape: {
-    borderRadius: "8px",
-  },
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 496,
-      md: 720,
-      lg: 1056,
-      xl: 1392,
-      xxl: 1920,
-    },
   },
   components: {
     MuiToolbar: {
@@ -313,7 +314,57 @@ const baseTheme = createTheme({
   },
 });
 
-// Ajout de formes personnalisées au thème pour une plus grande flexibilité dans les styles des composants.
+// Ajout de tailles calculées personnalisées
+const sizes = () => {
+  const rootPaddingY = "24px";
+  const rootPaddingX = "32px";
+  const columnGap = "16px";
+  const rowGap = "24px";
+  const rootWidth = `calc(100dvw - ${rootPaddingX} * 2)`;
+  const divisions = {
+    xs: 3,
+    sm: 4,
+    md: 6,
+    lg: 9,
+    xl: 12,
+    xxl: 12,
+  };
+  const columnWidth = (
+    division: number,
+    columns: number,
+    baseWidth: string = rootWidth,
+  ) => {
+    const totalColumnGap =
+      columns > 1 ? `calc(${columnGap} * ${columns - 1})` : "0px";
+    if (columns < 1) return "100dvw";
+    return `calc((${baseWidth} - ${totalColumnGap}) / ${division} * ${columns})`;
+  };
+  const colCounts = Array.from({ length: 11 }, (_, i) => i + 2);
+  const colSizes = Object.fromEntries(
+    colCounts.map((n) => [
+      `${n}col`,
+      Object.fromEntries(
+        Object.entries(divisions).map(([breakpoint, cols]) => [
+          breakpoint,
+          columnWidth(cols, n),
+        ]),
+      ),
+    ]),
+  );
+
+  return {
+    adminHeaderHeight: "24px",
+    rootPaddingY,
+    rootPaddingX,
+    rowGap,
+    columnGap,
+    rootWidth,
+    ...colSizes,
+    columnWidth,
+  };
+};
+
+// Ajout des formes personnalisées
 const customShapes = {
   borderRadiusXs: "2px",
   borderRadiusSm: "4px",
@@ -324,6 +375,9 @@ const customShapes = {
   borderRadiusFull: "9999px",
 };
 Object.assign(baseTheme.shape, customShapes);
+
+// Injection des tailles personnalisées dans le thème
+(baseTheme as any).sizes = sizes;
 
 const theme = baseTheme as Theme;
 

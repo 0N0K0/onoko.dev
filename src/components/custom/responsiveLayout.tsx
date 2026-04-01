@@ -5,6 +5,7 @@ import Paper, { type PaperProps } from "@mui/material/Paper";
 import ImageList, { type ImageListProps } from "@mui/material/ImageList";
 import type { ResponsiveLayoutProps } from "../../types/responsiveTypes";
 import { getResponsiveSx } from "../../utils/responsiveUtils";
+import { Drawer, type DrawerProps } from "@mui/material";
 
 /**
  * Composant générique pour appliquer un layout responsive à n'importe quel composant MUI
@@ -30,4 +31,5 @@ export function ResponsiveLayout<ComponentProps extends { sx?: any }>(
 export const ResponsiveBox = ResponsiveLayout<BoxProps>(Box);
 export const ResponsiveStack = ResponsiveLayout<StackProps>(Stack);
 export const ResponsivePaper = ResponsiveLayout<PaperProps>(Paper);
+export const ResponsiveDrawer = ResponsiveLayout<DrawerProps>(Drawer); // Utiliser Box pour Drawer car Drawer n'est pas un composant MUI standard
 export const ResponsiveImageList = ResponsiveLayout<ImageListProps>(ImageList);
