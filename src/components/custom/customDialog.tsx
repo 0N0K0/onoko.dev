@@ -5,6 +5,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { useResponsiveWidth } from "../../hooks/useResponsiveWidth";
 
 export default function CustomDialog({
   open,
@@ -19,11 +20,17 @@ export default function CustomDialog({
   title?: string;
   actions?: React.ReactNode;
 }) {
+  const dialogWidth = useResponsiveWidth(4);
   return (
     <Dialog
       open={open}
       onClose={onClose}
       slotProps={{ paper: { elevation: 1 } }}
+      sx={{
+        "& .MuiDialog-paper": {
+          width: dialogWidth,
+        },
+      }}
     >
       {title && <DialogTitle>{title}</DialogTitle>}
       <DialogContent>
@@ -33,7 +40,13 @@ export default function CustomDialog({
           content
         )}
       </DialogContent>
-      {actions && <DialogActions>{actions}</DialogActions>}
+      {actions && (
+        <DialogActions
+          sx={{ flexWrap: "wrap-reverse", rowGap: 0, columnGap: 1 }}
+        >
+          {actions}
+        </DialogActions>
+      )}
     </Dialog>
   );
 }

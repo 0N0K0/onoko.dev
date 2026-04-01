@@ -18,13 +18,14 @@ export function ResponsiveLayout<ComponentProps extends { sx?: any }>(
   Component: React.ElementType,
 ) {
   return React.forwardRef<any, ResponsiveLayoutProps<ComponentProps>>(
-    ({ marginY, paddingY, rowGap, sx, ...props }) => {
+    (props, ref) => {
+      let { marginY, paddingY, rowGap, sx, ...rest } = props;
       if (typeof marginY === "number") marginY = `${marginY * 8}px`;
       if (typeof paddingY === "number") paddingY = `${paddingY * 8}px`;
       if (typeof rowGap === "number") rowGap = `${rowGap * 8}px`;
       const responsiveSx = getResponsiveSx({ marginY, paddingY, rowGap });
-      return <Component {...props} sx={{ ...sx, ...responsiveSx }} />;
-    },
+      return <Component ref={ref} {...rest} sx={{ ...sx, ...responsiveSx }} />;
+    }
   );
 }
 

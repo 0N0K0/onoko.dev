@@ -226,9 +226,9 @@ const baseTheme = createTheme({
       styleOverrides: {
         paper: {
           borderRadius: "8px",
-          padding: "24px 16px",
-          margin: "48px 32px",
-          gap: "12px",
+          padding: "24px 32px",
+          margin: "24px auto",
+          gap: "24px",
         },
       },
     },

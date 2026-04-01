@@ -68,10 +68,19 @@ export default function AccountMenu() {
         content="Vous devrez vous reconnecter pour accéder à nouveau à l'espace administrateur."
         actions={
           <>
-            <Button variant="text" onClick={handleCloseDialog}>
+            <Button
+              variant="text"
+              onClick={handleCloseDialog}
+              sx={{ flex: "1 1 208px" }}
+            >
               Annuler
             </Button>
-            <Button component={Link} to="/logout" onClick={handleCloseDialog}>
+            <Button
+              component={Link}
+              to="/logout"
+              onClick={handleCloseDialog}
+              sx={{ flex: "1 1 208px" }}
+            >
               Me déconnecter
             </Button>
           </>

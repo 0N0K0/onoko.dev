@@ -4,13 +4,18 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  useTheme,
 } from "@mui/material";
 import { ResponsiveDrawer } from "../../components/custom/responsiveLayout";
 import { useResponsiveWidth } from "../../hooks/useResponsiveWidth";
 import Icon from "@mdi/react";
 import { mdiAccountCog, mdiTag, mdiViewDashboard } from "@mdi/js";
 
+/**
+ * Sidebar pour la partie admin, affichée uniquement sur les écrans md et plus grands
+ */
 export default function AdminSidebar() {
+  const theme = useTheme();
   const drawerWidth = useResponsiveWidth(2);
   return (
     <ResponsiveDrawer
@@ -21,12 +26,12 @@ export default function AdminSidebar() {
         width: drawerWidth,
         position: "sticky",
         top: 0,
-        height: "100vh",
+        height: `calc(100vh - ${theme.sizes.adminHeaderHeight})`,
         overflowY: "auto",
         "& .MuiPaper-root": {
           width: drawerWidth,
           position: "relative",
-          height: "100vh",
+          height: `calc(100vh - ${theme.sizes.adminHeaderHeight})`,
           boxSizing: "border-box",
           overflowY: "auto",
         },

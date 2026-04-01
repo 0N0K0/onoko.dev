@@ -15,7 +15,6 @@ const httpLink = createHttpLink({
 // Middleware pour ajouter le JWT à chaque requête
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem("token");
-  console.log("Apollo Client - Token:", token); // Debug: Affiche le token récupéré
   return {
     headers: {
       ...headers,

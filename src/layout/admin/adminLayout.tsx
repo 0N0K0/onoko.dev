@@ -2,7 +2,7 @@ import AdminHeader from "./adminHeader";
 import RootPaper from "../rootPaper";
 import { ResponsivePaper } from "../../components/custom/responsiveLayout";
 import AdminSidebar from "./adminSidebar";
-import { Container } from "@mui/material";
+import { Container, useTheme } from "@mui/material";
 
 /**
  * Layout principal de l'espace admin, avec une entête et une zone de contenu.
@@ -13,6 +13,7 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const theme = useTheme();
   return (
     <RootPaper>
       <AdminHeader />
@@ -36,6 +37,7 @@ export default function AdminLayout({
             flexDirection: "column",
             paddingX: 4,
             alignItems: "center",
+            height: `calc(100vh - ${theme.sizes.adminHeaderHeight})`,
           }}
           square
           elevation={0}
