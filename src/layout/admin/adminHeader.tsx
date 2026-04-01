@@ -1,7 +1,7 @@
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import AccountMenu from "../../components/account/accountMenu";
-import HomeMenu from "../../components/homeMenu";
+import HomeMenu from "../../components/admin/homeMenu";
 import { IconButton } from "@mui/material";
 import Icon from "@mdi/react";
 import { mdiTag } from "@mdi/js";

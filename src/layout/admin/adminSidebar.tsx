@@ -7,7 +7,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { ResponsiveDrawer } from "../../components/custom/responsiveLayout";
-import { useResponsiveWidth } from "../../hooks/useResponsiveWidth";
+import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 import Icon from "@mdi/react";
 import { mdiAccountCog, mdiTag, mdiViewDashboard } from "@mdi/js";
 

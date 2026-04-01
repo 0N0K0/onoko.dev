@@ -5,7 +5,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import { useResponsiveWidth } from "../../hooks/useResponsiveWidth";
+import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 
 export default function CustomDialog({
   open,

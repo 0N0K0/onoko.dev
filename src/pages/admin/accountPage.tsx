@@ -10,7 +10,7 @@ import ResetPasswordLink from "../../components/account/resetPasswordLink";
 import NewPasswordFields from "../../components/account/newPasswordFields";
 import ClosableSnackbarAlert from "../../components/custom/closableSnackbarAlert";
 import SnackbarAlert from "../../components/custom/snackbarAlert";
-import { useResponsiveWidth } from "../../hooks/useResponsiveWidth";
+import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 
 /**
  * Page de gestion du compte utilisateur dans l'espace admin.

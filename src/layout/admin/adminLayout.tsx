@@ -2,8 +2,8 @@ import AdminHeader from "./adminHeader";
 import RootPaper from "../rootPaper";
 import { ResponsivePaper } from "../../components/custom/responsiveLayout";
 import AdminSidebar from "./adminSidebar";
-import { Container, useTheme } from "@mui/material";
-import { useResponsiveWidth } from "../../hooks/useResponsiveWidth";
+import { useTheme } from "@mui/material";
+import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 
 /**
  * Layout principal de l'espace admin, avec une entête et une zone de contenu.

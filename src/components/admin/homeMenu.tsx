@@ -1,7 +1,7 @@
 import { mdiHome } from "@mdi/js";
 import Icon from "@mdi/react";
 import { IconButton, MenuItem } from "@mui/material";
-import CustomMenu from "./custom/customMenu";
+import CustomMenu from "../custom/customMenu";
 import { Link } from "react-router";
 import { useState } from "react";
 

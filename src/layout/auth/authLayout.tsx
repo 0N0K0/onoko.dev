@@ -3,7 +3,7 @@ import {
   ResponsiveStack,
 } from "../../components/custom/responsiveLayout";
 import RootPaper from "../rootPaper";
-import { useResponsiveWidth } from "../../hooks/useResponsiveWidth";
+import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 import ResponsiveTitle from "../../components/custom/responsiveTitle";
 import { Button } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
