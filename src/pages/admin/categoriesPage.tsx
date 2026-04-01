@@ -2,28 +2,10 @@ import { useEffect, useState } from "react";
 import ResponsiveTitle from "../../components/custom/responsiveTitle";
 import ClosableSnackbar from "../../components/custom/closableSnackbar";
 import CustomSnackbar from "../../components/custom/customSnackBar";
-import {
-  Button,
-  Checkbox,
-  CircularProgress,
-  FormControl,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableRow,
-  TextField,
-} from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import type { Category } from "../../types/categoryTypes";
 import Icon from "@mdi/react";
-import { mdiCheck, mdiClose, mdiDelete, mdiPencil, mdiPlus } from "@mdi/js";
-import CustomDialog from "../../components/custom/customDialog";
-import { ResponsiveStack } from "../../components/custom/responsiveLayout";
+import { mdiPlus } from "@mdi/js";
 import apolloClient from "../../services/appolloClient";
 import { CATEGORIES_QUERY } from "../../services/categoryQueries";
 import {
@@ -31,6 +13,10 @@ import {
   DELETE_CATEGORY_MUTATION,
   UPDATE_CATEGORY_MUTATION,
 } from "../../services/categoryMutations";
+import DeleteCategoryDialog from "../../components/category/DeleteCategoryDialog";
+import CategoriesTable from "../../components/category/CategoriesTable";
+import CategoryFormDialog from "../../components/category/CategoryFormDialog";
+import { ResponsiveStack } from "../../components/custom/responsiveLayout";
 
 export default function Categories() {
   const [loading, setLoading] = useState(true);
@@ -197,9 +183,71 @@ export default function Categories() {
 
   return (
     <>
-      <ResponsiveTitle variant="h1" width="100%">
-        Catégories
-      </ResponsiveTitle>
+      <ResponsiveStack
+        direction="row"
+        rowGap={0}
+        columnGap={2}
+        justifyContent="space-between"
+        alignItems="center"
+        width="100%"
+        flexWrap="wrap"
+      >
+        <ResponsiveTitle variant="h1">Catégories</ResponsiveTitle>
+        <Button
+          onClick={() => setFormDialogOpen(true)}
+          startIcon={<Icon path={mdiPlus} size={1} />}
+        >
+          Ajouter une&nbsp;catégorie
+        </Button>
+      </ResponsiveStack>
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        categories &&
+        categories.length > 0 && (
+          <CategoriesTable
+            categories={categories}
+            selectedCategories={selectedCategories}
+            setSelectedCategories={setSelectedCategories}
+            handleSelectMultiple={handleSelectMultiple}
+            setInitialCategory={setInitialCategory}
+            setLabel={setLabel}
+            setEntity={setEntity}
+            setDescription={setDescription}
+            setParent={setParent}
+            setFormDialogOpen={setFormDialogOpen}
+            setDeleteDialogOpen={setDeleteDialogOpen}
+            submitting={submitting}
+          />
+        )
+      )}
+      <CategoryFormDialog
+        open={formDialogOpen}
+        setOpen={setFormDialogOpen}
+        categories={categories}
+        initialCategory={initialCategory}
+        setInitialCategory={setInitialCategory}
+        label={label}
+        setLabel={setLabel}
+        entity={entity}
+        setEntity={setEntity}
+        description={description}
+        setDescription={setDescription}
+        parent={parent}
+        setParent={setParent}
+        hasChanges={hasChanges}
+        setHasChanges={setHasChanges}
+        handleAdd={handleAdd}
+        handleEdit={handleEdit}
+        submitting={submitting}
+      />
+      <DeleteCategoryDialog
+        open={deleteDialogOpen}
+        setOpen={setDeleteDialogOpen}
+        selectedCategories={selectedCategories}
+        handleDelete={handleDelete}
+        submitting={submitting}
+      />
       <ClosableSnackbar
         open={!!submitSuccess}
         setOpen={() => setSubmitSuccess("")}
@@ -210,279 +258,6 @@ export default function Categories() {
         open={!!submitError || !!categoryError}
         message={categoryError || submitError || "Une erreur est survenue"}
         severity="error"
-      />
-      {loading ? (
-        <CircularProgress />
-      ) : categories && categories.length > 0 ? (
-        <>
-          <CustomDialog
-            key="deleteDialog"
-            open={deleteDialogOpen}
-            onClose={() => setDeleteDialogOpen(false)}
-            title={`Voulez-vous supprimer ${selectedCategories.length > 1 ? "ces" : "cette"}\u00A0${selectedCategories.length > 1 ? "catégories" : "catégorie"}\u00A0?`}
-            titlePaddingBottom="0px"
-            content="Cette action est irréversible et supprimera toutes les données associées."
-            actions={[
-              <Button
-                key="cancel"
-                onClick={() => setDeleteDialogOpen(false)}
-                disabled={submitting}
-                startIcon={<Icon path={mdiClose} size={1} />}
-              >
-                Annuler
-              </Button>,
-              <Button
-                key="confirm"
-                color="error"
-                onClick={() => {
-                  handleDelete();
-                  setDeleteDialogOpen(false);
-                }}
-                disabled={submitting}
-                startIcon={<Icon path={mdiDelete} size={1} />}
-              >
-                Supprimer
-              </Button>,
-            ]}
-          />
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ width: "1%", whiteSpace: "nowrap" }}>
-                  <Checkbox
-                    indeterminate={
-                      selectedCategories.length > 0 &&
-                      selectedCategories.length < (categories?.length || 0)
-                    }
-                    checked={
-                      categories?.length > 0 &&
-                      selectedCategories.length === categories.length
-                    }
-                    onChange={handleSelectMultiple}
-                  />
-                </TableCell>
-                <TableCell>Label</TableCell>
-                <TableCell>Entité</TableCell>
-                <TableCell sx={{ width: "1%", whiteSpace: "nowrap" }}>
-                  <ResponsiveStack
-                    direction="row"
-                    rowGap={0}
-                    columnGap={1}
-                    width="100%"
-                    justifyContent="flex-end"
-                  >
-                    <IconButton
-                      disabled={submitting}
-                      onClick={() => setFormDialogOpen(true)}
-                      color="primary"
-                    >
-                      <Icon path={mdiPlus} size={1}></Icon>
-                    </IconButton>
-                  </ResponsiveStack>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {categories.map((category) => (
-                <TableRow key={category.id}>
-                  <TableCell>
-                    <Checkbox
-                      checked={selectedCategories.includes(category.id)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedCategories((prev) => [
-                            ...prev,
-                            category.id,
-                          ]);
-                        } else {
-                          setSelectedCategories((prev) =>
-                            prev.filter((id) => id !== category.id),
-                          );
-                        }
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {" "}
-                    {category.depth ? "__".repeat(category.depth) : ""}{" "}
-                    {category.label}
-                  </TableCell>
-                  <TableCell>{category.entity}</TableCell>
-                  <TableCell>
-                    <ResponsiveStack
-                      direction="row"
-                      rowGap={0}
-                      columnGap={0}
-                      width="100%"
-                      justifyContent="flex-end"
-                    >
-                      <IconButton
-                        color="primary"
-                        disabled={submitting}
-                        onClick={() => {
-                          setInitialCategory(category);
-                          setLabel(category.label);
-                          setEntity(category.entity || "");
-                          setDescription(category.description || "");
-                          setParent(category.parent || "");
-                          setFormDialogOpen(category.id);
-                        }}
-                      >
-                        <Icon path={mdiPencil} size={1}></Icon>
-                      </IconButton>
-                      <IconButton
-                        color="error"
-                        onClick={() => {
-                          setSelectedCategories([category.id]);
-                          setDeleteDialogOpen(true);
-                        }}
-                        disabled={submitting}
-                      >
-                        <Icon path={mdiDelete} size={1}></Icon>
-                      </IconButton>
-                    </ResponsiveStack>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TableCell colSpan={4} align="right">
-                  <Button
-                    color="error"
-                    startIcon={<Icon path={mdiDelete} size={1} />}
-                    onClick={handleDelete}
-                    disabled={selectedCategories.length < 1 || submitting}
-                  >
-                    Supprimer les catégories sélectionnées
-                  </Button>
-                </TableCell>
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </>
-      ) : (
-        <Button
-          onClick={() => setFormDialogOpen(true)}
-          startIcon={<Icon path={mdiPlus} size={1} />}
-        >
-          Ajouter une catégorie
-        </Button>
-      )}
-      <CustomDialog
-        key="formDialog"
-        open={!!formDialogOpen}
-        onClose={() => {
-          (setFormDialogOpen(false),
-            setInitialCategory(null),
-            setLabel(""),
-            setEntity(""),
-            setDescription(""),
-            setParent(""),
-            setHasChanges(false));
-        }}
-        title={`${
-          typeof formDialogOpen === "string" ? "Modifier la" : "Ajouter une"
-        } catégorie`}
-        content={(() => {
-          const category =
-            typeof formDialogOpen === "string"
-              ? categories?.find((c) => c.id === formDialogOpen)
-              : null;
-          return (
-            <ResponsiveStack rowGap={3} style={{ overflow: "visible" }}>
-              <TextField
-                label="Label"
-                value={label}
-                onChange={(e) => {
-                  setLabel(e.target.value);
-                  e.target.value !== (initialCategory?.label || "") &&
-                    setHasChanges(true);
-                }}
-                required
-                fullWidth
-              />
-              <FormControl fullWidth>
-                <InputLabel id="entity-label" required>
-                  Entité
-                </InputLabel>
-                <Select
-                  labelId="entity-label"
-                  label="Entité"
-                  value={entity}
-                  onChange={(e) => {
-                    setEntity(e.target.value);
-                    e.target.value !== (initialCategory?.entity || "") &&
-                      setHasChanges(true);
-                  }}
-                  required
-                  fullWidth
-                >
-                  <MenuItem value="stack">Technologies</MenuItem>
-                  <MenuItem value="project">Projets</MenuItem>
-                </Select>
-              </FormControl>
-              <TextField
-                label="Description"
-                value={description}
-                onChange={(e) => {
-                  setDescription(e.target.value);
-                  e.target.value !== (initialCategory?.description || "") &&
-                    setHasChanges(true);
-                }}
-                multiline
-                rows={4}
-                fullWidth
-              />
-              <FormControl fullWidth>
-                <InputLabel id="parent-category-label">
-                  Catégorie parente
-                </InputLabel>
-                <Select
-                  labelId="parent-category-label"
-                  label="Catégorie parente"
-                  value={parent}
-                  onChange={(e) => {
-                    setParent(e.target.value);
-                    e.target.value !== (initialCategory?.parent || "") &&
-                      setHasChanges(true);
-                  }}
-                  fullWidth
-                >
-                  <MenuItem value="">Aucune</MenuItem>
-                  {categories
-                    ?.filter((c) => c.id !== category?.id)
-                    .map((c) => (
-                      <MenuItem key={c.id} value={c.id}>
-                        {c.label}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-            </ResponsiveStack>
-          );
-        })()}
-        actions={[
-          <Button
-            key="cancel"
-            onClick={() => setFormDialogOpen(false)}
-            disabled={submitting}
-            startIcon={<Icon path={mdiClose} size={1} />}
-          >
-            Annuler
-          </Button>,
-          <Button
-            key="confirm"
-            color="success"
-            onClick={
-              typeof formDialogOpen === "string" ? handleEdit : handleAdd
-            }
-            disabled={submitting || !hasChanges || !label || !entity}
-            startIcon={<Icon path={mdiCheck} size={1} />}
-          >
-            {typeof formDialogOpen === "string" ? "Modifier" : "Ajouter"}
-          </Button>,
-        ]}
       />
     </>
   );

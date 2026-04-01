@@ -20,20 +20,23 @@ export default function AdminSidebar() {
   return (
     <ResponsiveDrawer
       variant="permanent"
-      open={true}
       sx={{
         display: { xs: "none", md: "block" },
         width: drawerWidth,
-        position: "sticky",
-        top: 0,
+        position: "fixed",
+        top: theme.sizes.adminHeaderHeight,
+        alignSelf: "flex-start",
         height: `calc(100vh - ${theme.sizes.adminHeaderHeight})`,
         overflowY: "auto",
+        zIndex: theme.zIndex.appBar,
         "& .MuiPaper-root": {
           width: drawerWidth,
-          position: "relative",
+          position: "fixed",
+          top: theme.sizes.adminHeaderHeight,
           height: `calc(100vh - ${theme.sizes.adminHeaderHeight})`,
           boxSizing: "border-box",
           overflowY: "auto",
+          zIndex: theme.zIndex.appBar,
         },
       }}
     >

@@ -3,6 +3,7 @@ import RootPaper from "../rootPaper";
 import { ResponsivePaper } from "../../components/custom/responsiveLayout";
 import AdminSidebar from "./adminSidebar";
 import { Container, useTheme } from "@mui/material";
+import { useResponsiveWidth } from "../../hooks/useResponsiveWidth";
 
 /**
  * Layout principal de l'espace admin, avec une entête et une zone de contenu.
@@ -17,34 +18,27 @@ export default function AdminLayout({
   return (
     <RootPaper>
       <AdminHeader />
-      <Container
-        maxWidth={false}
+      <AdminSidebar />
+      <ResponsivePaper
+        component="main"
+        paddingY={3}
+        rowGap={6}
         sx={{
+          flex: 1,
           display: "flex",
-          flexDirection: "row",
-          width: "100%",
-          padding: "0 !important",
+          flexDirection: "column",
+          paddingX: 4,
+          alignItems: "center",
+          height: `calc(100vh - ${theme.sizes.adminHeaderHeight})`,
+          maxHeight: `calc(100vh - ${theme.sizes.adminHeaderHeight})`,
+          overflowY: "hidden",
+          marginLeft: { md: useResponsiveWidth(2), xs: 0 },
         }}
+        square
+        elevation={0}
       >
-        <AdminSidebar />
-        <ResponsivePaper
-          component="main"
-          paddingY={3}
-          rowGap={6}
-          sx={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            paddingX: 4,
-            alignItems: "center",
-            height: `calc(100vh - ${theme.sizes.adminHeaderHeight})`,
-          }}
-          square
-          elevation={0}
-        >
-          {children}
-        </ResponsivePaper>
-      </Container>
+        {children}
+      </ResponsivePaper>
     </RootPaper>
   );
 }
