@@ -219,7 +219,8 @@ export default function Categories() {
             key="deleteDialog"
             open={deleteDialogOpen}
             onClose={() => setDeleteDialogOpen(false)}
-            title={`Voulez-vous supprimer ${selectedCategories.length > 1 ? "ces catégories" : "cette catégorie"} ?`}
+            title={`Voulez-vous supprimer ${selectedCategories.length > 1 ? "ces" : "cette"}\u00A0${selectedCategories.length > 1 ? "catégories" : "catégorie"}\u00A0?`}
+            titlePaddingBottom="0px"
             content="Cette action est irréversible et supprimera toutes les données associées."
             actions={[
               <Button

@@ -11,6 +11,7 @@ export default function CustomDialog({
   open,
   onClose,
   title,
+  titlePaddingBottom,
   content,
   actions,
 }: {
@@ -18,6 +19,7 @@ export default function CustomDialog({
   onClose?: () => void;
   content: React.ReactNode;
   title?: string;
+  titlePaddingBottom?: string;
   actions?: React.ReactNode;
 }) {
   const dialogWidth = useResponsiveWidth(4);
@@ -32,7 +34,17 @@ export default function CustomDialog({
         },
       }}
     >
-      {title && <DialogTitle>{title}</DialogTitle>}
+      {title && (
+        <DialogTitle
+          sx={
+            titlePaddingBottom
+              ? { paddingBottom: titlePaddingBottom }
+              : undefined
+          }
+        >
+          {title}
+        </DialogTitle>
+      )}
       <DialogContent>
         {typeof content === "string" ? (
           <DialogContentText>{content}</DialogContentText>

@@ -64,7 +64,8 @@ export default function AccountMenu() {
       <CustomDialog
         open={logoutConfirm}
         onClose={handleCloseDialog}
-        title="Voulez-vous vous déconnecter ?"
+        title="Voulez-vous vous&nbsp;déconnecter ?"
+        titlePaddingBottom="0px"
         content="Vous devrez vous reconnecter pour accéder à nouveau à l'espace administrateur."
         actions={
           <>
