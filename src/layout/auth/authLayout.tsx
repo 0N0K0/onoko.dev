@@ -7,7 +7,7 @@ import { useResponsiveWidth } from "../../hooks/useResponsiveWidth";
 import ResponsiveTitle from "../../components/custom/responsiveTitle";
 import { Button } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
-import ResetPasswordLink from "../../components/resetPasswordLink";
+import ResetPasswordLink from "../../components/account/resetPasswordLink";
 
 export default function AuthLayout({
   children,

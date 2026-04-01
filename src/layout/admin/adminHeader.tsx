@@ -2,7 +2,7 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import AccountMenu from "../../components/accountMenu";
+import AccountMenu from "../../components/account/accountMenu";
 import { IconButton, MenuItem } from "@mui/material";
 import Icon from "@mdi/react";
 import { mdiHome } from "@mdi/js";

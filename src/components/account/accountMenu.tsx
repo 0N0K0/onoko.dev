@@ -7,13 +7,13 @@ import {
   ListItemText,
   MenuItem,
 } from "@mui/material";
-import CustomDialog from "./custom/customDialog";
+import CustomDialog from "../custom/customDialog";
 import { Link, useLocation } from "react-router";
 import { useState } from "react";
-import CustomMenu from "./custom/customMenu";
-import ResponsiveBodyTypography from "./custom/responsiveBodyTypography";
-import { useAuth } from "../hooks/useAuth";
-import { ResponsiveStack } from "./custom/responsiveLayout";
+import CustomMenu from "../custom/customMenu";
+import ResponsiveBodyTypography from "../custom/responsiveBodyTypography";
+import { useAuth } from "../../hooks/useAuth";
+import { ResponsiveStack } from "../custom/responsiveLayout";
 
 export default function AccountMenu() {
   const [logoutConfirm, setLogoutConfirm] = useState(false);

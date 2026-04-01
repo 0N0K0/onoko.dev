@@ -1,7 +1,7 @@
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import NewPasswordFields from "../../components/newPasswordFields";
+import NewPasswordFields from "../../components/account/newPasswordFields";
 import { LOGIN_ROUTE } from "../../constants/apiConstants";
 import apolloClient from "../../services/appolloClient";
 import { RESET_PASSWORD_MUTATION } from "../../services/accountMutations";
