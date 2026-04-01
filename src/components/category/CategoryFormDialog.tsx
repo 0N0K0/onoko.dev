@@ -10,7 +10,7 @@ import CustomDialog from "../custom/customDialog";
 import { ResponsiveStack } from "../custom/responsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiClose } from "@mdi/js";
-import type { Category } from "../../types/categoryTypes";
+import type { CategoryFormDialogProps } from "../../types/categoryTypes";
 
 export default function CategoryFormDialog({
   open,
@@ -18,39 +18,14 @@ export default function CategoryFormDialog({
   categories,
   initialCategory,
   setInitialCategory,
-  label,
-  setLabel,
-  entity,
-  setEntity,
-  description,
-  setDescription,
-  parent,
-  setParent,
+  editingCategory,
+  setEditingCategory,
   hasChanges,
   setHasChanges,
   handleAdd,
   handleEdit,
   submitting,
-}: {
-  open: boolean | string;
-  setOpen: (open: boolean | string) => void;
-  categories: Category[] | undefined;
-  initialCategory: Category | null;
-  setInitialCategory: (category: Category | null) => void;
-  label: string;
-  setLabel: (label: string) => void;
-  entity: string;
-  setEntity: (entity: string) => void;
-  description: string;
-  setDescription: (description: string) => void;
-  parent: string;
-  setParent: (parentId: string) => void;
-  hasChanges: boolean;
-  setHasChanges: (hasChanges: boolean) => void;
-  handleAdd: () => void;
-  handleEdit: () => void;
-  submitting: boolean;
-}) {
+}: CategoryFormDialogProps) {
   return (
     <CustomDialog
       key="formDialog"
@@ -58,10 +33,7 @@ export default function CategoryFormDialog({
       onClose={() => {
         (setOpen(false),
           setInitialCategory(null),
-          setLabel(""),
-          setEntity(""),
-          setDescription(""),
-          setParent(""),
+          setEditingCategory(null),
           setHasChanges(false));
       }}
       title={`${
@@ -76,10 +48,14 @@ export default function CategoryFormDialog({
           <ResponsiveStack rowGap={3} style={{ overflow: "visible" }}>
             <TextField
               label="Label"
-              value={label}
+              value={editingCategory?.label || ""}
               onChange={(e) => {
-                setLabel(e.target.value);
-                e.target.value !== (initialCategory?.label || "") &&
+                setEditingCategory(
+                  editingCategory
+                    ? { ...editingCategory, label: e.target.value }
+                    : null,
+                );
+                e.target.value !== (editingCategory?.label || "") &&
                   setHasChanges(true);
               }}
               required
@@ -92,9 +68,13 @@ export default function CategoryFormDialog({
               <Select
                 labelId="entity-label"
                 label="Entité"
-                value={entity}
+                value={editingCategory?.entity || ""}
                 onChange={(e) => {
-                  setEntity(e.target.value);
+                  setEditingCategory(
+                    editingCategory
+                      ? { ...editingCategory, entity: e.target.value }
+                      : null,
+                  );
                   e.target.value !== (initialCategory?.entity || "") &&
                     setHasChanges(true);
                 }}
@@ -107,9 +87,13 @@ export default function CategoryFormDialog({
             </FormControl>
             <TextField
               label="Description"
-              value={description}
+              value={editingCategory?.description || ""}
               onChange={(e) => {
-                setDescription(e.target.value);
+                setEditingCategory(
+                  editingCategory
+                    ? { ...editingCategory, description: e.target.value }
+                    : null,
+                );
                 e.target.value !== (initialCategory?.description || "") &&
                   setHasChanges(true);
               }}
@@ -124,9 +108,13 @@ export default function CategoryFormDialog({
               <Select
                 labelId="parent-category-label"
                 label="Catégorie parente"
-                value={parent}
+                value={editingCategory?.parent || ""}
                 onChange={(e) => {
-                  setParent(e.target.value);
+                  setEditingCategory(
+                    editingCategory
+                      ? { ...editingCategory, parent: e.target.value }
+                      : null,
+                  );
                   e.target.value !== (initialCategory?.parent || "") &&
                     setHasChanges(true);
                 }}
@@ -159,7 +147,12 @@ export default function CategoryFormDialog({
           key="confirm"
           color="success"
           onClick={typeof open === "string" ? handleEdit : handleAdd}
-          disabled={submitting || !hasChanges || !label || !entity}
+          disabled={
+            submitting ||
+            !hasChanges ||
+            !editingCategory?.label ||
+            !editingCategory?.entity
+          }
           startIcon={<Icon path={mdiCheck} size={1} />}
           sx={{ flex: "1 1 auto" }}
         >

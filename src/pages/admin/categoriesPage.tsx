@@ -7,33 +7,29 @@ import Icon from "@mdi/react";
 import { mdiPlus } from "@mdi/js";
 import apolloClient from "../../services/appolloClient";
 import { CATEGORIES_QUERY } from "../../services/categoryQueries";
-import {
-  CREATE_CATEGORY_MUTATION,
-  DELETE_CATEGORY_MUTATION,
-  UPDATE_CATEGORY_MUTATION,
-} from "../../services/categoryMutations";
 import CategoryFormDialog from "../../components/category/CategoryFormDialog";
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
 import SnackbarAlert from "../../components/custom/snackbarAlert";
 import CustomTable from "../../components/entities/customTable";
+import useCategoryAdd from "../../hooks/category/useCategoryAdd";
+import useCategoryEdit from "../../hooks/category/useCategoryEdit";
+import useCategoryDelete from "../../hooks/category/useCategoryDelete";
 
 export default function Categories() {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<Category[] | undefined>([]);
+  const [categoryError, setCategoryError] = useState("");
 
   const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
 
   const [initialCategory, setInitialCategory] = useState<Category | null>(null);
-  const [label, setLabel] = useState("");
-  const [entity, setEntity] = useState("");
-  const [description, setDescription] = useState("");
-  const [parent, setParent] = useState("");
+  const [editingCategory, setEditingCategory] =
+    useState<Partial<Category> | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
 
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState("");
   const [submitError, setSubmitError] = useState("");
-  const [categoryError, setCategoryError] = useState("");
 
   const fetchCategories = async () => {
     setLoading(true);
@@ -55,118 +51,35 @@ export default function Categories() {
     fetchCategories();
   }, []);
 
-  const handleAdd = async () => {
-    setSubmitSuccess("");
-    setSubmitError("");
-    setSubmitting(true);
-    const editedFields: Partial<Category> = { label, entity };
-    if (description !== initialCategory?.description)
-      editedFields.description = description;
-    if (parent !== initialCategory?.parent) editedFields.parent = parent;
-    const { data } = await apolloClient.mutate<{
-      createCategory: Category;
-    }>({
-      mutation: CREATE_CATEGORY_MUTATION,
-      variables: editedFields,
-    });
-    if (!data || !data.createCategory)
-      throw new Error(
-        "Une erreur est survenue lors de la création de la catégorie.",
-      );
-    setCategories((prev) =>
-      data.createCategory ? [...(prev || []), data.createCategory] : prev,
-    );
-    try {
-      setSubmitSuccess(
-        `La catégorie ${data.createCategory.label} a été créée avec succès.`,
-      );
-    } catch (e: any) {
-      setSubmitError(e.message || "Une erreur inconnue est survenue.");
-    } finally {
-      setSubmitting(false);
-      setFormDialogOpen(false);
-      setInitialCategory(null);
-      setLabel("");
-      setEntity("");
-      setDescription("");
-      setParent("");
-      setHasChanges(false);
-    }
-  };
+  const handleAdd = useCategoryAdd({
+    setSubmitSuccess,
+    setSubmitError,
+    setSubmitting,
+    setFormDialogOpen,
+    editingCategory,
+    setEditingCategory,
+    setCategories,
+  });
 
-  const handleEdit = async () => {
-    setSubmitSuccess("");
-    setSubmitError("");
-    setSubmitting(true);
-    try {
-      if (!initialCategory) throw new Error("Catégorie non chargée");
-      if (!hasChanges) throw new Error("Aucun changement à enregistrer");
-      const editedFields: Partial<Category> = {};
-      if (label !== initialCategory.label) editedFields.label = label;
-      if (entity !== initialCategory.entity) editedFields.entity = entity;
-      if (description !== initialCategory.description)
-        editedFields.description = description;
-      if (parent !== initialCategory.parent) editedFields.parent = parent;
-      const { data } = await apolloClient.mutate<{
-        updateCategory: Category;
-      }>({
-        mutation: UPDATE_CATEGORY_MUTATION,
-        variables: { id: initialCategory.id, ...editedFields },
-      });
-      if (!data || !data.updateCategory)
-        throw new Error(
-          `Une erreur est survenue lors de la modification de la catégorie ${initialCategory.label}.`,
-        );
-      setCategories((prev) =>
-        prev?.map((c) =>
-          c.id === data.updateCategory.id ? data.updateCategory : c,
-        ),
-      );
-      setSubmitSuccess(
-        `La catégorie ${data.updateCategory.label} a été modifiée avec succès.`,
-      );
-    } catch (e: any) {
-      setSubmitError(e.message || "Une erreur inconnue est survenue.");
-    } finally {
-      setSubmitting(false);
-      setFormDialogOpen(false);
-      setInitialCategory(null);
-      setLabel("");
-      setEntity("");
-      setDescription("");
-      setParent("");
-      setHasChanges(false);
-    }
-  };
+  const handleEdit = useCategoryEdit({
+    setSubmitSuccess,
+    setSubmitError,
+    setSubmitting,
+    setFormDialogOpen,
+    setInitialCategory,
+    editingCategory,
+    setEditingCategory,
+    setHasChanges,
+    setCategories,
+  });
 
-  const handleDelete = async (selectedCategories: string[]) => {
-    setSubmitSuccess("");
-    setSubmitError("");
-    setSubmitting(true);
-    try {
-      for (const categoryId of selectedCategories) {
-        const category = categories?.find((c) => c.id === categoryId);
-        const { data } = await apolloClient.mutate<{ deleteCategory: boolean }>(
-          {
-            mutation: DELETE_CATEGORY_MUTATION,
-            variables: { id: categoryId },
-          },
-        );
-        if (!data || !data.deleteCategory)
-          throw new Error(
-            `Une erreur est survenue lors de la suppression de la catégorie ${category?.label || categoryId}.`,
-          );
-        setCategories((prev) => prev?.filter((c) => c.id !== categoryId));
-        setSubmitSuccess(
-          `La catégorie ${category?.label || categoryId} a été supprimée avec succès.`,
-        );
-      }
-    } catch (e: any) {
-      setSubmitError(e.message || "Une erreur inconnue est survenue.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const handleDelete = useCategoryDelete({
+    setSubmitSuccess,
+    setSubmitError,
+    setSubmitting,
+    categories,
+    setCategories,
+  });
 
   const entitiesMap: { [key: string]: string } = {
     "": "",
@@ -212,13 +125,18 @@ export default function Categories() {
             ]}
             items={categories}
             canSelect
-            onClickAdd={() => setFormDialogOpen(true)}
+            onClickAdd={() => {
+              setEditingCategory({
+                label: "",
+                entity: "",
+                description: "",
+                parent: "",
+              });
+              setFormDialogOpen(true);
+            }}
             onClickEdit={(category) => {
               setInitialCategory(category);
-              setLabel(category.label);
-              setEntity(category.entity || "");
-              setDescription(category.description || "");
-              setParent(category.parent || "");
+              setEditingCategory(category);
               setFormDialogOpen(category.id);
             }}
             onClickDelete={(selectedCategories: string[]) =>
@@ -234,14 +152,8 @@ export default function Categories() {
         categories={categories}
         initialCategory={initialCategory}
         setInitialCategory={setInitialCategory}
-        label={label}
-        setLabel={setLabel}
-        entity={entity}
-        setEntity={setEntity}
-        description={description}
-        setDescription={setDescription}
-        parent={parent}
-        setParent={setParent}
+        editingCategory={editingCategory}
+        setEditingCategory={setEditingCategory}
         hasChanges={hasChanges}
         setHasChanges={setHasChanges}
         handleAdd={handleAdd}
