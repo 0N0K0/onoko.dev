@@ -328,6 +328,16 @@ const baseTheme = createTheme({
         },
       },
     },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          fontSize: "1rem",
+          lineHeight: 1.5,
+          letterSpacing: "normal",
+          padding: "12px 8px",
+        },
+      },
+    },
   },
 });
 

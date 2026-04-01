@@ -244,10 +244,10 @@ export default function Categories() {
               </Button>,
             ]}
           />
-          <Table>
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell>
+                <TableCell sx={{ width: "1%", whiteSpace: "nowrap" }}>
                   <Checkbox
                     indeterminate={
                       selectedCategories.length > 0 &&
@@ -260,16 +260,24 @@ export default function Categories() {
                     onChange={handleSelectMultiple}
                   />
                 </TableCell>
-                <TableCell>Entité</TableCell>
                 <TableCell>Label</TableCell>
-                <TableCell>
-                  <IconButton
-                    disabled={submitting}
-                    onClick={() => setFormDialogOpen(true)}
-                    color="primary"
+                <TableCell>Entité</TableCell>
+                <TableCell sx={{ width: "1%", whiteSpace: "nowrap" }}>
+                  <ResponsiveStack
+                    direction="row"
+                    rowGap={0}
+                    columnGap={1}
+                    width="100%"
+                    justifyContent="flex-end"
                   >
-                    <Icon path={mdiPlus} size={1}></Icon>
-                  </IconButton>
+                    <IconButton
+                      disabled={submitting}
+                      onClick={() => setFormDialogOpen(true)}
+                      color="primary"
+                    >
+                      <Icon path={mdiPlus} size={1}></Icon>
+                    </IconButton>
+                  </ResponsiveStack>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -293,40 +301,52 @@ export default function Categories() {
                       }}
                     />
                   </TableCell>
-                  <TableCell>{category.entity}</TableCell>
-                  <TableCell>{category.label}</TableCell>
                   <TableCell>
-                    <IconButton
-                      color="primary"
-                      disabled={submitting}
-                      onClick={() => {
-                        setInitialCategory(category);
-                        setLabel(category.label);
-                        setEntity(category.entity || "");
-                        setDescription(category.description || "");
-                        setParent(category.parent || "");
-                        setFormDialogOpen(category.id);
-                      }}
+                    {" "}
+                    {category.depth ? "__".repeat(category.depth) : ""}{" "}
+                    {category.label}
+                  </TableCell>
+                  <TableCell>{category.entity}</TableCell>
+                  <TableCell>
+                    <ResponsiveStack
+                      direction="row"
+                      rowGap={0}
+                      columnGap={0}
+                      width="100%"
+                      justifyContent="flex-end"
                     >
-                      <Icon path={mdiPencil} size={1}></Icon>
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      onClick={() => {
-                        setSelectedCategories([category.id]);
-                        setDeleteDialogOpen(true);
-                      }}
-                      disabled={submitting}
-                    >
-                      <Icon path={mdiDelete} size={1}></Icon>
-                    </IconButton>
+                      <IconButton
+                        color="primary"
+                        disabled={submitting}
+                        onClick={() => {
+                          setInitialCategory(category);
+                          setLabel(category.label);
+                          setEntity(category.entity || "");
+                          setDescription(category.description || "");
+                          setParent(category.parent || "");
+                          setFormDialogOpen(category.id);
+                        }}
+                      >
+                        <Icon path={mdiPencil} size={1}></Icon>
+                      </IconButton>
+                      <IconButton
+                        color="error"
+                        onClick={() => {
+                          setSelectedCategories([category.id]);
+                          setDeleteDialogOpen(true);
+                        }}
+                        disabled={submitting}
+                      >
+                        <Icon path={mdiDelete} size={1}></Icon>
+                      </IconButton>
+                    </ResponsiveStack>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
             <TableFooter>
               <TableRow>
-                <TableCell colSpan={4}>
+                <TableCell colSpan={4} align="right">
                   <Button
                     color="error"
                     startIcon={<Icon path={mdiDelete} size={1} />}
