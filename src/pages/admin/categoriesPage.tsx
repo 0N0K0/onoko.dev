@@ -11,9 +11,7 @@ import CategoryFormDialog from "../../components/category/CategoryFormDialog";
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
 import SnackbarAlert from "../../components/custom/snackbarAlert";
 import CustomTable from "../../components/custom/customTable";
-import useCategoryAdd from "../../hooks/category/useCategoryAdd";
-import useCategoryEdit from "../../hooks/category/useCategoryEdit";
-import useCategoryDelete from "../../hooks/category/useCategoryDelete";
+import useCategoryMutations from "../../hooks/useCategoryMutations";
 
 export default function Categories() {
   const [loading, setLoading] = useState(true);
@@ -51,17 +49,7 @@ export default function Categories() {
     fetchCategories();
   }, []);
 
-  const handleAdd = useCategoryAdd({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    setFormDialogOpen,
-    editingCategory,
-    setEditingCategory,
-    setCategories,
-  });
-
-  const handleEdit = useCategoryEdit({
+  const { handleAdd, handleEdit, handleDelete } = useCategoryMutations({
     setSubmitSuccess,
     setSubmitError,
     setSubmitting,
@@ -70,13 +58,6 @@ export default function Categories() {
     editingCategory,
     setEditingCategory,
     setHasChanges,
-    setCategories,
-  });
-
-  const handleDelete = useCategoryDelete({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
     categories,
     setCategories,
   });
