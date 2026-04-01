@@ -14,8 +14,8 @@ import {
   useTheme,
 } from "@mui/material";
 import { useState } from "react";
-import { ResponsiveStack } from "../custom/responsiveLayout";
-import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
+import { ResponsiveStack } from "./responsiveLayout";
+import DeleteConfirmationDialog from "../entities/DeleteConfirmationDialog";
 
 export default function CustomTable({
   fields,

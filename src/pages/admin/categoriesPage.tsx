@@ -10,7 +10,7 @@ import { CATEGORIES_QUERY } from "../../services/categoryQueries";
 import CategoryFormDialog from "../../components/category/CategoryFormDialog";
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
 import SnackbarAlert from "../../components/custom/snackbarAlert";
-import CustomTable from "../../components/entities/customTable";
+import CustomTable from "../../components/custom/customTable";
 import useCategoryAdd from "../../hooks/category/useCategoryAdd";
 import useCategoryEdit from "../../hooks/category/useCategoryEdit";
 import useCategoryDelete from "../../hooks/category/useCategoryDelete";
