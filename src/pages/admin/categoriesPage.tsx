@@ -12,10 +12,10 @@ import {
   DELETE_CATEGORY_MUTATION,
   UPDATE_CATEGORY_MUTATION,
 } from "../../services/categoryMutations";
-import CategoriesTable from "../../components/category/CategoriesTable";
 import CategoryFormDialog from "../../components/category/CategoryFormDialog";
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
 import SnackbarAlert from "../../components/custom/snackbarAlert";
+import CustomTable from "../../components/entities/customTable";
 
 export default function Categories() {
   const [loading, setLoading] = useState(true);
@@ -168,6 +168,12 @@ export default function Categories() {
     }
   };
 
+  const entitiesMap: { [key: string]: string } = {
+    "": "",
+    stack: "Technologie",
+    project: "Projet",
+  };
+
   return (
     <>
       <ResponsiveStack
@@ -195,14 +201,26 @@ export default function Categories() {
       ) : (
         categories &&
         categories.length > 0 && (
-          <CategoriesTable
-            categories={categories}
-            setInitialCategory={setInitialCategory}
-            setLabel={setLabel}
-            setEntity={setEntity}
-            setDescription={setDescription}
-            setParent={setParent}
-            setFormDialogOpen={setFormDialogOpen}
+          <CustomTable
+            fields={[
+              { key: "label", label: "Label" },
+              {
+                key: "entity",
+                label: "Entité",
+                content: (item) => entitiesMap[item.entity || ""],
+              },
+            ]}
+            items={categories}
+            canSelect
+            onClickAdd={() => setFormDialogOpen(true)}
+            onClickEdit={(category) => {
+              setInitialCategory(category);
+              setLabel(category.label);
+              setEntity(category.entity || "");
+              setDescription(category.description || "");
+              setParent(category.parent || "");
+              setFormDialogOpen(category.id);
+            }}
             onClickDelete={(selectedCategories: string[]) =>
               handleDelete(selectedCategories)
             }
