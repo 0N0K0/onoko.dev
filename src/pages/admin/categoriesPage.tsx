@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ResponsiveTitle from "../../components/custom/responsiveTitle";
-import ClosableSnackbar from "../../components/custom/closableSnackbar";
-import CustomSnackbar from "../../components/custom/customSnackBar";
+import ClosableSnackbarAlert from "../../components/custom/closableSnackbarAlert";
 import { Button, CircularProgress } from "@mui/material";
 import type { Category } from "../../types/categoryTypes";
 import Icon from "@mdi/react";
@@ -13,18 +12,16 @@ import {
   DELETE_CATEGORY_MUTATION,
   UPDATE_CATEGORY_MUTATION,
 } from "../../services/categoryMutations";
-import DeleteCategoryDialog from "../../components/category/DeleteCategoryDialog";
 import CategoriesTable from "../../components/category/CategoriesTable";
 import CategoryFormDialog from "../../components/category/CategoryFormDialog";
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
+import SnackbarAlert from "../../components/custom/snackbarAlert";
 
 export default function Categories() {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<Category[] | undefined>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const [initialCategory, setInitialCategory] = useState<Category | null>(null);
   const [label, setLabel] = useState("");
@@ -57,14 +54,6 @@ export default function Categories() {
   useEffect(() => {
     fetchCategories();
   }, []);
-
-  const handleSelectMultiple = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setSelectedCategories(categories?.map((c) => c.id) || []);
-    } else {
-      setSelectedCategories([]);
-    }
-  };
 
   const handleAdd = async () => {
     setSubmitSuccess("");
@@ -150,7 +139,7 @@ export default function Categories() {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (selectedCategories: string[]) => {
     setSubmitSuccess("");
     setSubmitError("");
     setSubmitting(true);
@@ -176,8 +165,6 @@ export default function Categories() {
       setSubmitError(e.message || "Une erreur inconnue est survenue.");
     } finally {
       setSubmitting(false);
-      setDeleteDialogOpen(false);
-      setSelectedCategories([]);
     }
   };
 
@@ -210,16 +197,15 @@ export default function Categories() {
         categories.length > 0 && (
           <CategoriesTable
             categories={categories}
-            selectedCategories={selectedCategories}
-            setSelectedCategories={setSelectedCategories}
-            handleSelectMultiple={handleSelectMultiple}
             setInitialCategory={setInitialCategory}
             setLabel={setLabel}
             setEntity={setEntity}
             setDescription={setDescription}
             setParent={setParent}
             setFormDialogOpen={setFormDialogOpen}
-            setDeleteDialogOpen={setDeleteDialogOpen}
+            onClickDelete={(selectedCategories: string[]) =>
+              handleDelete(selectedCategories)
+            }
             submitting={submitting}
           />
         )
@@ -244,20 +230,13 @@ export default function Categories() {
         handleEdit={handleEdit}
         submitting={submitting}
       />
-      <DeleteCategoryDialog
-        open={deleteDialogOpen}
-        setOpen={setDeleteDialogOpen}
-        selectedCategories={selectedCategories}
-        handleDelete={handleDelete}
-        submitting={submitting}
-      />
-      <ClosableSnackbar
+      <ClosableSnackbarAlert
         open={!!submitSuccess}
         setOpen={() => setSubmitSuccess("")}
-        message={submitSuccess || "L'action a été réalisée avec succès."}
+        message={submitSuccess}
         severity="success"
       />
-      <CustomSnackbar
+      <SnackbarAlert
         open={!!submitError || !!categoryError}
         message={categoryError || submitError || "Une erreur est survenue"}
         severity="error"

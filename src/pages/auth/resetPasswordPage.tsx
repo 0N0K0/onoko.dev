@@ -6,8 +6,8 @@ import { LOGIN_ROUTE } from "../../constants/apiConstants";
 import apolloClient from "../../services/appolloClient";
 import { RESET_PASSWORD_MUTATION } from "../../services/accountMutations";
 import { useAuth } from "../../hooks/useAuth";
-import ClosableSnackbar from "../../components/custom/closableSnackbar";
-import CustomSnackbar from "../../components/custom/customSnackBar";
+import ClosableSnackbarAlert from "../../components/custom/closableSnackbarAlert";
+import SnackbarAlert from "../../components/custom/snackbarAlert";
 import AuthLayout from "../../layout/auth/authLayout";
 
 /**
@@ -63,9 +63,9 @@ export default function ResetPassword() {
       }}
     >
       {submitError && (
-        <CustomSnackbar open={true} message={submitError} severity="error" />
+        <SnackbarAlert open={true} message={submitError} severity="error" />
       )}
-      <ClosableSnackbar
+      <ClosableSnackbarAlert
         open={submitSuccess}
         setOpen={setSubmitSuccess}
         message="Votre mot de passe a été réinitialisé avec succès."

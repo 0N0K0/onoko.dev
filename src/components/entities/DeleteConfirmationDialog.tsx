@@ -3,17 +3,17 @@ import CustomDialog from "../custom/customDialog";
 import Icon from "@mdi/react";
 import { mdiClose, mdiDelete } from "@mdi/js";
 
-export default function DeleteCategoryDialog({
+export default function DeleteConfirmationDialog({
+  label,
   open,
   setOpen,
-  selectedCategories,
-  handleDelete,
+  onClickDelete,
   submitting,
 }: {
+  label: string;
   open: boolean;
   setOpen: (open: boolean) => void;
-  selectedCategories: string[];
-  handleDelete: () => void;
+  onClickDelete: () => void;
   submitting: boolean;
 }) {
   return (
@@ -21,7 +21,7 @@ export default function DeleteCategoryDialog({
       key="deleteDialog"
       open={open}
       onClose={() => setOpen(false)}
-      title={`Voulez-vous supprimer ${selectedCategories.length > 1 ? "ces" : "cette"}\u00A0${selectedCategories.length > 1 ? "catégories" : "catégorie"}\u00A0?`}
+      title={`Voulez-vous supprimer ${label}\u00A0?`}
       titlePaddingBottom="0px"
       content="Cette action est irréversible et supprimera toutes les données associées."
       actions={[
@@ -38,7 +38,7 @@ export default function DeleteCategoryDialog({
           key="confirm"
           color="error"
           onClick={() => {
-            handleDelete();
+            onClickDelete();
             setOpen(false);
           }}
           disabled={submitting}

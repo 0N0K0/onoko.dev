@@ -196,7 +196,7 @@ const baseTheme = createTheme({
     },
     MuiAlert: {
       defaultProps: {
-        variant: "outlined",
+        variant: "filled",
         severity: "info",
       },
       styleOverrides: {
@@ -207,6 +207,7 @@ const baseTheme = createTheme({
           letterSpacing: "normal",
           padding: "7.2px 15.2px",
           gap: "8px",
+          color: "#fff",
           "& .MuiAlert-icon": {
             fontSize: "1.25rem",
             margin: "0px",

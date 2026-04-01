@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import PasswordField from "../../components/custom/passwordField";
 import { useAuth } from "../../hooks/useAuth";
-import CustomSnackbar from "../../components/custom/customSnackBar";
+import SnackbarAlert from "../../components/custom/snackbarAlert";
 import AuthLayout from "../../layout/auth/authLayout";
 
 /**
@@ -60,7 +60,7 @@ export default function Login() {
       onSubmit={handleSubmit}
       hasResetPasswordLink
     >
-      {error && <CustomSnackbar open={true} message={error} severity="error" />}
+      {error && <SnackbarAlert open={true} message={error} severity="error" />}
       <ResponsiveStack rowGap={3} width="100%">
         <TextField
           label="Identifiant"

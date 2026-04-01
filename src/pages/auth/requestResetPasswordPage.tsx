@@ -4,8 +4,8 @@ import apolloClient from "../../services/appolloClient";
 import { REQUEST_PASSWORD_RESET_MUTATION } from "../../services/accountMutations";
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
-import CustomSnackbar from "../../components/custom/customSnackBar";
-import ClosableSnackbar from "../../components/custom/closableSnackbar";
+import SnackbarAlert from "../../components/custom/snackbarAlert";
+import ClosableSnackbarAlert from "../../components/custom/closableSnackbarAlert";
 import AuthLayout from "../../layout/auth/authLayout";
 import { LOGIN_ROUTE } from "../../constants/apiConstants";
 
@@ -56,9 +56,9 @@ export default function RequestResetPassword() {
       }}
     >
       {submitError && (
-        <CustomSnackbar open={true} message={submitError} severity="error" />
+        <SnackbarAlert open={true} message={submitError} severity="error" />
       )}
-      <ClosableSnackbar
+      <ClosableSnackbarAlert
         open={successSnackbarOpen}
         setOpen={setSuccessSnackbarOpen}
         message="Si l'adresse existe, un e-mail de réinitialisation a été envoyé."

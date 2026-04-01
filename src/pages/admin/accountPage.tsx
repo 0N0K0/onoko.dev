@@ -8,8 +8,8 @@ import { ResponsiveStack } from "../../components/custom/responsiveLayout";
 import PasswordField from "../../components/custom/passwordField";
 import ResetPasswordLink from "../../components/account/resetPasswordLink";
 import NewPasswordFields from "../../components/account/newPasswordFields";
-import ClosableSnackbar from "../../components/custom/closableSnackbar";
-import CustomSnackbar from "../../components/custom/customSnackBar";
+import ClosableSnackbarAlert from "../../components/custom/closableSnackbarAlert";
+import SnackbarAlert from "../../components/custom/snackbarAlert";
 import { useResponsiveWidth } from "../../hooks/useResponsiveWidth";
 
 /**
@@ -130,13 +130,13 @@ export default function Account() {
       <ResponsiveTitle variant="h1" width="100%">
         Mon compte
       </ResponsiveTitle>
-      <ClosableSnackbar
+      <ClosableSnackbarAlert
         open={successSnackbarOpen}
         setOpen={setSuccessSnackbarOpen}
         message="Les informations du compte ont été mises à jour avec succès."
         severity="success"
       />
-      <CustomSnackbar
+      <SnackbarAlert
         open={errorSnackbarOpen}
         message={userError || submitError || "Une erreur est survenue"}
         severity="error"

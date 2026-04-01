@@ -22,7 +22,7 @@ export interface NewPasswordFieldsProps {
   setConfirmPasswordError: (msg: string) => void;
 }
 
-export interface CustomSnackbarProps {
+export interface SnackbarAlertProps {
   open: boolean;
   message: string;
   severity?: "success" | "error" | "warning" | "info";
@@ -33,6 +33,6 @@ export interface CustomSnackbarProps {
   autohideDuration?: number;
 }
 
-export interface ClosableSnackbarProps extends CustomSnackbarProps {
+export interface ClosableSnackbarAlertProps extends SnackbarAlertProps {
   setOpen: (open: boolean) => void;
 }
