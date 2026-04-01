@@ -30,6 +30,7 @@ export default function DeleteCategoryDialog({
           onClick={() => setOpen(false)}
           disabled={submitting}
           startIcon={<Icon path={mdiClose} size={1} />}
+          sx={{ flex: "1 1 auto" }}
         >
           Annuler
         </Button>,
@@ -42,6 +43,7 @@ export default function DeleteCategoryDialog({
           }}
           disabled={submitting}
           startIcon={<Icon path={mdiDelete} size={1} />}
+          sx={{ flex: "1 1 auto" }}
         >
           Supprimer
         </Button>,

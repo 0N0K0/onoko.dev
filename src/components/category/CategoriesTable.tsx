@@ -44,6 +44,11 @@ export default function CategoriesTable({
   submitting: boolean;
 }) {
   const theme = useTheme();
+  const entitiesMap: { [key: string]: string } = {
+    "": "",
+    stack: "Technologie",
+    project: "Projet",
+  };
   return (
     <TableContainer sx={{ flex: "1 1 auto", minHeight: 0 }}>
       <Table stickyHeader>
@@ -108,7 +113,9 @@ export default function CategoriesTable({
                 {category.depth ? "__".repeat(category.depth) : ""}{" "}
                 {category.label}
               </TableCell>
-              <TableCell>{category.entity}</TableCell>
+              <TableCell>
+                {category.entity ? entitiesMap[category.entity] : ""}
+              </TableCell>
               <TableCell>
                 <ResponsiveStack
                   direction="row"

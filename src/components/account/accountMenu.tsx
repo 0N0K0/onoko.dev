@@ -72,7 +72,7 @@ export default function AccountMenu() {
             <Button
               variant="text"
               onClick={handleCloseDialog}
-              sx={{ flex: "1 1 208px" }}
+              sx={{ flex: "1 1 auto" }}
             >
               Annuler
             </Button>
@@ -80,7 +80,7 @@ export default function AccountMenu() {
               component={Link}
               to="/logout"
               onClick={handleCloseDialog}
-              sx={{ flex: "1 1 208px" }}
+              sx={{ flex: "1 1 auto" }}
             >
               Me déconnecter
             </Button>

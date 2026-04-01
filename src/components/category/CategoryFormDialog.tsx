@@ -151,6 +151,7 @@ export default function CategoryFormDialog({
           onClick={() => setOpen(false)}
           disabled={submitting}
           startIcon={<Icon path={mdiClose} size={1} />}
+          sx={{ flex: "1 1 auto" }}
         >
           Annuler
         </Button>,
@@ -160,6 +161,7 @@ export default function CategoryFormDialog({
           onClick={typeof open === "string" ? handleEdit : handleAdd}
           disabled={submitting || !hasChanges || !label || !entity}
           startIcon={<Icon path={mdiCheck} size={1} />}
+          sx={{ flex: "1 1 auto" }}
         >
           {typeof open === "string" ? "Modifier" : "Ajouter"}
         </Button>,

@@ -185,7 +185,7 @@ export default function Categories() {
     <>
       <ResponsiveStack
         direction="row"
-        rowGap={0}
+        rowGap={3}
         columnGap={2}
         justifyContent="space-between"
         alignItems="center"
@@ -193,12 +193,15 @@ export default function Categories() {
         flexWrap="wrap"
       >
         <ResponsiveTitle variant="h1">Catégories</ResponsiveTitle>
-        <Button
-          onClick={() => setFormDialogOpen(true)}
-          startIcon={<Icon path={mdiPlus} size={1} />}
-        >
-          Ajouter une&nbsp;catégorie
-        </Button>
+        {categories && categories.length === 0 && (
+          <Button
+            onClick={() => setFormDialogOpen(true)}
+            startIcon={<Icon path={mdiPlus} size={1} />}
+            sx={{ marginX: "auto" }}
+          >
+            Ajouter une&nbsp;catégorie
+          </Button>
+        )}
       </ResponsiveStack>
       {loading ? (
         <CircularProgress />
