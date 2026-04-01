@@ -150,7 +150,9 @@ export default function Account() {
             flexDirection: "column",
             gap: 3,
             maxWidth: containerMaxWidth,
-            padding: "0px !important",
+            padding: "24px 0px 0px !important",
+            height: "100%",
+            overflowY: "auto",
           }}
           component="form"
         >

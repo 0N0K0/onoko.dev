@@ -152,7 +152,7 @@ export default function CategoriesTable({
             bottom: 0,
             backgroundColor: theme.palette.background.paper,
             display:
-              selectedCategories.length > 0 ? "table-footer-group" : "none",
+              selectedCategories.length > 1 ? "table-footer-group" : "none",
           }}
         >
           <TableRow sx={{}}>
