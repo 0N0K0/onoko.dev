@@ -6,7 +6,9 @@ import {
   Button,
   Checkbox,
   CircularProgress,
+  FormControl,
   IconButton,
+  InputLabel,
   MenuItem,
   Select,
   Table,
@@ -19,13 +21,7 @@ import {
 } from "@mui/material";
 import type { Category } from "../../types/categoryTypes";
 import Icon from "@mdi/react";
-import {
-  mdiCheckOutline,
-  mdiClose,
-  mdiDelete,
-  mdiPencil,
-  mdiPlus,
-} from "@mdi/js";
+import { mdiCheck, mdiClose, mdiDelete, mdiPencil, mdiPlus } from "@mdi/js";
 import CustomDialog from "../../components/custom/customDialog";
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
 import apolloClient from "../../services/appolloClient";
@@ -102,13 +98,24 @@ export default function Categories() {
       throw new Error(
         "Une erreur est survenue lors de la création de la catégorie.",
       );
-
+    setCategories((prev) =>
+      data.createCategory ? [...(prev || []), data.createCategory] : prev,
+    );
     try {
-      setSubmitSuccess("La catégorie a été créée avec succès.");
+      setSubmitSuccess(
+        `La catégorie ${data.createCategory.label} a été créée avec succès.`,
+      );
     } catch (e: any) {
       setSubmitError(e.message || "Une erreur inconnue est survenue.");
     } finally {
       setSubmitting(false);
+      setFormDialogOpen(false);
+      setInitialCategory(null);
+      setLabel("");
+      setEntity("");
+      setDescription("");
+      setParent("");
+      setHasChanges(false);
     }
   };
 
@@ -135,11 +142,25 @@ export default function Categories() {
         throw new Error(
           `Une erreur est survenue lors de la modification de la catégorie ${initialCategory.label}.`,
         );
-      setSubmitSuccess(`La catégorie ${label} a été modifiée avec succès.`);
+      setCategories((prev) =>
+        prev?.map((c) =>
+          c.id === data.updateCategory.id ? data.updateCategory : c,
+        ),
+      );
+      setSubmitSuccess(
+        `La catégorie ${data.updateCategory.label} a été modifiée avec succès.`,
+      );
     } catch (e: any) {
       setSubmitError(e.message || "Une erreur inconnue est survenue.");
     } finally {
       setSubmitting(false);
+      setFormDialogOpen(false);
+      setInitialCategory(null);
+      setLabel("");
+      setEntity("");
+      setDescription("");
+      setParent("");
+      setHasChanges(false);
     }
   };
 
@@ -149,6 +170,7 @@ export default function Categories() {
     setSubmitting(true);
     try {
       for (const categoryId of selectedCategories) {
+        const category = categories?.find((c) => c.id === categoryId);
         const { data } = await apolloClient.mutate<{ deleteCategory: boolean }>(
           {
             mutation: DELETE_CATEGORY_MUTATION,
@@ -157,16 +179,19 @@ export default function Categories() {
         );
         if (!data || !data.deleteCategory)
           throw new Error(
-            `Une erreur est survenue lors de la suppression de la catégorie ${categoryId}.`,
+            `Une erreur est survenue lors de la suppression de la catégorie ${category?.label || categoryId}.`,
           );
+        setCategories((prev) => prev?.filter((c) => c.id !== categoryId));
         setSubmitSuccess(
-          `La catégorie ${categoryId} a été supprimée avec succès.`,
+          `La catégorie ${category?.label || categoryId} a été supprimée avec succès.`,
         );
       }
     } catch (e: any) {
       setSubmitError(e.message || "Une erreur inconnue est survenue.");
     } finally {
       setSubmitting(false);
+      setDeleteDialogOpen(false);
+      setSelectedCategories([]);
     }
   };
 
@@ -191,101 +216,6 @@ export default function Categories() {
       ) : categories && categories.length > 0 ? (
         <>
           <CustomDialog
-            key="formDialog"
-            open={!!formDialogOpen}
-            onClose={() => setFormDialogOpen(false)}
-            title={`${
-              typeof formDialogOpen === "string" ? "Modifier la" : "Ajouter une"
-            } catégorie`}
-            content={(() => {
-              const category =
-                typeof formDialogOpen === "string"
-                  ? categories?.find((c) => c.id === formDialogOpen)
-                  : null;
-              return (
-                <ResponsiveStack rowGap={3}>
-                  <TextField
-                    label="Label"
-                    value={label}
-                    onChange={(e) => {
-                      setLabel(e.target.value);
-                      e.target.value !== (initialCategory?.label || "") &&
-                        setHasChanges(true);
-                    }}
-                    required
-                    fullWidth
-                  />
-                  <Select
-                    label="Entité"
-                    value={entity}
-                    onChange={(e) => {
-                      setEntity(e.target.value);
-                      e.target.value !== (initialCategory?.entity || "") &&
-                        setHasChanges(true);
-                    }}
-                    required
-                    fullWidth
-                  >
-                    <MenuItem value="stack">Technologies</MenuItem>
-                    <MenuItem value="project">Projets</MenuItem>
-                  </Select>
-                  <TextField
-                    label="Description"
-                    value={description}
-                    onChange={(e) => {
-                      setDescription(e.target.value);
-                      e.target.value !== (initialCategory?.description || "") &&
-                        setHasChanges(true);
-                    }}
-                    multiline
-                    rows={4}
-                    fullWidth
-                  />
-                  <Select
-                    label="Catégorie parente"
-                    value={parent}
-                    onChange={(e) => {
-                      setParent(e.target.value);
-                      e.target.value !== (initialCategory?.parent || "") &&
-                        setHasChanges(true);
-                    }}
-                    fullWidth
-                  >
-                    <MenuItem value="">Aucune</MenuItem>
-                    {categories
-                      ?.filter((c) => c.id !== category?.id)
-                      .map((c) => (
-                        <MenuItem key={c.id} value={c.id}>
-                          {c.label}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </ResponsiveStack>
-              );
-            })()}
-            actions={[
-              <Button
-                key="cancel"
-                onClick={() => setFormDialogOpen(false)}
-                disabled={submitting}
-                startIcon={<Icon path={mdiClose} />}
-              >
-                Annuler
-              </Button>,
-              <Button
-                key="confirm"
-                color="success"
-                onClick={
-                  typeof formDialogOpen === "string" ? handleEdit : handleAdd
-                }
-                disabled={submitting || !hasChanges || !label || !entity}
-                startIcon={<Icon path={mdiCheckOutline} />}
-              >
-                {typeof formDialogOpen === "string" ? "Modifier" : "Ajouter"}
-              </Button>,
-            ]}
-          />
-          <CustomDialog
             key="deleteDialog"
             open={deleteDialogOpen}
             onClose={() => setDeleteDialogOpen(false)}
@@ -296,7 +226,7 @@ export default function Categories() {
                 key="cancel"
                 onClick={() => setDeleteDialogOpen(false)}
                 disabled={submitting}
-                startIcon={<Icon path={mdiClose} />}
+                startIcon={<Icon path={mdiClose} size={1} />}
               >
                 Annuler
               </Button>,
@@ -308,7 +238,7 @@ export default function Categories() {
                   setDeleteDialogOpen(false);
                 }}
                 disabled={submitting}
-                startIcon={<Icon path={mdiDelete} />}
+                startIcon={<Icon path={mdiDelete} size={1} />}
               >
                 Supprimer
               </Button>,
@@ -336,8 +266,9 @@ export default function Categories() {
                   <IconButton
                     disabled={submitting}
                     onClick={() => setFormDialogOpen(true)}
+                    color="primary"
                   >
-                    <Icon path={mdiPlus}></Icon>
+                    <Icon path={mdiPlus} size={1}></Icon>
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -366,7 +297,7 @@ export default function Categories() {
                   <TableCell>{category.label}</TableCell>
                   <TableCell>
                     <IconButton
-                      color="warning"
+                      color="primary"
                       disabled={submitting}
                       onClick={() => {
                         setInitialCategory(category);
@@ -377,7 +308,7 @@ export default function Categories() {
                         setFormDialogOpen(category.id);
                       }}
                     >
-                      <Icon path={mdiPencil}></Icon>
+                      <Icon path={mdiPencil} size={1}></Icon>
                     </IconButton>
                     <IconButton
                       color="error"
@@ -387,7 +318,7 @@ export default function Categories() {
                       }}
                       disabled={submitting}
                     >
-                      <Icon path={mdiDelete}></Icon>
+                      <Icon path={mdiDelete} size={1}></Icon>
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -398,7 +329,7 @@ export default function Categories() {
                 <TableCell colSpan={4}>
                   <Button
                     color="error"
-                    startIcon={<Icon path={mdiDelete} />}
+                    startIcon={<Icon path={mdiDelete} size={1} />}
                     onClick={handleDelete}
                     disabled={selectedCategories.length < 1 || submitting}
                   >
@@ -412,11 +343,126 @@ export default function Categories() {
       ) : (
         <Button
           onClick={() => setFormDialogOpen(true)}
-          startIcon={<Icon path={mdiPlus} />}
+          startIcon={<Icon path={mdiPlus} size={1} />}
         >
           Ajouter une catégorie
         </Button>
       )}
+      <CustomDialog
+        key="formDialog"
+        open={!!formDialogOpen}
+        onClose={() => {
+          (setFormDialogOpen(false),
+            setInitialCategory(null),
+            setLabel(""),
+            setEntity(""),
+            setDescription(""),
+            setParent(""),
+            setHasChanges(false));
+        }}
+        title={`${
+          typeof formDialogOpen === "string" ? "Modifier la" : "Ajouter une"
+        } catégorie`}
+        content={(() => {
+          const category =
+            typeof formDialogOpen === "string"
+              ? categories?.find((c) => c.id === formDialogOpen)
+              : null;
+          return (
+            <ResponsiveStack rowGap={3} style={{ overflow: "visible" }}>
+              <TextField
+                label="Label"
+                value={label}
+                onChange={(e) => {
+                  setLabel(e.target.value);
+                  e.target.value !== (initialCategory?.label || "") &&
+                    setHasChanges(true);
+                }}
+                required
+                fullWidth
+              />
+              <FormControl fullWidth>
+                <InputLabel id="entity-label" required>
+                  Entité
+                </InputLabel>
+                <Select
+                  labelId="entity-label"
+                  label="Entité"
+                  value={entity}
+                  onChange={(e) => {
+                    setEntity(e.target.value);
+                    e.target.value !== (initialCategory?.entity || "") &&
+                      setHasChanges(true);
+                  }}
+                  required
+                  fullWidth
+                >
+                  <MenuItem value="stack">Technologies</MenuItem>
+                  <MenuItem value="project">Projets</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                label="Description"
+                value={description}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                  e.target.value !== (initialCategory?.description || "") &&
+                    setHasChanges(true);
+                }}
+                multiline
+                rows={4}
+                fullWidth
+              />
+              <FormControl fullWidth>
+                <InputLabel id="parent-category-label">
+                  Catégorie parente
+                </InputLabel>
+                <Select
+                  labelId="parent-category-label"
+                  label="Catégorie parente"
+                  value={parent}
+                  onChange={(e) => {
+                    setParent(e.target.value);
+                    e.target.value !== (initialCategory?.parent || "") &&
+                      setHasChanges(true);
+                  }}
+                  fullWidth
+                >
+                  <MenuItem value="">Aucune</MenuItem>
+                  {categories
+                    ?.filter((c) => c.id !== category?.id)
+                    .map((c) => (
+                      <MenuItem key={c.id} value={c.id}>
+                        {c.label}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </ResponsiveStack>
+          );
+        })()}
+        actions={[
+          <Button
+            key="cancel"
+            onClick={() => setFormDialogOpen(false)}
+            disabled={submitting}
+            startIcon={<Icon path={mdiClose} size={1} />}
+          >
+            Annuler
+          </Button>,
+          <Button
+            key="confirm"
+            color="success"
+            onClick={
+              typeof formDialogOpen === "string" ? handleEdit : handleAdd
+            }
+            disabled={submitting || !hasChanges || !label || !entity}
+            startIcon={<Icon path={mdiCheck} size={1} />}
+          >
+            {typeof formDialogOpen === "string" ? "Modifier" : "Ajouter"}
+          </Button>,
+        ]}
+      />
     </>
   );
 }
