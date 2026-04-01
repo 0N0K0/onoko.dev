@@ -11,6 +11,9 @@ import CustomDialog from "./custom/customDialog";
 import { Link, useLocation } from "react-router";
 import { useState } from "react";
 import CustomMenu from "./custom/customMenu";
+import ResponsiveBodyTypography from "./custom/responsiveBodyTypography";
+import { useAuth } from "../hooks/useAuth";
+import { ResponsiveStack } from "./custom/responsiveLayout";
 
 export default function AccountMenu() {
   const [logoutConfirm, setLogoutConfirm] = useState(false);
@@ -20,9 +23,13 @@ export default function AccountMenu() {
     setAnchorEl(null);
   };
   const location = useLocation();
+  const { user } = useAuth();
 
   return (
-    <>
+    <ResponsiveStack direction="row" spacing={1}>
+      <ResponsiveBodyTypography variant="bodyXs" color="textSecondary">
+        Bonjour {user} !
+      </ResponsiveBodyTypography>
       <IconButton
         onClick={(e) => setAnchorEl(e.currentTarget)}
         color="inherit"
@@ -70,6 +77,6 @@ export default function AccountMenu() {
           </>
         }
       />
-    </>
+    </ResponsiveStack>
   );
 }

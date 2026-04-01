@@ -10,12 +10,17 @@ import ResetPasswordLink from "../../components/resetPasswordLink";
 import NewPasswordFields from "../../components/newPasswordFields";
 import ClosableSnackbar from "../../components/custom/closableSnackbar";
 import CustomSnackbar from "../../components/custom/customSnackBar";
+import { useResponsiveWidth } from "../../hooks/useResponsiveWidth";
 
 /**
  * Page de gestion du compte utilisateur dans l'espace admin.
  * Permet de voir et modifier le login, l'email et le mot de passe du compte.
  */
 export default function Account() {
+  const containerMaxWidth = {
+    xs: useResponsiveWidth(6),
+    xl: useResponsiveWidth(8),
+  };
   const [loadingUser, setLoadingUser] = useState(true);
   const [initialUser, setInitialUser] = useState<{
     login: string;
@@ -144,14 +149,17 @@ export default function Account() {
             display: "flex",
             flexDirection: "column",
             gap: 3,
+            maxWidth: containerMaxWidth,
+            padding: "0px !important",
           }}
           component="form"
-          maxWidth="lg"
         >
           <ResponsiveStack rowGap={3} width="100%">
             <ResponsiveStack
-              direction="row"
-              rowGap={2}
+              sx={{
+                flexDirection: { xs: "column", sm: "row" },
+              }}
+              rowGap={3}
               columnGap={2}
               width="100%"
             >
@@ -173,8 +181,10 @@ export default function Account() {
             </ResponsiveStack>
 
             <ResponsiveStack
-              direction="row"
-              rowGap={2}
+              sx={{
+                flexDirection: { xs: "column", sm: "row" },
+              }}
+              rowGap={3}
               columnGap={2}
               width="100%"
             >

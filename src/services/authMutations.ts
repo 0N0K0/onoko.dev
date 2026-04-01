@@ -10,7 +10,9 @@ export const LOGIN_MUTATION = gql`
 
 export const VERIFY_TOKEN_MUTATION = gql`
   mutation VerifyToken($token: String!) {
-    verifyToken(token: $token)
+    verifyToken(token: $token) {
+      login
+    }
   }
 `;
 

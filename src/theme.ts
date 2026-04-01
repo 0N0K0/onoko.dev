@@ -1,4 +1,3 @@
-import { c } from "@apollo/client/react/internal/compiler-runtime";
 import { createTheme, type Theme } from "@mui/material/styles";
 
 // Breakpoints verticaux basés sur la hauteur de l'écran, en complément des breakpoints horizontaux classiques.
@@ -295,6 +294,24 @@ const baseTheme = createTheme({
         },
       },
     },
+    MuiList: {
+      styleOverrides: {
+        root: {
+          padding: "0px",
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          fontSize: "1rem",
+          lineHeight: 1.5,
+          letterSpacing: "normal",
+          padding: "12px 16px",
+          gap: "8px",
+        },
+      },
+    },
     MuiListItemIcon: {
       styleOverrides: {
         root: {
@@ -320,7 +337,7 @@ const sizes = () => {
   const rootPaddingX = "32px";
   const columnGap = "16px";
   const rowGap = "24px";
-  const rootWidth = `calc(100dvw - ${rootPaddingX} * 2)`;
+  const rootWidth = `calc(min(100dvw, 1920px) - ${rootPaddingX} * 2)`;
   const divisions = {
     xs: 3,
     sm: 4,
@@ -334,10 +351,9 @@ const sizes = () => {
     columns: number,
     baseWidth: string = rootWidth,
   ) => {
-    const totalColumnGap =
-      columns > 1 ? `calc(${columnGap} * ${columns - 1})` : "0px";
+    if (columns > division) columns = division;
     if (columns < 1) return "100dvw";
-    return `calc((${baseWidth} - ${totalColumnGap}) / ${division} * ${columns})`;
+    return `calc(${baseWidth} / ${division} * ${columns})`;
   };
   const colCounts = Array.from({ length: 11 }, (_, i) => i + 2);
   const colSizes = Object.fromEntries(
@@ -377,7 +393,7 @@ const customShapes = {
 Object.assign(baseTheme.shape, customShapes);
 
 // Injection des tailles personnalisées dans le thème
-(baseTheme as any).sizes = sizes;
+(baseTheme as any).sizes = sizes();
 
 const theme = baseTheme as Theme;
 

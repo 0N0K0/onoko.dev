@@ -21,6 +21,30 @@ declare module "@mui/material/styles" {
     bodySm?: React.CSSProperties;
     bodyXs?: React.CSSProperties;
   }
+
+  interface Theme {
+    sizes: {
+      adminHeaderHeight: number;
+      rootPaddingY: number;
+      rootPaddingX: number;
+      rowGap: number;
+      columnGap: number;
+      rootWidth: string;
+      columnWidth: (
+        division: number,
+        columns: number,
+        baseWidth?: string,
+      ) => string;
+      [key: `${number}col`]: {
+        xs: string;
+        sm: string;
+        md: string;
+        lg: string;
+        xl: string;
+        xxl: string;
+      };
+    };
+  }
 }
 
 declare module "@mui/material/Typography" {
@@ -37,3 +61,5 @@ declare module "@mui/material/IconButton" {
     adminMenu: true;
   }
 }
+
+declare module "@m";

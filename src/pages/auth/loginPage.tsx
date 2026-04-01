@@ -1,11 +1,9 @@
-import { TextField, Button } from "@mui/material";
+import { TextField } from "@mui/material";
 import { useState } from "react";
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
-import ResponsiveTitle from "../../components/custom/responsiveTitle";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import PasswordField from "../../components/custom/passwordField";
-import ResetPasswordLink from "../../components/resetPasswordLink";
 import { useAuth } from "../../hooks/useAuth";
 import CustomSnackbar from "../../components/custom/customSnackBar";
 import AuthLayout from "../../layout/auth/authLayout";
@@ -52,16 +50,17 @@ export default function Login() {
   if (loading || redirecting) return null;
 
   return (
-    <AuthLayout component="form" onSubmit={handleSubmit}>
+    <AuthLayout
+      title="Accéder à&nbsp;l'espace Administrateur"
+      returnButton={{ to: "/", text: "Revenir au site", disabled: loading }}
+      submitButton={{
+        text: loading ? "Connexion..." : "Me connecter",
+        disabled: loading || !login || !password,
+      }}
+      onSubmit={handleSubmit}
+      hasResetPasswordLink
+    >
       {error && <CustomSnackbar open={true} message={error} severity="error" />}
-      <ResponsiveTitle
-        variant="h5"
-        textAlign="center"
-        component="h1"
-        width="100%"
-      >
-        Accéder à l'espace Administrateur
-      </ResponsiveTitle>
       <ResponsiveStack rowGap={3} width="100%">
         <TextField
           label="Identifiant"
@@ -84,31 +83,6 @@ export default function Login() {
           errorText={error}
           required
         />
-      </ResponsiveStack>
-      <ResponsiveStack rowGap={3} width="100%" alignItems="end">
-        <ResponsiveStack direction="row" rowGap={2} columnGap={2} width="100%">
-          <Button
-            variant="text"
-            color="primary"
-            fullWidth
-            sx={{ textWrap: "nowrap" }}
-            component={RouterLink}
-            to="/"
-            disabled={loading}
-          >
-            Revenir au site
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            type="submit"
-            disabled={loading || !login || !password}
-          >
-            {loading ? "Connexion..." : "Me connecter"}
-          </Button>
-        </ResponsiveStack>
-        <ResetPasswordLink />
       </ResponsiveStack>
     </AuthLayout>
   );
