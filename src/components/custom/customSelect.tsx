@@ -9,15 +9,9 @@ export default function CustomSelect({
   options,
 }: CustomSelectProps) {
   return (
-    <FormControl fullWidth>
+    <FormControl>
       <InputLabel id={labelId}>{label}</InputLabel>
-      <Select
-        labelId={labelId}
-        label={label}
-        value={value}
-        onChange={onChange}
-        fullWidth
-      >
+      <Select labelId={labelId} label={label} value={value} onChange={onChange}>
         <MenuItem value="">Aucune</MenuItem>
         {options?.map((o: { id: string; label: string }) => (
           <MenuItem key={o.id} value={o.id}>

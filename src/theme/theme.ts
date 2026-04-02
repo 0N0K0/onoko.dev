@@ -26,6 +26,9 @@ import {
   LIST_ITEM_TEXT,
 } from "./components/list";
 import { TABLE_CELL } from "./components/table";
+import { FORM_HELPER_TEXT, FORM_LABEL } from "./components/form";
+import { SELECT } from "./components/select";
+import { INPUT_BASE, INPUT_LABEL } from "./components/input";
 
 // Thème personnalisé pour l'application, basé sur le thème sombre de Material-UI avec des couleurs et des typographies adaptées.
 const baseTheme = createTheme({
@@ -42,6 +45,10 @@ const baseTheme = createTheme({
     MuiDialogContent: DIALOG_CONTENT,
     MuiDialogContentText: DIALOG_CONTENT_TEXT,
     MuiDialogActions: DIALOG_ACTIONS,
+    MuiFormLabel: FORM_LABEL,
+    MuiFormHelperText: FORM_HELPER_TEXT,
+    MuiInputBase: INPUT_BASE,
+    MuiInputLabel: INPUT_LABEL,
     MuiIconButton: ICON_BUTTON,
     MuiList: LIST,
     MuiListItemButton: LIST_ITEM_BUTTON,
@@ -49,6 +56,7 @@ const baseTheme = createTheme({
     MuiListItemIcon: LIST_ITEM_ICON,
     MuiMenu: MENU,
     MuiMenuItem: MENU_ITEM,
+    MuiSelect: SELECT,
     MuiSnackbar: SNACKBAR,
     MuiTableCell: TABLE_CELL,
     MuiTextField: TEXT_FIELD,

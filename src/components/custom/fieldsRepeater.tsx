@@ -3,6 +3,7 @@ import { ResponsiveStack } from "./responsiveLayout";
 import { mdiDelete } from "@mdi/js";
 import type { FieldsRepeaterProps } from "../../types/baseComponent";
 import CustomIconButton from "./customIconButton";
+import ResponsiveTitle from "./responsiveTitle";
 
 /**
  * Composant pour gérer une liste dynamique de champs
@@ -14,6 +15,7 @@ import CustomIconButton from "./customIconButton";
  * @param {function} props.fields Fonction qui retourne les champs à afficher pour chaque élément de la liste (reçoit la valeur, l'index et une fonction onChange)
  */
 export default function FieldsRepeater({
+  label,
   editingItem,
   values,
   setEditingItem,
@@ -23,7 +25,20 @@ export default function FieldsRepeater({
   const items = editingItem?.[values] || [];
 
   return (
-    <>
+    <ResponsiveStack
+      paddingLeft={items.length ? 2 : 0}
+      paddingY={items.length ? 3 : 0}
+      rowGap={3}
+      sx={{
+        borderLeft: items.length ? "2px solid" : "none",
+        borderColor: "divider",
+      }}
+    >
+      {items.length > 0 && (
+        <ResponsiveTitle variant="h6" component="h3">
+          {label.title}
+        </ResponsiveTitle>
+      )}
       {items.map((value: any, idx: number) => (
         <ResponsiveStack
           direction="row"
@@ -59,8 +74,8 @@ export default function FieldsRepeater({
           setHasChanges(true);
         }}
       >
-        + Ajouter
+        + Ajouter {label.add}
       </Button>
-    </>
+    </ResponsiveStack>
   );
 }

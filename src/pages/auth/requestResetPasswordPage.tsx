@@ -67,7 +67,6 @@ export default function RequestResetPassword() {
       <ResponsiveStack rowGap={3} width="100%">
         <TextField
           label="Adresse e-mail"
-          fullWidth
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}

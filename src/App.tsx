@@ -25,12 +25,13 @@ export default function App() {
           "::-webkit-scrollbar": {
             width: "16px",
             height: "16px",
-            background: theme.palette.background.paper,
+            background: "transparent",
           },
           "::-webkit-scrollbar-thumb": {
             background: theme.palette.divider,
             borderRadius: "8px",
-            border: `4px solid ${theme.palette.background.paper}`,
+            border: `4px solid transparent`,
+            backgroundClip: "content-box",
           },
           "::-webkit-scrollbar-thumb:hover": {
             background: theme.palette.text.secondary,

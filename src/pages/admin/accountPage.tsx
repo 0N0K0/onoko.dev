@@ -167,14 +167,12 @@ export default function Account() {
             >
               <TextField
                 label="Nom d'utilisateur"
-                fullWidth
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
                 autoComplete="username"
               />
               <TextField
                 label="Adresse e-mail"
-                fullWidth
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

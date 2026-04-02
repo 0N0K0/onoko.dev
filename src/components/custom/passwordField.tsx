@@ -30,7 +30,6 @@ export default function PasswordField({
     <TextField
       label={label}
       type={showPassword ? "text" : "password"}
-      fullWidth
       required={required}
       value={value}
       onChange={onChange}

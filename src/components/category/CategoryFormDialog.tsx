@@ -68,7 +68,6 @@ export default function CategoryFormDialog({
                   setHasChanges(true);
               }}
               required
-              fullWidth
             />
             <CustomSelect
               label="Entité"
@@ -101,8 +100,6 @@ export default function CategoryFormDialog({
                   setHasChanges(true);
               }}
               multiline
-              rows={4}
-              fullWidth
             />
             <CustomSelect
               label="Catégorie parente"
