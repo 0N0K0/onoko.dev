@@ -1,3 +1,4 @@
+import type { useEntityMutationProps } from "./entityTypes";
 import type { Stack } from "./stackTypes";
 
 /**
@@ -30,19 +31,20 @@ export interface CategoryFormDialogProps {
   submitting: boolean;
 }
 
-export interface useCategoryMutationProps {
-  setSubmitSuccess: React.Dispatch<React.SetStateAction<string>>;
-  setSubmitError: React.Dispatch<React.SetStateAction<string>>;
-  setSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
-  setFormDialogOpen?: React.Dispatch<React.SetStateAction<string | boolean>>;
+export interface useCategoryMutationProps extends useEntityMutationProps {
   initialCategory?: Category | null;
   setInitialCategory?: React.Dispatch<React.SetStateAction<Category | null>>;
   editingCategory?: Partial<Category> | null;
   setEditingCategory?: React.Dispatch<
     React.SetStateAction<Partial<Category> | null>
   >;
-  hasChanges?: boolean;
-  setHasChanges?: React.Dispatch<React.SetStateAction<boolean>>;
   categories?: Category[] | undefined;
   setCategories: React.Dispatch<React.SetStateAction<Category[] | undefined>>;
+}
+
+export interface CategoryContextType {
+  categories: Category[] | undefined;
+  setCategories: React.Dispatch<React.SetStateAction<Category[] | undefined>>;
+  loading: boolean;
+  itemsError: string;
 }

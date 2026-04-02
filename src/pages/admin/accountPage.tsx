@@ -2,8 +2,8 @@ import { Button, CircularProgress, Container, TextField } from "@mui/material";
 import ResponsiveTitle from "../../components/custom/responsiveTitle";
 import { useState, useEffect } from "react";
 import apolloClient from "../../services/appolloClient";
-import { ACCOUNT_QUERY } from "../../services/accountQueries";
-import { UPDATE_ACCOUNT_MUTATION } from "../../services/accountMutations";
+import { ACCOUNT_QUERY } from "../../services/account/accountQueries";
+import { UPDATE_ACCOUNT_MUTATION } from "../../services/account/accountMutations";
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
 import PasswordField from "../../components/custom/passwordField";
 import ResetPasswordLink from "../../components/account/resetPasswordLink";
@@ -167,14 +167,12 @@ export default function Account() {
             >
               <TextField
                 label="Nom d'utilisateur"
-                fullWidth
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
                 autoComplete="username"
               />
               <TextField
                 label="Adresse e-mail"
-                fullWidth
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

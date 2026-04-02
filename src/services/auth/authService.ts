@@ -1,4 +1,4 @@
-import apolloClient from "./appolloClient";
+import apolloClient from "../appolloClient";
 import { LOGIN_MUTATION } from "./authMutations";
 
 /**

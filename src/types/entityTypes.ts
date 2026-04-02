@@ -37,6 +37,7 @@ export interface useEntityMutationProps {
   setFormDialogOpen?: React.Dispatch<React.SetStateAction<string | boolean>>;
   setInitialItem?: React.Dispatch<React.SetStateAction<any>>;
   setEditingItem?: React.Dispatch<React.SetStateAction<any>>;
+  hasChanges?: boolean;
   setHasChanges?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 

@@ -1,11 +1,11 @@
 import { createContext, useEffect, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginApi } from "../services/authService";
+import { loginApi } from "../services/auth/authService";
 import apolloClient from "../services/appolloClient";
 import {
   VERIFY_TOKEN_MUTATION,
   REFRESH_TOKEN_MUTATION,
-} from "../services/authMutations";
+} from "../services/auth/authMutations";
 import type { AuthContextType } from "../types/authTypes";
 
 export const AuthContext = createContext<AuthContextType | undefined>(

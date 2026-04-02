@@ -2,7 +2,7 @@ import {
   CREATE_CATEGORY_MUTATION,
   DELETE_CATEGORY_MUTATION,
   UPDATE_CATEGORY_MUTATION,
-} from "../services/categoryMutations";
+} from "../services/category/categoryMutations";
 import type { useCategoryMutationProps } from "../types/categoryTypes";
 import { useEntityMutation } from "./useEntityMutation";
 
@@ -20,7 +20,11 @@ import { useEntityMutation } from "./useEntityMutation";
  * @param {Function} props.setHasChanges - Fonction pour indiquer s'il y a des changements non sauvegardés.
  * @param {Array<Category>} props.categories - La liste actuelle des catégories.
  * @param {Function} props.setCategories - Fonction pour mettre à jour la liste des catégories.
- * @returns {{handleAdd: () => Promise<void>, handleEdit: () => Promise<void>, handleDelete: (selectedCategories: string[]) => Promise<void>}} Un ensemble de fonctions pour gérer respectivement l'ajout, la modification et la suppression des catégories.
+ * @returns {{
+ *            handleAdd: () => Promise<void>,
+ *            handleEdit: () => Promise<void>,
+ *            handleDelete: (selectedCategories: string[]) => Promise<void>
+ *           }} Un ensemble de fonctions pour gérer respectivement l'ajout, la modification et la suppression des catégories.
  */
 export default function useCategoryMutations({
   setSubmitSuccess,
@@ -52,7 +56,7 @@ export default function useCategoryMutations({
       variables: editingCategory,
       onSuccess: (data) => {
         setCategories((prev) => [...(prev || []), data.createCategory]);
-        setSubmitSuccess(
+        setSubmitSuccess?.(
           `La catégorie ${data.createCategory.label} a été créée avec succès.`,
         );
       },
@@ -80,7 +84,7 @@ export default function useCategoryMutations({
             c.id === data.updateCategory.id ? data.updateCategory : c,
           ),
         );
-        setSubmitSuccess(
+        setSubmitSuccess?.(
           `La catégorie ${data.updateCategory.label} a été modifiée avec succès.`,
         );
       },
@@ -102,7 +106,7 @@ export default function useCategoryMutations({
         variables: { id: categoryId },
         onSuccess: () => {
           setCategories((prev) => prev?.filter((c) => c.id !== categoryId));
-          setSubmitSuccess(
+          setSubmitSuccess?.(
             `La catégorie ${category?.label || categoryId} a été supprimée avec succès.`,
           );
         },

@@ -64,7 +64,6 @@ export default function Login() {
       <ResponsiveStack rowGap={3} width="100%">
         <TextField
           label="Identifiant"
-          fullWidth
           value={login}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setLogin(e.target.value)

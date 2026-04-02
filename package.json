@@ -19,8 +19,10 @@
     "@mui/material": "^7.2.0",
     "apollo-upload-client": "^19.0.0",
     "normalize.css": "^8.0.1",
+    "quill": "^2.0.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-dropzone": "^15.0.0",
     "react-router-dom": "^7.13.2"
   },
   "devDependencies": {
