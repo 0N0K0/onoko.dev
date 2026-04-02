@@ -165,7 +165,7 @@ export default function CustomTable({
               >
                 <TableRow sx={{}}>
                   <TableCell
-                    colSpan={4}
+                    colSpan={fields.length + 2}
                     align="right"
                     sx={{ borderTop: `1px solid rgba(81, 81, 81, 1)` }}
                   >
@@ -175,7 +175,7 @@ export default function CustomTable({
                       onClick={() => setDeleteDialogOpen(true)}
                       disabled={submitting}
                     >
-                      Supprimer les catégories sélectionnées
+                      Supprimer la sélection
                     </Button>
                   </TableCell>
                 </TableRow>

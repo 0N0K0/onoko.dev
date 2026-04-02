@@ -61,6 +61,8 @@ export default function Stacks() {
     setStacks,
   });
 
+  console.log(stacks);
+
   return (
     <>
       <EntitiesPage
@@ -79,7 +81,7 @@ export default function Stacks() {
             content: (item: Stack) => (
               <img
                 src={API_URL + item.iconUrl}
-                style={{ width: "3rem", height: "3rem" }}
+                style={{ width: "3rem", height: "3rem", objectFit: "contain" }}
               />
             ),
           },

@@ -69,7 +69,11 @@ export default function StackFormDialog({
                       ? URL.createObjectURL(editingStack.iconFile)
                       : API_URL + editingStack.iconUrl
                   }
-                  style={{ width: "6rem", height: "6rem" }}
+                  style={{
+                    width: "6rem",
+                    height: "6rem",
+                    objectFit: "contain",
+                  }}
                 />
                 <CustomIconButton
                   icon={editIcon ? mdiClose : mdiPencil}
