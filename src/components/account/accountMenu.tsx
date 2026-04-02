@@ -1,12 +1,6 @@
 import { mdiAccount, mdiAccountCog, mdiLogout } from "@mdi/js";
 import Icon from "@mdi/react";
-import {
-  Button,
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-} from "@mui/material";
+import { Button, ListItemIcon, ListItemText, MenuItem } from "@mui/material";
 import CustomDialog from "../custom/customDialog";
 import { Link, useLocation } from "react-router";
 import { useState } from "react";
@@ -14,6 +8,7 @@ import CustomMenu from "../custom/customMenu";
 import ResponsiveBodyTypography from "../custom/responsiveBodyTypography";
 import { useAuth } from "../../hooks/useAuth";
 import { ResponsiveStack } from "../custom/responsiveLayout";
+import CustomIconButton from "../custom/customIconButton";
 
 export default function AccountMenu() {
   const [logoutConfirm, setLogoutConfirm] = useState(false);
@@ -30,13 +25,15 @@ export default function AccountMenu() {
       <ResponsiveBodyTypography variant="bodyXs" color="textSecondary">
         Bonjour {user} !
       </ResponsiveBodyTypography>
-      <IconButton
-        onClick={(e) => setAnchorEl(e.currentTarget)}
+      <CustomIconButton
+        icon={mdiAccount}
+        onClick={(e: React.MouseEvent<HTMLElement>) =>
+          setAnchorEl(e.currentTarget)
+        }
         color="inherit"
         size="adminMenu"
-      >
-        <Icon path={mdiAccount} size="1rem" />
-      </IconButton>
+        iconSize="1rem"
+      />
       <CustomMenu
         id="account-menu"
         anchorEl={anchorEl}

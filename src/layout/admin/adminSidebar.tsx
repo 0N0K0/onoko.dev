@@ -9,7 +9,12 @@ import {
 import { ResponsiveDrawer } from "../../components/custom/responsiveLayout";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 import Icon from "@mdi/react";
-import { mdiAccountCog, mdiTag, mdiViewDashboard } from "@mdi/js";
+import {
+  mdiAccountCog,
+  mdiApplicationArrayOutline,
+  mdiTag,
+  mdiViewDashboard,
+} from "@mdi/js";
 
 /**
  * Sidebar pour la partie admin, affichée uniquement sur les écrans md et plus grands
@@ -54,6 +59,21 @@ export default function AdminSidebar() {
               <Icon path={mdiViewDashboard} size={1} />
             </ListItemIcon>
             <ListItemText>Tableau de bord</ListItemText>
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton
+            component="a"
+            href="/admin/stacks"
+            selected={window.location.pathname === "/admin/stacks"}
+            sx={{
+              paddingLeft: "32px",
+            }}
+          >
+            <ListItemIcon>
+              <Icon path={mdiApplicationArrayOutline} size={1} />
+            </ListItemIcon>
+            <ListItemText>Technologies</ListItemText>
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>

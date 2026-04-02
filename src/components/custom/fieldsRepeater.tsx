@@ -1,8 +1,8 @@
-import { Button, IconButton } from "@mui/material";
+import { Button } from "@mui/material";
 import { ResponsiveStack } from "./responsiveLayout";
-import Icon from "@mdi/react";
 import { mdiDelete } from "@mdi/js";
 import type { FieldsRepeaterProps } from "../../types/baseComponent";
+import CustomIconButton from "./customIconButton";
 
 /**
  * Composant pour gérer une liste dynamique de champs
@@ -37,7 +37,8 @@ export default function FieldsRepeater({
             setEditingItem({ ...editingItem, [values]: newValues });
             setHasChanges(true);
           })}
-          <IconButton
+          <CustomIconButton
+            icon={mdiDelete}
             color="error"
             onClick={() => {
               const newValues = (editingItem[values] || []).filter(
@@ -46,9 +47,7 @@ export default function FieldsRepeater({
               setEditingItem({ ...editingItem, [values]: newValues });
               setHasChanges(true);
             }}
-          >
-            <Icon path={mdiDelete} size={1} />
-          </IconButton>
+          />
         </ResponsiveStack>
       ))}
       <Button

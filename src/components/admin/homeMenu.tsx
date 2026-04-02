@@ -1,21 +1,23 @@
 import { mdiHome } from "@mdi/js";
-import Icon from "@mdi/react";
-import { IconButton, MenuItem } from "@mui/material";
+import { MenuItem } from "@mui/material";
 import CustomMenu from "../custom/customMenu";
 import { Link } from "react-router";
 import { useState } from "react";
+import CustomIconButton from "../custom/customIconButton";
 
 export default function HomeMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   return (
     <>
-      <IconButton
+      <CustomIconButton
         size="adminMenu"
-        onClick={(e) => setAnchorEl(e.currentTarget)}
+        onClick={(e: React.MouseEvent<HTMLElement>) =>
+          setAnchorEl(e.currentTarget)
+        }
         color="inherit"
-      >
-        <Icon path={mdiHome} size="1rem" />
-      </IconButton>
+        iconSize="1rem"
+        icon={mdiHome}
+      />
       <CustomMenu
         id="home-menu"
         anchorEl={anchorEl}

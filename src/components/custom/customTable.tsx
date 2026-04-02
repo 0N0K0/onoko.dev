@@ -3,7 +3,6 @@ import Icon from "@mdi/react";
 import {
   Button,
   Checkbox,
-  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -17,6 +16,7 @@ import { useState } from "react";
 import { ResponsiveStack } from "./responsiveLayout";
 import DeleteConfirmationDialog from "../entities/DeleteConfirmationDialog";
 import type { CustomTableProps } from "../../types/baseComponent";
+import CustomIconButton from "./customIconButton";
 
 /**
  * Composant de table personnalisée utilisant MUI Table
@@ -84,13 +84,12 @@ export default function CustomTable({
               ))}
               {onClickAdd && (
                 <TableCell sx={{ width: "1%", whiteSpace: "nowrap" }}>
-                  <IconButton
+                  <CustomIconButton
+                    icon={mdiPlus}
                     disabled={submitting}
                     onClick={onClickAdd}
                     color="primary"
-                  >
-                    <Icon path={mdiPlus} size={1}></Icon>
-                  </IconButton>
+                  />
                 </TableCell>
               )}
             </TableRow>
@@ -129,25 +128,23 @@ export default function CustomTable({
                       justifyContent="flex-end"
                     >
                       {onClickEdit && (
-                        <IconButton
+                        <CustomIconButton
+                          icon={mdiPencil}
                           color="primary"
                           disabled={submitting}
                           onClick={() => onClickEdit(item.id)}
-                        >
-                          <Icon path={mdiPencil} size={1}></Icon>
-                        </IconButton>
+                        />
                       )}
                       {onClickDelete && (
-                        <IconButton
+                        <CustomIconButton
+                          icon={mdiDelete}
                           color="error"
                           disabled={submitting}
                           onClick={() => {
                             setSelectedItems([item.id]);
                             setDeleteDialogOpen(true);
                           }}
-                        >
-                          <Icon path={mdiDelete} size={1}></Icon>
-                        </IconButton>
+                        />
                       )}
                     </ResponsiveStack>
                   </TableCell>

@@ -1,8 +1,8 @@
-import { IconButton, InputAdornment, TextField } from "@mui/material";
-import Icon from "@mdi/react";
+import { InputAdornment, TextField } from "@mui/material";
 import { mdiEyeOff, mdiEye } from "@mdi/js";
 import { useState } from "react";
 import type { PasswordFieldProps } from "../../types/baseComponent";
+import CustomIconButton from "./customIconButton";
 
 /**
  * Composant de champ de mot de passe avec option d'affichage du mot de passe.
@@ -41,21 +41,11 @@ export default function PasswordField({
         input: {
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton
+              <CustomIconButton
                 onClick={() => setShowPassword((v) => !v)}
                 edge="end"
-                aria-label={
-                  showPassword
-                    ? "Masquer le mot de passe"
-                    : "Afficher le mot de passe"
-                }
-              >
-                {showPassword ? (
-                  <Icon path={mdiEyeOff} size={1} />
-                ) : (
-                  <Icon path={mdiEye} size={1} />
-                )}
-              </IconButton>
+                icon={showPassword ? mdiEyeOff : mdiEye}
+              />
             </InputAdornment>
           ),
         },
