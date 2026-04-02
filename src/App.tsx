@@ -14,6 +14,7 @@ import { AuthProvider } from "./context/AuthContext";
 import Categories from "./pages/admin/categoriesPage";
 import { GlobalStyles, useTheme } from "@mui/material";
 import { CategoryProvider } from "./context/CategoryContext";
+import Stacks from "./pages/admin/stackPage";
 
 export default function App() {
   const theme = useTheme();
@@ -78,6 +79,7 @@ export default function App() {
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/account" element={<Account />} />
                         <Route path="/categories" element={<Categories />} />
+                        <Route path="/stacks" element={<Stacks />} />
                       </Routes>
                     </AdminLayout>
                   </RequireAuth>

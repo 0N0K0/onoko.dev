@@ -11,7 +11,7 @@ import { useCategory } from "../../hooks/useCategory";
  * Permet d'afficher la liste des catégories, d'ajouter une nouvelle catégorie,
  * de modifier une catégorie existante ou de supprimer une catégorie.
  */
-export default function CategoriesPage() {
+export default function Categories() {
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState("");
   const [submitError, setSubmitError] = useState("");
