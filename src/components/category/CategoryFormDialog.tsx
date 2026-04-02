@@ -119,7 +119,9 @@ export default function CategoryFormDialog({
                   ?.filter((c) => c.id !== category?.id)
                   .map((c) => ({
                     id: c.id,
-                    label: c.label,
+                    label: c.depth
+                      ? "__".repeat(c.depth) + ` ${c.label}`
+                      : c.label,
                   })) || []
               }
             />

@@ -62,8 +62,6 @@ export default function Stacks() {
     setStacks,
   });
 
-  console.log(stacks);
-
   return (
     <>
       <EntitiesPage
