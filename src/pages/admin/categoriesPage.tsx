@@ -3,7 +3,7 @@ import EntitiesPage from "../../components/entities/EntitiesPage";
 import useCategoryMutations from "../../hooks/useCategoryMutations";
 import { CATEGORIES_QUERY } from "../../services/category/categoryQueries";
 import type { Category } from "../../types/categoryTypes";
-import CategoryFormDialog from "../../components/category/CategoryFormDialog";
+import CategoryFormDialog from "../../components/entities/CategoryFormDialog";
 import { useCategory } from "../../hooks/useCategory";
 
 /**

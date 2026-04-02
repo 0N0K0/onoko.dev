@@ -1,4 +1,10 @@
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  type SelectProps,
+} from "@mui/material";
 import type { CustomSelectProps } from "../../types/baseComponent";
 
 export default function CustomSelect({
@@ -7,11 +13,18 @@ export default function CustomSelect({
   value,
   onChange,
   options,
-}: CustomSelectProps) {
+  ...props
+}: CustomSelectProps & SelectProps) {
   return (
     <FormControl>
       <InputLabel id={labelId}>{label}</InputLabel>
-      <Select labelId={labelId} label={label} value={value} onChange={onChange}>
+      <Select
+        labelId={labelId}
+        label={label}
+        value={value}
+        onChange={onChange}
+        {...props}
+      >
         <MenuItem value="">Aucune</MenuItem>
         {options?.map((o: { id: string; label: string }) => (
           <MenuItem key={o.id} value={o.id}>
