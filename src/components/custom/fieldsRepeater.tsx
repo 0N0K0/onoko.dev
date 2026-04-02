@@ -66,6 +66,7 @@ export default function FieldsRepeater({
         </ResponsiveStack>
       ))}
       <Button
+        variant="outlined"
         onClick={() => {
           setEditingItem({
             ...editingItem,

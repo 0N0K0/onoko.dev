@@ -100,6 +100,12 @@ export default function Stacks() {
             label: "Versions",
             content: (item: Stack) => item.versions.join(", "),
           },
+          {
+            key: "skills",
+            label: "Compétences",
+            content: (item: Stack) =>
+              item.skills.length > 0 ? item.skills.length : "",
+          },
         ]}
         onClickActions={{
           add: handleClickAdd,

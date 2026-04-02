@@ -204,7 +204,9 @@ export default function StackFormDialog({
               options={
                 categories?.map((c) => ({
                   id: c.id,
-                  label: c.label,
+                  label: c.depth
+                    ? "__".repeat(c.depth) + ` ${c.label}`
+                    : c.label,
                 })) || []
               }
             />

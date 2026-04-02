@@ -73,7 +73,16 @@ export default function Categories() {
         setItems={setCategories}
         query={CATEGORIES_QUERY}
         fields={[
-          { key: "label", label: "Label" },
+          {
+            key: "label",
+            label: "Label",
+            content: (item) => (
+              <p style={{ paddingLeft: `${item.depth * 16}px` }}>
+                {item.depth > 0 ? `- ` : ""}
+                {item.label}
+              </p>
+            ),
+          },
           {
             key: "entity",
             label: "Entité",
