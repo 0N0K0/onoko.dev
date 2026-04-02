@@ -1,4 +1,5 @@
 import type { SnackbarCloseReason } from "@mui/material";
+import type { ChangeEvent, ReactNode } from "react";
 
 /**
  * Ce fichier définit les types TypeScript pour les composants de base utilisés dans l'application, tels que les champs de mot de passe, les alertes Snackbar et les tables personnalisées.
@@ -64,4 +65,29 @@ export interface CustomDialogProps {
   title?: string;
   titlePaddingBottom?: string;
   actions?: React.ReactNode;
+}
+
+export interface FieldsRepeaterProps {
+  editingItem: any;
+  values: string;
+  setEditingItem: React.Dispatch<React.SetStateAction<any>>;
+  setHasChanges: React.Dispatch<React.SetStateAction<boolean>>;
+  fields: (
+    value: any,
+    idx: number,
+    onChange: (newValue: any) => void,
+  ) => React.ReactNode;
+}
+
+export interface CustomSelectProps {
+  label: string;
+  labelId: string;
+  value: string;
+  onChange: (
+    event:
+      | ChangeEvent<Omit<HTMLInputElement, "value"> & { value: string }>
+      | (Event & { target: { value: string; name: string } }),
+    child: ReactNode,
+  ) => void;
+  options: { id: string; label: string }[];
 }

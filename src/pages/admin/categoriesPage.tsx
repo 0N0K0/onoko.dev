@@ -4,6 +4,7 @@ import useCategoryMutations from "../../hooks/useCategoryMutations";
 import { CATEGORIES_QUERY } from "../../services/category/categoryQueries";
 import type { Category } from "../../types/categoryTypes";
 import CategoryFormDialog from "../../components/category/CategoryFormDialog";
+import { useCategory } from "../../hooks/useCategory";
 
 /**
  * Page d'administration pour la gestion des catégories de projets et technologies.
@@ -22,7 +23,7 @@ export default function CategoriesPage() {
     useState<Partial<Category> | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
 
-  const [categories, setCategories] = useState<Category[] | undefined>([]);
+  const { categories, setCategories } = useCategory();
 
   const entitiesMap: { [key: string]: string } = {
     "": "",

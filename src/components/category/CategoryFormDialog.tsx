@@ -1,16 +1,10 @@
-import {
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import CustomDialog from "../custom/customDialog";
 import { ResponsiveStack } from "../custom/responsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiClose } from "@mdi/js";
 import type { CategoryFormDialogProps } from "../../types/categoryTypes";
+import CustomSelect from "../custom/customSelect";
 
 /**
  * Composant de dialogue pour ajouter ou modifier une catégorie
@@ -76,30 +70,24 @@ export default function CategoryFormDialog({
               required
               fullWidth
             />
-            <FormControl fullWidth>
-              <InputLabel id="entity-label" required>
-                Entité
-              </InputLabel>
-              <Select
-                labelId="entity-label"
-                label="Entité"
-                value={editingCategory?.entity || ""}
-                onChange={(e) => {
-                  setEditingCategory(
-                    editingCategory
-                      ? { ...editingCategory, entity: e.target.value }
-                      : null,
-                  );
-                  e.target.value !== (initialCategory?.entity || "") &&
-                    setHasChanges(true);
-                }}
-                required
-                fullWidth
-              >
-                <MenuItem value="stack">Technologies</MenuItem>
-                <MenuItem value="project">Projets</MenuItem>
-              </Select>
-            </FormControl>
+            <CustomSelect
+              label="Entité"
+              labelId="entity-label"
+              value={editingCategory?.entity || ""}
+              onChange={(e) => {
+                setEditingCategory(
+                  editingCategory
+                    ? { ...editingCategory, entity: e.target.value }
+                    : null,
+                );
+                e.target.value !== (initialCategory?.entity || "") &&
+                  setHasChanges(true);
+              }}
+              options={[
+                { id: "stack", label: "Technologies" },
+                { id: "project", label: "Projets" },
+              ]}
+            />
             <TextField
               label="Description"
               value={editingCategory?.description || ""}
@@ -116,35 +104,28 @@ export default function CategoryFormDialog({
               rows={4}
               fullWidth
             />
-            <FormControl fullWidth>
-              <InputLabel id="parent-category-label">
-                Catégorie parente
-              </InputLabel>
-              <Select
-                labelId="parent-category-label"
-                label="Catégorie parente"
-                value={editingCategory?.parent || ""}
-                onChange={(e) => {
-                  setEditingCategory(
-                    editingCategory
-                      ? { ...editingCategory, parent: e.target.value }
-                      : null,
-                  );
-                  e.target.value !== (initialCategory?.parent || "") &&
-                    setHasChanges(true);
-                }}
-                fullWidth
-              >
-                <MenuItem value="">Aucune</MenuItem>
-                {categories
+            <CustomSelect
+              label="Catégorie parente"
+              labelId="parent-category-label"
+              value={editingCategory?.parent || ""}
+              onChange={(e) => {
+                setEditingCategory(
+                  editingCategory
+                    ? { ...editingCategory, parent: e.target.value }
+                    : null,
+                );
+                e.target.value !== (initialCategory?.parent || "") &&
+                  setHasChanges(true);
+              }}
+              options={
+                categories
                   ?.filter((c) => c.id !== category?.id)
-                  .map((c) => (
-                    <MenuItem key={c.id} value={c.id}>
-                      {c.label}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </FormControl>
+                  .map((c) => ({
+                    id: c.id,
+                    label: c.label,
+                  })) || []
+              }
+            />
           </ResponsiveStack>
         );
       })()}
