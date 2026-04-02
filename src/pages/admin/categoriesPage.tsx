@@ -1,22 +1,14 @@
-import { useEffect, useState } from "react";
-import ResponsiveTitle from "../../components/custom/responsiveTitle";
-import ClosableSnackbarAlert from "../../components/custom/closableSnackbarAlert";
-import { Button, CircularProgress } from "@mui/material";
-import type { Category } from "../../types/categoryTypes";
-import Icon from "@mdi/react";
-import { mdiPlus } from "@mdi/js";
-import apolloClient from "../../services/appolloClient";
-import { CATEGORIES_QUERY } from "../../services/categoryQueries";
-import CategoryFormDialog from "../../components/category/CategoryFormDialog";
-import { ResponsiveStack } from "../../components/custom/responsiveLayout";
-import SnackbarAlert from "../../components/custom/snackbarAlert";
-import CustomTable from "../../components/custom/customTable";
+import { useState } from "react";
+import EntitiesPage from "../../components/entities/EntitiesPage";
 import useCategoryMutations from "../../hooks/useCategoryMutations";
+import { CATEGORIES_QUERY } from "../../services/categoryQueries";
+import type { Category } from "../../types/categoryTypes";
+import CategoryFormDialog from "../../components/category/CategoryFormDialog";
 
-export default function Categories() {
-  const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState<Category[] | undefined>([]);
-  const [categoryError, setCategoryError] = useState("");
+export default function CategoriesPage() {
+  const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState("");
+  const [submitError, setSubmitError] = useState("");
 
   const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
 
@@ -25,29 +17,30 @@ export default function Categories() {
     useState<Partial<Category> | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
 
-  const [submitting, setSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState("");
-  const [submitError, setSubmitError] = useState("");
+  const [categories, setCategories] = useState<Category[] | undefined>([]);
 
-  const fetchCategories = async () => {
-    setLoading(true);
-    setCategoryError("");
-    try {
-      const { data } = await apolloClient.query<{ categories: Category[] }>({
-        query: CATEGORIES_QUERY,
-        fetchPolicy: "no-cache",
-      });
-      setCategories(data?.categories);
-    } catch (e: any) {
-      setCategoryError(e.message || "Une erreur est survenue");
-    } finally {
-      setLoading(false);
-    }
+  const entitiesMap: { [key: string]: string } = {
+    "": "",
+    stack: "Technologie",
+    project: "Projet",
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  const handleClickAdd = () => {
+    setFormDialogOpen(true);
+    setEditingCategory({
+      label: "",
+      entity: "",
+      description: "",
+      parent: "",
+    });
+  };
+
+  const handleClickEdit = (id: string) => {
+    setFormDialogOpen(id);
+    const category = categories?.find((c) => c.id === id) || null;
+    setInitialCategory(category);
+    setEditingCategory(category);
+  };
 
   const { handleAdd, handleEdit, handleDelete } = useCategoryMutations({
     setSubmitSuccess,
@@ -62,71 +55,35 @@ export default function Categories() {
     setCategories,
   });
 
-  const entitiesMap: { [key: string]: string } = {
-    "": "",
-    stack: "Technologie",
-    project: "Projet",
-  };
-
   return (
     <>
-      <ResponsiveStack
-        direction="row"
-        rowGap={3}
-        columnGap={2}
-        justifyContent="space-between"
-        alignItems="center"
-        width="100%"
-        flexWrap="wrap"
-      >
-        <ResponsiveTitle variant="h1">Catégories</ResponsiveTitle>
-        {categories && categories.length === 0 && (
-          <Button
-            onClick={() => setFormDialogOpen(true)}
-            startIcon={<Icon path={mdiPlus} size={1} />}
-            sx={{ marginX: "auto" }}
-          >
-            Ajouter une&nbsp;catégorie
-          </Button>
-        )}
-      </ResponsiveStack>
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        categories &&
-        categories.length > 0 && (
-          <CustomTable
-            fields={[
-              { key: "label", label: "Label" },
-              {
-                key: "entity",
-                label: "Entité",
-                content: (item) => entitiesMap[item.entity || ""],
-              },
-            ]}
-            items={categories}
-            canSelect
-            onClickAdd={() => {
-              setEditingCategory({
-                label: "",
-                entity: "",
-                description: "",
-                parent: "",
-              });
-              setFormDialogOpen(true);
-            }}
-            onClickEdit={(category) => {
-              setInitialCategory(category);
-              setEditingCategory(category);
-              setFormDialogOpen(category.id);
-            }}
-            onClickDelete={(selectedCategories: string[]) =>
-              handleDelete(selectedCategories)
-            }
-            submitting={submitting}
-          />
-        )
-      )}
+      <EntitiesPage
+        labels={{
+          title: "Catégories",
+          addButton: "Ajouter une catégorie",
+          entity: "categories",
+        }}
+        items={categories}
+        setItems={setCategories}
+        query={CATEGORIES_QUERY}
+        fields={[
+          { key: "label", label: "Label" },
+          {
+            key: "entity",
+            label: "Entité",
+            content: (item) => entitiesMap[item.entity || ""],
+          },
+        ]}
+        onClickActions={{
+          add: handleClickAdd,
+          edit: handleClickEdit,
+          delete: handleDelete,
+        }}
+        submitting={submitting}
+        submitSuccess={submitSuccess}
+        setSubmitSuccess={setSubmitSuccess}
+        submitError={submitError}
+      />
       <CategoryFormDialog
         open={formDialogOpen}
         setOpen={setFormDialogOpen}
@@ -140,17 +97,6 @@ export default function Categories() {
         handleAdd={handleAdd}
         handleEdit={handleEdit}
         submitting={submitting}
-      />
-      <ClosableSnackbarAlert
-        open={!!submitSuccess}
-        setOpen={() => setSubmitSuccess("")}
-        message={submitSuccess}
-        severity="success"
-      />
-      <SnackbarAlert
-        open={!!submitError || !!categoryError}
-        message={categoryError || submitError || "Une erreur est survenue"}
-        severity="error"
       />
     </>
   );

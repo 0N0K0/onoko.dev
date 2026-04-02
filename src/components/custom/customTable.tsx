@@ -127,7 +127,7 @@ export default function CustomTable({
                         <IconButton
                           color="primary"
                           disabled={submitting}
-                          onClick={() => onClickEdit(item)}
+                          onClick={() => onClickEdit(item.id)}
                         >
                           <Icon path={mdiPencil} size={1}></Icon>
                         </IconButton>
