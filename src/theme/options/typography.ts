@@ -1,0 +1,16 @@
+export const TYPOGRAPHY = {
+  fontSize: 16,
+  htmlFontSize: 16,
+  h1: { fontSize: "4rem", lineHeight: 1.125, letterSpacing: "normal" },
+  h2: { fontSize: "3.5rem", lineHeight: "72px", letterSpacing: "normal" },
+  h3: { fontSize: "3rem", lineHeight: 1, letterSpacing: "normal" },
+  h4: { fontSize: "2.5rem", lineHeight: 1.2, letterSpacing: "normal" },
+  h5: { fontSize: "2rem", lineHeight: 1.5, letterSpacing: "normal" },
+  h6: { fontSize: "1.25rem", lineHeight: 1.2, letterSpacing: "normal" },
+  body1: { fontSize: "1rem", lineHeight: 1.5, letterSpacing: "normal" },
+  body2: { fontSize: "0.75rem", lineHeight: 2, letterSpacing: "normal" },
+  bodyLg: { fontSize: "2rem", lineHeight: 1.5 },
+  bodyMd: { fontSize: "1.25rem", lineHeight: 1.2 },
+  bodySm: { fontSize: "1rem", lineHeight: 1.5 },
+  bodyXs: { fontSize: "0.75rem", lineHeight: 2 },
+};
