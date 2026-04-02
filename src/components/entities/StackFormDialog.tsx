@@ -193,7 +193,7 @@ export default function StackFormDialog({
               onChange={(e) => {
                 setEditingStack(
                   editingStack
-                    ? { ...editingStack, category: e.target.value }
+                    ? { ...editingStack, category: e.target.value as string }
                     : null,
                 );
                 e.target.value !==

@@ -11,7 +11,9 @@ import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 import Icon from "@mdi/react";
 import {
   mdiAccountCog,
+  mdiAccountHardHat,
   mdiApplicationArrayOutline,
+  mdiHardHat,
   mdiTag,
   mdiViewDashboard,
 } from "@mdi/js";
@@ -76,6 +78,38 @@ export default function AdminSidebar() {
             <ListItemText>Technologies</ListItemText>
           </ListItemButton>
         </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton
+            component="a"
+            href="/admin/coworkers"
+            selected={window.location.pathname === "/admin/coworkers"}
+            sx={{
+              paddingLeft: "32px",
+            }}
+          >
+            <ListItemIcon>
+              <Icon path={mdiAccountHardHat} size={1} />
+            </ListItemIcon>
+            <ListItemText>Intervenants</ListItemText>
+          </ListItemButton>
+        </ListItem>
+
+        <ListItem disablePadding>
+          <ListItemButton
+            component="a"
+            href="/admin/roles"
+            selected={window.location.pathname === "/admin/roles"}
+            sx={{
+              paddingLeft: "32px",
+            }}
+          >
+            <ListItemIcon>
+              <Icon path={mdiHardHat} size={1} />
+            </ListItemIcon>
+            <ListItemText>Rôles</ListItemText>
+          </ListItemButton>
+        </ListItem>
+
         <ListItem disablePadding>
           <ListItemButton
             component="a"

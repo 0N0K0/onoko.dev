@@ -86,11 +86,13 @@ export interface FieldsRepeaterProps {
 export interface CustomSelectProps {
   label: string;
   labelId: string;
-  value: string;
+  value: string | string[];
   onChange: (
     event:
-      | ChangeEvent<Omit<HTMLInputElement, "value"> & { value: string }>
-      | (Event & { target: { value: string; name: string } }),
+      | ChangeEvent<
+          Omit<HTMLInputElement, "value"> & { value: string | string[] }
+        >
+      | (Event & { target: { value: string | string[]; name: string } }),
     child: ReactNode,
   ) => void;
   options: { id: string; label: string }[];

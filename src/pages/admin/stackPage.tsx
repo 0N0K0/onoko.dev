@@ -3,7 +3,7 @@ import type { Stack } from "../../types/stackTypes";
 import useStackMutations from "../../hooks/useStackMutation";
 import EntitiesPage from "../../components/entities/EntitiesPage";
 import { STACKS_QUERY } from "../../services/stack/stackQueries";
-import StackFormDialog from "../../components/stack/StackFormDialog";
+import StackFormDialog from "../../components/entities/StackFormDialog";
 import { API_URL } from "../../constants/apiConstants";
 
 export default function Stacks() {
@@ -61,8 +61,6 @@ export default function Stacks() {
     stacks,
     setStacks,
   });
-
-  console.log(stacks);
 
   return (
     <>
