@@ -1,5 +1,5 @@
 import { useTheme } from "@mui/material";
-import { verticalMediaQuery } from "../theme";
+import { verticalMediaQuery } from "../theme/options/breakpoints";
 import type {
   GetResponsiveSxProps,
   ResponsiveSxProps,

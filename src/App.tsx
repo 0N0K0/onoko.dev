@@ -11,53 +11,79 @@ import LogoutPage from "./pages/auth/logoutPage";
 import RequireAuth from "./pages/admin/requireAuth";
 import { LOGIN_ROUTE } from "./constants/apiConstants";
 import { AuthProvider } from "./context/AuthContext";
+import Categories from "./pages/admin/categoriesPage";
+import { GlobalStyles, useTheme } from "@mui/material";
 
 export default function App() {
+  const theme = useTheme();
   return (
-    <Router>
-      <AuthProvider>
-        <Routes>
-          {/* Routes publiques */}
-          <Route
-            path="/*"
-            element={
-              <PublicLayout>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                </Routes>
-              </PublicLayout>
-            }
-          />
-
-          {/* Routes d'authentification */}
-          <Route path={`/${LOGIN_ROUTE}`} element={<Login />} />
-          <Route path="/logout" element={<LogoutPage />} />
-          <Route
-            path="/request-reset-password"
-            element={<RequestResetPassword />}
-          />
-          <Route
-            path="/request-reset-password"
-            element={<RequestResetPassword />}
-          />
-          <Route path="/reset-password" element={<ResetPassword />} />
-
-          {/* Routes admin */}
-          <Route
-            path="/admin/*"
-            element={
-              <RequireAuth>
-                <AdminLayout>
+    <>
+      <GlobalStyles
+        styles={{
+          "::-webkit-scrollbar": {
+            width: "16px",
+            height: "16px",
+            background: theme.palette.background.paper,
+          },
+          "::-webkit-scrollbar-thumb": {
+            background: theme.palette.divider,
+            borderRadius: "8px",
+            border: `4px solid ${theme.palette.background.paper}`,
+          },
+          "::-webkit-scrollbar-thumb:hover": {
+            background: theme.palette.text.secondary,
+          },
+          "::-webkit-scrollbar-corner": {
+            background: theme.palette.background.paper,
+          },
+        }}
+      />
+      <Router>
+        <AuthProvider>
+          <Routes>
+            {/* Routes publiques */}
+            <Route
+              path="/*"
+              element={
+                <PublicLayout>
                   <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/account" element={<Account />} />
+                    <Route path="/" element={<Home />} />
                   </Routes>
-                </AdminLayout>
-              </RequireAuth>
-            }
-          />
-        </Routes>
-      </AuthProvider>
-    </Router>
+                </PublicLayout>
+              }
+            />
+
+            {/* Routes d'authentification */}
+            <Route path={`/${LOGIN_ROUTE}`} element={<Login />} />
+            <Route path="/logout" element={<LogoutPage />} />
+            <Route
+              path="/request-reset-password"
+              element={<RequestResetPassword />}
+            />
+            <Route
+              path="/request-reset-password"
+              element={<RequestResetPassword />}
+            />
+            <Route path="/reset-password" element={<ResetPassword />} />
+
+            {/* Routes admin */}
+            <Route
+              path="/admin/*"
+              element={
+                <RequireAuth>
+                  <AdminLayout>
+                    <Routes>
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/account" element={<Account />} />
+                      <Route path="/categories" element={<Categories />} />
+                    </Routes>
+                  </AdminLayout>
+                </RequireAuth>
+              }
+            />
+          </Routes>
+        </AuthProvider>
+      </Router>
+    </>
   );
 }

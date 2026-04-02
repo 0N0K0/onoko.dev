@@ -23,6 +23,7 @@ export default function RootPaper({
         justifyContent: "space-between",
         marginLeft: "auto",
         marginRight: "auto",
+        ...props.style,
       }}
       square
       {...props}

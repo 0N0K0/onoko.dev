@@ -6,16 +6,21 @@ import { ACCOUNT_QUERY } from "../../services/accountQueries";
 import { UPDATE_ACCOUNT_MUTATION } from "../../services/accountMutations";
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
 import PasswordField from "../../components/custom/passwordField";
-import ResetPasswordLink from "../../components/resetPasswordLink";
-import NewPasswordFields from "../../components/newPasswordFields";
-import ClosableSnackbar from "../../components/custom/closableSnackbar";
-import CustomSnackbar from "../../components/custom/customSnackBar";
+import ResetPasswordLink from "../../components/account/resetPasswordLink";
+import NewPasswordFields from "../../components/account/newPasswordFields";
+import ClosableSnackbarAlert from "../../components/custom/closableSnackbarAlert";
+import SnackbarAlert from "../../components/custom/snackbarAlert";
+import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 
 /**
  * Page de gestion du compte utilisateur dans l'espace admin.
  * Permet de voir et modifier le login, l'email et le mot de passe du compte.
  */
 export default function Account() {
+  const containerMaxWidth = {
+    xs: useResponsiveWidth(6),
+    xl: useResponsiveWidth(8),
+  };
   const [loadingUser, setLoadingUser] = useState(true);
   const [initialUser, setInitialUser] = useState<{
     login: string;
@@ -107,7 +112,7 @@ export default function Account() {
       setConfirmPassword("");
       setCurrentPassword("");
     } catch (e: any) {
-      setSubmitError(e.message || "Erreur inconnue");
+      setSubmitError(e.message || "Une erreur est survenue");
       setSubmitSuccess(false);
     } finally {
       setSubmitting(false);
@@ -125,15 +130,15 @@ export default function Account() {
       <ResponsiveTitle variant="h1" width="100%">
         Mon compte
       </ResponsiveTitle>
-      <ClosableSnackbar
+      <ClosableSnackbarAlert
         open={successSnackbarOpen}
         setOpen={setSuccessSnackbarOpen}
         message="Les informations du compte ont été mises à jour avec succès."
         severity="success"
       />
-      <CustomSnackbar
+      <SnackbarAlert
         open={errorSnackbarOpen}
-        message={userError || submitError || "Erreur inconnue"}
+        message={userError || submitError || "Une erreur est survenue"}
         severity="error"
       />
       {loadingUser ? (
@@ -144,14 +149,19 @@ export default function Account() {
             display: "flex",
             flexDirection: "column",
             gap: 3,
+            maxWidth: containerMaxWidth,
+            padding: "24px 0px 0px !important",
+            height: "100%",
+            overflowY: "auto",
           }}
           component="form"
-          maxWidth="lg"
         >
           <ResponsiveStack rowGap={3} width="100%">
             <ResponsiveStack
-              direction="row"
-              rowGap={2}
+              sx={{
+                flexDirection: { xs: "column", sm: "row" },
+              }}
+              rowGap={3}
               columnGap={2}
               width="100%"
             >
@@ -173,8 +183,10 @@ export default function Account() {
             </ResponsiveStack>
 
             <ResponsiveStack
-              direction="row"
-              rowGap={2}
+              sx={{
+                flexDirection: { xs: "column", sm: "row" },
+              }}
+              rowGap={3}
               columnGap={2}
               width="100%"
             >

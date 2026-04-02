@@ -1,5 +1,5 @@
 import { Alert, Snackbar } from "@mui/material";
-import type { CustomSnackbarProps } from "../../types/baseComponent";
+import type { SnackbarAlertProps } from "../../types/baseComponent";
 
 /**
  * Composant de snackbar personnalisée pour afficher des messages de succès, d'erreur, d'avertissement ou d'information à l'utilisateur.
@@ -11,13 +11,13 @@ import type { CustomSnackbarProps } from "../../types/baseComponent";
  * @param {function} props.onClose Fonction optionnelle à appeler lors de la fermeture du snackbar.
  * @param {number} props.autohideDuration Durée en millisecondes avant que le snackbar ne se ferme automatiquement. Par défaut, 6000 ms (6 secondes).
  */
-export default function CustomSnackbar({
+export default function SnackbarAlert({
   open,
   message,
   severity,
   onClose,
   autohideDuration,
-}: CustomSnackbarProps) {
+}: SnackbarAlertProps) {
   return (
     <Snackbar open={open} autoHideDuration={autohideDuration} onClose={onClose}>
       <Alert severity={severity} onClose={onClose}>

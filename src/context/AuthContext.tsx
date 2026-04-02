@@ -64,13 +64,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setTokenExp(null);
       }
       // Vérification du token via GraphQL
-      const { data } = await apolloClient.mutate<{ verifyToken: boolean }>({
+      const { data } = await apolloClient.mutate<{
+        verifyToken: { login: string };
+      }>({
         mutation: VERIFY_TOKEN_MUTATION,
         variables: { token },
       });
-      if (data && typeof data.verifyToken === "boolean" && data.verifyToken) {
+      if (data && data.verifyToken && data.verifyToken.login) {
         setIsAuthenticated(true);
-        setUser(null); // Pas d'info user dans la réponse
+        setUser(data.verifyToken.login); // Pas d'info user dans la réponse
         return true;
       } else {
         setIsAuthenticated(false);

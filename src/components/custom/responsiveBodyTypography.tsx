@@ -1,5 +1,5 @@
 import Typography from "@mui/material/Typography";
-import { verticalMediaQuery } from "../../theme";
+import { verticalMediaQuery } from "../../theme/options/breakpoints";
 import { useTheme } from "@mui/material";
 import type { ResponsiveBodyTypographyProps } from "../../types/responsiveTypes";
 

@@ -1,15 +1,13 @@
-import { TextField, Button } from "@mui/material";
+import { TextField } from "@mui/material";
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
-import ResponsiveTitle from "../../components/custom/responsiveTitle";
-import { Link as RouterLink } from "react-router-dom";
-import { LOGIN_ROUTE } from "../../constants/apiConstants";
 import apolloClient from "../../services/appolloClient";
 import { REQUEST_PASSWORD_RESET_MUTATION } from "../../services/accountMutations";
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
-import CustomSnackbar from "../../components/custom/customSnackBar";
-import ClosableSnackbar from "../../components/custom/closableSnackbar";
+import SnackbarAlert from "../../components/custom/snackbarAlert";
+import ClosableSnackbarAlert from "../../components/custom/closableSnackbarAlert";
 import AuthLayout from "../../layout/auth/authLayout";
+import { LOGIN_ROUTE } from "../../constants/apiConstants";
 
 /**
  * Page de demande de réinitialisation du mot de passe.
@@ -26,7 +24,7 @@ export default function RequestResetPassword() {
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
 
   // Gère la soumission du formulaire de réinitialisation, en envoyant une requête au backend avec le token et le nouveau mot de passe, et en gérant les réponses pour afficher les messages appropriés.
-  const handleSubmit = async (e: React.SubmitEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError("");
     setSubmitting(true);
@@ -44,25 +42,28 @@ export default function RequestResetPassword() {
   };
 
   return (
-    <AuthLayout component="form" onSubmit={handleSubmit}>
+    <AuthLayout
+      title="Demander la&nbsp;réinitialisation de&nbsp;mon&nbsp;mot&nbsp;de&nbsp;passe"
+      onSubmit={handleSubmit}
+      returnButton={{
+        to: `../${LOGIN_ROUTE}`,
+        text: `Revenir à ${isAuthenticated ? "l'espace administrateur" : "la page de connexion"}`,
+        disabled: submitting,
+      }}
+      submitButton={{
+        text: `${submitting ? "Envoi..." : "Envoyer"}`,
+        disabled: submitting || !email,
+      }}
+    >
       {submitError && (
-        <CustomSnackbar open={true} message={submitError} severity="error" />
+        <SnackbarAlert open={true} message={submitError} severity="error" />
       )}
-      <ClosableSnackbar
+      <ClosableSnackbarAlert
         open={successSnackbarOpen}
         setOpen={setSuccessSnackbarOpen}
         message="Si l'adresse existe, un e-mail de réinitialisation a été envoyé."
         severity="success"
       />
-      <ResponsiveTitle
-        variant="h5"
-        textAlign="center"
-        component="h1"
-        width="100%"
-      >
-        Demander la&nbsp;réinitialisation
-        de&nbsp;mon&nbsp;mot&nbsp;de&nbsp;passe
-      </ResponsiveTitle>
       <ResponsiveStack rowGap={3} width="100%">
         <TextField
           label="Adresse e-mail"
@@ -74,33 +75,6 @@ export default function RequestResetPassword() {
           disabled={submitting}
           autoComplete="email"
         />
-      </ResponsiveStack>
-      <ResponsiveStack rowGap={3} width="100%" alignItems="end">
-        <ResponsiveStack direction="row" rowGap={2} columnGap={2} width="100%">
-          <Button
-            variant="text"
-            color="primary"
-            fullWidth
-            component={RouterLink}
-            to={`../${LOGIN_ROUTE}`}
-          >
-            Revenir à
-            {isAuthenticated ? (
-              <>&nbsp;l'espace administrateur</>
-            ) : (
-              <>&nbsp;la&nbsp;page de&nbsp;connexion</>
-            )}
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            type="submit"
-            disabled={submitting || !email}
-          >
-            {submitting ? "Envoi..." : "Envoyer"}
-          </Button>
-        </ResponsiveStack>
       </ResponsiveStack>
     </AuthLayout>
   );
