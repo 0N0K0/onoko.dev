@@ -68,10 +68,14 @@ export interface CustomDialogProps {
 }
 
 export interface FieldsRepeaterProps {
+  label: {
+    title: string;
+    add: string;
+  };
   editingItem: any;
   values: string;
   setEditingItem: React.Dispatch<React.SetStateAction<any>>;
-  setHasChanges: React.Dispatch<React.SetStateAction<boolean>>;
+  setHasChanges: (hasChanges: boolean) => void;
   fields: (
     value: any,
     idx: number,

@@ -11,6 +11,7 @@ import ResponsiveBodyTypography from "../custom/responsiveBodyTypography";
 import CustomIconButton from "../custom/customIconButton";
 import { useEffect, useState } from "react";
 import { API_URL } from "../../constants/apiConstants";
+import FieldsRepeater from "../custom/fieldsRepeater";
 
 export default function StackFormDialog({
   open,
@@ -136,7 +137,6 @@ export default function StackFormDialog({
                   setHasChanges(true);
               }}
               required
-              fullWidth
             />
             <TextField
               label="Description"
@@ -151,27 +151,37 @@ export default function StackFormDialog({
                   setHasChanges(true);
               }}
               multiline
-              rows={4}
-              fullWidth
             />
-            <TextField
-              label="Version"
-              value={editingStack?.versions?.join(", ") || ""}
-              onChange={(e) => {
-                setEditingStack(
-                  editingStack
-                    ? {
-                        ...editingStack,
-                        versions: e.target.value
-                          .split(",")
-                          .map((v) => v.trim()),
-                      }
-                    : null,
-                );
-                e.target.value !== (initialStack?.versions?.join(", ") || "") &&
-                  setHasChanges(true);
-              }}
+            <FieldsRepeater
+              label={{ title: "Versions", add: "une version" }}
+              editingItem={editingStack}
+              values="versions"
+              setEditingItem={setEditingStack}
+              setHasChanges={setHasChanges}
+              fields={(value, idx, onChange) => (
+                <TextField
+                  placeholder={`Version ${idx + 1}`}
+                  value={value}
+                  onChange={(e) => onChange(e.target.value)}
+                />
+              )}
             />
+            <FieldsRepeater
+              label={{ title: "Compétences", add: "une compétence" }}
+              editingItem={editingStack}
+              values="skills"
+              setEditingItem={setEditingStack}
+              setHasChanges={setHasChanges}
+              fields={(value, idx, onChange) => (
+                <TextField
+                  placeholder={`Compétence ${idx + 1}`}
+                  value={value}
+                  onChange={(e) => onChange(e.target.value)}
+                  multiline
+                />
+              )}
+            />
+
             <CustomSelect
               label="Catégorie"
               labelId="category-label"
@@ -219,7 +229,7 @@ export default function StackFormDialog({
             submitting ||
             !hasChanges ||
             !editingStack?.label ||
-            !editingStack?.versions?.length
+            (!editingStack?.iconFile && !editingStack?.iconUrl)
           }
           startIcon={<Icon path={mdiCheck} size={1} />}
           sx={{ flex: "1 1 auto" }}

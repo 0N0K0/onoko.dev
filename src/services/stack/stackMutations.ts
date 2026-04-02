@@ -7,6 +7,7 @@ export const CREATE_STACK_MUTATION = gql`
     $iconFile: Upload!
     $description: String
     $versions: [String!]
+    $skills: [String!]
     $category: ID
   ) {
     createStack(
@@ -14,6 +15,7 @@ export const CREATE_STACK_MUTATION = gql`
       iconFile: $iconFile
       description: $description
       versions: $versions
+      skills: $skills
       category: $category
     ) {
       ...StackFields
@@ -30,6 +32,7 @@ export const UPDATE_STACK_MUTATION = gql`
     $iconFile: Upload
     $description: String
     $versions: [String!]
+    $skills: [String!]
     $category: ID
   ) {
     updateStack(
@@ -38,6 +41,7 @@ export const UPDATE_STACK_MUTATION = gql`
       iconFile: $iconFile
       description: $description
       versions: $versions
+      skills: $skills
       category: $category
     ) {
       ...StackFields

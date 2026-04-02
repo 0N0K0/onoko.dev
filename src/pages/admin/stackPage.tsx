@@ -28,6 +28,7 @@ export default function Stacks() {
       description: "",
       iconFile: null,
       versions: [],
+      skills: [],
       category: "",
     });
   };
@@ -93,6 +94,11 @@ export default function Stacks() {
               typeof item.category === "string"
                 ? item.category
                 : item.category?.label,
+          },
+          {
+            key: "versions",
+            label: "Versions",
+            content: (item: Stack) => item.versions.join(", "),
           },
         ]}
         onClickActions={{

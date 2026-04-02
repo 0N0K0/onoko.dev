@@ -7,6 +7,7 @@ export const STACK_FIELDS = gql`
     iconUrl
     description
     versions
+    skills
     category {
       id
       label
