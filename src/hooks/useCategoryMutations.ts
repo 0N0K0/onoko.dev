@@ -2,7 +2,7 @@ import {
   CREATE_CATEGORY_MUTATION,
   DELETE_CATEGORY_MUTATION,
   UPDATE_CATEGORY_MUTATION,
-} from "../services/categoryMutations";
+} from "../services/category/categoryMutations";
 import type { useCategoryMutationProps } from "../types/categoryTypes";
 import { useEntityMutation } from "./useEntityMutation";
 

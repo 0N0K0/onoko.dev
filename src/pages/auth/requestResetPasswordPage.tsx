@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
 import apolloClient from "../../services/appolloClient";
-import { REQUEST_PASSWORD_RESET_MUTATION } from "../../services/accountMutations";
+import { REQUEST_PASSWORD_RESET_MUTATION } from "../../services/account/accountMutations";
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import SnackbarAlert from "../../components/custom/snackbarAlert";

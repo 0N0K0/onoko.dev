@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import NewPasswordFields from "../../components/account/newPasswordFields";
 import { LOGIN_ROUTE } from "../../constants/apiConstants";
 import apolloClient from "../../services/appolloClient";
-import { RESET_PASSWORD_MUTATION } from "../../services/accountMutations";
+import { RESET_PASSWORD_MUTATION } from "../../services/account/accountMutations";
 import { useAuth } from "../../hooks/useAuth";
 import ClosableSnackbarAlert from "../../components/custom/closableSnackbarAlert";
 import SnackbarAlert from "../../components/custom/snackbarAlert";
