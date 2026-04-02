@@ -8,6 +8,7 @@ import ResponsiveTitle from "../../components/custom/responsiveTitle";
 import { Button } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import ResetPasswordLink from "../../components/account/resetPasswordLink";
+import type { AuthLayoutProps } from "../../types/authTypes";
 
 /**
  * Composant de layout pour les pages d'authentification (connexion, inscription, etc.)
@@ -26,21 +27,7 @@ export default function AuthLayout({
   submitButton,
   onSubmit,
   hasResetPasswordLink = false,
-}: {
-  children: React.ReactNode;
-  title: string;
-  returnButton: {
-    to: string;
-    text: string;
-    disabled: boolean;
-  };
-  submitButton: {
-    text: string;
-    disabled: boolean;
-  };
-  onSubmit?: (e: React.FormEvent) => void;
-  hasResetPasswordLink?: boolean;
-}) {
+}: AuthLayoutProps) {
   return (
     <RootPaper
       sx={{

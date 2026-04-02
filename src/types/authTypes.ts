@@ -11,3 +11,19 @@ export interface AuthContextType {
   logout: () => void;
   checkAuth: () => Promise<boolean>;
 }
+
+export interface AuthLayoutProps {
+  children: React.ReactNode;
+  title: string;
+  returnButton: {
+    to: string;
+    text: string;
+    disabled: boolean;
+  };
+  submitButton: {
+    text: string;
+    disabled: boolean;
+  };
+  onSubmit?: (e: React.FormEvent) => void;
+  hasResetPasswordLink?: boolean;
+}

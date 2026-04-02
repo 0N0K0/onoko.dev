@@ -6,6 +6,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
+import type { CustomDialogProps } from "../../types/baseComponent";
 
 /**
  * Composant générique de dialogue personnalisé utilisant MUI Dialog
@@ -23,14 +24,7 @@ export default function CustomDialog({
   titlePaddingBottom,
   content,
   actions,
-}: {
-  open: boolean;
-  onClose?: () => void;
-  content: React.ReactNode;
-  title?: string;
-  titlePaddingBottom?: string;
-  actions?: React.ReactNode;
-}) {
+}: CustomDialogProps) {
   const dialogWidth = useResponsiveWidth(4);
   return (
     <Dialog

@@ -56,3 +56,12 @@ export interface CustomTableProps {
   submitting?: boolean;
   deleteLabel?: string;
 }
+
+export interface CustomDialogProps {
+  open: boolean;
+  onClose?: () => void;
+  content: React.ReactNode;
+  title?: string;
+  titlePaddingBottom?: string;
+  actions?: React.ReactNode;
+}
