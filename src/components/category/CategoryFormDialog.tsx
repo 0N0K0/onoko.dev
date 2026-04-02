@@ -12,6 +12,21 @@ import Icon from "@mdi/react";
 import { mdiCheck, mdiClose } from "@mdi/js";
 import type { CategoryFormDialogProps } from "../../types/categoryTypes";
 
+/**
+ * Composant de dialogue pour ajouter ou modifier une catégorie
+ * @param {boolean | string} props.open Indique si le dialogue est ouvert et, si c'est une string, l'ID de la catégorie à modifier
+ * @param {function} props.setOpen Fonction pour ouvrir/fermer le dialogue
+ * @param {Category[]} props.categories Liste des catégories existantes (pour sélectionner la catégorie parente)
+ * @param {Category | null} props.initialCategory Catégorie initiale avant modification (pour comparer les changements)
+ * @param {function} props.setInitialCategory Fonction pour définir la catégorie initiale
+ * @param {Category | null} props.editingCategory Catégorie en cours d'édition (pour stocker les modifications)
+ * @param {function} props.setEditingCategory Fonction pour définir la catégorie en cours d'édition
+ * @param {boolean} props.hasChanges Indique s'il y a des changements non sauvegardés
+ * @param {function} props.setHasChanges Fonction pour définir l'état des changements
+ * @param {function} props.handleAdd Fonction pour gérer l'ajout d'une nouvelle catégorie
+ * @param {function} props.handleEdit Fonction pour gérer la modification d'une catégorie existante
+ * @param {boolean} props.submitting Indique si une requête d'ajout/modification est en cours (pour désactiver les boutons)
+ */
 export default function CategoryFormDialog({
   open,
   setOpen,

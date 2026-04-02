@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 
-export function useWindowWidth() {
+/**
+ * Hook personnalisé pour obtenir la largeur de la fenêtre et réagir aux changements de taille
+ * @returns {number} La largeur actuelle de la fenêtre en pixels
+ */
+export function useWindowWidth(): number {
   const [width, setWidth] = useState(() => window.innerWidth);
 
   useEffect(() => {

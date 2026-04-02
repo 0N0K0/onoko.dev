@@ -5,6 +5,11 @@ import { CATEGORIES_QUERY } from "../../services/categoryQueries";
 import type { Category } from "../../types/categoryTypes";
 import CategoryFormDialog from "../../components/category/CategoryFormDialog";
 
+/**
+ * Page d'administration pour la gestion des catégories de projets et technologies.
+ * Permet d'afficher la liste des catégories, d'ajouter une nouvelle catégorie,
+ * de modifier une catégorie existante ou de supprimer une catégorie.
+ */
 export default function CategoriesPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState("");

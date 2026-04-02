@@ -16,7 +16,25 @@ import {
 import { useState } from "react";
 import { ResponsiveStack } from "./responsiveLayout";
 import DeleteConfirmationDialog from "../entities/DeleteConfirmationDialog";
+import type { CustomTableProps } from "../../types/baseComponent";
 
+/**
+ * Composant de table personnalisée utilisant MUI Table
+ * Permet d'afficher une liste d'items avec des actions d'ajout, de modification et de suppression
+ * @param {CustomTableProps} props Propriétés de la table, incluant les champs à afficher, les items, et les fonctions de gestion des actions
+ * @param {{
+ *           key: string;
+ *           label: string;
+ *           content?: (item: any) => React.ReactNode;
+ *         }[]} props.fields Liste des champs à afficher, avec une clé et un label, et éventuellement une fonction de rendu personnalisée
+ * @param {any[]} props.items Liste des items à afficher dans la table
+ * @param {boolean} props.canSelect Indique si les items peuvent être sélectionnés (affiche des cases à cocher)
+ * @param {function} props.onClickAdd Fonction à appeler lors du clic sur le bouton d'ajout
+ * @param {function} props.onClickEdit Fonction à appeler lors du clic sur le bouton de modification d'un item
+ * @param {function} props.onClickDelete Fonction à appeler lors du clic sur le bouton de suppression d'items sélectionnés
+ * @param {boolean} props.submitting Indique si une action est en cours de soumission (pour désactiver les boutons)
+ * @param {string} props.deleteLabel Label à afficher dans la confirmation de suppression (ex: "cette catégorie")
+ */
 export default function CustomTable({
   fields,
   items,
@@ -26,20 +44,7 @@ export default function CustomTable({
   onClickDelete,
   submitting = false,
   deleteLabel = "cette entité",
-}: {
-  fields: {
-    key: string;
-    label: string;
-    content?: (item: any) => React.ReactNode;
-  }[];
-  items: any[];
-  canSelect?: boolean;
-  onClickAdd?: () => void;
-  onClickEdit?: (item: any) => void;
-  onClickDelete?: (ids: string[]) => void;
-  submitting?: boolean;
-  deleteLabel?: string;
-}) {
+}: CustomTableProps) {
   const theme = useTheme();
 
   const [selectedItems, setSelectedItems] = useState<string[]>([]);

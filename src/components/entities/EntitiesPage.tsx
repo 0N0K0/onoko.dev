@@ -10,6 +10,32 @@ import ClosableSnackbarAlert from "../custom/closableSnackbarAlert";
 import SnackbarAlert from "../custom/snackbarAlert";
 import type { EntitiesPageProps } from "../../types/entityTypes";
 
+/**
+ * Composant de page générique pour afficher une liste d'entités avec des actions d'ajout, de modification et de suppression
+ * Utilise une requête GraphQL pour récupérer les données et gère les états de chargement, d'erreur et de succès
+ * @param {{
+ *           entity: string;
+ *           title: string;
+ *           addButton: string;
+ *         }} props.labels Labels pour l'entité, le titre de la page et le bouton d'ajout
+ * @param {any[]} props.items Liste des items à afficher dans la table
+ * @param {function} props.setItems Fonction pour mettre à jour la liste des items
+ * @param {DocumentNode} props.query Requête GraphQL pour récupérer les items
+ * @param {{
+ *           key: string;
+ *           label: string;
+ *           content?: (item: any) => React.ReactNode;
+ *         }[]} props.fields Liste des champs à afficher dans la table, avec une clé, un label et éventuellement une fonction de rendu personnalisée
+ * @param {{
+ *           add: () => void;
+ *           edit: (id: string) => void;
+ *           delete: (selectedItems: string[]) => void;
+ *         }} props.onClickActions Fonctions à appeler lors des actions d'ajout, de modification et de suppression
+ * @param {boolean} props.submitting Indique si une action est en cours de soumission (pour désactiver les boutons)
+ * @param {string} props.submitSuccess Message de succès à afficher dans une alerte après une action réussie
+ * @param {function} props.setSubmitSuccess Fonction pour définir le message de succès
+ * @param {string} props.submitError Message d'erreur à afficher dans une alerte après une action échouée
+ */
 export default function EntitiesPage({
   labels,
   items,

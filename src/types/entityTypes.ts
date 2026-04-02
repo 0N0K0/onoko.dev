@@ -1,5 +1,10 @@
 import type { DocumentNode } from "@apollo/client";
 
+/**
+ * Ce fichier définit les types TypeScript liés aux entités génériques utilisées dans l'application, notamment les propriétés pour les pages d'entités, les mutations d'entités et les dialogues de confirmation de suppression.
+ * Ces types permettent d'assurer une utilisation cohérente et typée des entités à travers l'application, facilitant ainsi le développement et la maintenance du code.
+ */
+
 export interface EntitiesPageProps {
   labels: {
     entity: string;
@@ -33,4 +38,12 @@ export interface useEntityMutationProps {
   setInitialItem?: React.Dispatch<React.SetStateAction<any>>;
   setEditingItem?: React.Dispatch<React.SetStateAction<any>>;
   setHasChanges?: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface DeleteConfirmationDialogProps {
+  label: string;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  onClickDelete: () => void;
+  submitting: boolean;
 }

@@ -2,20 +2,24 @@ import { Button } from "@mui/material";
 import CustomDialog from "../custom/customDialog";
 import Icon from "@mdi/react";
 import { mdiClose, mdiDelete } from "@mdi/js";
+import type { DeleteConfirmationDialogProps } from "../../types/entityTypes";
 
+/**
+ * Composant de dialogue de confirmation de suppression
+ * Affiche un message de confirmation avant de supprimer une entité, avec des actions pour annuler ou confirmer la suppression
+ * @param {string} props.label Label de l'entité à supprimer (ex: "cette catégorie")
+ * @param {boolean} props.open Indique si le dialogue est ouvert
+ * @param {function} props.setOpen Fonction pour ouvrir/fermer le dialogue
+ * @param {function} props.onClickDelete Fonction à appeler lors de la confirmation de la suppression
+ * @param {boolean} props.submitting Indique si une action de suppression est en cours (pour désactiver les boutons)
+ */
 export default function DeleteConfirmationDialog({
   label,
   open,
   setOpen,
   onClickDelete,
   submitting,
-}: {
-  label: string;
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  onClickDelete: () => void;
-  submitting: boolean;
-}) {
+}: DeleteConfirmationDialogProps) {
   return (
     <CustomDialog
       key="deleteDialog"

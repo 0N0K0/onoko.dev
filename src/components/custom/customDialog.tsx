@@ -7,6 +7,15 @@ import {
 } from "@mui/material";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 
+/**
+ * Composant générique de dialogue personnalisé utilisant MUI Dialog
+ * @param {boolean} props.open Indique si le dialogue est ouvert
+ * @param {function} props.onClose Fonction pour fermer le dialogue
+ * @param {string} props.title Titre du dialogue (optionnel)
+ * @param {string} props.titlePaddingBottom Padding inférieur du titre (optionnel)
+ * @param {React.ReactNode} props.content Contenu du dialogue (peut être une string ou un composant React)
+ * @param {React.ReactNode} props.actions Actions du dialogue (boutons, etc., optionnel)
+ */
 export default function CustomDialog({
   open,
   onClose,
