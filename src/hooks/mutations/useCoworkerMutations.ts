@@ -6,7 +6,7 @@ import {
 import type {
   Coworker,
   useCoworkerMutationProps,
-} from "../../types/cowokerTypes";
+} from "../../types/entities/cowokerTypes";
 import { useEntityMutation } from "./useEntityMutation";
 
 export default function useCoworkerMutations({

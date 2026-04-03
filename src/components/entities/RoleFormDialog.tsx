@@ -3,7 +3,7 @@ import CustomDialog from "../custom/customDialog";
 import { ResponsiveStack } from "../custom/responsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiClose } from "@mdi/js";
-import type { Role, RoleFormDialogProps } from "../../types/roleTypes";
+import type { Role, RoleFormDialogProps } from "../../types/entities/roleTypes";
 import { useEffect, useState } from "react";
 
 export default function RoleFormDialog({

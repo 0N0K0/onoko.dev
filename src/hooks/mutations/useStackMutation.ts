@@ -3,7 +3,10 @@ import {
   DELETE_STACK_MUTATION,
   UPDATE_STACK_MUTATION,
 } from "../../services/stack/stackMutations";
-import type { Stack, useStackMutationProps } from "../../types/stackTypes";
+import type {
+  Stack,
+  useStackMutationProps,
+} from "../../types/entities/stackTypes";
 import { fileToBufferObj } from "../../utils/fileUtils";
 import { useEntityMutation } from "./useEntityMutation";
 

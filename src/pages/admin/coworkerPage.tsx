@@ -3,8 +3,8 @@ import EntitiesPage from "../../components/entities/EntitiesPage";
 import useCoworkerMutations from "../../hooks/mutations/useCoworkerMutations";
 import { COWORKERS_QUERY } from "../../services/coworker/coworkerQueries";
 import CoworkerFormDialog from "../../components/entities/CoworkerFormDialog";
-import type { Coworker } from "../../types/cowokerTypes";
-import type { Role } from "../../types/roleTypes";
+import type { Coworker } from "../../types/entities/cowokerTypes";
+import type { Role } from "../../types/entities/roleTypes";
 
 /**
  * Page d'administration pour la gestion des intervenants

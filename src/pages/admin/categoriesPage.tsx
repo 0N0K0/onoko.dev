@@ -2,7 +2,7 @@ import { useState } from "react";
 import EntitiesPage from "../../components/entities/EntitiesPage";
 import useCategoryMutations from "../../hooks/mutations/useCategoryMutations";
 import { CATEGORIES_QUERY } from "../../services/category/categoryQueries";
-import type { Category } from "../../types/categoryTypes";
+import type { Category } from "../../types/entities/categoryTypes";
 import CategoryFormDialog from "../../components/entities/CategoryFormDialog";
 import { useCategory } from "../../hooks/useCategory";
 

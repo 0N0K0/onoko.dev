@@ -6,7 +6,7 @@ import {
 import type {
   Category,
   useCategoryMutationProps,
-} from "../../types/categoryTypes";
+} from "../../types/entities/categoryTypes";
 import { useEntityMutation } from "./useEntityMutation";
 
 /**

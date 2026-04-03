@@ -1,5 +1,8 @@
 import { createContext, useEffect, useState, useMemo } from "react";
-import type { Category, CategoryContextType } from "../types/categoryTypes";
+import type {
+  Category,
+  CategoryContextType,
+} from "../types/entities/categoryTypes";
 import apolloClient from "../services/appolloClient";
 import { CATEGORIES_QUERY } from "../services/category/categoryQueries";
 
@@ -36,7 +39,7 @@ export function CategoryProvider({ children }: { children: React.ReactNode }) {
 
   const contextValue = useMemo(
     () => ({ categories, setCategories, loading, itemsError }),
-    [categories, setCategories, loading, itemsError]
+    [categories, setCategories, loading, itemsError],
   );
   return (
     <CategoryContext.Provider value={contextValue}>

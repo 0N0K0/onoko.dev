@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { CategoryContext } from "../context/CategoryContext";
-import type { CategoryContextType } from "../types/categoryTypes";
+import type { CategoryContextType } from "../types/entities/categoryTypes";
 
 export function useCategory(): CategoryContextType {
   const ctx = useContext(CategoryContext);

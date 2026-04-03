@@ -8,7 +8,7 @@ import { mdiPlus } from "@mdi/js";
 import CustomTable from "../custom/customTable";
 import ClosableSnackbarAlert from "../custom/closableSnackbarAlert";
 import SnackbarAlert from "../custom/snackbarAlert";
-import type { EntitiesPageProps } from "../../types/entityTypes";
+import type { EntitiesPageProps } from "../../types/entities/entityTypes";
 
 /**
  * Composant de page générique pour afficher une liste d'entités avec des actions d'ajout, de modification et de suppression

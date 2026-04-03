@@ -3,7 +3,10 @@ import CustomDialog from "../custom/customDialog";
 import { ResponsiveBox, ResponsiveStack } from "../custom/responsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiClose, mdiPencil } from "@mdi/js";
-import type { Stack, StackFormDialogProps } from "../../types/stackTypes";
+import type {
+  Stack,
+  StackFormDialogProps,
+} from "../../types/entities/stackTypes";
 import { useCategory } from "../../hooks/useCategory";
 import CustomSelect from "../custom/customSelect";
 import Dropzone from "react-dropzone";
@@ -12,6 +15,7 @@ import CustomIconButton from "../custom/customIconButton";
 import { useEffect, useState } from "react";
 import { API_URL } from "../../constants/apiConstants";
 import FieldsRepeater from "../custom/fieldsRepeater";
+import type { Category } from "../../types/entities/categoryTypes";
 
 export default function StackFormDialog({
   open,
@@ -236,8 +240,8 @@ export default function StackFormDialog({
               }}
               options={
                 categories
-                  ?.filter((c) => c.entity === "stack")
-                  .map((c) => ({
+                  ?.filter((c: Category) => c.entity === "stack")
+                  .map((c: Category) => ({
                     id: c.id,
                     label: c.depth
                       ? "__".repeat(c.depth) + ` ${c.label}`

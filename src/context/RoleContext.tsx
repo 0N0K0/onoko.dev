@@ -1,5 +1,5 @@
 import { createContext, useEffect, useMemo, useState } from "react";
-import type { RoleContextType } from "../types/roleTypes";
+import type { RoleContextType } from "../types/entities/roleTypes";
 import apolloClient from "../services/appolloClient";
 import { ROLES_QUERY } from "../services/role/roleQueries";
 

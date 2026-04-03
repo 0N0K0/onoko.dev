@@ -1,5 +1,5 @@
 import apolloClient from "../../services/appolloClient";
-import type { useEntityMutationProps } from "../../types/entityTypes";
+import type { useEntityMutationProps } from "../../types/entities/entityTypes";
 
 /**
  * Hook personnalisé pour gérer les mutations d'entités avec Apollo Client

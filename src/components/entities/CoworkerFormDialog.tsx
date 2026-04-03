@@ -7,9 +7,9 @@ import CustomSelect from "../custom/customSelect";
 import type {
   Coworker,
   CoworkerFormDialogProps,
-} from "../../types/cowokerTypes";
+} from "../../types/entities/cowokerTypes";
 import { useRole } from "../../hooks/useRole";
-import type { Role } from "../../types/roleTypes";
+import type { Role } from "../../types/entities/roleTypes";
 import { useEffect, useState } from "react";
 
 export default function CoworkerFormDialog({
@@ -102,7 +102,7 @@ export default function CoworkerFormDialog({
                 changed && setHasChanges(true);
               }}
               options={
-                roles?.map((r) => ({
+                roles?.map((r: Role) => ({
                   id: r.id,
                   label: r.label,
                 })) || []

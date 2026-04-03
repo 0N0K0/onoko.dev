@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import type { RoleContextType } from "../types/roleTypes";
+import type { RoleContextType } from "../types/entities/roleTypes";
 import { RoleContext } from "../context/RoleContext";
 
 export function useRole(): RoleContextType {
