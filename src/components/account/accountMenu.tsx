@@ -21,8 +21,8 @@ export default function AccountMenu() {
   const { user } = useAuth();
 
   return (
-    <ResponsiveStack direction="row" spacing={1}>
-      <ResponsiveBodyTypography variant="bodyXs" color="textSecondary">
+    <ResponsiveStack direction="row" spacing={1} alignItems="center">
+      <ResponsiveBodyTypography variant="bodySm" color="textSecondary">
         Bonjour {user} !
       </ResponsiveBodyTypography>
       <CustomIconButton
@@ -31,8 +31,6 @@ export default function AccountMenu() {
           setAnchorEl(e.currentTarget)
         }
         color="inherit"
-        size="adminMenu"
-        iconSize="1rem"
       />
       <CustomMenu
         id="account-menu"

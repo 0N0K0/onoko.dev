@@ -35,7 +35,7 @@ export const SIZES = () => {
   );
 
   return {
-    adminHeaderHeight: "24px",
+    adminHeaderHeight: "48px",
     rootPaddingY,
     rootPaddingX,
     rowGap,

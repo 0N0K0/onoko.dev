@@ -18,34 +18,21 @@ export default function AdminHeader() {
   return (
     <AppBar position="sticky" elevation={1}>
       <Toolbar
-        sx={{ minHeight: "0px !important", justifyContent: "space-between" }}
+        sx={{
+          paddingX: "20px !important",
+          minHeight: "0px !important",
+          justifyContent: "space-between",
+        }}
       >
         <ResponsiveStack direction="row" alignItems="center" spacing={1}>
           <HomeMenu />
           <CustomIconButton
-            size="adminMenu"
             href="/admin/stacks"
             icon={mdiApplicationArrayOutline}
-            iconSize="1rem"
           />
-          <CustomIconButton
-            size="adminMenu"
-            href="/admin/coworkers"
-            icon={mdiAccountHardHat}
-            iconSize="1rem"
-          />
-          <CustomIconButton
-            size="adminMenu"
-            href="/admin/roles"
-            icon={mdiHardHat}
-            iconSize="1rem"
-          />
-          <CustomIconButton
-            size="adminMenu"
-            href="/admin/categories"
-            icon={mdiTag}
-            iconSize="1rem"
-          />
+          <CustomIconButton href="/admin/coworkers" icon={mdiAccountHardHat} />
+          <CustomIconButton href="/admin/roles" icon={mdiHardHat} />
+          <CustomIconButton href="/admin/categories" icon={mdiTag} />
         </ResponsiveStack>
         <AccountMenu />
       </Toolbar>
