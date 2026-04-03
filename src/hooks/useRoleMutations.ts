@@ -3,7 +3,7 @@ import {
   DELETE_ROLE_MUTATION,
   UPDATE_ROLE_MUTATION,
 } from "../services/role/roleMutations";
-import type { useRoleMutationProps } from "../types/roleTypes";
+import type { Role, useRoleMutationProps } from "../types/roleTypes";
 import { useEntityMutation } from "./useEntityMutation";
 
 export default function useRoleMutations({
@@ -11,15 +11,11 @@ export default function useRoleMutations({
   setSubmitError,
   setSubmitting,
   setFormDialogOpen,
-  setInitialRole,
-  editingRole,
-  setEditingRole,
-  setHasChanges,
   roles,
   setRoles,
 }: useRoleMutationProps): {
-  handleAdd: () => Promise<void>;
-  handleEdit: () => Promise<void>;
+  handleAdd: (item: Partial<Role>) => Promise<void>;
+  handleEdit: (item: Partial<Role>) => Promise<void>;
   handleDelete: (selectedRoles: string[]) => Promise<void>;
 } {
   // Ajouter un rôle
@@ -28,12 +24,11 @@ export default function useRoleMutations({
     setSubmitError,
     setSubmitting,
     setFormDialogOpen,
-    setEditingItem: setEditingRole,
   });
-  const handleAdd = async () => {
+  const handleAdd = async (item: Partial<Role>) => {
     await addRole({
       mutation: CREATE_ROLE_MUTATION,
-      variables: editingRole,
+      variables: item,
       onSuccess: (data) => {
         setRoles((prev) => [...(prev || []), data.createRole]);
         setSubmitSuccess?.(
@@ -50,14 +45,11 @@ export default function useRoleMutations({
     setSubmitError,
     setSubmitting,
     setFormDialogOpen,
-    setInitialItem: setInitialRole,
-    setEditingItem: setEditingRole,
-    setHasChanges,
   });
-  const handleEdit = async () => {
+  const handleEdit = async (item: Partial<Role>) => {
     await editRole({
       mutation: UPDATE_ROLE_MUTATION,
-      variables: editingRole,
+      variables: item,
       onSuccess: (data) => {
         setRoles((prev) =>
           prev?.map((r) => (r.id === data.updateRole.id ? data.updateRole : r)),

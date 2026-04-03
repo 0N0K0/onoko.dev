@@ -17,37 +17,13 @@ export default function Coworkers() {
 
   const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
 
-  const [initialCoworker, setInitialCoworker] = useState<Coworker | null>(null);
-  const [editingCoworker, setEditingCoworker] =
-    useState<Partial<Coworker> | null>(null);
-  const [hasChanges, setHasChanges] = useState(false);
-
   const [coworkers, setCoworkers] = useState<Coworker[] | undefined>(undefined);
-
-  const handleClickAdd = () => {
-    setFormDialogOpen(true);
-    setEditingCoworker({
-      name: "",
-      roles: [],
-    });
-  };
-
-  const handleClickEdit = (id: string) => {
-    setFormDialogOpen(id);
-    const coworker = coworkers?.find((c) => c.id === id) || null;
-    setInitialCoworker(coworker);
-    setEditingCoworker(coworker);
-  };
 
   const { handleAdd, handleEdit, handleDelete } = useCoworkerMutations({
     setSubmitSuccess,
     setSubmitError,
     setSubmitting,
     setFormDialogOpen,
-    setInitialCoworker,
-    editingCoworker,
-    setEditingCoworker,
-    setHasChanges,
     coworkers,
     setCoworkers,
   });
@@ -76,8 +52,8 @@ export default function Coworkers() {
           },
         ]}
         onClickActions={{
-          add: handleClickAdd,
-          edit: handleClickEdit,
+          add: () => setFormDialogOpen(true),
+          edit: (id: string) => setFormDialogOpen(id),
           delete: handleDelete,
         }}
         submitting={submitting}
@@ -88,12 +64,7 @@ export default function Coworkers() {
       <CoworkerFormDialog
         open={formDialogOpen}
         setOpen={setFormDialogOpen}
-        initialCoworker={initialCoworker}
-        setInitialCoworker={setInitialCoworker}
-        editingCoworker={editingCoworker}
-        setEditingCoworker={setEditingCoworker}
-        hasChanges={hasChanges}
-        setHasChanges={setHasChanges}
+        coworkers={coworkers}
         handleAdd={handleAdd}
         handleEdit={handleEdit}
         submitting={submitting}

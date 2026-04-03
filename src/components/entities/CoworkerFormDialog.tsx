@@ -4,24 +4,50 @@ import { ResponsiveStack } from "../custom/responsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiClose } from "@mdi/js";
 import CustomSelect from "../custom/customSelect";
-import type { CoworkerFormDialogProps } from "../../types/cowokerTypes";
+import type {
+  Coworker,
+  CoworkerFormDialogProps,
+} from "../../types/cowokerTypes";
 import { useRole } from "../../hooks/useRole";
 import type { Role } from "../../types/roleTypes";
+import { useEffect, useState } from "react";
 
 export default function CoworkerFormDialog({
   open,
   setOpen,
-  initialCoworker,
-  setInitialCoworker,
-  editingCoworker,
-  setEditingCoworker,
-  hasChanges,
-  setHasChanges,
+  coworkers,
   handleAdd,
   handleEdit,
   submitting,
 }: CoworkerFormDialogProps) {
   const { roles } = useRole();
+
+  // State local pour le formulaire
+  const [initialCoworker, setInitialCoworker] = useState<Coworker | null>(null);
+  const [editingCoworker, setEditingCoworker] =
+    useState<Partial<Coworker> | null>(null);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  // Réinitialise le formulaire à l'ouverture
+  useEffect(() => {
+    if (open === true) {
+      setInitialCoworker(null);
+      setEditingCoworker({
+        name: "",
+        roles: [],
+      });
+      setHasChanges(false);
+    } else if (typeof open === "string") {
+      const coworker = coworkers?.find((c) => c.id === open) || null;
+      setInitialCoworker(coworker);
+      setEditingCoworker(coworker);
+      setHasChanges(false);
+    } else if (!open) {
+      setInitialCoworker(null);
+      setEditingCoworker(null);
+      setHasChanges(false);
+    }
+  }, [open, coworkers]);
 
   return (
     <CustomDialog
@@ -89,7 +115,12 @@ export default function CoworkerFormDialog({
       actions={[
         <Button
           key="cancel"
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            setOpen(false);
+            setInitialCoworker(null);
+            setEditingCoworker(null);
+            setHasChanges(false);
+          }}
           disabled={submitting}
           startIcon={<Icon path={mdiClose} size={1} />}
           sx={{ flex: "1 1 auto" }}
@@ -99,7 +130,13 @@ export default function CoworkerFormDialog({
         <Button
           key="confirm"
           color="success"
-          onClick={typeof open === "string" ? handleEdit : handleAdd}
+          onClick={() => {
+            if (typeof open === "string") {
+              handleEdit(editingCoworker!);
+            } else {
+              handleAdd(editingCoworker!);
+            }
+          }}
           disabled={submitting || !hasChanges || !editingCoworker?.name}
           startIcon={<Icon path={mdiCheck} size={1} />}
           sx={{ flex: "1 1 auto" }}

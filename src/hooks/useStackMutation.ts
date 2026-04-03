@@ -3,7 +3,7 @@ import {
   DELETE_STACK_MUTATION,
   UPDATE_STACK_MUTATION,
 } from "../services/stack/stackMutations";
-import type { useStackMutationProps } from "../types/stackTypes";
+import type { Stack, useStackMutationProps } from "../types/stackTypes";
 import { fileToBufferObj } from "../utils/fileUtils";
 import { useEntityMutation } from "./useEntityMutation";
 
@@ -21,8 +21,8 @@ import { useEntityMutation } from "./useEntityMutation";
  * @param {Array<Stack>} props.stacks La liste actuelle des technologies.
  * @param {function} props.setStacks Fonction pour mettre à jour la liste des technologies.
  * @returns {
- *            handleAdd: () => Promise<void>,
- *            handleEdit: () => Promise<void>,
+ *            handleAdd: (item: Partial<Stack & { iconFile?: File | null }>) => Promise<void>,
+ *            handleEdit: (item: Partial<Stack & { iconFile?: File | null }>) => Promise<void>,
  *            handleDelete: (selectedStacks: string[]) => Promise<void>
  *           } Un ensemble de fonctions pour gérer respectivement l'ajout, la modification et la suppression des technologies.
  */
@@ -31,15 +31,15 @@ export default function useStackMutations({
   setSubmitError,
   setSubmitting,
   setFormDialogOpen,
-  setInitialStack,
-  editingStack,
-  setEditingStack,
-  setHasChanges,
   stacks,
   setStacks,
 }: useStackMutationProps): {
-  handleAdd: () => Promise<void>;
-  handleEdit: () => Promise<void>;
+  handleAdd: (
+    item: Partial<Stack & { iconFile?: File | null }>,
+  ) => Promise<void>;
+  handleEdit: (
+    item: Partial<Stack & { iconFile?: File | null }>,
+  ) => Promise<void>;
   handleDelete: (selectedStacks: string[]) => Promise<void>;
 } {
   // Ajouter une technologie
@@ -48,18 +48,16 @@ export default function useStackMutations({
     setSubmitError,
     setSubmitting,
     setFormDialogOpen,
-    setEditingItem: setEditingStack,
   });
-  const handleAdd = async () => {
-    if (!editingStack) return;
-
+  const handleAdd = async (
+    item: Partial<Stack & { iconFile?: File | null }>,
+  ) => {
     let iconFileObj = null;
-    if (editingStack.iconFile)
-      iconFileObj = await fileToBufferObj(editingStack.iconFile);
+    if (item.iconFile) iconFileObj = await fileToBufferObj(item.iconFile);
 
     await addStack({
       mutation: CREATE_STACK_MUTATION,
-      variables: { ...editingStack, iconFile: iconFileObj },
+      variables: { ...item, iconFile: iconFileObj },
       onSuccess: (data) => {
         setStacks((prev) => [...(prev || []), data.createStack]);
         setSubmitSuccess?.(
@@ -76,26 +74,22 @@ export default function useStackMutations({
     setSubmitError,
     setSubmitting,
     setFormDialogOpen,
-    setInitialItem: setInitialStack,
-    setEditingItem: setEditingStack,
-    setHasChanges,
   });
-  const handleEdit = async () => {
-    if (!editingStack) return;
+  const handleEdit = async (
+    item: Partial<Stack & { iconFile?: File | null }>,
+  ) => {
+    if (!item) return;
 
     let iconFileObj = null;
-    if (editingStack.iconFile)
-      iconFileObj = await fileToBufferObj(editingStack.iconFile);
+    if (item.iconFile) iconFileObj = await fileToBufferObj(item.iconFile);
 
     await editStack({
       mutation: UPDATE_STACK_MUTATION,
       variables: {
-        ...editingStack,
+        ...item,
         iconFile: iconFileObj,
         category:
-          typeof editingStack.category === "string"
-            ? editingStack.category
-            : editingStack.category?.id,
+          typeof item.category === "string" ? item.category : item.category?.id,
       },
       onSuccess: (data) => {
         setStacks((prev) =>

@@ -3,7 +3,7 @@ import {
   DELETE_COWORKER_MUTATION,
   UPDATE_COWORKER_MUTATION,
 } from "../services/coworker/coworkerMutations";
-import type { useCoworkerMutationProps } from "../types/cowokerTypes";
+import type { Coworker, useCoworkerMutationProps } from "../types/cowokerTypes";
 import { useEntityMutation } from "./useEntityMutation";
 
 export default function useCoworkerMutations({
@@ -11,15 +11,11 @@ export default function useCoworkerMutations({
   setSubmitError,
   setSubmitting,
   setFormDialogOpen,
-  setInitialCoworker,
-  editingCoworker,
-  setEditingCoworker,
-  setHasChanges,
   coworkers,
   setCoworkers,
 }: useCoworkerMutationProps): {
-  handleAdd: () => Promise<void>;
-  handleEdit: () => Promise<void>;
+  handleAdd: (item: Partial<Coworker>) => void;
+  handleEdit: (item: Partial<Coworker>) => void;
   handleDelete: (selectedCoworkers: string[]) => Promise<void>;
 } {
   // Ajouter un collaborateur
@@ -28,12 +24,11 @@ export default function useCoworkerMutations({
     setSubmitError,
     setSubmitting,
     setFormDialogOpen,
-    setEditingItem: setEditingCoworker,
   });
-  const handleAdd = async () => {
+  const handleAdd = async (item: Partial<Coworker>) => {
     await addCoworker({
       mutation: CREATE_COWORKER_MUTATION,
-      variables: editingCoworker,
+      variables: item,
       onSuccess: (data) => {
         setCoworkers((prev) => [...(prev || []), data.createCoworker]);
         setSubmitSuccess?.(
@@ -50,14 +45,11 @@ export default function useCoworkerMutations({
     setSubmitError,
     setSubmitting,
     setFormDialogOpen,
-    setInitialItem: setInitialCoworker,
-    setEditingItem: setEditingCoworker,
-    setHasChanges,
   });
-  const handleEdit = async () => {
+  const handleEdit = async (item: Partial<Coworker>) => {
     await editCoworker({
       mutation: UPDATE_COWORKER_MUTATION,
-      variables: editingCoworker,
+      variables: item,
       onSuccess: (data) => {
         setCoworkers((prev) =>
           prev?.map((r) =>

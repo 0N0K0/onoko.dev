@@ -18,9 +18,6 @@ export function useEntityMutation({
   setSubmitError,
   setSubmitting,
   setFormDialogOpen,
-  setInitialItem,
-  setEditingItem,
-  setHasChanges,
 }: useEntityMutationProps): (params: {
   mutation: any;
   variables?: any;
@@ -49,9 +46,6 @@ export function useEntityMutation({
       if (onSuccess) onSuccess(data);
       if (reset) {
         setFormDialogOpen?.(false);
-        setInitialItem?.(null);
-        setEditingItem?.(null);
-        setHasChanges?.(false);
       }
     } catch (e: any) {
       setSubmitError?.(e.message || "Une erreur inconnue est survenue.");

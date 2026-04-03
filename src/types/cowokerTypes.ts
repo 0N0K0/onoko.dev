@@ -1,4 +1,7 @@
-import type { useEntityMutationProps } from "./entityTypes";
+import type {
+  EntityFormDialogProps,
+  useEntityMutationProps,
+} from "./entityTypes";
 import type { Role } from "./roleTypes";
 
 export interface Coworker {
@@ -7,27 +10,11 @@ export interface Coworker {
   roles?: Role[] | String[];
 }
 
-export interface CoworkerFormDialogProps {
-  open: boolean | string;
-  setOpen: (open: boolean | string) => void;
-  initialCoworker: Coworker | null;
-  setInitialCoworker: (coworker: Coworker | null) => void;
-  editingCoworker: Partial<Coworker> | null;
-  setEditingCoworker: (coworker: Partial<Coworker> | null) => void;
-  hasChanges: boolean;
-  setHasChanges: (hasChanges: boolean) => void;
-  handleAdd: () => void;
-  handleEdit: () => void;
-  submitting: boolean;
+export interface CoworkerFormDialogProps extends EntityFormDialogProps {
+  coworkers?: Coworker[];
 }
 
 export interface useCoworkerMutationProps extends useEntityMutationProps {
-  initialCoworker?: Coworker | null;
-  setInitialCoworker?: React.Dispatch<React.SetStateAction<Coworker | null>>;
-  editingCoworker?: Partial<Coworker> | null;
-  setEditingCoworker?: React.Dispatch<
-    React.SetStateAction<Partial<Coworker> | null>
-  >;
-  coworkers?: Coworker[] | undefined;
+  coworkers?: Coworker[];
   setCoworkers: React.Dispatch<React.SetStateAction<Coworker[] | undefined>>;
 }
