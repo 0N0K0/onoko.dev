@@ -3,7 +3,7 @@ import CustomDialog from "../custom/customDialog";
 import { ResponsiveBox, ResponsiveStack } from "../custom/responsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiClose, mdiPencil } from "@mdi/js";
-import type { StackFormDialogProps } from "../../types/stackTypes";
+import type { Stack, StackFormDialogProps } from "../../types/stackTypes";
 import { useCategory } from "../../hooks/useCategory";
 import CustomSelect from "../custom/customSelect";
 import Dropzone from "react-dropzone";
@@ -16,20 +16,44 @@ import FieldsRepeater from "../custom/fieldsRepeater";
 export default function StackFormDialog({
   open,
   setOpen,
-  initialStack,
-  setInitialStack,
-  editingStack,
-  setEditingStack,
-  onDropIcon,
-  hasChanges,
-  setHasChanges,
+  stacks,
   handleAdd,
   handleEdit,
   submitting,
 }: StackFormDialogProps) {
   const theme = useTheme();
   const { categories } = useCategory();
+
+  const [initialStack, setInitialStack] = useState<Stack | null>(null);
+  const [editingStack, setEditingStack] = useState<Partial<
+    Stack & { iconFile?: File | null }
+  > | null>(null);
+  const [hasChanges, setHasChanges] = useState(false);
+
   const [editIcon, setEditIcon] = useState(false);
+
+  useEffect(() => {
+    if (open === true) {
+      setInitialStack(null);
+      setEditingStack({
+        label: "",
+        description: "",
+        versions: [],
+        skills: [],
+        category: "",
+      });
+      setHasChanges(false);
+    } else if (typeof open === "string") {
+      const stack = stacks?.find((s) => s.id === open) || null;
+      setInitialStack(stack);
+      setEditingStack(stack);
+      setHasChanges(false);
+    } else if (!open) {
+      setInitialStack(null);
+      setEditingStack(null);
+      setHasChanges(false);
+    }
+  }, [open, stacks]);
 
   useEffect(() => {
     if (editingStack?.iconFile || editingStack?.iconUrl) {
@@ -38,6 +62,15 @@ export default function StackFormDialog({
       setEditIcon(true);
     }
   }, [editingStack?.iconFile, editingStack?.iconUrl]);
+
+  const handleDropIcon = (files: File[]) => {
+    if (files && files.length > 0) {
+      setEditingStack(
+        editingStack ? { ...editingStack, iconFile: files[0] } : null,
+      );
+      setHasChanges(true);
+    }
+  };
 
   return (
     <CustomDialog
@@ -89,7 +122,7 @@ export default function StackFormDialog({
               editIcon) && (
               <Dropzone
                 onDrop={(acceptedFiles) => {
-                  onDropIcon(acceptedFiles);
+                  handleDropIcon(acceptedFiles);
                   setEditIcon(false);
                 }}
                 accept={{
@@ -202,12 +235,14 @@ export default function StackFormDialog({
                     : initialStack?.category?.id || "") && setHasChanges(true);
               }}
               options={
-                categories?.map((c) => ({
-                  id: c.id,
-                  label: c.depth
-                    ? "__".repeat(c.depth) + ` ${c.label}`
-                    : c.label,
-                })) || []
+                categories
+                  ?.filter((c) => c.entity === "stack")
+                  .map((c) => ({
+                    id: c.id,
+                    label: c.depth
+                      ? "__".repeat(c.depth) + ` ${c.label}`
+                      : c.label,
+                  })) || []
               }
             />
           </ResponsiveStack>
@@ -216,7 +251,12 @@ export default function StackFormDialog({
       actions={[
         <Button
           key="cancel"
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            setOpen(false);
+            setInitialStack(null);
+            setEditingStack(null);
+            setHasChanges(false);
+          }}
           disabled={submitting}
           startIcon={<Icon path={mdiClose} size={1} />}
           sx={{ flex: "1 1 auto" }}
@@ -226,7 +266,13 @@ export default function StackFormDialog({
         <Button
           key="confirm"
           color="success"
-          onClick={typeof open === "string" ? handleEdit : handleAdd}
+          onClick={() => {
+            if (typeof open === "string") {
+              handleEdit(editingStack!);
+            } else {
+              handleAdd(editingStack!);
+            }
+          }}
           disabled={
             submitting ||
             !hasChanges ||

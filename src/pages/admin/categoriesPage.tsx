@@ -18,11 +18,6 @@ export default function Categories() {
 
   const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
 
-  const [initialCategory, setInitialCategory] = useState<Category | null>(null);
-  const [editingCategory, setEditingCategory] =
-    useState<Partial<Category> | null>(null);
-  const [hasChanges, setHasChanges] = useState(false);
-
   const { categories, setCategories } = useCategory();
 
   const entitiesMap: { [key: string]: string } = {
@@ -31,32 +26,11 @@ export default function Categories() {
     project: "Projet",
   };
 
-  const handleClickAdd = () => {
-    setFormDialogOpen(true);
-    setEditingCategory({
-      label: "",
-      entity: "",
-      description: "",
-      parent: "",
-    });
-  };
-
-  const handleClickEdit = (id: string) => {
-    setFormDialogOpen(id);
-    const category = categories?.find((c) => c.id === id) || null;
-    setInitialCategory(category);
-    setEditingCategory(category);
-  };
-
   const { handleAdd, handleEdit, handleDelete } = useCategoryMutations({
     setSubmitSuccess,
     setSubmitError,
     setSubmitting,
     setFormDialogOpen,
-    setInitialCategory,
-    editingCategory,
-    setEditingCategory,
-    setHasChanges,
     categories,
     setCategories,
   });
@@ -86,12 +60,15 @@ export default function Categories() {
           {
             key: "entity",
             label: "Entité",
-            content: (item) => entitiesMap[item.entity || ""],
+            content: (item: Category) =>
+              (entitiesMap as Record<string, string>)[item.entity || ""] ||
+              item.entity ||
+              "",
           },
         ]}
         onClickActions={{
-          add: handleClickAdd,
-          edit: handleClickEdit,
+          add: () => setFormDialogOpen(true),
+          edit: (id: string) => setFormDialogOpen(id),
           delete: handleDelete,
         }}
         submitting={submitting}
@@ -103,12 +80,6 @@ export default function Categories() {
         open={formDialogOpen}
         setOpen={setFormDialogOpen}
         categories={categories}
-        initialCategory={initialCategory}
-        setInitialCategory={setInitialCategory}
-        editingCategory={editingCategory}
-        setEditingCategory={setEditingCategory}
-        hasChanges={hasChanges}
-        setHasChanges={setHasChanges}
         handleAdd={handleAdd}
         handleEdit={handleEdit}
         submitting={submitting}

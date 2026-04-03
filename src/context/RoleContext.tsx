@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import type { RoleContextType } from "../types/roleTypes";
 import apolloClient from "../services/appolloClient";
 import { ROLES_QUERY } from "../services/role/roleQueries";
@@ -32,9 +32,11 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
     fetchItems();
   }, []);
 
+  const contextValue = useMemo(
+    () => ({ roles, setRoles, loading, itemsError }),
+    [roles, setRoles, loading, itemsError],
+  );
   return (
-    <RoleContext.Provider value={{ roles, setRoles, loading, itemsError }}>
-      {children}
-    </RoleContext.Provider>
+    <RoleContext.Provider value={contextValue}>{children}</RoleContext.Provider>
   );
 }

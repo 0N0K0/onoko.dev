@@ -2,7 +2,6 @@ import { useState } from "react";
 import EntitiesPage from "../../components/entities/EntitiesPage";
 import useRoleMutations from "../../hooks/useRoleMutations";
 import { ROLES_QUERY } from "../../services/role/roleQueries";
-import type { Role } from "../../types/roleTypes";
 import RoleFormDialog from "../../components/entities/RoleFormDialog";
 import { useRole } from "../../hooks/useRole";
 
@@ -17,35 +16,13 @@ export default function Roles() {
 
   const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
 
-  const [initialRole, setInitialRole] = useState<Role | null>(null);
-  const [editingRole, setEditingRole] = useState<Partial<Role> | null>(null);
-  const [hasChanges, setHasChanges] = useState(false);
-
   const { roles, setRoles } = useRole();
-
-  const handleClickAdd = () => {
-    setFormDialogOpen(true);
-    setEditingRole({
-      label: "",
-    });
-  };
-
-  const handleClickEdit = (id: string) => {
-    setFormDialogOpen(id);
-    const role = roles?.find((c) => c.id === id) || null;
-    setInitialRole(role);
-    setEditingRole(role);
-  };
 
   const { handleAdd, handleEdit, handleDelete } = useRoleMutations({
     setSubmitSuccess,
     setSubmitError,
     setSubmitting,
     setFormDialogOpen,
-    setInitialRole,
-    editingRole,
-    setEditingRole,
-    setHasChanges,
     roles,
     setRoles,
   });
@@ -74,8 +51,8 @@ export default function Roles() {
           },
         ]}
         onClickActions={{
-          add: handleClickAdd,
-          edit: handleClickEdit,
+          add: () => setFormDialogOpen(true),
+          edit: (id: string) => setFormDialogOpen(id),
           delete: handleDelete,
         }}
         submitting={submitting}
@@ -86,12 +63,7 @@ export default function Roles() {
       <RoleFormDialog
         open={formDialogOpen}
         setOpen={setFormDialogOpen}
-        initialRole={initialRole}
-        setInitialRole={setInitialRole}
-        editingRole={editingRole}
-        setEditingRole={setEditingRole}
-        hasChanges={hasChanges}
-        setHasChanges={setHasChanges}
+        roles={roles}
         handleAdd={handleAdd}
         handleEdit={handleEdit}
         submitting={submitting}

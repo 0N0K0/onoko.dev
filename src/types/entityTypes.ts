@@ -1,4 +1,8 @@
 import type { DocumentNode } from "@apollo/client";
+import type { Category } from "./categoryTypes";
+import type { Role } from "./roleTypes";
+import type { Stack } from "./stackTypes";
+import type { Coworker } from "./cowokerTypes";
 
 /**
  * Ce fichier définit les types TypeScript liés aux entités génériques utilisées dans l'application, notamment les propriétés pour les pages d'entités, les mutations d'entités et les dialogues de confirmation de suppression.
@@ -35,10 +39,6 @@ export interface useEntityMutationProps {
   setSubmitError?: React.Dispatch<React.SetStateAction<string>>;
   setSubmitting?: React.Dispatch<React.SetStateAction<boolean>>;
   setFormDialogOpen?: React.Dispatch<React.SetStateAction<string | boolean>>;
-  setInitialItem?: React.Dispatch<React.SetStateAction<any>>;
-  setEditingItem?: React.Dispatch<React.SetStateAction<any>>;
-  hasChanges?: boolean;
-  setHasChanges?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface DeleteConfirmationDialogProps {
@@ -46,5 +46,13 @@ export interface DeleteConfirmationDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   onClickDelete: () => void;
+  submitting: boolean;
+}
+
+export interface EntityFormDialogProps {
+  open: boolean | string;
+  setOpen: (open: boolean | string) => void;
+  handleAdd: (item: Partial<Category | Role | Stack | Coworker>) => void;
+  handleEdit: (item: Partial<Category | Role | Stack | Coworker>) => void;
   submitting: boolean;
 }

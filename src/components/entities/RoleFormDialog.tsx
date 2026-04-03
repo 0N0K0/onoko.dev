@@ -3,21 +3,40 @@ import CustomDialog from "../custom/customDialog";
 import { ResponsiveStack } from "../custom/responsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiClose } from "@mdi/js";
-import type { RoleFormDialogProps } from "../../types/roleTypes";
+import type { Role, RoleFormDialogProps } from "../../types/roleTypes";
+import { useEffect, useState } from "react";
 
 export default function RoleFormDialog({
   open,
   setOpen,
-  initialRole,
-  setInitialRole,
-  editingRole,
-  setEditingRole,
-  hasChanges,
-  setHasChanges,
+  roles,
   handleAdd,
   handleEdit,
   submitting,
 }: RoleFormDialogProps) {
+  const [initialRole, setInitialRole] = useState<Role | null>(null);
+  const [editingRole, setEditingRole] = useState<Partial<Role> | null>(null);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  useEffect(() => {
+    if (open === true) {
+      setInitialRole(null);
+      setEditingRole({
+        label: "",
+      });
+      setHasChanges(false);
+    } else if (typeof open === "string") {
+      const role = roles?.find((r) => r.id === open) || null;
+      setInitialRole(role);
+      setEditingRole(role);
+      setHasChanges(false);
+    } else if (!open) {
+      setInitialRole(null);
+      setEditingRole(null);
+      setHasChanges(false);
+    }
+  }, [open, roles]);
+
   return (
     <CustomDialog
       key="formDialog"
@@ -52,7 +71,12 @@ export default function RoleFormDialog({
       actions={[
         <Button
           key="cancel"
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            setOpen(false);
+            setInitialRole(null);
+            setEditingRole(null);
+            setHasChanges(false);
+          }}
           disabled={submitting}
           startIcon={<Icon path={mdiClose} size={1} />}
           sx={{ flex: "1 1 auto" }}
@@ -62,7 +86,13 @@ export default function RoleFormDialog({
         <Button
           key="confirm"
           color="success"
-          onClick={typeof open === "string" ? handleEdit : handleAdd}
+          onClick={() => {
+            if (typeof open === "string") {
+              handleEdit(editingRole!);
+            } else {
+              handleAdd(editingRole!);
+            }
+          }}
           disabled={submitting || !hasChanges || !editingRole?.label}
           startIcon={<Icon path={mdiCheck} size={1} />}
           sx={{ flex: "1 1 auto" }}

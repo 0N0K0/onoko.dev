@@ -3,7 +3,10 @@ import {
   DELETE_CATEGORY_MUTATION,
   UPDATE_CATEGORY_MUTATION,
 } from "../services/category/categoryMutations";
-import type { useCategoryMutationProps } from "../types/categoryTypes";
+import type {
+  Category,
+  useCategoryMutationProps,
+} from "../types/categoryTypes";
 import { useEntityMutation } from "./useEntityMutation";
 
 /**
@@ -21,8 +24,8 @@ import { useEntityMutation } from "./useEntityMutation";
  * @param {Array<Category>} props.categories - La liste actuelle des catégories.
  * @param {Function} props.setCategories - Fonction pour mettre à jour la liste des catégories.
  * @returns {{
- *            handleAdd: () => Promise<void>,
- *            handleEdit: () => Promise<void>,
+ *            handleAdd: (item: Partial<Category>) => Promise<void>,
+ *            handleEdit: (item: Partial<Category>) => Promise<void>,
  *            handleDelete: (selectedCategories: string[]) => Promise<void>
  *           }} Un ensemble de fonctions pour gérer respectivement l'ajout, la modification et la suppression des catégories.
  */
@@ -31,15 +34,11 @@ export default function useCategoryMutations({
   setSubmitError,
   setSubmitting,
   setFormDialogOpen,
-  setInitialCategory,
-  editingCategory,
-  setEditingCategory,
-  setHasChanges,
   categories,
   setCategories,
 }: useCategoryMutationProps): {
-  handleAdd: () => Promise<void>;
-  handleEdit: () => Promise<void>;
+  handleAdd: (item: Partial<Category>) => Promise<void>;
+  handleEdit: (item: Partial<Category>) => Promise<void>;
   handleDelete: (selectedCategories: string[]) => Promise<void>;
 } {
   // Ajouter une catégorie
@@ -48,12 +47,11 @@ export default function useCategoryMutations({
     setSubmitError,
     setSubmitting,
     setFormDialogOpen,
-    setEditingItem: setEditingCategory,
   });
-  const handleAdd = async () => {
+  const handleAdd = async (item: Partial<Category>) => {
     await addCategory({
       mutation: CREATE_CATEGORY_MUTATION,
-      variables: editingCategory,
+      variables: item,
       onSuccess: (data) => {
         setCategories((prev) => [...(prev || []), data.createCategory]);
         setSubmitSuccess?.(
@@ -70,14 +68,11 @@ export default function useCategoryMutations({
     setSubmitError,
     setSubmitting,
     setFormDialogOpen,
-    setInitialItem: setInitialCategory,
-    setEditingItem: setEditingCategory,
-    setHasChanges,
   });
-  const handleEdit = async () => {
+  const handleEdit = async (item: Partial<Category>) => {
     await editCategory({
       mutation: UPDATE_CATEGORY_MUTATION,
-      variables: editingCategory,
+      variables: item,
       onSuccess: (data) => {
         setCategories((prev) =>
           prev?.map((c) =>

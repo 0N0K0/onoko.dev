@@ -1,4 +1,11 @@
-import { createContext, useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+  type ReactNode,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { loginApi } from "../services/auth/authService";
 import apolloClient from "../services/appolloClient";
@@ -40,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Vérifie le token auprès de l'API
-  const checkAuth = async (): Promise<boolean> => {
+  const checkAuth = useCallback(async (): Promise<boolean> => {
     const token = localStorage.getItem("token");
     if (!token) {
       setIsAuthenticated(false);
@@ -88,47 +95,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem("token");
       return false;
     }
-  };
+  }, []);
 
   // Login centralisé
-  const login = async (
-    loginValue: string,
-    password: string,
-  ): Promise<boolean> => {
-    setLoading(true);
-    try {
-      const token = await loginApi(loginValue, password);
-      localStorage.setItem("token", token);
-      // Décoder l'expiration du token dès le login
-      const payload = (() => {
-        try {
-          const p = token.split(".")[1];
-          return JSON.parse(atob(p.replace(/-/g, "+").replace(/_/g, "/")));
-        } catch {
-          return null;
+  const login = useCallback(
+    async (loginValue: string, password: string): Promise<boolean> => {
+      setLoading(true);
+      try {
+        const token = await loginApi(loginValue, password);
+        localStorage.setItem("token", token);
+        // Décoder l'expiration du token dès le login
+        const payload = (() => {
+          try {
+            const p = token.split(".")[1];
+            return JSON.parse(atob(p.replace(/-/g, "+").replace(/_/g, "/")));
+          } catch {
+            return null;
+          }
+        })();
+        if (payload && payload.exp) {
+          setTokenExp(payload.exp);
+        } else {
+          setTokenExp(null);
         }
-      })();
-      if (payload && payload.exp) {
-        setTokenExp(payload.exp);
-      } else {
-        setTokenExp(null);
+        const ok = await checkAuth();
+        setLoading(false);
+        return ok;
+      } catch (err) {
+        setLoading(false);
+        throw err;
       }
-      const ok = await checkAuth();
-      setLoading(false);
-      return ok;
-    } catch (err) {
-      setLoading(false);
-      throw err;
-    }
-  };
+    },
+    [checkAuth],
+  );
 
   // Logout centralisé
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
     setUser(null);
     navigate("/");
-  };
+  }, [navigate]);
 
   // Vérification initiale au chargement
   useEffect(() => {
@@ -137,7 +144,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await checkAuth();
       setLoading(false);
     })();
-  }, []);
+  }, [checkAuth]);
 
   const checkAndRefresh = async () => {
     const token = localStorage.getItem("token");
@@ -191,11 +198,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => clearTimeout(timeout);
   }, [isAuthenticated, tokenExp, lastActivity]);
 
+  const contextValue = useMemo(
+    () => ({ isAuthenticated, loading, user, login, logout, checkAuth }),
+    [isAuthenticated, loading, user, login, logout, checkAuth],
+  );
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, loading, user, login, logout, checkAuth }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }

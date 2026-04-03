@@ -10,12 +10,10 @@ export default function HomeMenu() {
   return (
     <>
       <CustomIconButton
-        size="adminMenu"
         onClick={(e: React.MouseEvent<HTMLElement>) =>
           setAnchorEl(e.currentTarget)
         }
         color="inherit"
-        iconSize="1rem"
         icon={mdiHome}
       />
       <CustomMenu
