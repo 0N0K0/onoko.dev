@@ -2,7 +2,12 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import AccountMenu from "../../components/account/accountMenu";
 import HomeMenu from "../../components/admin/homeMenu";
-import { mdiTag } from "@mdi/js";
+import {
+  mdiAccountHardHat,
+  mdiApplicationArrayOutline,
+  mdiHardHat,
+  mdiTag,
+} from "@mdi/js";
 import { ResponsiveStack } from "../../components/custom/responsiveLayout";
 import CustomIconButton from "../../components/custom/customIconButton";
 
@@ -17,6 +22,24 @@ export default function AdminHeader() {
       >
         <ResponsiveStack direction="row" alignItems="center" spacing={1}>
           <HomeMenu />
+          <CustomIconButton
+            size="adminMenu"
+            href="/admin/stacks"
+            icon={mdiApplicationArrayOutline}
+            iconSize="1rem"
+          />
+          <CustomIconButton
+            size="adminMenu"
+            href="/admin/coworkers"
+            icon={mdiAccountHardHat}
+            iconSize="1rem"
+          />
+          <CustomIconButton
+            size="adminMenu"
+            href="/admin/roles"
+            icon={mdiHardHat}
+            iconSize="1rem"
+          />
           <CustomIconButton
             size="adminMenu"
             href="/admin/categories"
