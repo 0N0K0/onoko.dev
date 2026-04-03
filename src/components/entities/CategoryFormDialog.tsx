@@ -6,7 +6,7 @@ import { mdiCheck, mdiClose } from "@mdi/js";
 import type {
   Category,
   CategoryFormDialogProps,
-} from "../../types/categoryTypes";
+} from "../../types/entities/categoryTypes";
 import CustomSelect from "../custom/customSelect";
 import { useEffect, useState } from "react";
 
