@@ -1,4 +1,4 @@
-import type { NewPasswordFieldsProps } from "../../types/baseComponent";
+import type { NewPasswordFieldsProps } from "../../types/components/baseComponent";
 import PasswordField from "../custom/passwordField";
 
 /**

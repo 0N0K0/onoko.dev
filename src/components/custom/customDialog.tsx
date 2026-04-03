@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
-import type { CustomDialogProps } from "../../types/baseComponent";
+import type { CustomDialogProps } from "../../types/components/baseComponent";
 
 /**
  * Composant générique de dialogue personnalisé utilisant MUI Dialog

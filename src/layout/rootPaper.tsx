@@ -1,6 +1,6 @@
 import type { PaperProps } from "@mui/material";
 import { ResponsivePaper } from "../components/custom/responsiveLayout";
-import type { ResponsiveLayoutProps } from "../types/responsiveTypes";
+import type { ResponsiveLayoutProps } from "../types/components/responsiveTypes";
 
 /**
  * Composant de layout principal pour les pages de l'application.

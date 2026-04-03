@@ -1,5 +1,5 @@
 import { Alert, Snackbar } from "@mui/material";
-import type { SnackbarAlertProps } from "../../types/baseComponent";
+import type { SnackbarAlertProps } from "../../types/components/baseComponent";
 
 /**
  * Composant de snackbar personnalisée pour afficher des messages de succès, d'erreur, d'avertissement ou d'information à l'utilisateur.

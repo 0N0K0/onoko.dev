@@ -5,7 +5,7 @@ import {
   Select,
   type SelectProps,
 } from "@mui/material";
-import type { CustomSelectProps } from "../../types/baseComponent";
+import type { CustomSelectProps } from "../../types/components/baseComponent";
 
 export default function CustomSelect({
   label,

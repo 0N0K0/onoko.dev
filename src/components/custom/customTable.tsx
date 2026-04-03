@@ -15,7 +15,7 @@ import {
 import { useState } from "react";
 import { ResponsiveStack } from "./responsiveLayout";
 import DeleteConfirmationDialog from "../entities/DeleteConfirmationDialog";
-import type { CustomTableProps } from "../../types/baseComponent";
+import type { CustomTableProps } from "../../types/components/baseComponent";
 import CustomIconButton from "./customIconButton";
 
 /**

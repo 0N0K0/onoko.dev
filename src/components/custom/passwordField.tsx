@@ -1,7 +1,7 @@
 import { InputAdornment, TextField } from "@mui/material";
 import { mdiEyeOff, mdiEye } from "@mdi/js";
 import { useState } from "react";
-import type { PasswordFieldProps } from "../../types/baseComponent";
+import type { PasswordFieldProps } from "../../types/components/baseComponent";
 import CustomIconButton from "./customIconButton";
 
 /**

@@ -3,7 +3,7 @@ import { verticalMediaQuery } from "../theme/options/breakpoints";
 import type {
   GetResponsiveSxProps,
   ResponsiveSxProps,
-} from "../types/responsiveTypes";
+} from "../types/components/responsiveTypes";
 
 /**
  * Utilitaire pour générer des styles responsives basés sur les propriétés de marge, de padding et d'espacement entre les éléments.

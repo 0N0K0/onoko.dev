@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { ResponsiveStack } from "./responsiveLayout";
 import { mdiDelete } from "@mdi/js";
-import type { FieldsRepeaterProps } from "../../types/baseComponent";
+import type { FieldsRepeaterProps } from "../../types/components/baseComponent";
 import CustomIconButton from "./customIconButton";
 import ResponsiveTitle from "./responsiveTitle";
 

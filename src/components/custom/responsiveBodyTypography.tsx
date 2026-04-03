@@ -1,7 +1,7 @@
 import Typography from "@mui/material/Typography";
 import { verticalMediaQuery } from "../../theme/options/breakpoints";
 import { useTheme } from "@mui/material";
-import type { ResponsiveBodyTypographyProps } from "../../types/responsiveTypes";
+import type { ResponsiveBodyTypographyProps } from "../../types/components/responsiveTypes";
 
 /**
  * Composant de typographie pour le corps de texte avec une taille de police responsive.

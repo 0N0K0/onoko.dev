@@ -3,7 +3,7 @@ import Box, { type BoxProps } from "@mui/material/Box";
 import Stack, { type StackProps } from "@mui/material/Stack";
 import Paper, { type PaperProps } from "@mui/material/Paper";
 import ImageList, { type ImageListProps } from "@mui/material/ImageList";
-import type { ResponsiveLayoutProps } from "../../types/responsiveTypes";
+import type { ResponsiveLayoutProps } from "../../types/components/responsiveTypes";
 import { getResponsiveSx } from "../../utils/responsiveUtils";
 import { Drawer, type DrawerProps } from "@mui/material";
 
@@ -25,7 +25,7 @@ export function ResponsiveLayout<ComponentProps extends { sx?: any }>(
       if (typeof rowGap === "number") rowGap = `${rowGap * 8}px`;
       const responsiveSx = getResponsiveSx({ marginY, paddingY, rowGap });
       return <Component ref={ref} {...rest} sx={{ ...sx, ...responsiveSx }} />;
-    }
+    },
   );
 }
 
