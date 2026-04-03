@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Stack } from "../../types/stackTypes";
-import useStackMutations from "../../hooks/useStackMutation";
+import useStackMutations from "../../hooks/mutations/useStackMutation";
 import EntitiesPage from "../../components/entities/EntitiesPage";
 import { STACKS_QUERY } from "../../services/stack/stackQueries";
 import StackFormDialog from "../../components/entities/StackFormDialog";

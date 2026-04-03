@@ -2,9 +2,9 @@ import {
   CREATE_STACK_MUTATION,
   DELETE_STACK_MUTATION,
   UPDATE_STACK_MUTATION,
-} from "../services/stack/stackMutations";
-import type { Stack, useStackMutationProps } from "../types/stackTypes";
-import { fileToBufferObj } from "../utils/fileUtils";
+} from "../../services/stack/stackMutations";
+import type { Stack, useStackMutationProps } from "../../types/stackTypes";
+import { fileToBufferObj } from "../../utils/fileUtils";
 import { useEntityMutation } from "./useEntityMutation";
 
 /**

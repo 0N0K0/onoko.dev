@@ -2,8 +2,8 @@ import {
   CREATE_ROLE_MUTATION,
   DELETE_ROLE_MUTATION,
   UPDATE_ROLE_MUTATION,
-} from "../services/role/roleMutations";
-import type { Role, useRoleMutationProps } from "../types/roleTypes";
+} from "../../services/role/roleMutations";
+import type { Role, useRoleMutationProps } from "../../types/roleTypes";
 import { useEntityMutation } from "./useEntityMutation";
 
 export default function useRoleMutations({

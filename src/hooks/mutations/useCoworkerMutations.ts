@@ -2,8 +2,11 @@ import {
   CREATE_COWORKER_MUTATION,
   DELETE_COWORKER_MUTATION,
   UPDATE_COWORKER_MUTATION,
-} from "../services/coworker/coworkerMutations";
-import type { Coworker, useCoworkerMutationProps } from "../types/cowokerTypes";
+} from "../../services/coworker/coworkerMutations";
+import type {
+  Coworker,
+  useCoworkerMutationProps,
+} from "../../types/cowokerTypes";
 import { useEntityMutation } from "./useEntityMutation";
 
 export default function useCoworkerMutations({

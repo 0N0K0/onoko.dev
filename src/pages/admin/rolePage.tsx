@@ -1,6 +1,6 @@
 import { useState } from "react";
 import EntitiesPage from "../../components/entities/EntitiesPage";
-import useRoleMutations from "../../hooks/useRoleMutations";
+import useRoleMutations from "../../hooks/mutations/useRoleMutations";
 import { ROLES_QUERY } from "../../services/role/roleQueries";
 import RoleFormDialog from "../../components/entities/RoleFormDialog";
 import { useRole } from "../../hooks/useRole";

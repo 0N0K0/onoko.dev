@@ -2,11 +2,11 @@ import {
   CREATE_CATEGORY_MUTATION,
   DELETE_CATEGORY_MUTATION,
   UPDATE_CATEGORY_MUTATION,
-} from "../services/category/categoryMutations";
+} from "../../services/category/categoryMutations";
 import type {
   Category,
   useCategoryMutationProps,
-} from "../types/categoryTypes";
+} from "../../types/categoryTypes";
 import { useEntityMutation } from "./useEntityMutation";
 
 /**

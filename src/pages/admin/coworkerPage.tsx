@@ -1,6 +1,6 @@
 import { useState } from "react";
 import EntitiesPage from "../../components/entities/EntitiesPage";
-import useCoworkerMutations from "../../hooks/useCoworkerMutations";
+import useCoworkerMutations from "../../hooks/mutations/useCoworkerMutations";
 import { COWORKERS_QUERY } from "../../services/coworker/coworkerQueries";
 import CoworkerFormDialog from "../../components/entities/CoworkerFormDialog";
 import type { Coworker } from "../../types/cowokerTypes";
