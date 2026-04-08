@@ -29,6 +29,7 @@ export default function AdminLayout({
           flexDirection: "column",
           paddingX: 4,
           alignItems: "center",
+          minHeight: "0",
           height: `calc(100vh - ${theme.sizes.adminHeaderHeight})`,
           maxHeight: `calc(100vh - ${theme.sizes.adminHeaderHeight})`,
           overflowY: "hidden",

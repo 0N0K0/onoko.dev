@@ -29,6 +29,7 @@ import { TABLE_CELL } from "./components/table";
 import { FORM_HELPER_TEXT, FORM_LABEL } from "./components/form";
 import { SELECT } from "./components/select";
 import { INPUT_BASE, INPUT_LABEL } from "./components/input";
+import { CHECKBOX } from "./components/checkbox";
 
 // Thème personnalisé pour l'application, basé sur le thème sombre de Material-UI avec des couleurs et des typographies adaptées.
 const baseTheme = createTheme({
@@ -39,6 +40,7 @@ const baseTheme = createTheme({
   components: {
     MuiAlert: ALERT,
     MuiButton: BUTTON,
+    MuiCheckbox: CHECKBOX,
     MuiCircularProgress: CIRCULAR_PROGRESS,
     MuiDialog: DIALOG,
     MuiDialogTitle: DIALOG_TITLE,

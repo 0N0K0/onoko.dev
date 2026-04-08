@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 // Requêtes GraphQL pour la gestion des catégories de projets et technologies (récupération de la liste des catégories, récupération d'une catégorie spécifique)
-const CATEGORY_FIELDS = gql`
+export const CATEGORY_FIELDS = gql`
   fragment CategoryFields on Category {
     id
     label

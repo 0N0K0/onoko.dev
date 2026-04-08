@@ -83,15 +83,15 @@ export default function EntitiesPage({
         flexWrap="wrap"
       >
         <ResponsiveTitle variant="h1">{labels.title}</ResponsiveTitle>
-        {items && items.length === 0 && (
+        {!items || items.length === 0 ? (
           <Button
             onClick={() => onClickActions.add()}
             startIcon={<Icon path={mdiPlus} size={1} />}
-            sx={{ marginX: "auto" }}
+            sx={{ marginLeft: "auto" }}
           >
             {labels.addButton}
           </Button>
-        )}
+        ) : null}
       </ResponsiveStack>
       {loading ? (
         <CircularProgress />

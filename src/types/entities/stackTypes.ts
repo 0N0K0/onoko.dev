@@ -13,6 +13,7 @@ export interface Stack {
   id: string;
   label: string;
   iconUrl?: string;
+  iconFile?: File | null;
   description?: string;
   versions: string[];
   skills: string[];

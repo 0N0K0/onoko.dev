@@ -10,7 +10,7 @@ import { useWindowWidth } from "./useWindowWidth";
  */
 export function useResponsiveWidth(n: number): string | undefined {
   const theme = useTheme();
-  const width = useWindowWidth(); // ou utilise un hook pour suivre la largeur
+  const width = useWindowWidth();
 
   const breakpoints = theme.breakpoints.values;
   let active: keyof typeof breakpoints = "xs";

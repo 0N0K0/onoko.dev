@@ -18,6 +18,11 @@ import Stacks from "./pages/admin/stackPage";
 import Coworkers from "./pages/admin/coworkerPage";
 import Roles from "./pages/admin/rolePage";
 import { RoleProvider } from "./context/RoleContext";
+// import Projects from "./pages/admin/project/projectsPages";
+// import ProjectForm from "./pages/admin/project/projectFormPage";
+// import { ProjectProvider } from "./context/ProjectContext";
+import { MediaProvider } from "./context/MediaContext";
+import Media from "./pages/admin/mediaPage";
 
 export default function App() {
   const theme = useTheme();
@@ -46,55 +51,68 @@ export default function App() {
       />
       <Router>
         <AuthProvider>
-          <CategoryProvider>
-            <RoleProvider>
-              <Routes>
-                {/* Routes publiques */}
-                <Route
-                  path="/*"
-                  element={
-                    <PublicLayout>
-                      <Routes>
-                        <Route path="/" element={<Home />} />
-                      </Routes>
-                    </PublicLayout>
-                  }
-                />
-
-                {/* Routes d'authentification */}
-                <Route path={`/${LOGIN_ROUTE}`} element={<Login />} />
-                <Route path="/logout" element={<LogoutPage />} />
-                <Route
-                  path="/request-reset-password"
-                  element={<RequestResetPassword />}
-                />
-                <Route
-                  path="/request-reset-password"
-                  element={<RequestResetPassword />}
-                />
-                <Route path="/reset-password" element={<ResetPassword />} />
-
-                {/* Routes admin */}
-                <Route
-                  path="/admin/*"
-                  element={
-                    <RequireAuth>
-                      <AdminLayout>
+          <MediaProvider>
+            <CategoryProvider>
+              <RoleProvider>
+                {/* <ProjectProvider> */}
+                <Routes>
+                  {/* Routes publiques */}
+                  <Route
+                    path="/*"
+                    element={
+                      <PublicLayout>
                         <Routes>
-                          <Route path="/" element={<Dashboard />} />
-                          <Route path="/account" element={<Account />} />
-                          <Route path="/categories" element={<Categories />} />
-                          <Route path="/stacks" element={<Stacks />} />
-                          <Route path="/roles" element={<Roles />} />
-                          <Route path="/coworkers" element={<Coworkers />} />
+                          <Route path="/" element={<Home />} />
                         </Routes>
-                      </AdminLayout>
-                    </RequireAuth>
-                  }
-                />
-              </Routes>
-            </RoleProvider>
-          </CategoryProvider>
+                      </PublicLayout>
+                    }
+                  />
+
+                  {/* Routes d'authentification */}
+                  <Route path={`/${LOGIN_ROUTE}`} element={<Login />} />
+                  <Route path="/logout" element={<LogoutPage />} />
+                  <Route
+                    path="/request-reset-password"
+                    element={<RequestResetPassword />}
+                  />
+                  <Route
+                    path="/request-reset-password"
+                    element={<RequestResetPassword />}
+                  />
+                  <Route path="/reset-password" element={<ResetPassword />} />
+
+                  {/* Routes admin */}
+                  <Route
+                    path="/admin/*"
+                    element={
+                      <RequireAuth>
+                        <AdminLayout>
+                          <Routes>
+                            <Route path="/" element={<Dashboard />} />
+                            <Route path="/account" element={<Account />} />
+                            <Route
+                              path="/categories"
+                              element={<Categories />}
+                            />
+                            <Route path="/stacks" element={<Stacks />} />
+                            <Route path="/roles" element={<Roles />} />
+                            <Route path="/coworkers" element={<Coworkers />} />
+                            <Route path="/medias" element={<Media />} />
+                            {/* <Route path="/projects" element={<Projects />} />
+                              <Route
+                                path="/project"
+                                element={<ProjectForm />}
+                              /> */}
+                          </Routes>
+                        </AdminLayout>
+                      </RequireAuth>
+                    }
+                  />
+                </Routes>
+                {/* </ProjectProvider> */}
+              </RoleProvider>
+            </CategoryProvider>
+          </MediaProvider>
         </AuthProvider>
       </Router>
     </>

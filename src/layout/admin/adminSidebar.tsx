@@ -9,14 +9,7 @@ import {
 import { ResponsiveDrawer } from "../../components/custom/responsiveLayout";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 import Icon from "@mdi/react";
-import {
-  mdiAccountCog,
-  mdiAccountHardHat,
-  mdiApplicationArrayOutline,
-  mdiHardHat,
-  mdiTag,
-  mdiViewDashboard,
-} from "@mdi/js";
+import { ADMIN_MENU_LINKS } from "../../constants/adminLayoutConstants";
 
 /**
  * Sidebar pour la partie admin, affichée uniquement sur les écrans md et plus grands
@@ -24,6 +17,7 @@ import {
 export default function AdminSidebar() {
   const theme = useTheme();
   const drawerWidth = useResponsiveWidth(2);
+
   return (
     <ResponsiveDrawer
       variant="permanent"
@@ -48,98 +42,23 @@ export default function AdminSidebar() {
       }}
     >
       <List component="nav">
-        <ListItem disablePadding>
-          <ListItemButton
-            component="a"
-            href="/admin"
-            selected={window.location.pathname === "/admin"}
-            sx={{
-              paddingLeft: "32px",
-            }}
-          >
-            <ListItemIcon>
-              <Icon path={mdiViewDashboard} size={1} />
-            </ListItemIcon>
-            <ListItemText>Tableau de bord</ListItemText>
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            component="a"
-            href="/admin/stacks"
-            selected={window.location.pathname === "/admin/stacks"}
-            sx={{
-              paddingLeft: "32px",
-            }}
-          >
-            <ListItemIcon>
-              <Icon path={mdiApplicationArrayOutline} size={1} />
-            </ListItemIcon>
-            <ListItemText>Technologies</ListItemText>
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            component="a"
-            href="/admin/coworkers"
-            selected={window.location.pathname === "/admin/coworkers"}
-            sx={{
-              paddingLeft: "32px",
-            }}
-          >
-            <ListItemIcon>
-              <Icon path={mdiAccountHardHat} size={1} />
-            </ListItemIcon>
-            <ListItemText>Intervenants</ListItemText>
-          </ListItemButton>
-        </ListItem>
-
-        <ListItem disablePadding>
-          <ListItemButton
-            component="a"
-            href="/admin/roles"
-            selected={window.location.pathname === "/admin/roles"}
-            sx={{
-              paddingLeft: "32px",
-            }}
-          >
-            <ListItemIcon>
-              <Icon path={mdiHardHat} size={1} />
-            </ListItemIcon>
-            <ListItemText>Rôles</ListItemText>
-          </ListItemButton>
-        </ListItem>
-
-        <ListItem disablePadding>
-          <ListItemButton
-            component="a"
-            href="/admin/categories"
-            selected={window.location.pathname === "/admin/categories"}
-            sx={{
-              paddingLeft: "32px",
-            }}
-          >
-            <ListItemIcon>
-              <Icon path={mdiTag} size={1} />
-            </ListItemIcon>
-            <ListItemText>Catégories</ListItemText>
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            component="a"
-            href="/admin/account"
-            selected={window.location.pathname === "/admin/account"}
-            sx={{
-              paddingLeft: "32px",
-            }}
-          >
-            <ListItemIcon>
-              <Icon path={mdiAccountCog} size={1} />
-            </ListItemIcon>
-            <ListItemText>Mon compte</ListItemText>
-          </ListItemButton>
-        </ListItem>
+        {Object.entries(ADMIN_MENU_LINKS).map(([path, { icon, label }]) => (
+          <ListItem disablePadding key={path}>
+            <ListItemButton
+              component="a"
+              href={path}
+              selected={window.location.pathname === path}
+              sx={{
+                paddingLeft: "32px",
+              }}
+            >
+              <ListItemIcon>
+                <Icon path={icon} size={1} />
+              </ListItemIcon>
+              <ListItemText>{label}</ListItemText>
+            </ListItemButton>
+          </ListItem>
+        ))}
       </List>
     </ResponsiveDrawer>
   );

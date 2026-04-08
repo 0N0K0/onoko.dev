@@ -108,6 +108,7 @@ export default function CategoryFormDialog({
                 );
               }}
               options={[
+                { id: "media", label: "Médias" },
                 { id: "stack", label: "Technologies" },
                 { id: "project", label: "Projets" },
               ]}
