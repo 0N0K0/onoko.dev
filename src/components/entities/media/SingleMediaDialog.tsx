@@ -80,65 +80,69 @@ export default function SingleMediaDialog({
                   rowGap={3}
                   sx={{ flex: "0 1 0" }}
                   height="100%"
+                  justifyContent="space-between"
                 >
-                  <TextField
-                    label="Label"
-                    value={editingMedia?.label || ""}
-                    onChange={(e) => {
-                      setEditingMedia(
-                        editingMedia
-                          ? { ...editingMedia, label: e.target.value }
-                          : null,
-                      );
-                      e.target.value !== (editingMedia?.label || "") &&
-                        setHasChanges(true);
-                    }}
-                    required
-                  />
-                  <CustomSelect
-                    label="Catégorie"
-                    labelId="category-label"
-                    value={
-                      typeof editingMedia?.category === "string"
-                        ? editingMedia.category
-                        : editingMedia?.category?.id || ""
-                    }
-                    onChange={(e) => {
-                      const nextValue =
-                        typeof e.target === "object" &&
-                        e.target !== null &&
-                        "value" in e.target
-                          ? e.target.value
-                          : "";
-                      const categoryValue = Array.isArray(nextValue)
-                        ? (nextValue[0] ?? "")
-                        : nextValue;
+                  <ResponsiveStack rowGap={3}>
+                    <TextField
+                      label="Label"
+                      value={editingMedia?.label || ""}
+                      onChange={(e) => {
+                        setEditingMedia(
+                          editingMedia
+                            ? { ...editingMedia, label: e.target.value }
+                            : null,
+                        );
+                        e.target.value !== (editingMedia?.label || "") &&
+                          setHasChanges(true);
+                      }}
+                      required
+                    />
+                    <CustomSelect
+                      label="Catégorie"
+                      labelId="category-label"
+                      value={
+                        typeof editingMedia?.category === "string"
+                          ? editingMedia.category
+                          : editingMedia?.category?.id || ""
+                      }
+                      onChange={(e) => {
+                        const nextValue =
+                          typeof e.target === "object" &&
+                          e.target !== null &&
+                          "value" in e.target
+                            ? e.target.value
+                            : "";
+                        const categoryValue = Array.isArray(nextValue)
+                          ? (nextValue[0] ?? "")
+                          : nextValue;
 
-                      setEditingMedia(
-                        editingMedia
-                          ? {
-                              ...editingMedia,
-                              category: categoryValue as string,
-                            }
-                          : null,
-                      );
-                      categoryValue !==
-                        (typeof initialMedia?.category === "string"
-                          ? initialMedia.category
-                          : initialMedia?.category?.id || "") &&
-                        setHasChanges(true);
-                    }}
-                    options={
-                      categories
-                        ?.filter((c: Category) => c.entity === "media")
-                        .map((c: Category) => ({
-                          id: c.id,
-                          label: c.depth
-                            ? "__".repeat(c.depth) + ` ${c.label}`
-                            : c.label,
-                        })) || []
-                    }
-                  />
+                        setEditingMedia(
+                          editingMedia
+                            ? {
+                                ...editingMedia,
+                                category: categoryValue as string,
+                              }
+                            : null,
+                        );
+                        categoryValue !==
+                          (typeof initialMedia?.category === "string"
+                            ? initialMedia.category
+                            : initialMedia?.category?.id || "") &&
+                          setHasChanges(true);
+                      }}
+                      options={
+                        categories
+                          ?.filter((c: Category) => c.entity === "media")
+                          .map((c: Category) => ({
+                            id: c.id,
+                            label: c.depth
+                              ? "__".repeat(c.depth) + ` ${c.label}`
+                              : c.label,
+                          })) || []
+                      }
+                    />
+                  </ResponsiveStack>
+
                   <ResponsiveStack>
                     <Button
                       key="confirm"
