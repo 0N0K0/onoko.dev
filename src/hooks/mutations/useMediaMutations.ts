@@ -21,7 +21,7 @@ export default function useMediaMutations({
   handleEdit: (item: Partial<Media>) => Promise<void>;
   handleDelete: (selectedMedias: string[]) => Promise<void>;
 } {
-  // Ajouter un rôle
+  // Ajouter un média
   const addMedia = useEntityMutation({
     setSubmitSuccess,
     setSubmitError,
@@ -36,20 +36,21 @@ export default function useMediaMutations({
       onSuccess: (data) => {
         setMedias((prev) => [...(prev || []), data.addMedia]);
         setSubmitSuccess?.(
-          `Le media ${data.addMedia.path} a été importé avec succès.`,
+          `Le média ${data.addMedia.label} a été importé avec succès.`,
         );
       },
       reset: true,
     });
   };
 
-  // Modifier un rôle
+  // Modifier un média
   const editMedia = useEntityMutation({
     setSubmitSuccess,
     setSubmitError,
     setSubmitting,
   });
   const handleEdit = async (item: Partial<Media>) => {
+    console.log(item);
     await editMedia({
       mutation: UPDATE_MEDIA_MUTATION,
       variables: item,
@@ -60,14 +61,14 @@ export default function useMediaMutations({
           ),
         );
         setSubmitSuccess?.(
-          `La catégorie du média ${data.updateMedia.path} a été modifiée avec succès.`,
+          `Le média ${data.updateMedia.label} a été modifié avec succès.`,
         );
       },
       reset: true,
     });
   };
 
-  // Supprimer un ou plusieurs rôles
+  // Supprimer un ou plusieurs médias
   const deleteMedia = useEntityMutation({
     setSubmitSuccess,
     setSubmitError,
@@ -82,7 +83,7 @@ export default function useMediaMutations({
         onSuccess: () => {
           setMedias((prev) => prev?.filter((r) => r.id !== mediaId));
           setSubmitSuccess?.(
-            `Le media ${media?.path || mediaId} a été supprimé avec succès.`,
+            `Le média ${media?.label || mediaId} a été supprimé avec succès.`,
           );
         },
       });

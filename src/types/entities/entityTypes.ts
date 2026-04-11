@@ -3,6 +3,7 @@ import type { Category } from "./categoryTypes";
 import type { Role } from "./roleTypes";
 import type { Stack } from "./stackTypes";
 import type { Coworker } from "./cowokerTypes";
+import type { Media } from "./mediaTypes";
 
 /**
  * Ce fichier définit les types TypeScript liés aux entités génériques utilisées dans l'application, notamment les propriétés pour les pages d'entités, les mutations d'entités et les dialogues de confirmation de suppression.
@@ -52,7 +53,11 @@ export interface DeleteConfirmationDialogProps {
 export interface EntityFormDialogProps {
   open: boolean | string;
   setOpen: (open: boolean | string) => void;
-  handleAdd: (item: Partial<Category | Role | Stack | Coworker>) => void;
-  handleEdit: (item: Partial<Category | Role | Stack | Coworker>) => void;
+  handleAdd: (
+    item: Partial<Category | Role | Stack | Coworker | Media>,
+  ) => void;
+  handleEdit: (
+    item: Partial<Category | Role | Stack | Coworker | Media>,
+  ) => void;
   submitting: boolean;
 }

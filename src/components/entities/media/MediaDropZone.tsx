@@ -1,34 +1,20 @@
 import Dropzone from "react-dropzone";
-import { ResponsiveStack } from "../custom/responsiveLayout";
+import { ResponsiveStack } from "../../custom/ResponsiveLayout";
 import { useTheme } from "@mui/material";
-import ResponsiveBodyTypography from "../custom/responsiveBodyTypography";
-import useMediaMutations from "../../hooks/mutations/useMediaMutations";
-import { useMedia } from "../../hooks/useMedia";
+import ResponsiveBodyTypography from "../../custom/ResponsiveBodyTypography";
 import { useState } from "react";
+import type { Media } from "../../../types/entities/mediaTypes";
 
 export default function MediaDropZone({
+  handleAdd,
   submitting,
-  setSubmitting,
-  setSubmitSuccess,
-  setSubmitError,
 }: {
+  handleAdd: (item: Partial<Media>) => Promise<void>;
   submitting: boolean;
-  setSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
-  setSubmitSuccess: React.Dispatch<React.SetStateAction<string>>;
-  setSubmitError: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const theme = useTheme();
 
-  const { setMedias } = useMedia();
-
   const [dragOver, setDragOver] = useState(false);
-
-  const { handleAdd } = useMediaMutations({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    setMedias,
-  });
 
   const handleDropImages = (acceptedFiles: File[]) => {
     if (acceptedFiles && acceptedFiles.length > 0) {
