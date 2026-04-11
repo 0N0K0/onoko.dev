@@ -1,9 +1,9 @@
 import { mdiHome } from "@mdi/js";
 import { MenuItem } from "@mui/material";
-import CustomMenu from "../custom/customMenu";
+import CustomMenu from "../custom/CustomMenu";
 import { Link } from "react-router";
 import { useState } from "react";
-import CustomIconButton from "../custom/customIconButton";
+import CustomIconButton from "../custom/CustomIconButton";
 
 export default function HomeMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

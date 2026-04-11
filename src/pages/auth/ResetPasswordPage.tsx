@@ -1,14 +1,14 @@
-import { ResponsiveStack } from "../../components/custom/responsiveLayout";
+import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import NewPasswordFields from "../../components/account/newPasswordFields";
+import NewPasswordFields from "../../components/account/NewPasswordFields";
 import { LOGIN_ROUTE } from "../../constants/apiConstants";
 import apolloClient from "../../services/appolloClient";
 import { RESET_PASSWORD_MUTATION } from "../../services/account/accountMutations";
 import { useAuth } from "../../hooks/useAuth";
-import ClosableSnackbarAlert from "../../components/custom/closableSnackbarAlert";
-import SnackbarAlert from "../../components/custom/snackbarAlert";
-import AuthLayout from "../../layout/auth/authLayout";
+import ClosableSnackbarAlert from "../../components/custom/ClosableSnackbarAlert";
+import SnackbarAlert from "../../components/custom/SnackbarAlert";
+import AuthLayout from "../../layout/auth/AuthLayout";
 
 /**
  * Page de réinitialisation du mot de passe. Permet aux utilisateurs de réinitialiser leur mot de passe en fournissant un nouveau mot de passe et une confirmation, après avoir cliqué sur le lien de réinitialisation reçu par e-mail.

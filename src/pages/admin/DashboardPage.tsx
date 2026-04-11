@@ -1,4 +1,4 @@
-import ResponsiveTitle from "../../components/custom/responsiveTitle";
+import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
 
 /**
  * Page d'accueil de l'espace admin.

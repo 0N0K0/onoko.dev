@@ -1,9 +1,9 @@
 import { Button, TextField } from "@mui/material";
-import CustomDialog from "../custom/customDialog";
-import { ResponsiveStack } from "../custom/responsiveLayout";
+import CustomDialog from "../custom/CustomDialog";
+import { ResponsiveStack } from "../custom/ResponsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiClose } from "@mdi/js";
-import CustomSelect from "../custom/customSelect";
+import CustomSelect from "../custom/CustomSelect";
 import type {
   Coworker,
   CoworkerFormDialogProps,
@@ -88,9 +88,15 @@ export default function CoworkerFormDialog({
                 ) || []
               }
               onChange={(e) => {
-                const value = Array.isArray(e.target.value)
-                  ? e.target.value
-                  : [e.target.value];
+                const nextValue =
+                  typeof e.target === "object" &&
+                  e.target !== null &&
+                  "value" in e.target
+                    ? e.target.value
+                    : "";
+                const value = Array.isArray(nextValue)
+                  ? nextValue
+                  : [nextValue];
                 setEditingCoworker(
                   editingCoworker ? { ...editingCoworker, roles: value } : null,
                 );
@@ -107,7 +113,6 @@ export default function CoworkerFormDialog({
                   label: r.label,
                 })) || []
               }
-              multiple
             />
           </ResponsiveStack>
         );

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import apolloClient from "../../services/appolloClient";
-import { ResponsiveStack } from "../custom/responsiveLayout";
-import ResponsiveTitle from "../custom/responsiveTitle";
+import { ResponsiveStack } from "../custom/ResponsiveLayout";
+import ResponsiveTitle from "../custom/ResponsiveTitle";
 import { Button, CircularProgress } from "@mui/material";
 import Icon from "@mdi/react";
 import { mdiPlus } from "@mdi/js";
-import CustomTable from "../custom/customTable";
-import ClosableSnackbarAlert from "../custom/closableSnackbarAlert";
-import SnackbarAlert from "../custom/snackbarAlert";
+import CustomTable from "../custom/CustomTable";
+import ClosableSnackbarAlert from "../custom/ClosableSnackbarAlert";
+import SnackbarAlert from "../custom/SnackbarAlert";
 import type { EntitiesPageProps } from "../../types/entities/entityTypes";
 
 /**
@@ -81,6 +81,7 @@ export default function EntitiesPage({
         alignItems="center"
         width="100%"
         flexWrap="wrap"
+        maxWidth="100% !important"
       >
         <ResponsiveTitle variant="h1">{labels.title}</ResponsiveTitle>
         {!items || items.length === 0 ? (

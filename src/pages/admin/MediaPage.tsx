@@ -1,7 +1,7 @@
 import { useState } from "react";
-import MediaLibrary from "../../components/entities/MediaLibrary";
-import ClosableSnackbarAlert from "../../components/custom/closableSnackbarAlert";
-import SnackbarAlert from "../../components/custom/snackbarAlert";
+import ClosableSnackbarAlert from "../../components/custom/ClosableSnackbarAlert";
+import SnackbarAlert from "../../components/custom/SnackbarAlert";
+import MediaLibrary from "../../components/entities/media/MediaLibrary";
 
 export default function Media() {
   const [submitting, setSubmitting] = useState(false);

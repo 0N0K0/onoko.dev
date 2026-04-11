@@ -6,7 +6,7 @@ import {
   ListItemText,
   useTheme,
 } from "@mui/material";
-import { ResponsiveDrawer } from "../../components/custom/responsiveLayout";
+import { ResponsiveDrawer } from "../../components/custom/ResponsiveLayout";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 import Icon from "@mdi/react";
 import { ADMIN_MENU_LINKS } from "../../constants/adminLayoutConstants";

@@ -1,12 +1,12 @@
 import { TextField } from "@mui/material";
-import { ResponsiveStack } from "../../components/custom/responsiveLayout";
+import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import apolloClient from "../../services/appolloClient";
 import { REQUEST_PASSWORD_RESET_MUTATION } from "../../services/account/accountMutations";
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
-import SnackbarAlert from "../../components/custom/snackbarAlert";
-import ClosableSnackbarAlert from "../../components/custom/closableSnackbarAlert";
-import AuthLayout from "../../layout/auth/authLayout";
+import SnackbarAlert from "../../components/custom/SnackbarAlert";
+import ClosableSnackbarAlert from "../../components/custom/ClosableSnackbarAlert";
+import AuthLayout from "../../layout/auth/AuthLayout";
 import { LOGIN_ROUTE } from "../../constants/apiConstants";
 
 /**

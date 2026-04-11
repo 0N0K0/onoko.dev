@@ -4,9 +4,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  IconButton,
 } from "@mui/material";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
-import type { CustomDialogProps } from "../../types/components/baseComponent";
+import type { CustomDialogProps } from "../../types/components/baseComponentTypes";
+import Icon from "@mdi/react";
+import { mdiClose } from "@mdi/js";
 
 /**
  * Composant générique de dialogue personnalisé utilisant MUI Dialog
@@ -24,8 +27,10 @@ export default function CustomDialog({
   titlePaddingBottom,
   content,
   actions,
+  width = 4,
+  closeButton = false,
 }: CustomDialogProps) {
-  const dialogWidth = useResponsiveWidth(4);
+  const dialogWidth = useResponsiveWidth(width);
   return (
     <Dialog
       open={open}
@@ -34,9 +39,24 @@ export default function CustomDialog({
       sx={{
         "& .MuiDialog-paper": {
           width: dialogWidth,
+          paddingTop: closeButton ? "3rem" : undefined,
+          paddingX: closeButton ? "3rem" : undefined,
         },
       }}
     >
+      {closeButton && (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 0,
+            top: 0,
+          }}
+        >
+          <Icon path={mdiClose} size={1} />
+        </IconButton>
+      )}
       {title && (
         <DialogTitle
           sx={

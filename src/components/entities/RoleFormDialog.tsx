@@ -1,6 +1,6 @@
 import { Button, TextField } from "@mui/material";
-import CustomDialog from "../custom/customDialog";
-import { ResponsiveStack } from "../custom/responsiveLayout";
+import CustomDialog from "../custom/CustomDialog";
+import { ResponsiveStack } from "../custom/ResponsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiClose } from "@mdi/js";
 import type { Role, RoleFormDialogProps } from "../../types/entities/roleTypes";

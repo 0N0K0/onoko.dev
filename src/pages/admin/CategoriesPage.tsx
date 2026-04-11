@@ -24,6 +24,7 @@ export default function Categories() {
     "": "",
     stack: "Technologie",
     project: "Projet",
+    media: "Média",
   };
 
   const { handleAdd, handleEdit, handleDelete } = useCategoryMutations({

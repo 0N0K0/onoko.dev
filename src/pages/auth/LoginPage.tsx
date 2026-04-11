@@ -1,12 +1,12 @@
 import { TextField } from "@mui/material";
 import { useState } from "react";
-import { ResponsiveStack } from "../../components/custom/responsiveLayout";
+import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import PasswordField from "../../components/custom/passwordField";
+import PasswordField from "../../components/custom/PasswordField";
 import { useAuth } from "../../hooks/useAuth";
-import SnackbarAlert from "../../components/custom/snackbarAlert";
-import AuthLayout from "../../layout/auth/authLayout";
+import SnackbarAlert from "../../components/custom/SnackbarAlert";
+import AuthLayout from "../../layout/auth/AuthLayout";
 
 /**
  * Page de connexion à l'espace admin.

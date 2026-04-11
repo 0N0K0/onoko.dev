@@ -26,7 +26,6 @@ export function getResponsiveSx({
   const maxTightSpacing = theme.spacing(12);
 
   return {
-    maxWidth: theme.breakpoints.values.xxl,
     marginY: {
       xs: `min(${marginY}, ${maxTightSpacing})`,
       sm: `min(${marginY}, ${maxCompactSpacing})`,

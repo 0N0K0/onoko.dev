@@ -1,13 +1,13 @@
 import {
   ResponsivePaper,
   ResponsiveStack,
-} from "../../components/custom/responsiveLayout";
-import RootPaper from "../rootPaper";
+} from "../../components/custom/ResponsiveLayout";
+import RootPaper from "../RootPaper";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
-import ResponsiveTitle from "../../components/custom/responsiveTitle";
+import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
 import { Button } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
-import ResetPasswordLink from "../../components/account/resetPasswordLink";
+import ResetPasswordLink from "../../components/account/ResetPasswordLink";
 import type { AuthLayoutProps } from "../../types/authTypes";
 
 /**

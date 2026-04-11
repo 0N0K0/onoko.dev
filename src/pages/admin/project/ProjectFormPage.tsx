@@ -2,11 +2,11 @@ import { useSearchParams } from "react-router-dom";
 import useProjectMutations from "../../../hooks/mutations/useProjectMutations";
 import { useProject } from "../../../hooks/useProject";
 import { useState } from "react";
-import ResponsiveTitle from "../../../components/custom/responsiveTitle";
-import { ResponsiveStack } from "../../../components/custom/responsiveLayout";
+import ResponsiveTitle from "../../../components/custom/ResponsiveTitle";
+import { ResponsiveStack } from "../../../components/custom/ResponsiveLayout";
 import { TextField } from "@mui/material";
 import type { Project } from "../../../types/entities/projectTypes";
-import CustomSelect from "../../../components/custom/customSelect";
+import CustomSelect from "../../../components/custom/CustomSelect";
 import type { Category } from "../../../types/entities/categoryTypes";
 import { useCategory } from "../../../hooks/useCategory";
 
@@ -118,7 +118,6 @@ export default function ProjectForm() {
               label: c.label,
             })) || []
           }
-          multiple
         />
         <ResponsiveStack direction="row" columnGap={2} component="fieldset">
           <legend>Site web</legend>

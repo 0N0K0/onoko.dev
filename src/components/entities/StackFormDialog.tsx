@@ -1,6 +1,6 @@
 import { Button, TextField, useTheme } from "@mui/material";
-import CustomDialog from "../custom/customDialog";
-import { ResponsiveBox, ResponsiveStack } from "../custom/responsiveLayout";
+import CustomDialog from "../custom/CustomDialog";
+import { ResponsiveBox, ResponsiveStack } from "../custom/ResponsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiClose, mdiPencil } from "@mdi/js";
 import type {
@@ -8,13 +8,13 @@ import type {
   StackFormDialogProps,
 } from "../../types/entities/stackTypes";
 import { useCategory } from "../../hooks/useCategory";
-import CustomSelect from "../custom/customSelect";
+import CustomSelect from "../custom/CustomSelect";
 import Dropzone from "react-dropzone";
-import ResponsiveBodyTypography from "../custom/responsiveBodyTypography";
-import CustomIconButton from "../custom/customIconButton";
+import ResponsiveBodyTypography from "../custom/ResponsiveBodyTypography";
+import CustomIconButton from "../custom/CustomIconButton";
 import { useEffect, useState } from "react";
 import { API_URL } from "../../constants/apiConstants";
-import FieldsRepeater from "../custom/fieldsRepeater";
+import FieldsRepeater from "../custom/FieldsRepeater";
 import type { Category } from "../../types/entities/categoryTypes";
 
 export default function StackFormDialog({
@@ -161,20 +161,72 @@ export default function StackFormDialog({
                 )}
               </Dropzone>
             )}
-            <TextField
-              label="Label"
-              value={editingStack?.label || ""}
-              onChange={(e) => {
-                setEditingStack(
-                  editingStack
-                    ? { ...editingStack, label: e.target.value }
-                    : null,
-                );
-                e.target.value !== (editingStack?.label || "") &&
-                  setHasChanges(true);
-              }}
-              required
-            />
+            <ResponsiveStack
+              columnGap={2}
+              rowGap={3}
+              direction="row"
+              flexWrap="wrap"
+            >
+              <TextField
+                label="Label"
+                value={editingStack?.label || ""}
+                onChange={(e) => {
+                  setEditingStack(
+                    editingStack
+                      ? { ...editingStack, label: e.target.value }
+                      : null,
+                  );
+                  e.target.value !== (editingStack?.label || "") &&
+                    setHasChanges(true);
+                }}
+                required
+                fullWidth={false}
+                sx={{ flex: "1 0 208px" }}
+              />
+              <CustomSelect
+                label="Catégorie"
+                labelId="category-label"
+                value={
+                  typeof editingStack?.category === "string"
+                    ? editingStack.category
+                    : editingStack?.category?.id || ""
+                }
+                onChange={(e) => {
+                  const nextValue =
+                    typeof e.target === "object" &&
+                    e.target !== null &&
+                    "value" in e.target
+                      ? e.target.value
+                      : "";
+                  const categoryValue = Array.isArray(nextValue)
+                    ? (nextValue[0] ?? "")
+                    : nextValue;
+
+                  setEditingStack(
+                    editingStack
+                      ? { ...editingStack, category: categoryValue as string }
+                      : null,
+                  );
+                  categoryValue !==
+                    (typeof initialStack?.category === "string"
+                      ? initialStack.category
+                      : initialStack?.category?.id || "") &&
+                    setHasChanges(true);
+                }}
+                options={
+                  categories
+                    ?.filter((c: Category) => c.entity === "stack")
+                    .map((c: Category) => ({
+                      id: c.id,
+                      label: c.depth
+                        ? "__".repeat(c.depth) + ` ${c.label}`
+                        : c.label,
+                    })) || []
+                }
+                sx={{ flex: "1 0 208px" }}
+                fullWidth={false}
+              />
+            </ResponsiveStack>
             <TextField
               label="Description"
               value={editingStack?.description || ""}
@@ -202,6 +254,7 @@ export default function StackFormDialog({
                   onChange={(e) => onChange(e.target.value)}
                 />
               )}
+              minWidth="256px"
             />
             <FieldsRepeater
               label={{ title: "Compétences", add: "une compétence" }}
@@ -218,37 +271,6 @@ export default function StackFormDialog({
                 />
               )}
             />
-
-            <CustomSelect
-              label="Catégorie"
-              labelId="category-label"
-              value={
-                typeof editingStack?.category === "string"
-                  ? editingStack.category
-                  : editingStack?.category?.id || ""
-              }
-              onChange={(e) => {
-                setEditingStack(
-                  editingStack
-                    ? { ...editingStack, category: e.target.value as string }
-                    : null,
-                );
-                e.target.value !==
-                  (typeof initialStack?.category === "string"
-                    ? initialStack.category
-                    : initialStack?.category?.id || "") && setHasChanges(true);
-              }}
-              options={
-                categories
-                  ?.filter((c: Category) => c.entity === "stack")
-                  .map((c: Category) => ({
-                    id: c.id,
-                    label: c.depth
-                      ? "__".repeat(c.depth) + ` ${c.label}`
-                      : c.label,
-                  })) || []
-              }
-            />
           </ResponsiveStack>
         );
       })()}
@@ -263,7 +285,7 @@ export default function StackFormDialog({
           }}
           disabled={submitting}
           startIcon={<Icon path={mdiClose} size={1} />}
-          sx={{ flex: "1 1 auto" }}
+          sx={{ width: "fit-content", minWidth: "208px" }}
         >
           Annuler
         </Button>,
@@ -284,11 +306,12 @@ export default function StackFormDialog({
             (!editingStack?.iconFile && !editingStack?.iconUrl)
           }
           startIcon={<Icon path={mdiCheck} size={1} />}
-          sx={{ flex: "1 1 auto" }}
+          sx={{ width: "fit-content", minWidth: "208px" }}
         >
           {typeof open === "string" ? "Modifier" : "Ajouter"}
         </Button>,
       ]}
+      width={12}
     />
   );
 }

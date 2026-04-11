@@ -13,10 +13,10 @@ import {
   useTheme,
 } from "@mui/material";
 import { useState } from "react";
-import { ResponsiveStack } from "./responsiveLayout";
+import { ResponsiveStack } from "./ResponsiveLayout";
 import DeleteConfirmationDialog from "../entities/DeleteConfirmationDialog";
-import type { CustomTableProps } from "../../types/components/baseComponent";
-import CustomIconButton from "./customIconButton";
+import type { CustomTableProps } from "../../types/components/baseComponentTypes";
+import CustomIconButton from "./CustomIconButton";
 
 /**
  * Composant de table personnalisée utilisant MUI Table

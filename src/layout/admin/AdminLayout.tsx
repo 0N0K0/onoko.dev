@@ -1,7 +1,7 @@
-import AdminHeader from "./adminHeader";
-import RootPaper from "../rootPaper";
-import { ResponsivePaper } from "../../components/custom/responsiveLayout";
-import AdminSidebar from "./adminSidebar";
+import AdminHeader from "./AdminHeader";
+import RootPaper from "../RootPaper";
+import { ResponsivePaper } from "../../components/custom/ResponsiveLayout";
+import AdminSidebar from "./AdminSidebar";
 import { useTheme } from "@mui/material";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 
@@ -16,7 +16,7 @@ export default function AdminLayout({
 }) {
   const theme = useTheme();
   return (
-    <RootPaper>
+    <RootPaper maxWidth={"100% !important"} sx={{ width: "100% !important" }}>
       <AdminHeader />
       <AdminSidebar />
       <ResponsivePaper
@@ -37,6 +37,7 @@ export default function AdminLayout({
         }}
         square
         elevation={0}
+        maxWidth={"100% !important"}
       >
         {children}
       </ResponsivePaper>

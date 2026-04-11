@@ -1,14 +1,14 @@
 import { mdiAccount, mdiAccountCog, mdiLogout } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Button, ListItemIcon, ListItemText, MenuItem } from "@mui/material";
-import CustomDialog from "../custom/customDialog";
+import CustomDialog from "../custom/CustomDialog";
 import { Link, useLocation } from "react-router";
 import { useState } from "react";
-import CustomMenu from "../custom/customMenu";
-import ResponsiveBodyTypography from "../custom/responsiveBodyTypography";
+import CustomMenu from "../custom/CustomMenu";
+import ResponsiveBodyTypography from "../custom/ResponsiveBodyTypography";
 import { useAuth } from "../../hooks/useAuth";
-import { ResponsiveStack } from "../custom/responsiveLayout";
-import CustomIconButton from "../custom/customIconButton";
+import { ResponsiveStack } from "../custom/ResponsiveLayout";
+import CustomIconButton from "../custom/CustomIconButton";
 
 export default function AccountMenu() {
   const [logoutConfirm, setLogoutConfirm] = useState(false);

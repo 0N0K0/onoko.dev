@@ -1,15 +1,15 @@
 import { Button, CircularProgress, Container, TextField } from "@mui/material";
-import ResponsiveTitle from "../../components/custom/responsiveTitle";
+import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
 import { useState, useEffect } from "react";
 import apolloClient from "../../services/appolloClient";
 import { ACCOUNT_QUERY } from "../../services/account/accountQueries";
 import { UPDATE_ACCOUNT_MUTATION } from "../../services/account/accountMutations";
-import { ResponsiveStack } from "../../components/custom/responsiveLayout";
-import PasswordField from "../../components/custom/passwordField";
-import ResetPasswordLink from "../../components/account/resetPasswordLink";
-import NewPasswordFields from "../../components/account/newPasswordFields";
-import ClosableSnackbarAlert from "../../components/custom/closableSnackbarAlert";
-import SnackbarAlert from "../../components/custom/snackbarAlert";
+import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
+import PasswordField from "../../components/custom/PasswordField";
+import ResetPasswordLink from "../../components/account/ResetPasswordLink";
+import NewPasswordFields from "../../components/account/NewPasswordFields";
+import ClosableSnackbarAlert from "../../components/custom/ClosableSnackbarAlert";
+import SnackbarAlert from "../../components/custom/SnackbarAlert";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 
 /**

@@ -20,6 +20,7 @@ export type ResponsiveLayoutProps<P> = P & {
   paddingY?: string | number;
   rowGap?: string | number;
   children: React.ReactNode;
+  maxWidth?: number | string;
 };
 
 export type GetResponsiveSxProps = {
@@ -29,7 +30,6 @@ export type GetResponsiveSxProps = {
 };
 
 export type ResponsiveSxProps = {
-  maxWidth: number;
   marginY: { xs: string; sm: string; md: string };
   paddingY: { xs: string; sm: string; md: string };
   rowGap: { xs: string; sm: string; md: string };

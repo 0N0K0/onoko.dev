@@ -1,5 +1,5 @@
 import type { PaperProps } from "@mui/material";
-import { ResponsivePaper } from "../components/custom/responsiveLayout";
+import { ResponsivePaper } from "../components/custom/ResponsiveLayout";
 import type { ResponsiveLayoutProps } from "../types/components/responsiveTypes";
 
 /**

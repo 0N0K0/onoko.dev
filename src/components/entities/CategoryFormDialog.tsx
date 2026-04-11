@@ -1,13 +1,13 @@
 import { Button, TextField } from "@mui/material";
-import CustomDialog from "../custom/customDialog";
-import { ResponsiveStack } from "../custom/responsiveLayout";
+import CustomDialog from "../custom/CustomDialog";
+import { ResponsiveStack } from "../custom/ResponsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiClose } from "@mdi/js";
 import type {
   Category,
   CategoryFormDialogProps,
 } from "../../types/entities/categoryTypes";
-import CustomSelect from "../custom/customSelect";
+import CustomSelect from "../custom/CustomSelect";
 import { useEffect, useState } from "react";
 
 /**
@@ -98,14 +98,21 @@ export default function CategoryFormDialog({
               labelId="entity-label"
               value={editingCategory?.entity || ""}
               onChange={(e) => {
+                const nextValue =
+                  typeof e.target === "object" &&
+                  e.target !== null &&
+                  "value" in e.target
+                    ? e.target.value
+                    : "";
+                const entityValue = Array.isArray(nextValue)
+                  ? (nextValue[0] ?? "")
+                  : nextValue;
                 setEditingCategory(
                   editingCategory
-                    ? { ...editingCategory, entity: e.target.value as string }
+                    ? { ...editingCategory, entity: entityValue as string }
                     : null,
                 );
-                setHasChanges(
-                  e.target.value !== (initialCategory?.entity || ""),
-                );
+                setHasChanges(entityValue !== (initialCategory?.entity || ""));
               }}
               options={[
                 { id: "media", label: "Médias" },
@@ -133,14 +140,21 @@ export default function CategoryFormDialog({
               labelId="parent-category-label"
               value={editingCategory?.parent || ""}
               onChange={(e) => {
+                const nextValue =
+                  typeof e.target === "object" &&
+                  e.target !== null &&
+                  "value" in e.target
+                    ? e.target.value
+                    : "";
+                const parentValue = Array.isArray(nextValue)
+                  ? (nextValue[0] ?? "")
+                  : nextValue;
                 setEditingCategory(
                   editingCategory
-                    ? { ...editingCategory, parent: e.target.value as string }
+                    ? { ...editingCategory, parent: parentValue as string }
                     : null,
                 );
-                setHasChanges(
-                  e.target.value !== (initialCategory?.parent || ""),
-                );
+                setHasChanges(parentValue !== (initialCategory?.parent || ""));
               }}
               options={
                 categories

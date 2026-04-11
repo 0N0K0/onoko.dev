@@ -1,9 +1,9 @@
-import PublicHeader from "./publicHeader";
-import PublicFooter from "./publicFooter";
-import RootPaper from "../rootPaper";
-import { ResponsivePaper } from "../../components/custom/responsiveLayout";
+import PublicHeader from "./PublicHeader";
+import PublicFooter from "./PublicFooter";
+import RootPaper from "../RootPaper";
+import { ResponsivePaper } from "../../components/custom/ResponsiveLayout";
 import { useAuth } from "../../hooks/useAuth";
-import AdminHeader from "../admin/adminHeader";
+import AdminHeader from "../admin/AdminHeader";
 
 /**
  * Layout principal pour les pages publiques (accueil, connexion, etc.).

@@ -1,6 +1,6 @@
 import { type SnackbarCloseReason } from "@mui/material";
-import SnackbarAlert from "./snackbarAlert";
-import type { ClosableSnackbarAlertProps } from "../../types/components/baseComponent";
+import SnackbarAlert from "./SnackbarAlert";
+import type { ClosableSnackbarAlertProps } from "../../types/components/baseComponentTypes";
 
 /**
  * Composant de snackbar personnalisée avec possibilité de fermeture manuelle ou automatique.
