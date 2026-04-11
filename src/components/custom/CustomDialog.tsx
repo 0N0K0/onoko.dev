@@ -28,6 +28,7 @@ export default function CustomDialog({
   content,
   actions,
   width = 4,
+  height,
   closeButton = false,
 }: CustomDialogProps) {
   const dialogWidth = useResponsiveWidth(width);
@@ -39,6 +40,7 @@ export default function CustomDialog({
       sx={{
         "& .MuiDialog-paper": {
           width: dialogWidth,
+          height: height,
           paddingTop: closeButton ? "3rem" : undefined,
           paddingX: closeButton ? "3rem" : undefined,
         },

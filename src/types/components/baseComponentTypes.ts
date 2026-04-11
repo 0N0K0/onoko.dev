@@ -66,6 +66,7 @@ export interface CustomDialogProps {
   titlePaddingBottom?: string;
   actions?: React.ReactNode;
   width?: number;
+  height?: number | string;
   closeButton?: boolean;
 }
 

@@ -7,11 +7,13 @@ export default function Picture({
   maxWidth = "100%",
   maxHeight = "100%",
   objectFit = "contain",
+  style,
 }: {
   image: Media;
   maxWidth?: string;
   maxHeight?: string;
   objectFit?: "contain" | "cover" | "fill" | "none" | "scale-down";
+  style?: React.CSSProperties;
 }) {
   const paths: { [key: string]: string } = {
     xl: "",
@@ -37,10 +39,11 @@ export default function Picture({
         maxWidth: maxWidth,
         maxHeight: maxHeight,
         objectFit: objectFit,
+        ...style,
       }}
     />
   ) : image.type === "webp" ? (
-    <picture key={image.id}>
+    <picture key={image.id} style={style}>
       <source
         srcSet={API_URL + paths.xs}
         media={`(max-width: ${IMAGE_WIDTHS.xs}px)`}
