@@ -8,12 +8,12 @@ import type {
   EntityFormDialogProps,
   useEntityMutationProps,
 } from "./entityTypes";
+import type { Media } from "./mediaTypes";
 
 export interface Stack {
   id: string;
   label: string;
-  iconUrl?: string;
-  iconFile?: File | null;
+  icon?: Media | string;
   description?: string;
   versions: string[];
   skills: string[];

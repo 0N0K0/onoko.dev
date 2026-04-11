@@ -17,6 +17,10 @@ import CustomTable from "../../custom/CustomTable";
 import Picture from "../../custom/Picture";
 import SingleMediaDialog from "./SingleMediaDialog";
 import useMediaMutations from "../../../hooks/mutations/useMediaMutations";
+import CustomSelect from "../../custom/CustomSelect";
+import type { Media } from "../../../types/entities/mediaTypes";
+import type { Category } from "../../../types/entities/categoryTypes";
+import { useCategory } from "../../../hooks/useCategory";
 
 export default function MediaLibrary({
   submitting,
@@ -34,6 +38,11 @@ export default function MediaLibrary({
 
   const [addMedias, setAddMedias] = useState<boolean>(false);
   const [openMediaDialog, setOpenMediaDialog] = useState<string | false>(false);
+  const [editingMedias, setEditingMedias] = useState<
+    Partial<Media>[] | null | undefined
+  >(null);
+
+  const { categories } = useCategory();
 
   const { handleAdd, handleEdit, handleDelete } = useMediaMutations({
     setSubmitSuccess,
@@ -98,7 +107,6 @@ export default function MediaLibrary({
             submitting={submitting}
           />
         ) : (
-          // @TODO: MediaList component
           <CustomTable
             fields={[
               {
@@ -129,6 +137,57 @@ export default function MediaLibrary({
               handleDelete(selectedMedias)
             }
             submitting={submitting}
+            deleteLabel={`le(s) média(s)`}
+            bulkEditTitle="Modifier les médias sélectionnés"
+            onClickBulkEdit={() => {
+              if (editingMedias) {
+                for (const media of editingMedias) {
+                  handleEdit(media);
+                }
+              }
+            }}
+            setBulkEditItems={setEditingMedias}
+            bulkEditContent={
+              <CustomSelect
+                label="Catégorie"
+                labelId="category-label"
+                value={
+                  typeof editingMedias?.[0]?.category === "string"
+                    ? editingMedias[0].category
+                    : editingMedias?.[0]?.category?.id || ""
+                }
+                onChange={(e) => {
+                  const valueRaw =
+                    typeof e.target === "object" &&
+                    e.target !== null &&
+                    "value" in e.target
+                      ? (e.target as { value: string | string[] }).value
+                      : "";
+                  const value = Array.isArray(valueRaw)
+                    ? (valueRaw[0] ?? "")
+                    : valueRaw;
+
+                  setEditingMedias((prev) =>
+                    prev
+                      ? prev.map((m) => ({
+                          ...m,
+                          category: value,
+                        }))
+                      : null,
+                  );
+                }}
+                options={
+                  categories
+                    ?.filter((c: Category) => c.entity === "media")
+                    .map((c: Category) => ({
+                      id: c.id,
+                      label: c.depth
+                        ? "__".repeat(c.depth) + ` ${c.label}`
+                        : c.label,
+                    })) || []
+                }
+              />
+            }
           />
         ))
       )}

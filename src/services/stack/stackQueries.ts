@@ -4,7 +4,12 @@ export const STACK_FIELDS = gql`
   fragment StackFields on Stack {
     id
     label
-    iconUrl
+    icon {
+      id
+      label
+      path
+      type
+    }
     description
     versions
     skills

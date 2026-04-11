@@ -37,14 +37,19 @@ export default function Stacks() {
         query={STACKS_QUERY}
         fields={[
           {
-            key: "iconUrl",
+            key: "icon",
             label: "Icone",
-            content: (item: Stack) => (
-              <img
-                src={API_URL + item.iconUrl}
-                style={{ width: "3rem", height: "3rem", objectFit: "contain" }}
-              />
-            ),
+            content: (item: Stack) =>
+              typeof item.icon === "object" ? (
+                <img
+                  src={API_URL + item.icon?.path}
+                  style={{
+                    width: "3rem",
+                    height: "3rem",
+                    objectFit: "contain",
+                  }}
+                />
+              ) : null,
           },
           { key: "label", label: "Label" },
           {

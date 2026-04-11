@@ -56,6 +56,14 @@ export interface CustomTableProps {
   onClickDelete?: (ids: string[]) => void;
   submitting?: boolean;
   deleteLabel?: string;
+  bulkEditTitle?: string;
+  bulkEditContent?: React.ReactNode;
+  bulkEditDialogWidth?: number;
+  bulkEditItems?: any[] | null;
+  setBulkEditItems?: React.Dispatch<
+    React.SetStateAction<any[] | null | undefined>
+  >;
+  onClickBulkEdit?: () => void;
 }
 
 export interface CustomDialogProps {

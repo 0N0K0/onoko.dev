@@ -1,19 +1,15 @@
-import { Button, TextField, useTheme } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import CustomDialog from "../custom/CustomDialog";
-import { ResponsiveBox, ResponsiveStack } from "../custom/ResponsiveLayout";
+import { ResponsiveStack } from "../custom/ResponsiveLayout";
 import Icon from "@mdi/react";
-import { mdiCheck, mdiClose, mdiPencil } from "@mdi/js";
+import { mdiCheck, mdiClose } from "@mdi/js";
 import type {
   Stack,
   StackFormDialogProps,
 } from "../../types/entities/stackTypes";
 import { useCategory } from "../../hooks/useCategory";
 import CustomSelect from "../custom/CustomSelect";
-import Dropzone from "react-dropzone";
-import ResponsiveBodyTypography from "../custom/ResponsiveBodyTypography";
-import CustomIconButton from "../custom/CustomIconButton";
 import { useEffect, useState } from "react";
-import { API_URL } from "../../constants/apiConstants";
 import FieldsRepeater from "../custom/FieldsRepeater";
 import type { Category } from "../../types/entities/categoryTypes";
 
@@ -25,7 +21,6 @@ export default function StackFormDialog({
   handleEdit,
   submitting,
 }: StackFormDialogProps) {
-  const theme = useTheme();
   const { categories } = useCategory();
 
   const [initialStack, setInitialStack] = useState<Stack | null>(null);
@@ -33,8 +28,6 @@ export default function StackFormDialog({
     Stack & { iconFile?: File | null }
   > | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
-
-  const [editIcon, setEditIcon] = useState(false);
 
   useEffect(() => {
     if (open === true) {
@@ -59,23 +52,6 @@ export default function StackFormDialog({
     }
   }, [open, stacks]);
 
-  useEffect(() => {
-    if (editingStack?.iconFile || editingStack?.iconUrl) {
-      setEditIcon(false);
-    } else {
-      setEditIcon(true);
-    }
-  }, [editingStack?.iconFile, editingStack?.iconUrl]);
-
-  const handleDropIcon = (files: File[]) => {
-    if (files && files.length > 0) {
-      setEditingStack(
-        editingStack ? { ...editingStack, iconFile: files[0] } : null,
-      );
-      setHasChanges(true);
-    }
-  };
-
   return (
     <CustomDialog
       key="formDialog"
@@ -92,81 +68,13 @@ export default function StackFormDialog({
       content={(() => {
         return (
           <ResponsiveStack rowGap={3} style={{ overflow: "visible" }}>
-            {(editingStack?.iconUrl || editingStack?.iconFile) && (
-              <ResponsiveBox
-                padding={0}
-                sx={{
-                  position: "relative",
-                  width: "fit-content",
-                  margin: "0 auto",
-                }}
-              >
-                <img
-                  src={
-                    editingStack.iconFile
-                      ? URL.createObjectURL(editingStack.iconFile)
-                      : API_URL + editingStack.iconUrl
-                  }
-                  style={{
-                    width: "6rem",
-                    height: "6rem",
-                    objectFit: "contain",
-                  }}
-                />
-                <CustomIconButton
-                  icon={editIcon ? mdiClose : mdiPencil}
-                  color="primary"
-                  sx={{ position: "absolute", bottom: "-20px", right: "-20px" }}
-                  onClick={() => setEditIcon(!editIcon)}
-                  disabled={submitting}
-                />
-              </ResponsiveBox>
-            )}
-            {((!editingStack?.iconUrl && !editingStack?.iconFile) ||
-              editIcon) && (
-              <Dropzone
-                onDrop={(acceptedFiles) => {
-                  handleDropIcon(acceptedFiles);
-                  setEditIcon(false);
-                }}
-                accept={{
-                  "image/*": [".webp", ".png", ".jpg", ".jpeg", ".svg"],
-                }}
-              >
-                {({ getRootProps, getInputProps }) => (
-                  <ResponsiveBox
-                    paddingY={3}
-                    paddingX={4}
-                    {...getRootProps()}
-                    sx={{
-                      border: "2px dashed " + theme.palette.divider,
-                      borderRadius: "8px",
-                      textAlign: "center",
-                      cursor: "pointer",
-                      "&:hover": {
-                        backgroundColor: theme.palette.action.hover,
-                        border: "2px dashed " + theme.palette.text.secondary,
-                      },
-                    }}
-                  >
-                    <input {...getInputProps()} />
-                    <ResponsiveBodyTypography
-                      variant="bodySm"
-                      color="textSecondary"
-                    >
-                      Glisser l'icone&nbsp;ici, ou&nbsp;cliquer
-                      pour&nbsp;sélectionner un&nbsp;fichier
-                    </ResponsiveBodyTypography>
-                  </ResponsiveBox>
-                )}
-              </Dropzone>
-            )}
             <ResponsiveStack
               columnGap={2}
               rowGap={3}
               direction="row"
               flexWrap="wrap"
             >
+              {/* @TODO : MediaPicker */}
               <TextField
                 label="Label"
                 value={editingStack?.label || ""}
@@ -303,7 +211,7 @@ export default function StackFormDialog({
             submitting ||
             !hasChanges ||
             !editingStack?.label ||
-            (!editingStack?.iconFile && !editingStack?.iconUrl)
+            !editingStack?.icon
           }
           startIcon={<Icon path={mdiCheck} size={1} />}
           sx={{ width: "fit-content", minWidth: "208px" }}

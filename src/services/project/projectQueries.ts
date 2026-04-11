@@ -4,7 +4,12 @@ export const PROJECT_FIELDS = gql`
   fragment ProjectFields on Project {
     id
     label
-    thumbnailUrl
+    thumbnail {
+      id
+      label
+      path
+      type
+    }
     categories {
       id
       label
@@ -16,11 +21,21 @@ export const PROJECT_FIELDS = gql`
     mockup {
       url
       label
-      imagesUrls
+      images {
+        id
+        label
+        path
+        type
+      }
     }
     client {
       label
-      logoUrl
+      logo {
+        id
+        label
+        path
+        type
+      }
     }
     manager {
       name
@@ -65,7 +80,12 @@ export const PROJECT_FIELDS = gql`
     stacks {
       id
       label
-      iconUrl
+      icon {
+        id
+        label
+        path
+        type
+      }
       version
       category {
         id

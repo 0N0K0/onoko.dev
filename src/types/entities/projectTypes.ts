@@ -1,14 +1,14 @@
 import type { Category } from "./categoryTypes";
 import type { Coworker } from "./cowokerTypes";
 import type { useEntityMutationProps } from "./entityTypes";
+import type { Media } from "./mediaTypes";
 import type { Role } from "./roleTypes";
 import type { Stack } from "./stackTypes";
 
 export interface Project {
   id: string;
   label: string;
-  thumbnailUrl?: string;
-  thumbnailFile?: File | null;
+  thumbnail?: Media | string;
   categories?: Category[] | string[];
   website?: {
     url: string;
@@ -17,13 +17,11 @@ export interface Project {
   mockup?: {
     url: string;
     label: string;
-    imagesUrls?: string[];
-    imagesFiles?: (File | null)[];
+    images?: Media[];
   };
   client?: {
     label: string;
-    logoUrl?: string;
-    logoFile?: File | null;
+    logo?: Media | string;
   };
   manager?: {
     name: string;

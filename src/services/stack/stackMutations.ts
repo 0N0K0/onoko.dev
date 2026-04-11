@@ -4,7 +4,7 @@ import { STACK_FIELDS } from "./stackQueries";
 export const CREATE_STACK_MUTATION = gql`
   mutation CreateStack(
     $label: String!
-    $iconFile: Upload!
+    $icon: ID!
     $description: String
     $versions: [String!]
     $skills: [String!]
@@ -12,7 +12,7 @@ export const CREATE_STACK_MUTATION = gql`
   ) {
     createStack(
       label: $label
-      iconFile: $iconFile
+      icon: $icon
       description: $description
       versions: $versions
       skills: $skills
@@ -29,7 +29,7 @@ export const UPDATE_STACK_MUTATION = gql`
   mutation UpdateStack(
     $id: ID!
     $label: String
-    $iconFile: Upload
+    $icon: ID
     $description: String
     $versions: [String!]
     $skills: [String!]
@@ -38,7 +38,7 @@ export const UPDATE_STACK_MUTATION = gql`
     updateStack(
       id: $id
       label: $label
-      iconFile: $iconFile
+      icon: $icon
       description: $description
       versions: $versions
       skills: $skills

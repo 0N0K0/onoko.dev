@@ -1,4 +1,4 @@
-import { mdiDelete, mdiPencil, mdiPlus } from "@mdi/js";
+import { mdiCheck, mdiClose, mdiDelete, mdiPencil, mdiPlus } from "@mdi/js";
 import Icon from "@mdi/react";
 import {
   Button,
@@ -17,6 +17,7 @@ import { ResponsiveStack } from "./ResponsiveLayout";
 import DeleteConfirmationDialog from "../entities/DeleteConfirmationDialog";
 import type { CustomTableProps } from "../../types/components/baseComponentTypes";
 import CustomIconButton from "./CustomIconButton";
+import CustomDialog from "./CustomDialog";
 
 /**
  * Composant de table personnalisée utilisant MUI Table
@@ -34,6 +35,10 @@ import CustomIconButton from "./CustomIconButton";
  * @param {function} props.onClickDelete Fonction à appeler lors du clic sur le bouton de suppression d'items sélectionnés
  * @param {boolean} props.submitting Indique si une action est en cours de soumission (pour désactiver les boutons)
  * @param {string} props.deleteLabel Label à afficher dans la confirmation de suppression (ex: "cette catégorie")
+ * @param {string} props.bulkEditTitle Titre à afficher dans la boîte de dialogue de modification en masse
+ * @param {React.ReactNode} props.bulkEditContent Contenu à afficher dans la boîte de dialogue de modification en masse
+ * @param {number} props.bulkEditDialogWidth Largeur de la boîte de dialogue de modification en masse
+ * @param {function} props.onClickBulkEdit Fonction à appeler lors du clic sur le bouton de modification en masse
  */
 export default function CustomTable({
   fields,
@@ -43,11 +48,18 @@ export default function CustomTable({
   onClickEdit,
   onClickDelete,
   submitting = false,
-  deleteLabel = "cette entité",
+  deleteLabel = "ces éléments",
+  bulkEditTitle = "Modifier les éléments",
+  bulkEditContent,
+  bulkEditDialogWidth = 4,
+  bulkEditItems,
+  setBulkEditItems,
+  onClickBulkEdit,
 }: CustomTableProps) {
   const theme = useTheme();
 
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [bulkEditDialogOpen, setBulkEditDialogOpen] = useState(false);
 
   const handleSelectMultiple = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
@@ -155,7 +167,7 @@ export default function CustomTable({
           {canSelect &&
             items.length > 1 &&
             selectedItems.length > 1 &&
-            onClickDelete && (
+            (onClickDelete || onClickBulkEdit) && (
               <TableFooter
                 sx={{
                   position: "sticky",
@@ -166,23 +178,80 @@ export default function CustomTable({
                 <TableRow sx={{}}>
                   <TableCell
                     colSpan={fields.length + 2}
-                    align="right"
                     sx={{ borderTop: `1px solid rgba(81, 81, 81, 1)` }}
                   >
-                    <Button
-                      color="error"
-                      startIcon={<Icon path={mdiDelete} size={1} />}
-                      onClick={() => setDeleteDialogOpen(true)}
-                      disabled={submitting}
+                    <ResponsiveStack
+                      direction="row"
+                      columnGap={2}
+                      width="100%"
+                      justifyContent="flex-end"
                     >
-                      Supprimer la sélection
-                    </Button>
+                      {onClickBulkEdit && setBulkEditItems && (
+                        <Button
+                          startIcon={<Icon path={mdiPencil} size={1} />}
+                          onClick={() => {
+                            setBulkEditItems(
+                              selectedItems.map((id) =>
+                                items.find((item) => item.id === id),
+                              ),
+                            );
+                            setBulkEditDialogOpen(true);
+                          }}
+                          disabled={submitting}
+                        >
+                          Modifier
+                        </Button>
+                      )}
+                      {onClickDelete && (
+                        <Button
+                          color="error"
+                          startIcon={<Icon path={mdiDelete} size={1} />}
+                          onClick={() => setDeleteDialogOpen(true)}
+                          disabled={submitting}
+                        >
+                          Supprimer
+                        </Button>
+                      )}
+                    </ResponsiveStack>
                   </TableCell>
                 </TableRow>
               </TableFooter>
             )}
         </Table>
       </TableContainer>
+      {bulkEditDialogOpen && onClickBulkEdit && (
+        <CustomDialog
+          open={bulkEditDialogOpen}
+          onClose={() => setBulkEditDialogOpen(false)}
+          title={bulkEditTitle}
+          content={bulkEditContent}
+          actions={[
+            <Button
+              key="cancel"
+              onClick={() => {
+                setBulkEditDialogOpen(false);
+              }}
+              disabled={submitting}
+              startIcon={<Icon path={mdiClose} size={1} />}
+            >
+              Annuler
+            </Button>,
+            <Button
+              key="confirm"
+              color="success"
+              onClick={() => {
+                onClickBulkEdit();
+                setBulkEditDialogOpen(false);
+              }}
+              disabled={submitting}
+              startIcon={<Icon path={mdiCheck} size={1} />}
+            >
+              Valider
+            </Button>,
+          ]}
+          width={bulkEditDialogWidth}
+        />
+      )}
       {onClickDelete && (
         <DeleteConfirmationDialog
           label={deleteLabel}

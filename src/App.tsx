@@ -43,9 +43,10 @@ export default function App() {
           },
           "::-webkit-scrollbar-thumb:hover": {
             background: theme.palette.text.secondary,
+            backgroundClip: "content-box",
           },
           "::-webkit-scrollbar-corner": {
-            background: theme.palette.background.paper,
+            background: "transparent",
           },
         }}
       />
