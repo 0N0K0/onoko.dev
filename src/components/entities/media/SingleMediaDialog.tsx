@@ -9,6 +9,7 @@ import type { Category } from "../../../types/entities/categoryTypes";
 import { ResponsiveStack } from "../../custom/ResponsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiDelete } from "@mdi/js";
+import DeleteConfirmationDialog from "../DeleteConfirmationDialog";
 
 export default function SingleMediaDialog({
   open,
@@ -29,6 +30,8 @@ export default function SingleMediaDialog({
   const [editingMedia, setEditingMedia] = useState<Partial<Media> | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
 
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
   const { categories } = useCategory();
 
   useEffect(() => {
@@ -45,102 +48,118 @@ export default function SingleMediaDialog({
   }, [open, medias]);
 
   return (
-    <CustomDialog
-      key="mediaDialog"
-      open={!!open}
-      onClose={() => setOpen(false)}
-      content={(() => {
-        return (
-          initialMedia && (
-            <ResponsiveStack direction="row" columnGap={2}>
-              <Picture image={initialMedia} maxHeight="calc(100dvh - 9rem)" />
-              <ResponsiveStack rowGap={3}>
-                <TextField
-                  label="Label"
-                  value={editingMedia?.label || ""}
-                  onChange={(e) => {
-                    setEditingMedia(
-                      editingMedia
-                        ? { ...editingMedia, label: e.target.value }
-                        : null,
-                    );
-                    e.target.value !== (editingMedia?.label || "") &&
-                      setHasChanges(true);
-                  }}
-                  required
-                />
-                <CustomSelect
-                  label="Catégorie"
-                  labelId="category-label"
-                  value={
-                    typeof editingMedia?.category === "string"
-                      ? editingMedia.category
-                      : editingMedia?.category?.id || ""
-                  }
-                  onChange={(e) => {
-                    const nextValue =
-                      typeof e.target === "object" &&
-                      e.target !== null &&
-                      "value" in e.target
-                        ? e.target.value
-                        : "";
-                    const categoryValue = Array.isArray(nextValue)
-                      ? (nextValue[0] ?? "")
-                      : nextValue;
+    <>
+      <CustomDialog
+        key="mediaDialog"
+        open={!!open}
+        onClose={() => setOpen(false)}
+        content={(() => {
+          return (
+            initialMedia && (
+              <ResponsiveStack direction="row" columnGap={2}>
+                <Picture image={initialMedia} maxHeight="calc(100dvh - 9rem)" />
+                <ResponsiveStack rowGap={3}>
+                  <TextField
+                    label="Label"
+                    value={editingMedia?.label || ""}
+                    onChange={(e) => {
+                      setEditingMedia(
+                        editingMedia
+                          ? { ...editingMedia, label: e.target.value }
+                          : null,
+                      );
+                      e.target.value !== (editingMedia?.label || "") &&
+                        setHasChanges(true);
+                    }}
+                    required
+                  />
+                  <CustomSelect
+                    label="Catégorie"
+                    labelId="category-label"
+                    value={
+                      typeof editingMedia?.category === "string"
+                        ? editingMedia.category
+                        : editingMedia?.category?.id || ""
+                    }
+                    onChange={(e) => {
+                      const nextValue =
+                        typeof e.target === "object" &&
+                        e.target !== null &&
+                        "value" in e.target
+                          ? e.target.value
+                          : "";
+                      const categoryValue = Array.isArray(nextValue)
+                        ? (nextValue[0] ?? "")
+                        : nextValue;
 
-                    setEditingMedia(
-                      editingMedia
-                        ? { ...editingMedia, category: categoryValue as string }
-                        : null,
-                    );
-                    categoryValue !==
-                      (typeof initialMedia?.category === "string"
-                        ? initialMedia.category
-                        : initialMedia?.category?.id || "") &&
-                      setHasChanges(true);
-                  }}
-                  options={
-                    categories
-                      ?.filter((c: Category) => c.entity === "media")
-                      .map((c: Category) => ({
-                        id: c.id,
-                        label: c.depth
-                          ? "__".repeat(c.depth) + ` ${c.label}`
-                          : c.label,
-                      })) || []
-                  }
-                />
-                <Button
-                  key="confirm"
-                  color="success"
-                  onClick={() => {
-                    handleEdit(editingMedia!);
-                  }}
-                  disabled={submitting || !hasChanges || !editingMedia?.label}
-                  startIcon={<Icon path={mdiCheck} size={1} />}
-                  sx={{ width: "fit-content", minWidth: "208px" }}
-                >
-                  Modifier
-                </Button>
-                <Button
-                  key="delete"
-                  color="error"
-                  onClick={() => {
-                    handleDelete([initialMedia!.id]);
-                  }}
-                  disabled={submitting}
-                  startIcon={<Icon path={mdiDelete} size={1} />}
-                  sx={{ width: "fit-content", minWidth: "208px" }}
-                >
-                  Supprimer
-                </Button>
+                      setEditingMedia(
+                        editingMedia
+                          ? {
+                              ...editingMedia,
+                              category: categoryValue as string,
+                            }
+                          : null,
+                      );
+                      categoryValue !==
+                        (typeof initialMedia?.category === "string"
+                          ? initialMedia.category
+                          : initialMedia?.category?.id || "") &&
+                        setHasChanges(true);
+                    }}
+                    options={
+                      categories
+                        ?.filter((c: Category) => c.entity === "media")
+                        .map((c: Category) => ({
+                          id: c.id,
+                          label: c.depth
+                            ? "__".repeat(c.depth) + ` ${c.label}`
+                            : c.label,
+                        })) || []
+                    }
+                  />
+                  <Button
+                    key="confirm"
+                    color="success"
+                    onClick={() => {
+                      handleEdit(editingMedia!);
+                    }}
+                    disabled={submitting || !hasChanges || !editingMedia?.label}
+                    startIcon={<Icon path={mdiCheck} size={1} />}
+                    sx={{ width: "fit-content", minWidth: "208px" }}
+                  >
+                    Modifier
+                  </Button>
+                  <Button
+                    key="delete"
+                    color="error"
+                    onClick={() => {
+                      setDeleteDialogOpen(true);
+                    }}
+                    disabled={submitting}
+                    startIcon={<Icon path={mdiDelete} size={1} />}
+                    sx={{ width: "fit-content", minWidth: "208px" }}
+                  >
+                    Supprimer
+                  </Button>
+                </ResponsiveStack>
               </ResponsiveStack>
-            </ResponsiveStack>
-          )
-        );
-      })()}
-      width={12}
-      closeButton
-    />
+            )
+          );
+        })()}
+        width={12}
+        closeButton
+      />
+      <DeleteConfirmationDialog
+        label="ce média"
+        open={deleteDialogOpen}
+        setOpen={setDeleteDialogOpen}
+        onClickDelete={() => {
+          handleDelete([initialMedia!.id]);
+          setDeleteDialogOpen(false);
+          setOpen(false);
+        }}
+        submitting={submitting}
+      />
+    </>
   );
 }

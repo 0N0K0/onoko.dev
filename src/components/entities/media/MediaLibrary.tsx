@@ -30,12 +30,10 @@ export default function MediaLibrary({
   setSubmitError: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const { medias, setMedias, loading, itemsError } = useMedia();
+  const [layout, setLayout] = useState<"grid" | "list">("grid");
 
   const [addMedias, setAddMedias] = useState<boolean>(false);
-
   const [openMediaDialog, setOpenMediaDialog] = useState<string | false>(false);
-
-  const [layout, setLayout] = useState<"grid" | "list">("grid");
 
   const { handleAdd, handleEdit, handleDelete } = useMediaMutations({
     setSubmitSuccess,
@@ -93,7 +91,12 @@ export default function MediaLibrary({
         medias &&
         medias.length > 0 &&
         (layout === "grid" ? (
-          <MediaGrid medias={medias} />
+          <MediaGrid
+            medias={medias}
+            setOpenDialog={setOpenMediaDialog}
+            onDelete={handleDelete}
+            submitting={submitting}
+          />
         ) : (
           // @TODO: MediaList component
           <CustomTable

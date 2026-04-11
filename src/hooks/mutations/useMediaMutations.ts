@@ -50,7 +50,9 @@ export default function useMediaMutations({
     setSubmitting,
   });
   const handleEdit = async (item: Partial<Media>) => {
-    console.log(item);
+    if (item.category && typeof item.category !== "string") {
+      item.category = item.category.id;
+    }
     await editMedia({
       mutation: UPDATE_MEDIA_MUTATION,
       variables: item,
