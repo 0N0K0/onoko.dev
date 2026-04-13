@@ -1,5 +1,5 @@
 import type { Category } from "./categoryTypes";
-import type { Coworker } from "./cowokerTypes";
+import type { Coworker } from "./coworkerTypes";
 import type { useEntityMutationProps } from "./entityTypes";
 import type { Media } from "./mediaTypes";
 import type { Role } from "./roleTypes";
@@ -64,13 +64,6 @@ export interface Project {
     general?: string;
     client?: string;
   };
-}
-
-export interface ProjectContextType {
-  projects?: Project[];
-  setProjects: React.Dispatch<React.SetStateAction<Project[] | undefined>>;
-  loading: boolean;
-  itemsError: string;
 }
 
 export interface useProjectMutationProps extends useEntityMutationProps {

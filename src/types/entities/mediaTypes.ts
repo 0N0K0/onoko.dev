@@ -13,13 +13,6 @@ export interface Media {
   category?: Category | string;
 }
 
-export interface MediaContextType {
-  medias?: Media[];
-  setMedias: React.Dispatch<React.SetStateAction<Media[] | undefined>>;
-  loading: boolean;
-  itemsError: string;
-}
-
 export interface MediaFormDialogProps extends EntityFormDialogProps {
   medias?: Media[];
 }

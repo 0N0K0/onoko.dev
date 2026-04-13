@@ -2,7 +2,6 @@ import type {
   EntityFormDialogProps,
   useEntityMutationProps,
 } from "./entityTypes";
-import type { Stack } from "./stackTypes";
 
 /**
  * Ce fichier définit les types TypeScript liés aux catégories de projets et technologies, notamment le type Category qui décrit la structure d'une catégorie, ainsi que les types pour les propriétés du formulaire de catégorie et les propriétés des mutations liées aux catégories.
@@ -16,7 +15,6 @@ export interface Category {
   description?: string;
   parent?: string;
   depth?: number;
-  entities?: Stack[];
 }
 
 export interface CategoryFormDialogProps extends EntityFormDialogProps {
@@ -26,11 +24,4 @@ export interface CategoryFormDialogProps extends EntityFormDialogProps {
 export interface useCategoryMutationProps extends useEntityMutationProps {
   categories?: Category[];
   setCategories: React.Dispatch<React.SetStateAction<Category[] | undefined>>;
-}
-
-export interface CategoryContextType {
-  categories?: Category[];
-  setCategories: React.Dispatch<React.SetStateAction<Category[] | undefined>>;
-  loading: boolean;
-  itemsError: string;
 }
