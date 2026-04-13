@@ -17,9 +17,7 @@ export const CREATE_STACK_MUTATION = gql`
       versions: $versions
       skills: $skills
       category: $category
-    ) {
-      ...StackFields
-    }
+    )
   }
 
   ${STACK_FIELDS}
@@ -43,9 +41,7 @@ export const UPDATE_STACK_MUTATION = gql`
       versions: $versions
       skills: $skills
       category: $category
-    ) {
-      ...StackFields
-    }
+    )
   }
 
   ${STACK_FIELDS}

@@ -5,10 +5,7 @@ export const COWORKER_FIELDS = gql`
   fragment CoworkerFields on Coworker {
     id
     name
-    roles {
-      id
-      label
-    }
+    roles
   }
 `;
 
@@ -16,17 +13,6 @@ export const COWORKER_FIELDS = gql`
 export const COWORKERS_QUERY = gql`
   query Coworkers {
     coworkers {
-      ...CoworkerFields
-    }
-  }
-
-  ${COWORKER_FIELDS}
-`;
-
-// Requête pour récupérer un rôle spécifique en fonction d'une clé (id ou label) et d'une valeur (valeur de l'id ou du label)
-export const COWORKER_QUERY = gql`
-  query Coworker($key: String!, $value: String!) {
-    coworker(key: $key, value: $value) {
       ...CoworkerFields
     }
   }

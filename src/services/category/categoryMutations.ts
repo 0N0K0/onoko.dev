@@ -13,14 +13,7 @@ export const CREATE_CATEGORY_MUTATION = gql`
       entity: $entity
       description: $description
       parent: $parent
-    ) {
-      id
-      label
-      entity
-      description
-      parent
-      depth
-    }
+    )
   }
 `;
 
@@ -39,14 +32,7 @@ export const UPDATE_CATEGORY_MUTATION = gql`
       entity: $entity
       description: $description
       parent: $parent
-    ) {
-      id
-      label
-      entity
-      description
-      parent
-      depth
-    }
+    )
   }
 `;
 

@@ -4,9 +4,7 @@ import { COWORKER_FIELDS } from "./coworkerQueries";
 // Mutation pour créer un nouvel intervenant en fournissant son nom et une liste d'IDs de rôles associés
 export const CREATE_COWORKER_MUTATION = gql`
   mutation CreateCoworker($name: String!, $roles: [ID!]) {
-    createCoworker(name: $name, roles: $roles) {
-      ...CoworkerFields
-    }
+    createCoworker(name: $name, roles: $roles)
   }
 
   ${COWORKER_FIELDS}
@@ -15,9 +13,7 @@ export const CREATE_COWORKER_MUTATION = gql`
 // Mutation pour mettre à jour un intervenant existant en fonction de son ID
 export const UPDATE_COWORKER_MUTATION = gql`
   mutation UpdateCoworker($id: ID!, $name: String, $roles: [ID!]) {
-    updateCoworker(id: $id, name: $name, roles: $roles) {
-      ...CoworkerFields
-    }
+    updateCoworker(id: $id, name: $name, roles: $roles)
   }
 
   ${COWORKER_FIELDS}

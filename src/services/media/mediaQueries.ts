@@ -7,10 +7,7 @@ export const MEDIA_FIELDS = gql`
     label
     path
     type
-    category {
-      id
-      label
-    }
+    category
   }
 `;
 
@@ -18,17 +15,6 @@ export const MEDIA_FIELDS = gql`
 export const MEDIAS_QUERY = gql`
   query Medias {
     medias {
-      ...MediaFields
-    }
-  }
-
-  ${MEDIA_FIELDS}
-`;
-
-// Requête pour récupérer un média spécifique en fonction de son ID
-export const MEDIA_QUERY = gql`
-  query Media($id: ID!) {
-    media(id: $id) {
       ...MediaFields
     }
   }

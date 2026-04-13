@@ -4,9 +4,7 @@ import { ROLE_FIELDS } from "./roleQueries";
 // Mutations GraphQL pour la gestion des rôles (création, mise à jour, suppression)
 export const CREATE_ROLE_MUTATION = gql`
   mutation CreateRole($label: String!) {
-    createRole(label: $label) {
-      ...RoleFields
-    }
+    createRole(label: $label)
   }
 
   ${ROLE_FIELDS}
@@ -15,9 +13,7 @@ export const CREATE_ROLE_MUTATION = gql`
 // Mutation pour mettre à jour un rôle existant en fonction de son ID (permet de modifier le label d'un rôle)
 export const UPDATE_ROLE_MUTATION = gql`
   mutation UpdateRole($id: ID!, $label: String) {
-    updateRole(id: $id, label: $label) {
-      ...RoleFields
-    }
+    updateRole(id: $id, label: $label)
   }
 
   ${ROLE_FIELDS}

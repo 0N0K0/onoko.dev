@@ -4,16 +4,8 @@ export const PROJECT_FIELDS = gql`
   fragment ProjectFields on Project {
     id
     label
-    thumbnail {
-      id
-      label
-      path
-      type
-    }
-    categories {
-      id
-      label
-    }
+    thumbnail
+    categories
     website {
       url
       label
@@ -21,21 +13,11 @@ export const PROJECT_FIELDS = gql`
     mockup {
       url
       label
-      images {
-        id
-        label
-        path
-        type
-      }
+      images
     }
     client {
       label
-      logo {
-        id
-        label
-        path
-        type
-      }
+      logo
     }
     manager {
       name
@@ -65,32 +47,14 @@ export const PROJECT_FIELDS = gql`
       evolution
       validation
     }
-    roles {
-      id
-      label
-    }
+    roles
     coworkers {
       id
-      name
-      roles {
-        id
-        label
-      }
+      roles
     }
     stacks {
       id
-      label
-      icon {
-        id
-        label
-        path
-        type
-      }
       version
-      category {
-        id
-        label
-      }
       section
     }
     kpis {
@@ -109,16 +73,6 @@ export const PROJECT_FIELDS = gql`
 export const PROJECTS_QUERY = gql`
   query Projects {
     projects {
-      ...ProjectFields
-    }
-  }
-
-  ${PROJECT_FIELDS}
-`;
-
-export const PROJECT_QUERY = gql`
-  query Project($key: String!, $value: String!) {
-    project(key: $key, value: $value) {
       ...ProjectFields
     }
   }

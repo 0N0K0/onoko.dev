@@ -22,14 +22,3 @@ export const CATEGORIES_QUERY = gql`
 
   ${CATEGORY_FIELDS}
 `;
-
-// Requête pour récupérer une catégorie spécifique en fonction d'une clé (id ou label) et d'une valeur (valeur de l'id ou du label), avec une option pour filtrer par entité (projet ou technologie)
-export const CATEGORY_QUERY = gql`
-  query Category($key: String!, $value: String!, $entity: String) {
-    category(key: $key, value: $value, entity: $entity) {
-      ...CategoryFields
-    }
-  }
-
-  ${CATEGORY_FIELDS}
-`;
