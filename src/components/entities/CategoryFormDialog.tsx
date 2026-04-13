@@ -194,9 +194,9 @@ export default function CategoryFormDialog({
           color="success"
           onClick={() => {
             if (typeof open === "string") {
-              handleEdit(editingCategory!);
+              handleEdit({ variables: editingCategory! });
             } else {
-              handleAdd(editingCategory!);
+              handleAdd({ variables: editingCategory! });
             }
           }}
           disabled={

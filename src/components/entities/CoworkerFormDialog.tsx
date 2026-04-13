@@ -7,11 +7,24 @@ import CustomSelect from "../custom/CustomSelect";
 import type {
   Coworker,
   CoworkerFormDialogProps,
-} from "../../types/entities/cowokerTypes";
-import { useRole } from "../../hooks/useRole";
+} from "../../types/entities/coworkerTypes";
 import type { Role } from "../../types/entities/roleTypes";
 import { useEffect, useState } from "react";
+import useRoles from "../../hooks/queries/useRoles";
 
+/**
+ * Composant de dialogue pour ajouter ou modifier un intervenant (coworker).
+ * Ce composant affiche un formulaire dans un dialogue personnalisé, permettant à l'utilisateur de saisir les informations d'un intervenant, telles que son nom et ses rôles associés.
+ * Il gère à la fois les cas d'ajout et de modification en fonction de la valeur de la prop `open`, qui peut être un booléen ou une chaîne de caractères représentant l'ID d'un intervenant existant.
+ * Le composant utilise des états locaux pour gérer les données du formulaire et détecter les changements, ainsi que des hooks personnalisés pour récupérer les rôles disponibles.
+ * @param {Object} props Les propriétés du composant.
+ * @param {boolean | string} props.open Indique si le dialogue est ouvert ou fermé, ou contient l'ID d'un intervenant à modifier.
+ * @param {function} props.setOpen Fonction pour changer l'état d'ouverture du dialogue.
+ * @param {Coworker[]} props.coworkers La liste des intervenants existants, utilisée pour pré-remplir le formulaire en cas de modification.
+ * @param {function} props.handleAdd Fonction à appeler pour ajouter un nouvel intervenant avec les données du formulaire.
+ * @param {function} props.handleEdit Fonction à appeler pour modifier un intervenant existant avec les données du formulaire.
+ * @param {boolean} props.submitting Indique si une opération de soumission est en cours, utilisé pour désactiver les actions du dialogue pendant la soumission.
+ */
 export default function CoworkerFormDialog({
   open,
   setOpen,
@@ -20,7 +33,7 @@ export default function CoworkerFormDialog({
   handleEdit,
   submitting,
 }: CoworkerFormDialogProps) {
-  const { roles } = useRole();
+  const { roles } = useRoles();
 
   // State local pour le formulaire
   const [initialCoworker, setInitialCoworker] = useState<Coworker | null>(null);
@@ -137,9 +150,9 @@ export default function CoworkerFormDialog({
           color="success"
           onClick={() => {
             if (typeof open === "string") {
-              handleEdit(editingCoworker!);
+              handleEdit({ variables: editingCoworker! });
             } else {
-              handleAdd(editingCoworker!);
+              handleAdd({ variables: editingCoworker! });
             }
           }}
           disabled={submitting || !hasChanges || !editingCoworker?.name}

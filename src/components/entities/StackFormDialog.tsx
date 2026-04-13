@@ -7,12 +7,25 @@ import type {
   Stack,
   StackFormDialogProps,
 } from "../../types/entities/stackTypes";
-import { useCategory } from "../../hooks/useCategory";
 import CustomSelect from "../custom/CustomSelect";
 import { useEffect, useState } from "react";
 import FieldsRepeater from "../custom/FieldsRepeater";
 import type { Category } from "../../types/entities/categoryTypes";
+import useCategories from "../../hooks/queries/useCategories";
 
+/**
+ * Composant de dialogue pour ajouter ou modifier une technologie (stack).
+ * Ce composant affiche un formulaire dans un dialogue personnalisé, permettant à l'utilisateur de saisir les informations d'une technologie, telles que son label, sa description, ses versions, ses compétences associées et sa catégorie.
+ * Il gère à la fois les cas d'ajout et de modification en fonction de la valeur de la prop `open`, qui peut être un booléen ou une chaîne de caractères représentant l'ID d'une technologie existante.
+ * Le composant utilise des états locaux pour gérer les données du formulaire et détecter les changements, ainsi que des hooks personnalisés pour récupérer les catégories disponibles.
+ * @param {Object} props Les propriétés du composant.
+ * @param {boolean | string} props.open Indique si le dialogue est ouvert ou fermé, ou contient l'ID d'une technologie à modifier.
+ * @param {function} props.setOpen Fonction pour changer l'état d'ouverture du dialogue.
+ * @param {Stack[]} props.stacks La liste des technologies existantes, utilisée pour pré-remplir le formulaire en cas de modification.
+ * @param {function} props.handleAdd Fonction à appeler pour ajouter une nouvelle technologie avec les données du formulaire.
+ * @param {function} props.handleEdit Fonction à appeler pour modifier une technologie existante avec les données du formulaire.
+ * @param {boolean} props.submitting Indique si une opération de soumission est en cours, utilisé pour désactiver les actions du dialogue pendant la soumission.
+ */
 export default function StackFormDialog({
   open,
   setOpen,
@@ -21,7 +34,7 @@ export default function StackFormDialog({
   handleEdit,
   submitting,
 }: StackFormDialogProps) {
-  const { categories } = useCategory();
+  const { categories } = useCategories();
 
   const [initialStack, setInitialStack] = useState<Stack | null>(null);
   const [editingStack, setEditingStack] = useState<Partial<
@@ -202,9 +215,9 @@ export default function StackFormDialog({
           color="success"
           onClick={() => {
             if (typeof open === "string") {
-              handleEdit(editingStack!);
+              handleEdit({ variables: editingStack! });
             } else {
-              handleAdd(editingStack!);
+              handleAdd({ variables: editingStack! });
             }
           }}
           disabled={
