@@ -4,10 +4,7 @@
  */
 
 import type { Category } from "./categoryTypes";
-import type {
-  EntityFormDialogProps,
-  useEntityMutationProps,
-} from "./entityTypes";
+import type { EntityFormDialogProps } from "./entityTypes";
 import type { Media } from "./mediaTypes";
 
 export interface Stack {
@@ -18,11 +15,6 @@ export interface Stack {
   versions: string[];
   skills: string[];
   category?: string | Category;
-}
-
-export interface useStackMutationProps extends useEntityMutationProps {
-  stacks?: Stack[] | undefined;
-  setStacks: React.Dispatch<React.SetStateAction<Stack[] | undefined>>;
 }
 
 export interface StackFormDialogProps extends EntityFormDialogProps {

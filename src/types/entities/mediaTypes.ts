@@ -1,8 +1,5 @@
 import type { Category } from "./categoryTypes";
-import type {
-  EntityFormDialogProps,
-  useEntityMutationProps,
-} from "./entityTypes";
+import type { EntityFormDialogProps } from "./entityTypes";
 
 export interface Media {
   id: string;
@@ -15,9 +12,4 @@ export interface Media {
 
 export interface MediaFormDialogProps extends EntityFormDialogProps {
   medias?: Media[];
-}
-
-export interface useMediaMutationProps extends useEntityMutationProps {
-  medias?: Media[] | undefined;
-  setMedias: React.Dispatch<React.SetStateAction<Media[] | undefined>>;
 }
