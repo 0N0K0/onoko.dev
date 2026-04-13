@@ -1,5 +1,3 @@
-import type { DocumentNode } from "@apollo/client";
-import type { ErrorLike } from "@apollo/client";
 import type { ApolloCache } from "@apollo/client";
 import type { useMutation } from "@apollo/client/react";
 
@@ -14,10 +12,8 @@ export interface EntitiesContentProps {
     title: string;
     addButton: string;
   };
-  loading?: boolean;
   items: any[] | undefined;
-  itemsError?: ErrorLike;
-  query: DocumentNode;
+  loading?: boolean;
   fields: {
     key: string;
     label: string;
@@ -31,7 +27,7 @@ export interface EntitiesContentProps {
   submitting: boolean;
   submitSuccess: string;
   setSubmitSuccess: (message: string) => void;
-  submitError: string;
+  error: string;
 }
 
 export interface DeleteConfirmationDialogProps {
