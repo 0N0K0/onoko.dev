@@ -4,7 +4,6 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
-import { useMedia } from "../../../hooks/useMedia";
 import SnackbarAlert from "../../custom/SnackbarAlert";
 import MediaDropZone from "./MediaDropZone";
 import ResponsiveTitle from "../../custom/ResponsiveTitle";
@@ -16,24 +15,36 @@ import MediaGrid from "./MediaGrid";
 import CustomTable from "../../custom/CustomTable";
 import Picture from "../../custom/Picture";
 import SingleMediaDialog from "./SingleMediaDialog";
-import useMediaMutations from "../../../hooks/mutations/useMediaMutations";
 import CustomSelect from "../../custom/CustomSelect";
 import type { Media } from "../../../types/entities/mediaTypes";
 import type { Category } from "../../../types/entities/categoryTypes";
-import { useCategory } from "../../../hooks/useCategory";
+import useMedias from "../../../hooks/queries/useMedias";
+import useCategories from "../../../hooks/queries/useCategories";
 
+/**
+ * Composant de gestion de la bibliothèque de médias.
+ * Ce composant affiche une liste de médias importés, avec la possibilité de les visualiser en grille ou en liste, ainsi que d'ajouter de nouveaux médias via un système de glisser-déposer.
+ * Il utilise des hooks personnalisés pour récupérer les médias et les catégories disponibles, ainsi que pour effectuer les mutations nécessaires à l'ajout, la modification et la suppression des médias.
+ * Le composant gère également l'affichage de dialogues pour visualiser un média en détail ou pour modifier les catégories des médias sélectionnés.
+ * @param {Object} props Les propriétés du composant.
+ * @param {boolean} props.submitting Indique si une opération de soumission est en cours, utilisé pour désactiver les actions du composant pendant la soumission.
+ */
 export default function MediaLibrary({
-  submitting,
-  setSubmitting,
-  setSubmitSuccess,
-  setSubmitError,
+  addMedia,
+  addMediaLoading,
+  editMedia,
+  editMediaLoading,
+  removeMedia,
+  removeMediaLoading,
 }: {
-  submitting: boolean;
-  setSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
-  setSubmitSuccess: React.Dispatch<React.SetStateAction<string>>;
-  setSubmitError: React.Dispatch<React.SetStateAction<string>>;
+  addMedia: any;
+  addMediaLoading: boolean;
+  editMedia: any;
+  editMediaLoading: boolean;
+  removeMedia: any;
+  removeMediaLoading: boolean;
 }) {
-  const { medias, setMedias, loading, itemsError } = useMedia();
+  const { medias, loading, error } = useMedias();
   const [layout, setLayout] = useState<"grid" | "list">("grid");
 
   const [addMedias, setAddMedias] = useState<boolean>(false);
@@ -42,15 +53,7 @@ export default function MediaLibrary({
     Partial<Media>[] | null | undefined
   >(null);
 
-  const { categories } = useCategory();
-
-  const { handleAdd, handleEdit, handleDelete } = useMediaMutations({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    medias,
-    setMedias,
-  });
+  const { categories } = useCategories();
 
   return (
     <>
@@ -92,7 +95,10 @@ export default function MediaLibrary({
         </ToggleButtonGroup>
       </ResponsiveStack>
       {medias?.length === 0 || !medias || addMedias ? (
-        <MediaDropZone handleAdd={handleAdd} submitting={submitting} />
+        <MediaDropZone
+          handleAdd={addMedia}
+          submitting={addMediaLoading || editMediaLoading || removeMediaLoading}
+        />
       ) : null}
       {loading ? (
         <CircularProgress />
@@ -103,8 +109,10 @@ export default function MediaLibrary({
           <MediaGrid
             medias={medias}
             setOpenDialog={setOpenMediaDialog}
-            onDelete={handleDelete}
-            submitting={submitting}
+            onDelete={removeMedia}
+            submitting={
+              addMediaLoading || editMediaLoading || removeMediaLoading
+            }
           />
         ) : (
           <CustomTable
@@ -133,16 +141,22 @@ export default function MediaLibrary({
             canSelect
             onClickAdd={() => setAddMedias(true)}
             onClickEdit={(mediaId: string) => setOpenMediaDialog(mediaId)}
-            onClickDelete={(selectedMedias: string[]) =>
-              handleDelete(selectedMedias)
+            onClickDelete={(selectedMedias: string[]) => {
+              for (const mediaId of selectedMedias) {
+                removeMedia({ variables: { id: mediaId } });
+              }
+            }}
+            submitting={
+              addMediaLoading || editMediaLoading || removeMediaLoading
             }
-            submitting={submitting}
             deleteLabel={`le(s) média(s)`}
             bulkEditTitle="Modifier les médias sélectionnés"
             onClickBulkEdit={() => {
               if (editingMedias) {
                 for (const media of editingMedias) {
-                  handleEdit(media);
+                  if (media.id) {
+                    editMedia({ variables: { id: media.id, input: media } });
+                  }
                 }
               }
             }}
@@ -192,17 +206,17 @@ export default function MediaLibrary({
         ))
       )}
       <SnackbarAlert
-        open={!!itemsError}
-        message={itemsError || "Une erreur est survenue"}
+        open={!!error}
+        message={error?.message || "Une erreur est survenue"}
         severity="error"
       />
       <SingleMediaDialog
         medias={medias}
         open={openMediaDialog}
         setOpen={setOpenMediaDialog}
-        handleEdit={handleEdit}
-        handleDelete={handleDelete}
-        submitting={submitting}
+        handleEdit={editMedia}
+        handleDelete={removeMedia}
+        submitting={addMediaLoading || editMediaLoading || removeMediaLoading}
       />
     </>
   );

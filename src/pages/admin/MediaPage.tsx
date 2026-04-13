@@ -1,19 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ClosableSnackbarAlert from "../../components/custom/ClosableSnackbarAlert";
 import SnackbarAlert from "../../components/custom/SnackbarAlert";
 import MediaLibrary from "../../components/entities/media/MediaLibrary";
+import useMediaMutations from "../../hooks/mutations/useMediaMutations";
 
 export default function Media() {
-  const [submitting, setSubmitting] = useState(false);
+  const {
+    addMedia,
+    addMediaData,
+    addMediaLoading,
+    addMediaError,
+    editMedia,
+    editMediaData,
+    editMediaLoading,
+    editMediaError,
+    removeMedia,
+    removeMediaData,
+    removeMediaLoading,
+    removeMediaError,
+  } = useMediaMutations();
+
   const [submitSuccess, setSubmitSuccess] = useState<string>("");
-  const [submitError, setSubmitError] = useState<string>("");
+
+  useEffect(() => {
+    if (addMediaData) {
+      setSubmitSuccess("Média ajouté avec succès");
+    } else if (editMediaData) {
+      setSubmitSuccess("Média modifié avec succès");
+    } else if (removeMediaData) {
+      setSubmitSuccess("Média supprimé avec succès");
+    }
+  }, [addMediaData, editMediaData, removeMediaData]);
+
   return (
     <>
       <MediaLibrary
-        submitting={submitting}
-        setSubmitting={setSubmitting}
-        setSubmitSuccess={setSubmitSuccess}
-        setSubmitError={setSubmitError}
+        addMedia={addMedia}
+        addMediaLoading={addMediaLoading}
+        editMedia={editMedia}
+        editMediaLoading={editMediaLoading}
+        removeMedia={removeMedia}
+        removeMediaLoading={removeMediaLoading}
       />
       <ClosableSnackbarAlert
         open={!!submitSuccess}
@@ -22,8 +49,13 @@ export default function Media() {
         severity="success"
       />
       <SnackbarAlert
-        open={!!submitError}
-        message={submitError || "Une erreur est survenue"}
+        open={!!(addMediaError || editMediaError || removeMediaError)}
+        message={
+          addMediaError?.message ||
+          editMediaError?.message ||
+          removeMediaError?.message ||
+          "Une erreur est survenue"
+        }
         severity="error"
       />
     </>

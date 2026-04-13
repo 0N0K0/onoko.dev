@@ -12,6 +12,8 @@ import { useState } from "react";
 import type { Media } from "../../../types/entities/mediaTypes";
 import Picture from "../../custom/Picture";
 import DeleteConfirmationDialog from "../DeleteConfirmationDialog";
+import type { useMutation } from "@apollo/client/react";
+import type { ApolloCache } from "@apollo/client";
 
 export default function MediaGrid({
   medias,
@@ -21,7 +23,7 @@ export default function MediaGrid({
 }: {
   medias: Media[];
   setOpenDialog: React.Dispatch<React.SetStateAction<string | false>>;
-  onDelete: (selectedMedias: string[]) => void;
+  onDelete: useMutation.MutationFunction<boolean, { id: string }, ApolloCache>;
   submitting: boolean;
 }) {
   const theme = useTheme();
@@ -201,7 +203,9 @@ export default function MediaGrid({
         open={deleteDialogOpen}
         setOpen={setDeleteDialogOpen}
         onClickDelete={() => {
-          onDelete(selectedMedias);
+          for (const id of selectedMedias) {
+            onDelete({ variables: { id } });
+          }
           setSelectedMedias([]);
         }}
         submitting={submitting}

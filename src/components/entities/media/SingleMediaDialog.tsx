@@ -4,12 +4,14 @@ import type { Media } from "../../../types/entities/mediaTypes";
 import Picture from "../../custom/Picture";
 import { Button, TextField } from "@mui/material";
 import CustomSelect from "../../custom/CustomSelect";
-import { useCategory } from "../../../hooks/useCategory";
 import type { Category } from "../../../types/entities/categoryTypes";
 import { ResponsiveStack } from "../../custom/ResponsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiDelete } from "@mdi/js";
 import DeleteConfirmationDialog from "../DeleteConfirmationDialog";
+import useCategories from "../../../hooks/queries/useCategories";
+import type { useMutation } from "@apollo/client/react";
+import type { ApolloCache } from "@apollo/client";
 
 export default function SingleMediaDialog({
   open,
@@ -22,8 +24,16 @@ export default function SingleMediaDialog({
   open: string | false;
   setOpen: React.Dispatch<React.SetStateAction<string | false>>;
   medias: Media[] | undefined;
-  handleEdit: (item: Partial<Media>) => void;
-  handleDelete: (ids: string[]) => void;
+  handleEdit: useMutation.MutationFunction<
+    boolean,
+    { id: string; input: Partial<Media> },
+    ApolloCache
+  >;
+  handleDelete: useMutation.MutationFunction<
+    boolean,
+    { id: string },
+    ApolloCache
+  >;
   submitting: boolean;
 }) {
   const [initialMedia, setInitialMedia] = useState<Media | null>(null);
@@ -32,7 +42,7 @@ export default function SingleMediaDialog({
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const { categories } = useCategory();
+  const { categories } = useCategories();
 
   useEffect(() => {
     if (open) {
@@ -148,7 +158,14 @@ export default function SingleMediaDialog({
                       key="confirm"
                       color="success"
                       onClick={() => {
-                        handleEdit(editingMedia!);
+                        if (editingMedia && editingMedia.id) {
+                          handleEdit({
+                            variables: {
+                              id: editingMedia!.id,
+                              input: editingMedia!,
+                            },
+                          });
+                        }
                       }}
                       disabled={
                         submitting || !hasChanges || !editingMedia?.label
@@ -185,7 +202,7 @@ export default function SingleMediaDialog({
         open={deleteDialogOpen}
         setOpen={setDeleteDialogOpen}
         onClickDelete={() => {
-          handleDelete([initialMedia!.id]);
+          handleDelete({ variables: { id: initialMedia!.id } });
           setDeleteDialogOpen(false);
           setOpen(false);
         }}

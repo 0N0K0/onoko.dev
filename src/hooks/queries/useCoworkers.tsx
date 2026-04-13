@@ -12,17 +12,20 @@ export default function useCoworkers() {
       fetchPolicy: "cache-and-network",
     },
   );
-  const coworkers = data?.coworkers ?? [];
-  for (const coworker of coworkers) {
+  const coworkers = (data?.coworkers ?? []).map((coworker) => {
     if (coworker.roles) {
-      coworker.roles = coworker.roles.map((role) => {
-        if (typeof role === "string") {
-          const fullRole = roles.find((r) => r.id === role);
-          return fullRole || {};
-        }
-        return role;
-      }) as Role[];
+      return {
+        ...coworker,
+        roles: coworker.roles.map((role) => {
+          if (typeof role === "string") {
+            const fullRole = roles.find((r) => r.id === role);
+            return fullRole || {};
+          }
+          return role;
+        }) as Role[],
+      };
     }
-  }
+    return coworker;
+  });
   return { coworkers, loading, error, refetch };
 }

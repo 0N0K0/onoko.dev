@@ -11,11 +11,14 @@ export default function useMedias() {
       fetchPolicy: "cache-and-network",
     },
   );
-  const medias = data?.medias ?? [];
-  for (const media of medias) {
+  const medias = (data?.medias ?? []).map((media) => {
     if (media.category) {
-      media.category = categories.find((c) => c.id === media.category);
+      return {
+        ...media,
+        category: categories.find((c) => c.id === media.category) || media.category,
+      };
     }
-  }
+    return media;
+  });
   return { medias, loading, error, refetch };
 }

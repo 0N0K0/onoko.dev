@@ -3,13 +3,18 @@ import { ResponsiveStack } from "../../custom/ResponsiveLayout";
 import { useTheme } from "@mui/material";
 import ResponsiveBodyTypography from "../../custom/ResponsiveBodyTypography";
 import { useState } from "react";
-import type { Media } from "../../../types/entities/mediaTypes";
+import type { useMutation } from "@apollo/client/react";
+import type { ApolloCache } from "@apollo/client";
 
 export default function MediaDropZone({
   handleAdd,
   submitting,
 }: {
-  handleAdd: (item: Partial<Media>) => Promise<void>;
+  handleAdd: useMutation.MutationFunction<
+    boolean,
+    { input: { file: File | null } },
+    ApolloCache
+  >;
   submitting: boolean;
 }) {
   const theme = useTheme();
@@ -19,7 +24,7 @@ export default function MediaDropZone({
   const handleDropImages = (acceptedFiles: File[]) => {
     if (acceptedFiles && acceptedFiles.length > 0) {
       for (const file of acceptedFiles) {
-        handleAdd({ file });
+        handleAdd({ variables: { input: { file } } });
       }
     }
   };

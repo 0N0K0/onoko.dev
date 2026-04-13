@@ -13,14 +13,15 @@ export default function useStacks() {
       fetchPolicy: "cache-and-network",
     },
   );
-  const stacks = data?.stacks ?? [];
-  for (const stack of stacks) {
+  const stacks = (data?.stacks ?? []).map((stack) => {
+    let newStack = { ...stack };
     if (stack.icon) {
-      stack.icon = medias?.find((m) => m.id === stack.icon);
+      newStack.icon = medias?.find((m) => m.id === stack.icon);
     }
     if (stack.category) {
-      stack.category = categories.find((c) => c.id === stack.category);
+      newStack.category = categories.find((c) => c.id === stack.category);
     }
-  }
+    return newStack;
+  });
   return { stacks, loading, error, refetch };
 }

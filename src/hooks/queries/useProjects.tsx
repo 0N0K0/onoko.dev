@@ -24,13 +24,13 @@ export default function useProjects() {
       fetchPolicy: "cache-and-network",
     },
   );
-  const projects = data?.projects ?? [];
-  for (const project of projects) {
+  const projects = (data?.projects ?? []).map((project) => {
+    let newProject = { ...project };
     if (project.thumbnail) {
-      project.thumbnail = medias.find((m) => m.id === project.thumbnail);
+      newProject.thumbnail = medias.find((m) => m.id === project.thumbnail);
     }
     if (project.categories) {
-      project.categories = project.categories.map((category) => {
+      newProject.categories = project.categories.map((category) => {
         if (typeof category === "string") {
           const fullCategory = categories.find((c) => c.id === category);
           return fullCategory || {};
@@ -39,19 +39,31 @@ export default function useProjects() {
       }) as Category[];
     }
     if (project.mockup?.images) {
-      project.mockup.images = project.mockup.images.map((image) => {
-        if (typeof image === "string") {
-          const fullImage = medias.find((m) => m.id === image);
-          return fullImage || {};
-        }
-        return image;
-      }) as Media[];
+      newProject = {
+        ...newProject,
+        mockup: {
+          ...project.mockup,
+          images: project.mockup.images.map((image) => {
+            if (typeof image === "string") {
+              const fullImage = medias.find((m) => m.id === image);
+              return fullImage || {};
+            }
+            return image;
+          }) as Media[],
+        },
+      };
     }
     if (project.client?.logo) {
-      project.client.logo = medias.find((m) => m.id === project.client?.logo);
+      newProject = {
+        ...newProject,
+        client: {
+          ...project.client,
+          logo: medias.find((m) => m.id === project.client?.logo),
+        },
+      };
     }
     if (project.roles) {
-      project.roles = project.roles.map((role) => {
+      newProject.roles = project.roles.map((role) => {
         if (typeof role === "string") {
           const fullRole = roles.find((r) => r.id === role);
           return fullRole || {};
@@ -60,7 +72,7 @@ export default function useProjects() {
       }) as Role[];
     }
     if (project.coworkers) {
-      project.coworkers = project.coworkers.map((coworker) => {
+      newProject.coworkers = project.coworkers.map((coworker) => {
         const coworkerName = coworkers.find((c) => c.id === coworker.id)?.name;
         const coworkerRoles = coworker.roles?.map((role) => {
           if (typeof role === "string") {
@@ -73,13 +85,14 @@ export default function useProjects() {
       }) as Coworker[];
     }
     if (project.stacks) {
-      project.stacks = project.stacks.map((stack) => {
+      newProject.stacks = project.stacks.map((stack) => {
         const fullStack = stacks.find((s) => s.id === stack.id);
         return fullStack
           ? { ...stack, label: fullStack.label, icon: fullStack.icon }
           : stack;
       });
     }
-  }
+    return newProject;
+  });
   return { projects, loading, error, refetch };
 }
