@@ -100,10 +100,12 @@ export default function RoleFormDialog({
           key="confirm"
           color="success"
           onClick={() => {
-            if (typeof open === "string") {
-              handleEdit({ variables: editingRole! });
+            if (typeof open === "string" && editingRole?.id) {
+              handleEdit({
+                variables: { id: editingRole.id, input: editingRole! },
+              });
             } else {
-              handleAdd({ variables: editingRole! });
+              handleAdd({ variables: { input: editingRole! } });
             }
           }}
           disabled={submitting || !hasChanges || !editingRole?.label}

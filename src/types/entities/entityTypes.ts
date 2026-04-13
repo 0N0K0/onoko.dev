@@ -41,7 +41,15 @@ export interface DeleteConfirmationDialogProps {
 export interface EntityFormDialogProps {
   open: boolean | string;
   setOpen: (open: boolean | string) => void;
-  handleAdd: useMutation.MutationFunction<any, Omit<any, "id">, ApolloCache>;
-  handleEdit: useMutation.MutationFunction<any, Partial<any>, ApolloCache>;
+  handleAdd: useMutation.MutationFunction<
+    any,
+    { input: Omit<any, "id"> },
+    ApolloCache
+  >;
+  handleEdit: useMutation.MutationFunction<
+    any,
+    { id: string; input: Partial<any> },
+    ApolloCache
+  >;
   submitting: boolean;
 }

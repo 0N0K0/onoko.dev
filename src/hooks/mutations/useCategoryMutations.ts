@@ -30,7 +30,7 @@ import type { ApolloCache } from "@apollo/client";
 export default function useCategoryMutations(): {
   createCategory: useMutation.MutationFunction<
     boolean,
-    Omit<Category, "id">,
+    { input: Omit<Category, "id"> },
     ApolloCache
   >;
   createCategoryData: boolean | null | undefined;
@@ -38,7 +38,7 @@ export default function useCategoryMutations(): {
   createCategoryError: ErrorLike | undefined;
   editCategory: useMutation.MutationFunction<
     boolean,
-    Partial<Category>,
+    { id: string; input: Partial<Category> },
     ApolloCache
   >;
   editCategoryData: boolean | null | undefined;
@@ -61,7 +61,9 @@ export default function useCategoryMutations(): {
       loading: createCategoryLoading,
       error: createCategoryError,
     },
-  ] = useMutation<boolean, Omit<Category, "id">>(CREATE_CATEGORY_MUTATION);
+  ] = useMutation<boolean, { input: Omit<Category, "id"> }>(
+    CREATE_CATEGORY_MUTATION,
+  );
 
   // Modifier une catégorie
   const [
@@ -71,7 +73,9 @@ export default function useCategoryMutations(): {
       loading: editCategoryLoading,
       error: editCategoryError,
     },
-  ] = useMutation<boolean, Partial<Category>>(UPDATE_CATEGORY_MUTATION);
+  ] = useMutation<boolean, { id: string; input: Partial<Category> }>(
+    UPDATE_CATEGORY_MUTATION,
+  );
 
   // Supprimer une ou plusieurs catégories
   const [

@@ -214,10 +214,12 @@ export default function StackFormDialog({
           key="confirm"
           color="success"
           onClick={() => {
-            if (typeof open === "string") {
-              handleEdit({ variables: editingStack! });
+            if (typeof open === "string" && editingStack?.id) {
+              handleEdit({
+                variables: { id: editingStack.id, input: editingStack! },
+              });
             } else {
-              handleAdd({ variables: editingStack! });
+              handleAdd({ variables: { input: editingStack! } });
             }
           }}
           disabled={

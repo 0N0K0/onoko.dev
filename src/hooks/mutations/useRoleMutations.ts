@@ -30,13 +30,17 @@ import type { ApolloCache } from "@apollo/client";
 export default function useRoleMutations(): {
   createRole: useMutation.MutationFunction<
     boolean,
-    Omit<Role, "id">,
+    { input: Omit<Role, "id"> },
     ApolloCache
   >;
   createRoleData: boolean | null | undefined;
   createRoleLoading: boolean;
   createRoleError: ErrorLike | undefined;
-  editRole: useMutation.MutationFunction<boolean, Partial<Role>, ApolloCache>;
+  editRole: useMutation.MutationFunction<
+    boolean,
+    { id: string; input: Partial<Role> },
+    ApolloCache
+  >;
   editRoleData: boolean | null | undefined;
   editRoleLoading: boolean;
   editRoleError: ErrorLike | undefined;
@@ -57,13 +61,15 @@ export default function useRoleMutations(): {
       loading: createRoleLoading,
       error: createRoleError,
     },
-  ] = useMutation<boolean, Omit<Role, "id">>(CREATE_ROLE_MUTATION);
+  ] = useMutation<boolean, { input: Omit<Role, "id"> }>(CREATE_ROLE_MUTATION);
 
   // Modifier un role
   const [
     editRole,
     { data: editRoleData, loading: editRoleLoading, error: editRoleError },
-  ] = useMutation<boolean, Partial<Role>>(UPDATE_ROLE_MUTATION);
+  ] = useMutation<boolean, { id: string; input: Partial<Role> }>(
+    UPDATE_ROLE_MUTATION,
+  );
 
   // Supprimer un role
   const [

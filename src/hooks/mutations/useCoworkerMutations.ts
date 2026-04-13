@@ -30,7 +30,7 @@ import type { ApolloCache } from "@apollo/client";
 export default function useCoworkerMutations(): {
   createCoworker: useMutation.MutationFunction<
     boolean,
-    Omit<Coworker, "id">,
+    { input: Omit<Coworker, "id"> },
     ApolloCache
   >;
   createCoworkerData: boolean | null | undefined;
@@ -38,7 +38,7 @@ export default function useCoworkerMutations(): {
   createCoworkerError: ErrorLike | undefined;
   editCoworker: useMutation.MutationFunction<
     boolean,
-    Partial<Coworker>,
+    { id: string; input: Partial<Coworker> },
     ApolloCache
   >;
   editCoworkerData: boolean | null | undefined;
@@ -61,7 +61,9 @@ export default function useCoworkerMutations(): {
       loading: createCoworkerLoading,
       error: createCoworkerError,
     },
-  ] = useMutation<boolean, Omit<Coworker, "id">>(CREATE_COWORKER_MUTATION);
+  ] = useMutation<boolean, { input: Omit<Coworker, "id"> }>(
+    CREATE_COWORKER_MUTATION,
+  );
 
   // Modifier un coworker
   const [
@@ -71,7 +73,9 @@ export default function useCoworkerMutations(): {
       loading: editCoworkerLoading,
       error: editCoworkerError,
     },
-  ] = useMutation<boolean, Partial<Coworker>>(UPDATE_COWORKER_MUTATION);
+  ] = useMutation<boolean, { id: string; input: Partial<Coworker> }>(
+    UPDATE_COWORKER_MUTATION,
+  );
 
   // Supprimer un coworker
   const [

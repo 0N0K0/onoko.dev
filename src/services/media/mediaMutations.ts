@@ -3,8 +3,8 @@ import { MEDIA_FIELDS } from "./mediaQueries";
 
 // Mutation pour créer un nouveau média
 export const ADD_MEDIA_MUTATION = gql`
-  mutation AddMedia($file: Upload!) {
-    addMedia(file: $file)
+  mutation AddMedia($input: { file: Upload! }) {
+    addMedia(input: $input)
   }
 
   ${MEDIA_FIELDS}
@@ -12,8 +12,8 @@ export const ADD_MEDIA_MUTATION = gql`
 
 // Mutation pour mettre à jour un média existant en fonction de son ID
 export const UPDATE_MEDIA_MUTATION = gql`
-  mutation UpdateMedia($id: ID!, $label: String, $category: ID) {
-    updateMedia(id: $id, label: $label, category: $category)
+  mutation UpdateMedia($id: ID!, $input: { label: String, category: ID }) {
+    updateMedia(id: $id, input: $input)
   }
 
   ${MEDIA_FIELDS}

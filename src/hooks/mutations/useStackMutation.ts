@@ -30,13 +30,17 @@ import type { ApolloCache } from "@apollo/client";
 export default function useStackMutations(): {
   createStack: useMutation.MutationFunction<
     boolean,
-    Omit<Stack, "id">,
+    { input: Omit<Stack, "id"> },
     ApolloCache
   >;
   createStackData: boolean | null | undefined;
   createStackLoading: boolean;
   createStackError: ErrorLike | undefined;
-  editStack: useMutation.MutationFunction<boolean, Partial<Stack>, ApolloCache>;
+  editStack: useMutation.MutationFunction<
+    boolean,
+    { id: string; input: Partial<Stack> },
+    ApolloCache
+  >;
   editStackData: boolean | null | undefined;
   editStackLoading: boolean;
   editStackError: ErrorLike | undefined;
@@ -57,13 +61,15 @@ export default function useStackMutations(): {
       loading: createStackLoading,
       error: createStackError,
     },
-  ] = useMutation<boolean, Omit<Stack, "id">>(CREATE_STACK_MUTATION);
+  ] = useMutation<boolean, { input: Omit<Stack, "id"> }>(CREATE_STACK_MUTATION);
 
   // Modifier un stack
   const [
     editStack,
     { data: editStackData, loading: editStackLoading, error: editStackError },
-  ] = useMutation<boolean, Partial<Stack>>(UPDATE_STACK_MUTATION);
+  ] = useMutation<boolean, { id: string; input: Partial<Stack> }>(
+    UPDATE_STACK_MUTATION,
+  );
 
   // Supprimer un stack
   const [

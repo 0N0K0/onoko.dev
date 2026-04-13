@@ -193,10 +193,12 @@ export default function CategoryFormDialog({
           key="confirm"
           color="success"
           onClick={() => {
-            if (typeof open === "string") {
-              handleEdit({ variables: editingCategory! });
+            if (typeof open === "string" && editingCategory?.id) {
+              handleEdit({
+                variables: { id: editingCategory.id, input: editingCategory! },
+              });
             } else {
-              handleAdd({ variables: editingCategory! });
+              handleAdd({ variables: { input: editingCategory! } });
             }
           }}
           disabled={

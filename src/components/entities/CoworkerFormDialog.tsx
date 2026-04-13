@@ -149,10 +149,12 @@ export default function CoworkerFormDialog({
           key="confirm"
           color="success"
           onClick={() => {
-            if (typeof open === "string") {
-              handleEdit({ variables: editingCoworker! });
+            if (typeof open === "string" && editingCoworker?.id) {
+              handleEdit({
+                variables: { id: editingCoworker.id, input: editingCoworker! },
+              });
             } else {
-              handleAdd({ variables: editingCoworker! });
+              handleAdd({ variables: { input: editingCoworker! } });
             }
           }}
           disabled={submitting || !hasChanges || !editingCoworker?.name}

@@ -30,13 +30,17 @@ import type { ApolloCache } from "@apollo/client";
 export default function useMediaMutations(): {
   addMedia: useMutation.MutationFunction<
     boolean,
-    { file: File | null },
+    { input: { file: File | null } },
     ApolloCache
   >;
   addMediaData: boolean | null | undefined;
   addMediaLoading: boolean;
   addMediaError: ErrorLike | undefined;
-  editMedia: useMutation.MutationFunction<boolean, Partial<Media>, ApolloCache>;
+  editMedia: useMutation.MutationFunction<
+    boolean,
+    { id: string; input: Partial<Media> },
+    ApolloCache
+  >;
   editMediaData: boolean | null | undefined;
   editMediaLoading: boolean;
   editMediaError: ErrorLike | undefined;
@@ -53,13 +57,17 @@ export default function useMediaMutations(): {
   const [
     addMedia,
     { data: addMediaData, loading: addMediaLoading, error: addMediaError },
-  ] = useMutation<boolean, { file: File | null }>(ADD_MEDIA_MUTATION);
+  ] = useMutation<boolean, { input: { file: File | null } }>(
+    ADD_MEDIA_MUTATION,
+  );
 
   // Modifier un media
   const [
     editMedia,
     { data: editMediaData, loading: editMediaLoading, error: editMediaError },
-  ] = useMutation<boolean, Partial<Media>>(UPDATE_MEDIA_MUTATION);
+  ] = useMutation<boolean, { id: string; input: Partial<Media> }>(
+    UPDATE_MEDIA_MUTATION,
+  );
 
   // Supprimer un media
   const [
