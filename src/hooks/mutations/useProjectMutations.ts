@@ -1,91 +1,108 @@
+import { useMutation } from "@apollo/client/react";
 import {
   CREATE_PROJECT_MUTATION,
   DELETE_PROJECT_MUTATION,
   UPDATE_PROJECT_MUTATION,
 } from "../../services/project/projectMutations";
-import type {
-  Project,
-  useProjectMutationProps,
-} from "../../types/entities/projectTypes";
-import { useEntityMutation } from "./useEntityMutation";
+import type { Project } from "../../types/entities/projectTypes";
+import type { ErrorLike } from "@apollo/client";
+import type { ApolloCache } from "@apollo/client";
 
-export default function useProjectMutations({
-  setSubmitSuccess,
-  setSubmitError,
-  setSubmitting,
-  setFormDialogOpen,
-  projects,
-  setProjects,
-}: useProjectMutationProps): {
-  handleAdd: (item: Partial<Project>) => Promise<void>;
-  handleEdit: (item: Partial<Project>) => Promise<void>;
-  handleDelete: (selectedProjects: string[]) => Promise<void>;
+/**
+ * Hook personnalisé pour gérer les mutations liées aux projects (ajout, modification, suppression).
+ * Ce hook centralise la logique de mutation pour les projects, permettant ainsi de réutiliser le même code pour les différentes opérations.
+ * Il utilise le hook `useEntityMutation` pour effectuer les mutations GraphQL et gérer les états de soumission, de succès et d'erreur.
+ * @returns {
+ *    createProject: useMutation.MutationFunction<boolean, { input: Omit<Project, "id"> }, ApolloCache>;
+ *    editProject: useMutation.MutationFunction<boolean, { id: string; input: Partial<Project> }, ApolloCache>;
+ *    deleteProject: useMutation.MutationFunction<boolean, { id: string }, ApolloCache>;
+ *    createProjectData: boolean | null | undefined;
+ *    createProjectLoading: boolean;
+ *    createProjectError: ErrorLike | undefined;
+ *    editProjectData: boolean | null | undefined;
+ *    editProjectLoading: boolean;
+ *    editProjectError: ErrorLike | undefined;
+ *    deleteProjectData: boolean | null | undefined;
+ *    deleteProjectLoading: boolean;
+ *    deleteProjectError: ErrorLike | undefined;
+ * } Un objet contenant les fonctions de mutation pour ajouter, modifier et supprimer des projects, ainsi que les données, les états de chargement et les erreurs associés à chaque mutation.
+ */
+export default function useProjectMutations(): {
+  createProject: useMutation.MutationFunction<
+    boolean,
+    { input: Omit<Project, "id"> },
+    ApolloCache
+  >;
+  createProjectData: boolean | null | undefined;
+  createProjectLoading: boolean;
+  createProjectError: ErrorLike | undefined;
+  editProject: useMutation.MutationFunction<
+    boolean,
+    { id: string; input: Partial<Project> },
+    ApolloCache
+  >;
+  editProjectData: boolean | null | undefined;
+  editProjectLoading: boolean;
+  editProjectError: ErrorLike | undefined;
+  deleteProject: useMutation.MutationFunction<
+    boolean,
+    { id: string },
+    ApolloCache
+  >;
+  deleteProjectData: boolean | null | undefined;
+  deleteProjectLoading: boolean;
+  deleteProjectError: ErrorLike | undefined;
 } {
-  const addProject = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    setFormDialogOpen,
-  });
-  const handleAdd = async (item: Partial<Project>) => {
-    await addProject({
-      mutation: CREATE_PROJECT_MUTATION,
-      variables: item,
-      onSuccess: (data) => {
-        setProjects((prev) => [...(prev || []), data.createProject]);
-        setSubmitSuccess?.(
-          `Le projet ${data.createProject.label} a été créé avec succès.`,
-        );
-      },
-      reset: true,
-    });
-  };
+  // Ajouter un project
+  const [
+    createProject,
+    {
+      data: createProjectData,
+      loading: createProjectLoading,
+      error: createProjectError,
+    },
+  ] = useMutation<boolean, { input: Omit<Project, "id"> }>(
+    CREATE_PROJECT_MUTATION,
+  );
 
-  const editProject = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    setFormDialogOpen,
-  });
-  const handleEdit = async (item: Partial<Project>) => {
-    await editProject({
-      mutation: UPDATE_PROJECT_MUTATION,
-      variables: item,
-      onSuccess: (data) => {
-        setProjects((prev) =>
-          prev?.map((p) =>
-            p.id === data.updateProject.id ? data.updateProject : p,
-          ),
-        );
-        setSubmitSuccess?.(
-          `Le projet ${data.updateProject.label} a été modifié avec succès.`,
-        );
-      },
-      reset: true,
-    });
-  };
-
-  const deleteProject = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    setFormDialogOpen,
-  });
-  const handleDelete = async (selectedProjects: string[]) => {
-    for (const projectId of selectedProjects) {
-      const project = projects?.find((p) => p.id === projectId);
-      await deleteProject({
-        mutation: DELETE_PROJECT_MUTATION,
-        variables: { id: projectId },
-        onSuccess: () => {
-          setProjects((prev) => prev?.filter((p) => p.id !== projectId));
-          setSubmitSuccess?.(
-            `Le projet ${project?.label || projectId} a été supprimé avec succès.`,
-          );
-        },
-      });
+  // Modifier un project
+  const [
+    editProject,
+    {
+      data: editProjectData,
+      loading: editProjectLoading,
+      error: editProjectError,
+    },
+  ] = useMutation<
+    boolean,
+    {
+      id: string;
+      input: Partial<Project>;
     }
-  };
+  >(UPDATE_PROJECT_MUTATION);
 
-  return { handleAdd, handleEdit, handleDelete };
+  // Supprimer un project
+  const [
+    deleteProject,
+    {
+      data: deleteProjectData,
+      loading: deleteProjectLoading,
+      error: deleteProjectError,
+    },
+  ] = useMutation<boolean, { id: string }>(DELETE_PROJECT_MUTATION);
+
+  return {
+    createProject,
+    createProjectData,
+    createProjectLoading,
+    createProjectError,
+    editProject,
+    editProjectData,
+    editProjectLoading,
+    editProjectError,
+    deleteProject,
+    deleteProjectData,
+    deleteProjectLoading,
+    deleteProjectError,
+  };
 }

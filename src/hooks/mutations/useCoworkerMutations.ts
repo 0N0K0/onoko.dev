@@ -1,97 +1,100 @@
+import { useMutation } from "@apollo/client/react";
 import {
   CREATE_COWORKER_MUTATION,
   DELETE_COWORKER_MUTATION,
   UPDATE_COWORKER_MUTATION,
 } from "../../services/coworker/coworkerMutations";
-import type {
-  Coworker,
-  useCoworkerMutationProps,
-} from "../../types/entities/cowokerTypes";
-import { useEntityMutation } from "./useEntityMutation";
+import type { Coworker } from "../../types/entities/coworkerTypes";
+import type { ErrorLike } from "@apollo/client";
+import type { ApolloCache } from "@apollo/client";
 
-export default function useCoworkerMutations({
-  setSubmitSuccess,
-  setSubmitError,
-  setSubmitting,
-  setFormDialogOpen,
-  coworkers,
-  setCoworkers,
-}: useCoworkerMutationProps): {
-  handleAdd: (item: Partial<Coworker>) => void;
-  handleEdit: (item: Partial<Coworker>) => void;
-  handleDelete: (selectedCoworkers: string[]) => Promise<void>;
+/**
+ * Hook personnalisé pour gérer les mutations liées aux coworkers (ajout, modification, suppression).
+ * Ce hook centralise la logique de mutation pour les coworkers, permettant ainsi de réutiliser le même code pour les différentes opérations.
+ * Il utilise le hook `useEntityMutation` pour effectuer les mutations GraphQL et gérer les états de soumission, de succès et d'erreur.
+ * @returns {
+ *    createCoworker: useMutation.MutationFunction<boolean, Omit<Coworker, "id">, ApolloCache>;
+ *    editCoworker: useMutation.MutationFunction<boolean, Partial<Coworker>, ApolloCache>;
+ *    deleteCoworker: useMutation.MutationFunction<boolean, { id: string }, ApolloCache>;
+ *    createCoworkerData: boolean | null | undefined;
+ *    createCoworkerLoading: boolean;
+ *    createCoworkerError: ErrorLike | undefined;
+ *    editCoworkerData: boolean | null | undefined;
+ *    editCoworkerLoading: boolean;
+ *    editCoworkerError: ErrorLike | undefined;
+ *    deleteCoworkerData: boolean | null | undefined;
+ *    deleteCoworkerLoading: boolean;
+ *    deleteCoworkerError: ErrorLike | undefined;
+ * } Un objet contenant les fonctions de mutation pour ajouter, modifier et supprimer des coworkers, ainsi que les données, les états de chargement et les erreurs associés à chaque mutation.
+ */
+export default function useCoworkerMutations(): {
+  createCoworker: useMutation.MutationFunction<
+    boolean,
+    Omit<Coworker, "id">,
+    ApolloCache
+  >;
+  createCoworkerData: boolean | null | undefined;
+  createCoworkerLoading: boolean;
+  createCoworkerError: ErrorLike | undefined;
+  editCoworker: useMutation.MutationFunction<
+    boolean,
+    Partial<Coworker>,
+    ApolloCache
+  >;
+  editCoworkerData: boolean | null | undefined;
+  editCoworkerLoading: boolean;
+  editCoworkerError: ErrorLike | undefined;
+  deleteCoworker: useMutation.MutationFunction<
+    boolean,
+    { id: string },
+    ApolloCache
+  >;
+  deleteCoworkerData: boolean | null | undefined;
+  deleteCoworkerLoading: boolean;
+  deleteCoworkerError: ErrorLike | undefined;
 } {
-  // Ajouter un collaborateur
-  const addCoworker = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    setFormDialogOpen,
-  });
-  const handleAdd = async (item: Partial<Coworker>) => {
-    await addCoworker({
-      mutation: CREATE_COWORKER_MUTATION,
-      variables: item,
-      onSuccess: (data) => {
-        setCoworkers((prev) => [...(prev || []), data.createCoworker]);
-        setSubmitSuccess?.(
-          `Le collaborateur ${data.createCoworker.name} a été créé avec succès.`,
-        );
-      },
-      reset: true,
-    });
-  };
+  // Ajouter un coworker
+  const [
+    createCoworker,
+    {
+      data: createCoworkerData,
+      loading: createCoworkerLoading,
+      error: createCoworkerError,
+    },
+  ] = useMutation<boolean, Omit<Coworker, "id">>(CREATE_COWORKER_MUTATION);
 
-  // Modifier un collaborateur
-  const editCoworker = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    setFormDialogOpen,
-  });
-  const handleEdit = async (item: Partial<Coworker>) => {
-    await editCoworker({
-      mutation: UPDATE_COWORKER_MUTATION,
-      variables: item,
-      onSuccess: (data) => {
-        setCoworkers((prev) =>
-          prev?.map((r) =>
-            r.id === data.updateCoworker.id ? data.updateCoworker : r,
-          ),
-        );
-        setSubmitSuccess?.(
-          `Le collaborateur ${data.updateCoworker.name} a été modifié avec succès.`,
-        );
-      },
-      reset: true,
-    });
-  };
+  // Modifier un coworker
+  const [
+    editCoworker,
+    {
+      data: editCoworkerData,
+      loading: editCoworkerLoading,
+      error: editCoworkerError,
+    },
+  ] = useMutation<boolean, Partial<Coworker>>(UPDATE_COWORKER_MUTATION);
 
-  // Supprimer un ou plusieurs collaborateurs
-  const deleteCoworker = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-  });
-  const handleDelete = async (selectedCoworkers: string[]) => {
-    for (const coworkerId of selectedCoworkers) {
-      const coworker = coworkers?.find((r) => r.id === coworkerId);
-      await deleteCoworker({
-        mutation: DELETE_COWORKER_MUTATION,
-        variables: { id: coworkerId },
-        onSuccess: () => {
-          setCoworkers((prev) => prev?.filter((r) => r.id !== coworkerId));
-          setSubmitSuccess?.(
-            `Le collaborateur ${coworker?.name || coworkerId} a été supprimé avec succès.`,
-          );
-        },
-      });
-    }
-  };
+  // Supprimer un coworker
+  const [
+    deleteCoworker,
+    {
+      data: deleteCoworkerData,
+      loading: deleteCoworkerLoading,
+      error: deleteCoworkerError,
+    },
+  ] = useMutation<boolean, { id: string }>(DELETE_COWORKER_MUTATION);
 
   return {
-    handleAdd,
-    handleEdit,
-    handleDelete,
+    createCoworker,
+    createCoworkerData,
+    createCoworkerLoading,
+    createCoworkerError,
+    editCoworker,
+    editCoworkerData,
+    editCoworkerLoading,
+    editCoworkerError,
+    deleteCoworker,
+    deleteCoworkerData,
+    deleteCoworkerLoading,
+    deleteCoworkerError,
   };
 }

@@ -1,100 +1,88 @@
+import { useMutation } from "@apollo/client/react";
 import {
   ADD_MEDIA_MUTATION,
   REMOVE_MEDIA_MUTATION,
   UPDATE_MEDIA_MUTATION,
 } from "../../services/media/mediaMutations";
-import type {
-  Media,
-  useMediaMutationProps,
-} from "../../types/entities/mediaTypes";
-import { fileToBufferObj } from "../../utils/fileUtils";
-import { useEntityMutation } from "./useEntityMutation";
+import type { Media } from "../../types/entities/mediaTypes";
+import type { ErrorLike } from "@apollo/client";
+import type { ApolloCache } from "@apollo/client";
 
-export default function useMediaMutations({
-  setSubmitSuccess,
-  setSubmitError,
-  setSubmitting,
-  medias,
-  setMedias,
-}: useMediaMutationProps): {
-  handleAdd: (item: Partial<Media>) => Promise<void>;
-  handleEdit: (item: Partial<Media>) => Promise<void>;
-  handleDelete: (selectedMedias: string[]) => Promise<void>;
+/**
+ * Hook personnalisé pour gérer les mutations liées aux medias (ajout, modification, suppression).
+ * Ce hook centralise la logique de mutation pour les medias, permettant ainsi de réutiliser le même code pour les différentes opérations.
+ * Il utilise le hook `useEntityMutation` pour effectuer les mutations GraphQL et gérer les états de soumission, de succès et d'erreur.
+ * @returns {
+ *    addMedia: useMutation.MutationFunction<boolean, { file: File | null }, ApolloCache>;
+ *    editMedia: useMutation.MutationFunction<boolean, Partial<Media>, ApolloCache>;
+ *    deleteMedia: useMutation.MutationFunction<boolean, { id: string }, ApolloCache>;
+ *    addMediaData: boolean | null | undefined;
+ *    addMediaLoading: boolean;
+ *    addMediaError: ErrorLike | undefined;
+ *    editMediaData: boolean | null | undefined;
+ *    editMediaLoading: boolean;
+ *    editMediaError: ErrorLike | undefined;
+ *    deleteMediaData: boolean | null | undefined;
+ *    deleteMediaLoading: boolean;
+ *    deleteMediaError: ErrorLike | undefined;
+ * } Un objet contenant les fonctions de mutation pour ajouter, modifier et supprimer des medias, ainsi que les données, les états de chargement et les erreurs associés à chaque mutation.
+ */
+export default function useMediaMutations(): {
+  addMedia: useMutation.MutationFunction<
+    boolean,
+    { file: File | null },
+    ApolloCache
+  >;
+  addMediaData: boolean | null | undefined;
+  addMediaLoading: boolean;
+  addMediaError: ErrorLike | undefined;
+  editMedia: useMutation.MutationFunction<boolean, Partial<Media>, ApolloCache>;
+  editMediaData: boolean | null | undefined;
+  editMediaLoading: boolean;
+  editMediaError: ErrorLike | undefined;
+  removeMedia: useMutation.MutationFunction<
+    boolean,
+    { id: string },
+    ApolloCache
+  >;
+  removeMediaData: boolean | null | undefined;
+  removeMediaLoading: boolean;
+  removeMediaError: ErrorLike | undefined;
 } {
-  // Ajouter un média
-  const addMedia = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-  });
-  const handleAdd = async (item: Partial<Media>) => {
-    let imageFileObj = null;
-    if (item.file) imageFileObj = await fileToBufferObj(item.file);
-    await addMedia({
-      mutation: ADD_MEDIA_MUTATION,
-      variables: { file: imageFileObj },
-      onSuccess: (data) => {
-        setMedias((prev) => [...(prev || []), data.addMedia]);
-        setSubmitSuccess?.(
-          `Le média ${data.addMedia.label} a été importé avec succès.`,
-        );
-      },
-      reset: true,
-    });
-  };
+  // Ajouter un media
+  const [
+    addMedia,
+    { data: addMediaData, loading: addMediaLoading, error: addMediaError },
+  ] = useMutation<boolean, { file: File | null }>(ADD_MEDIA_MUTATION);
 
-  // Modifier un média
-  const editMedia = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-  });
-  const handleEdit = async (item: Partial<Media>) => {
-    if (item.category && typeof item.category !== "string") {
-      item.category = item.category.id;
-    }
-    await editMedia({
-      mutation: UPDATE_MEDIA_MUTATION,
-      variables: item,
-      onSuccess: (data) => {
-        setMedias((prev) =>
-          prev?.map((r) =>
-            r.id === data.updateMedia.id ? data.updateMedia : r,
-          ),
-        );
-        setSubmitSuccess?.(
-          `Le média ${data.updateMedia.label} a été modifié avec succès.`,
-        );
-      },
-      reset: true,
-    });
-  };
+  // Modifier un media
+  const [
+    editMedia,
+    { data: editMediaData, loading: editMediaLoading, error: editMediaError },
+  ] = useMutation<boolean, Partial<Media>>(UPDATE_MEDIA_MUTATION);
 
-  // Supprimer un ou plusieurs médias
-  const deleteMedia = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-  });
-  const handleDelete = async (selectedMedias: string[]) => {
-    for (const mediaId of selectedMedias) {
-      const media = medias?.find((r) => r.id === mediaId);
-      await deleteMedia({
-        mutation: REMOVE_MEDIA_MUTATION,
-        variables: { id: mediaId },
-        onSuccess: () => {
-          setMedias((prev) => prev?.filter((r) => r.id !== mediaId));
-          setSubmitSuccess?.(
-            `Le média ${media?.label || mediaId} a été supprimé avec succès.`,
-          );
-        },
-      });
-    }
-  };
+  // Supprimer un media
+  const [
+    removeMedia,
+    {
+      data: removeMediaData,
+      loading: removeMediaLoading,
+      error: removeMediaError,
+    },
+  ] = useMutation<boolean, { id: string }>(REMOVE_MEDIA_MUTATION);
 
   return {
-    handleAdd,
-    handleEdit,
-    handleDelete,
+    addMedia,
+    addMediaData,
+    addMediaLoading,
+    addMediaError,
+    editMedia,
+    editMediaData,
+    editMediaLoading,
+    editMediaError,
+    removeMedia,
+    removeMediaData,
+    removeMediaLoading,
+    removeMediaError,
   };
 }

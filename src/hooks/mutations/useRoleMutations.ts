@@ -1,95 +1,92 @@
+import { useMutation } from "@apollo/client/react";
 import {
   CREATE_ROLE_MUTATION,
   DELETE_ROLE_MUTATION,
   UPDATE_ROLE_MUTATION,
 } from "../../services/role/roleMutations";
-import type {
-  Role,
-  useRoleMutationProps,
-} from "../../types/entities/roleTypes";
-import { useEntityMutation } from "./useEntityMutation";
+import type { Role } from "../../types/entities/roleTypes";
+import type { ErrorLike } from "@apollo/client";
+import type { ApolloCache } from "@apollo/client";
 
-export default function useRoleMutations({
-  setSubmitSuccess,
-  setSubmitError,
-  setSubmitting,
-  setFormDialogOpen,
-  roles,
-  setRoles,
-}: useRoleMutationProps): {
-  handleAdd: (item: Partial<Role>) => Promise<void>;
-  handleEdit: (item: Partial<Role>) => Promise<void>;
-  handleDelete: (selectedRoles: string[]) => Promise<void>;
+/**
+ * Hook personnalisé pour gérer les mutations liées aux roles (ajout, modification, suppression).
+ * Ce hook centralise la logique de mutation pour les roles, permettant ainsi de réutiliser le même code pour les différentes opérations.
+ * Il utilise le hook `useEntityMutation` pour effectuer les mutations GraphQL et gérer les états de soumission, de succès et d'erreur.
+ * @returns {
+ *    createRole: useMutation.MutationFunction<boolean, Omit<Role, "id">, ApolloCache>;
+ *    editRole: useMutation.MutationFunction<boolean, Partial<Role>, ApolloCache>;
+ *    deleteRole: useMutation.MutationFunction<boolean, { id: string }, ApolloCache>;
+ *    createRoleData: boolean | null | undefined;
+ *    createRoleLoading: boolean;
+ *    createRoleError: ErrorLike | undefined;
+ *    editRoleData: boolean | null | undefined;
+ *    editRoleLoading: boolean;
+ *    editRoleError: ErrorLike | undefined;
+ *    deleteRoleData: boolean | null | undefined;
+ *    deleteRoleLoading: boolean;
+ *    deleteRoleError: ErrorLike | undefined;
+ * } Un objet contenant les fonctions de mutation pour ajouter, modifier et supprimer des roles, ainsi que les données, les états de chargement et les erreurs associés à chaque mutation.
+ */
+export default function useRoleMutations(): {
+  createRole: useMutation.MutationFunction<
+    boolean,
+    Omit<Role, "id">,
+    ApolloCache
+  >;
+  createRoleData: boolean | null | undefined;
+  createRoleLoading: boolean;
+  createRoleError: ErrorLike | undefined;
+  editRole: useMutation.MutationFunction<boolean, Partial<Role>, ApolloCache>;
+  editRoleData: boolean | null | undefined;
+  editRoleLoading: boolean;
+  editRoleError: ErrorLike | undefined;
+  deleteRole: useMutation.MutationFunction<
+    boolean,
+    { id: string },
+    ApolloCache
+  >;
+  deleteRoleData: boolean | null | undefined;
+  deleteRoleLoading: boolean;
+  deleteRoleError: ErrorLike | undefined;
 } {
-  // Ajouter un rôle
-  const addRole = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    setFormDialogOpen,
-  });
-  const handleAdd = async (item: Partial<Role>) => {
-    await addRole({
-      mutation: CREATE_ROLE_MUTATION,
-      variables: item,
-      onSuccess: (data) => {
-        setRoles((prev) => [...(prev || []), data.createRole]);
-        setSubmitSuccess?.(
-          `Le rôle ${data.createRole.label} a été créé avec succès.`,
-        );
-      },
-      reset: true,
-    });
-  };
+  // Ajouter un role
+  const [
+    createRole,
+    {
+      data: createRoleData,
+      loading: createRoleLoading,
+      error: createRoleError,
+    },
+  ] = useMutation<boolean, Omit<Role, "id">>(CREATE_ROLE_MUTATION);
 
-  // Modifier un rôle
-  const editRole = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    setFormDialogOpen,
-  });
-  const handleEdit = async (item: Partial<Role>) => {
-    await editRole({
-      mutation: UPDATE_ROLE_MUTATION,
-      variables: item,
-      onSuccess: (data) => {
-        setRoles((prev) =>
-          prev?.map((r) => (r.id === data.updateRole.id ? data.updateRole : r)),
-        );
-        setSubmitSuccess?.(
-          `Le rôle ${data.updateRole.label} a été modifié avec succès.`,
-        );
-      },
-      reset: true,
-    });
-  };
+  // Modifier un role
+  const [
+    editRole,
+    { data: editRoleData, loading: editRoleLoading, error: editRoleError },
+  ] = useMutation<boolean, Partial<Role>>(UPDATE_ROLE_MUTATION);
 
-  // Supprimer un ou plusieurs rôles
-  const deleteRole = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-  });
-  const handleDelete = async (selectedRoles: string[]) => {
-    for (const roleId of selectedRoles) {
-      const role = roles?.find((r) => r.id === roleId);
-      await deleteRole({
-        mutation: DELETE_ROLE_MUTATION,
-        variables: { id: roleId },
-        onSuccess: () => {
-          setRoles((prev) => prev?.filter((r) => r.id !== roleId));
-          setSubmitSuccess?.(
-            `Le rôle ${role?.label || roleId} a été supprimé avec succès.`,
-          );
-        },
-      });
-    }
-  };
+  // Supprimer un role
+  const [
+    deleteRole,
+    {
+      data: deleteRoleData,
+      loading: deleteRoleLoading,
+      error: deleteRoleError,
+    },
+  ] = useMutation<boolean, { id: string }>(DELETE_ROLE_MUTATION);
 
   return {
-    handleAdd,
-    handleEdit,
-    handleDelete,
+    createRole,
+    createRoleData,
+    createRoleLoading,
+    createRoleError,
+    editRole,
+    editRoleData,
+    editRoleLoading,
+    editRoleError,
+    deleteRole,
+    deleteRoleData,
+    deleteRoleLoading,
+    deleteRoleError,
   };
 }

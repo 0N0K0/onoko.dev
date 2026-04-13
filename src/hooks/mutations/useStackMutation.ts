@@ -1,134 +1,92 @@
+import { useMutation } from "@apollo/client/react";
 import {
   CREATE_STACK_MUTATION,
   DELETE_STACK_MUTATION,
   UPDATE_STACK_MUTATION,
 } from "../../services/stack/stackMutations";
-import type {
-  Stack,
-  useStackMutationProps,
-} from "../../types/entities/stackTypes";
-import { fileToBufferObj } from "../../utils/fileUtils";
-import { useEntityMutation } from "./useEntityMutation";
+import type { Stack } from "../../types/entities/stackTypes";
+import type { ErrorLike } from "@apollo/client";
+import type { ApolloCache } from "@apollo/client";
 
 /**
- * Ce hook personnalisé gère les mutations liées aux technologies, notamment l'ajout, la modification et la suppression de technologies. Il utilise le hook useEntityMutation pour effectuer les opérations de mutation GraphQL, et met à jour l'état local des technologies en fonction des résultats des mutations.
- * Les fonctions handleAdd, handleEdit et handleDelete sont retournées par le hook pour être utilisées dans les composants qui nécessitent ces fonctionnalités, permettant ainsi une gestion centralisée et cohérente des mutations liées aux technologies à travers l'application.
- * @param {function} props.setSubmitSuccess Fonction pour définir le message de succès après une mutation réussie.
- * @param {function} props.setSubmitError Fonction pour définir le message d'erreur après une mutation échouée.
- * @param {function} props.setSubmitting Fonction pour définir l'état de soumission en cours.
- * @param {function} props.setFormDialogOpen Fonction pour ouvrir ou fermer le dialogue de formulaire.
- * @param {Stack | null} props.initialStack La technologie initiale utilisée lors de l'édition d'une technologie.
- * @param {function} props.setInitialStack Fonction pour définir la technologie initiale lors de l'édition.
- * @param {Partial<Stack> | null} props.editingStack La technologie actuellement en cours d'édition.
- * @param {function} props.setEditingStack Fonction pour définir la technologie en cours d'édition.
- * @param {Array<Stack>} props.stacks La liste actuelle des technologies.
- * @param {function} props.setStacks Fonction pour mettre à jour la liste des technologies.
+ * Hook personnalisé pour gérer les mutations liées aux stacks (ajout, modification, suppression).
+ * Ce hook centralise la logique de mutation pour les stacks, permettant ainsi de réutiliser le même code pour les différentes opérations.
+ * Il utilise le hook `useEntityMutation` pour effectuer les mutations GraphQL et gérer les états de soumission, de succès et d'erreur.
  * @returns {
- *            handleAdd: (item: Partial<Stack & { iconFile?: File | null }>) => Promise<void>,
- *            handleEdit: (item: Partial<Stack & { iconFile?: File | null }>) => Promise<void>,
- *            handleDelete: (selectedStacks: string[]) => Promise<void>
- *           } Un ensemble de fonctions pour gérer respectivement l'ajout, la modification et la suppression des technologies.
+ *    createStack: useMutation.MutationFunction<boolean, Omit<Stack, "id">, ApolloCache>;
+ *    editStack: useMutation.MutationFunction<boolean, Partial<Stack>, ApolloCache>;
+ *    deleteStack: useMutation.MutationFunction<boolean, { id: string }, ApolloCache>;
+ *    createStackData: boolean | null | undefined;
+ *    createStackLoading: boolean;
+ *    createStackError: ErrorLike | undefined;
+ *    editStackData: boolean | null | undefined;
+ *    editStackLoading: boolean;
+ *    editStackError: ErrorLike | undefined;
+ *    deleteStackData: boolean | null | undefined;
+ *    deleteStackLoading: boolean;
+ *    deleteStackError: ErrorLike | undefined;
+ * } Un objet contenant les fonctions de mutation pour ajouter, modifier et supprimer des stacks, ainsi que les données, les états de chargement et les erreurs associés à chaque mutation.
  */
-export default function useStackMutations({
-  setSubmitSuccess,
-  setSubmitError,
-  setSubmitting,
-  setFormDialogOpen,
-  stacks,
-  setStacks,
-}: useStackMutationProps): {
-  handleAdd: (
-    item: Partial<Stack & { iconFile?: File | null }>,
-  ) => Promise<void>;
-  handleEdit: (
-    item: Partial<Stack & { iconFile?: File | null }>,
-  ) => Promise<void>;
-  handleDelete: (selectedStacks: string[]) => Promise<void>;
+export default function useStackMutations(): {
+  createStack: useMutation.MutationFunction<
+    boolean,
+    Omit<Stack, "id">,
+    ApolloCache
+  >;
+  createStackData: boolean | null | undefined;
+  createStackLoading: boolean;
+  createStackError: ErrorLike | undefined;
+  editStack: useMutation.MutationFunction<boolean, Partial<Stack>, ApolloCache>;
+  editStackData: boolean | null | undefined;
+  editStackLoading: boolean;
+  editStackError: ErrorLike | undefined;
+  deleteStack: useMutation.MutationFunction<
+    boolean,
+    { id: string },
+    ApolloCache
+  >;
+  deleteStackData: boolean | null | undefined;
+  deleteStackLoading: boolean;
+  deleteStackError: ErrorLike | undefined;
 } {
-  // Ajouter une technologie
-  const addStack = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    setFormDialogOpen,
-  });
-  const handleAdd = async (
-    item: Partial<Stack & { iconFile?: File | null }>,
-  ) => {
-    let iconFileObj = null;
-    if (item.iconFile) iconFileObj = await fileToBufferObj(item.iconFile);
+  // Ajouter un stack
+  const [
+    createStack,
+    {
+      data: createStackData,
+      loading: createStackLoading,
+      error: createStackError,
+    },
+  ] = useMutation<boolean, Omit<Stack, "id">>(CREATE_STACK_MUTATION);
 
-    await addStack({
-      mutation: CREATE_STACK_MUTATION,
-      variables: { ...item, iconFile: iconFileObj },
-      onSuccess: (data) => {
-        setStacks((prev) => [...(prev || []), data.createStack]);
-        setSubmitSuccess?.(
-          `La technologie ${data.createStack.label} a été créée avec succès.`,
-        );
-      },
-      reset: true,
-    });
+  // Modifier un stack
+  const [
+    editStack,
+    { data: editStackData, loading: editStackLoading, error: editStackError },
+  ] = useMutation<boolean, Partial<Stack>>(UPDATE_STACK_MUTATION);
+
+  // Supprimer un stack
+  const [
+    deleteStack,
+    {
+      data: deleteStackData,
+      loading: deleteStackLoading,
+      error: deleteStackError,
+    },
+  ] = useMutation<boolean, { id: string }>(DELETE_STACK_MUTATION);
+
+  return {
+    createStack,
+    createStackData,
+    createStackLoading,
+    createStackError,
+    editStack,
+    editStackData,
+    editStackLoading,
+    editStackError,
+    deleteStack,
+    deleteStackData,
+    deleteStackLoading,
+    deleteStackError,
   };
-
-  // Modifier une technologie
-  const editStack = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    setFormDialogOpen,
-  });
-  const handleEdit = async (
-    item: Partial<Stack & { iconFile?: File | null }>,
-  ) => {
-    if (!item) return;
-
-    let iconFileObj = null;
-    if (item.iconFile) iconFileObj = await fileToBufferObj(item.iconFile);
-
-    await editStack({
-      mutation: UPDATE_STACK_MUTATION,
-      variables: {
-        ...item,
-        iconFile: iconFileObj,
-        category:
-          typeof item.category === "string" ? item.category : item.category?.id,
-      },
-      onSuccess: (data) => {
-        setStacks((prev) =>
-          prev?.map((s) =>
-            s.id === data.updateStack.id ? data.updateStack : s,
-          ),
-        );
-        setSubmitSuccess?.(
-          `La technologie ${data.updateStack.label} a été modifiée avec succès.`,
-        );
-      },
-      reset: true,
-    });
-  };
-
-  // Supprimer une ou plusieurs technologies
-  const deleteStack = useEntityMutation({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-  });
-  const handleDelete = async (selectedStacks: string[]) => {
-    for (const stackId of selectedStacks) {
-      const stack = stacks?.find((s) => s.id === stackId);
-      await deleteStack({
-        mutation: DELETE_STACK_MUTATION,
-        variables: { id: stackId },
-        onSuccess: () => {
-          setStacks((prev) => prev?.filter((s) => s.id !== stackId));
-          setSubmitSuccess?.(
-            `La technologie ${stack?.label || stackId} a été supprimée avec succès.`,
-          );
-        },
-      });
-    }
-  };
-
-  return { handleAdd, handleEdit, handleDelete };
 }
