@@ -1,10 +1,9 @@
-import { useState } from "react";
-import EntitiesPage from "../../components/entities/EntitiesPage";
+import { useEffect, useState } from "react";
 import useCategoryMutations from "../../hooks/mutations/useCategoryMutations";
-import { CATEGORIES_QUERY } from "../../services/category/categoryQueries";
 import type { Category } from "../../types/entities/categoryTypes";
 import CategoryFormDialog from "../../components/entities/CategoryFormDialog";
-import { useCategory } from "../../hooks/useCategory";
+import useCategories from "../../hooks/queries/useCategories";
+import EntitiesContent from "../../layout/admin/EntitiesContent";
 
 /**
  * Page d'administration pour la gestion des catégories de projets et technologies.
@@ -12,13 +11,11 @@ import { useCategory } from "../../hooks/useCategory";
  * de modifier une catégorie existante ou de supprimer une catégorie.
  */
 export default function Categories() {
-  const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState("");
-  const [submitError, setSubmitError] = useState("");
 
   const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
 
-  const { categories, setCategories } = useCategory();
+  const { categories, loading, error } = useCategories();
 
   const entitiesMap: { [key: string]: string } = {
     "": "",
@@ -27,26 +24,43 @@ export default function Categories() {
     media: "Média",
   };
 
-  const { handleAdd, handleEdit, handleDelete } = useCategoryMutations({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    setFormDialogOpen,
-    categories,
-    setCategories,
-  });
+  const {
+    createCategory,
+    createCategoryData,
+    createCategoryLoading,
+    createCategoryError,
+    editCategory,
+    editCategoryData,
+    editCategoryLoading,
+    editCategoryError,
+    deleteCategory,
+    deleteCategoryData,
+    deleteCategoryLoading,
+    deleteCategoryError,
+  } = useCategoryMutations();
+
+  useEffect(() => {
+    if (createCategoryData) {
+      setSubmitSuccess("Catégorie créée avec succès");
+      setFormDialogOpen(false);
+    } else if (editCategoryData) {
+      setSubmitSuccess("Catégorie modifiée avec succès");
+      setFormDialogOpen(false);
+    } else if (deleteCategoryData) {
+      setSubmitSuccess("Catégorie supprimée avec succès");
+    }
+  }, [createCategoryData, editCategoryData, deleteCategoryData]);
 
   return (
     <>
-      <EntitiesPage
+      <EntitiesContent
         labels={{
           title: "Catégories",
           addButton: "Ajouter une catégorie",
           entity: "categories",
         }}
         items={categories}
-        setItems={setCategories}
-        query={CATEGORIES_QUERY}
+        loading={loading}
         fields={[
           {
             key: "label",
@@ -70,20 +84,30 @@ export default function Categories() {
         onClickActions={{
           add: () => setFormDialogOpen(true),
           edit: (id: string) => setFormDialogOpen(id),
-          delete: handleDelete,
+          delete: deleteCategory,
         }}
-        submitting={submitting}
+        submitting={
+          createCategoryLoading || editCategoryLoading || deleteCategoryLoading
+        }
         submitSuccess={submitSuccess}
         setSubmitSuccess={setSubmitSuccess}
-        submitError={submitError}
+        error={
+          error?.message ||
+          createCategoryError?.message ||
+          editCategoryError?.message ||
+          deleteCategoryError?.message ||
+          ""
+        }
       />
       <CategoryFormDialog
         open={formDialogOpen}
         setOpen={setFormDialogOpen}
         categories={categories}
-        handleAdd={handleAdd}
-        handleEdit={handleEdit}
-        submitting={submitting}
+        handleAdd={createCategory}
+        handleEdit={editCategory}
+        submitting={
+          createCategoryLoading || editCategoryLoading || deleteCategoryLoading
+        }
       />
     </>
   );

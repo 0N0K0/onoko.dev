@@ -1,44 +1,58 @@
-import { useState } from "react";
-import EntitiesPage from "../../components/entities/EntitiesPage";
+import { useEffect, useState } from "react";
+import EntitiesContent from "../../layout/admin/EntitiesContent";
 import useCoworkerMutations from "../../hooks/mutations/useCoworkerMutations";
-import { COWORKERS_QUERY } from "../../services/coworker/coworkerQueries";
 import CoworkerFormDialog from "../../components/entities/CoworkerFormDialog";
-import type { Coworker } from "../../types/entities/cowokerTypes";
 import type { Role } from "../../types/entities/roleTypes";
+import useCoworkers from "../../hooks/queries/useCoworkers";
 
 /**
  * Page d'administration pour la gestion des intervenants
  * Affiche une liste des intervenants existants et permet d'ajouter, modifier ou supprimer des intervenants
  */
 export default function Coworkers() {
-  const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState("");
-  const [submitError, setSubmitError] = useState("");
 
   const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
 
-  const [coworkers, setCoworkers] = useState<Coworker[] | undefined>(undefined);
+  const { coworkers, loading, error } = useCoworkers();
 
-  const { handleAdd, handleEdit, handleDelete } = useCoworkerMutations({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    setFormDialogOpen,
-    coworkers,
-    setCoworkers,
-  });
+  const {
+    createCoworker,
+    createCoworkerData,
+    createCoworkerLoading,
+    createCoworkerError,
+    editCoworker,
+    editCoworkerData,
+    editCoworkerLoading,
+    editCoworkerError,
+    deleteCoworker,
+    deleteCoworkerData,
+    deleteCoworkerLoading,
+    deleteCoworkerError,
+  } = useCoworkerMutations();
+
+  useEffect(() => {
+    if (createCoworkerData) {
+      setSubmitSuccess("Intervenant créé avec succès");
+      setFormDialogOpen(false);
+    } else if (editCoworkerData) {
+      setSubmitSuccess("Intervenant modifié avec succès");
+      setFormDialogOpen(false);
+    } else if (deleteCoworkerData) {
+      setSubmitSuccess("Intervenant supprimé avec succès");
+    }
+  }, [createCoworkerData, editCoworkerData, deleteCoworkerData]);
 
   return (
     <>
-      <EntitiesPage
+      <EntitiesContent
         labels={{
           title: "Intervenants",
           addButton: "Ajouter un intervenant",
           entity: "coworkers",
         }}
         items={coworkers}
-        setItems={setCoworkers}
-        query={COWORKERS_QUERY}
+        loading={loading}
         fields={[
           {
             key: "name",
@@ -54,20 +68,30 @@ export default function Coworkers() {
         onClickActions={{
           add: () => setFormDialogOpen(true),
           edit: (id: string) => setFormDialogOpen(id),
-          delete: handleDelete,
+          delete: deleteCoworker,
         }}
-        submitting={submitting}
+        submitting={
+          createCoworkerLoading || editCoworkerLoading || deleteCoworkerLoading
+        }
         submitSuccess={submitSuccess}
         setSubmitSuccess={setSubmitSuccess}
-        submitError={submitError}
+        error={
+          error?.message ||
+          createCoworkerError?.message ||
+          editCoworkerError?.message ||
+          deleteCoworkerError?.message ||
+          ""
+        }
       />
       <CoworkerFormDialog
         open={formDialogOpen}
         setOpen={setFormDialogOpen}
         coworkers={coworkers}
-        handleAdd={handleAdd}
-        handleEdit={handleEdit}
-        submitting={submitting}
+        handleAdd={createCoworker}
+        handleEdit={editCoworker}
+        submitting={
+          createCoworkerLoading || editCoworkerLoading || deleteCoworkerLoading
+        }
       />
     </>
   );

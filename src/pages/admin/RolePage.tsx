@@ -1,43 +1,57 @@
-import { useState } from "react";
-import EntitiesPage from "../../components/entities/EntitiesPage";
+import { useEffect, useState } from "react";
+import EntitiesContent from "../../layout/admin/EntitiesContent";
 import useRoleMutations from "../../hooks/mutations/useRoleMutations";
-import { ROLES_QUERY } from "../../services/role/roleQueries";
 import RoleFormDialog from "../../components/entities/RoleFormDialog";
-import { useRole } from "../../hooks/useRole";
+import useRoles from "../../hooks/queries/useRoles";
 
 /**
  * Page d'administration pour la gestion des rôles
  * Affiche une liste des rôles existants et permet d'ajouter, modifier ou supprimer des rôles
  */
 export default function Roles() {
-  const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState("");
-  const [submitError, setSubmitError] = useState("");
 
   const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
 
-  const { roles, setRoles } = useRole();
+  const { roles, loading, error } = useRoles();
 
-  const { handleAdd, handleEdit, handleDelete } = useRoleMutations({
-    setSubmitSuccess,
-    setSubmitError,
-    setSubmitting,
-    setFormDialogOpen,
-    roles,
-    setRoles,
-  });
+  const {
+    createRole,
+    createRoleData,
+    createRoleLoading,
+    createRoleError,
+    editRole,
+    editRoleData,
+    editRoleLoading,
+    editRoleError,
+    deleteRole,
+    deleteRoleData,
+    deleteRoleLoading,
+    deleteRoleError,
+  } = useRoleMutations();
+
+  useEffect(() => {
+    if (createRoleData) {
+      setSubmitSuccess("Rôle créé avec succès");
+      setFormDialogOpen(false);
+    } else if (editRoleData) {
+      setSubmitSuccess("Rôle modifié avec succès");
+      setFormDialogOpen(false);
+    } else if (deleteRoleData) {
+      setSubmitSuccess("Rôle supprimé avec succès");
+    }
+  }, [createRoleData, editRoleData, deleteRoleData]);
 
   return (
     <>
-      <EntitiesPage
+      <EntitiesContent
         labels={{
           title: "Rôles",
           addButton: "Ajouter un rôle",
           entity: "roles",
         }}
         items={roles}
-        setItems={setRoles}
-        query={ROLES_QUERY}
+        loading={loading}
         fields={[
           {
             key: "label",
@@ -53,20 +67,26 @@ export default function Roles() {
         onClickActions={{
           add: () => setFormDialogOpen(true),
           edit: (id: string) => setFormDialogOpen(id),
-          delete: handleDelete,
+          delete: deleteRole,
         }}
-        submitting={submitting}
+        submitting={createRoleLoading || editRoleLoading || deleteRoleLoading}
         submitSuccess={submitSuccess}
         setSubmitSuccess={setSubmitSuccess}
-        submitError={submitError}
+        error={
+          error?.message ||
+          createRoleError?.message ||
+          editRoleError?.message ||
+          deleteRoleError?.message ||
+          ""
+        }
       />
       <RoleFormDialog
         open={formDialogOpen}
         setOpen={setFormDialogOpen}
         roles={roles}
-        handleAdd={handleAdd}
-        handleEdit={handleEdit}
-        submitting={submitting}
+        handleAdd={createRole}
+        handleEdit={editRole}
+        submitting={createRoleLoading || editRoleLoading || deleteRoleLoading}
       />
     </>
   );
