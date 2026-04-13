@@ -1,7 +1,4 @@
-import type {
-  EntityFormDialogProps,
-  useEntityMutationProps,
-} from "./entityTypes";
+import type { EntityFormDialogProps } from "./entityTypes";
 
 export interface Role {
   id: string;
@@ -10,9 +7,4 @@ export interface Role {
 
 export interface RoleFormDialogProps extends EntityFormDialogProps {
   roles?: Role[];
-}
-
-export interface useRoleMutationProps extends useEntityMutationProps {
-  roles?: Role[] | undefined;
-  setRoles: React.Dispatch<React.SetStateAction<Role[] | undefined>>;
 }
