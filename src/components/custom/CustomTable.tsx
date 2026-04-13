@@ -1,4 +1,4 @@
-import { mdiCheck, mdiClose, mdiDelete, mdiPencil, mdiPlus } from "@mdi/js";
+import { mdiDelete, mdiPencil, mdiPlus } from "@mdi/js";
 import Icon from "@mdi/react";
 import {
   Button,
@@ -17,7 +17,7 @@ import { ResponsiveStack } from "./ResponsiveLayout";
 import DeleteConfirmationDialog from "../entities/DeleteConfirmationDialog";
 import type { CustomTableProps } from "../../types/components/baseComponentTypes";
 import CustomIconButton from "./CustomIconButton";
-import CustomDialog from "./CustomDialog";
+import BulkEditFormDialog from "../entities/BulkEditFormDialog";
 
 /**
  * Composant de table personnalisée utilisant MUI Table
@@ -52,7 +52,6 @@ export default function CustomTable({
   bulkEditTitle = "Modifier les éléments",
   bulkEditContent,
   bulkEditDialogWidth = 4,
-  bulkEditItems,
   setBulkEditItems,
   onClickBulkEdit,
 }: CustomTableProps) {
@@ -220,36 +219,14 @@ export default function CustomTable({
         </Table>
       </TableContainer>
       {bulkEditDialogOpen && onClickBulkEdit && (
-        <CustomDialog
+        <BulkEditFormDialog
           open={bulkEditDialogOpen}
-          onClose={() => setBulkEditDialogOpen(false)}
+          setOpen={() => setBulkEditDialogOpen(false)}
           title={bulkEditTitle}
           content={bulkEditContent}
-          actions={[
-            <Button
-              key="cancel"
-              onClick={() => {
-                setBulkEditDialogOpen(false);
-              }}
-              disabled={submitting}
-              startIcon={<Icon path={mdiClose} size={1} />}
-            >
-              Annuler
-            </Button>,
-            <Button
-              key="confirm"
-              color="success"
-              onClick={() => {
-                onClickBulkEdit();
-                setBulkEditDialogOpen(false);
-              }}
-              disabled={submitting}
-              startIcon={<Icon path={mdiCheck} size={1} />}
-            >
-              Valider
-            </Button>,
-          ]}
+          onClick={onClickBulkEdit}
           width={bulkEditDialogWidth}
+          disabled={submitting}
         />
       )}
       {onClickDelete && (
