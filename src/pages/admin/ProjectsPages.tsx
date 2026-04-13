@@ -15,7 +15,7 @@ export default function Projects() {
 
   const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
 
-  const { projects, loading, error } = useProjects();
+  const { projects, loading, error, refetch } = useProjects();
 
   const {
     createProject,
@@ -33,14 +33,25 @@ export default function Projects() {
   } = useProjectMutations();
 
   useEffect(() => {
-    if (createProjectData) {
+    if (!createProjectLoading && createProjectData) {
       setSubmitSuccess("Projet créé avec succès");
-    } else if (editProjectData) {
-      setSubmitSuccess("Projet modifié avec succès");
-    } else if (deleteProjectData) {
-      setSubmitSuccess("Projet supprimé avec succès");
+      setFormDialogOpen(false);
+      refetch();
     }
-  }, [createProjectData, editProjectData, deleteProjectData]);
+  }, [createProjectData]);
+  useEffect(() => {
+    if (!editProjectLoading && editProjectData) {
+      setSubmitSuccess("Projet modifié avec succès");
+      setFormDialogOpen(false);
+      refetch();
+    }
+  }, [editProjectData]);
+  useEffect(() => {
+    if (!deleteProjectLoading && deleteProjectData) {
+      setSubmitSuccess("Projet supprimé avec succès");
+      refetch();
+    }
+  }, [deleteProjectData]);
 
   return (
     <>

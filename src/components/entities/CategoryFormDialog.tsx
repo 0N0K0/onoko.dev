@@ -194,8 +194,11 @@ export default function CategoryFormDialog({
           color="success"
           onClick={() => {
             if (typeof open === "string" && editingCategory?.id) {
+              const input = editingCategory;
+              delete input.id;
+              delete (input as any).__typename;
               handleEdit({
-                variables: { id: editingCategory.id, input: editingCategory! },
+                variables: { id: open, input },
               });
             } else {
               handleAdd({ variables: { input: editingCategory! } });

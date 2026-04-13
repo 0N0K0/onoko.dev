@@ -14,7 +14,7 @@ export default function Coworkers() {
 
   const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
 
-  const { coworkers, loading, error } = useCoworkers();
+  const { coworkers, loading, error, refetch } = useCoworkers();
 
   const {
     createCoworker,
@@ -32,16 +32,25 @@ export default function Coworkers() {
   } = useCoworkerMutations();
 
   useEffect(() => {
-    if (createCoworkerData) {
+    if (!createCoworkerLoading && createCoworkerData) {
       setSubmitSuccess("Intervenant créé avec succès");
       setFormDialogOpen(false);
-    } else if (editCoworkerData) {
+      refetch();
+    }
+  }, [createCoworkerData]);
+  useEffect(() => {
+    if (!editCoworkerLoading && editCoworkerData) {
       setSubmitSuccess("Intervenant modifié avec succès");
       setFormDialogOpen(false);
-    } else if (deleteCoworkerData) {
-      setSubmitSuccess("Intervenant supprimé avec succès");
+      refetch();
     }
-  }, [createCoworkerData, editCoworkerData, deleteCoworkerData]);
+  }, [editCoworkerData]);
+  useEffect(() => {
+    if (!deleteCoworkerLoading && deleteCoworkerData) {
+      setSubmitSuccess("Intervenant supprimé avec succès");
+      refetch();
+    }
+  }, [deleteCoworkerData]);
 
   return (
     <>

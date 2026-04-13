@@ -3,8 +3,11 @@ import ClosableSnackbarAlert from "../../components/custom/ClosableSnackbarAlert
 import SnackbarAlert from "../../components/custom/SnackbarAlert";
 import MediaLibrary from "../../components/entities/media/MediaLibrary";
 import useMediaMutations from "../../hooks/mutations/useMediaMutations";
+import useMedias from "../../hooks/queries/useMedias";
 
 export default function Media() {
+  const { refetch } = useMedias();
+
   const {
     addMedia,
     addMediaData,
@@ -23,14 +26,23 @@ export default function Media() {
   const [submitSuccess, setSubmitSuccess] = useState<string>("");
 
   useEffect(() => {
-    if (addMediaData) {
+    if (!addMediaLoading && addMediaData) {
       setSubmitSuccess("Média ajouté avec succès");
-    } else if (editMediaData) {
-      setSubmitSuccess("Média modifié avec succès");
-    } else if (removeMediaData) {
-      setSubmitSuccess("Média supprimé avec succès");
+      refetch();
     }
-  }, [addMediaData, editMediaData, removeMediaData]);
+  }, [addMediaData]);
+  useEffect(() => {
+    if (!editMediaLoading && editMediaData) {
+      setSubmitSuccess("Média modifié avec succès");
+      refetch();
+    }
+  }, [editMediaData]);
+  useEffect(() => {
+    if (!removeMediaLoading && removeMediaData) {
+      setSubmitSuccess("Média supprimé avec succès");
+      refetch();
+    }
+  }, [removeMediaData]);
 
   return (
     <>

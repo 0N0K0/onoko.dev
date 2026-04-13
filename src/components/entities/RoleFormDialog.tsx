@@ -101,8 +101,11 @@ export default function RoleFormDialog({
           color="success"
           onClick={() => {
             if (typeof open === "string" && editingRole?.id) {
+              const input = editingRole;
+              delete input.id;
+              delete (input as any).__typename;
               handleEdit({
-                variables: { id: editingRole.id, input: editingRole! },
+                variables: { id: open, input },
               });
             } else {
               handleAdd({ variables: { input: editingRole! } });

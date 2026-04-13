@@ -150,8 +150,11 @@ export default function CoworkerFormDialog({
           color="success"
           onClick={() => {
             if (typeof open === "string" && editingCoworker?.id) {
+              const input = editingCoworker;
+              delete input.id;
+              delete (input as any).__typename;
               handleEdit({
-                variables: { id: editingCoworker.id, input: editingCoworker! },
+                variables: { id: open, input },
               });
             } else {
               handleAdd({ variables: { input: editingCoworker! } });

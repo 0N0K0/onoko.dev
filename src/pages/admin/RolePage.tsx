@@ -13,7 +13,7 @@ export default function Roles() {
 
   const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
 
-  const { roles, loading, error } = useRoles();
+  const { roles, loading, error, refetch } = useRoles();
 
   const {
     createRole,
@@ -31,16 +31,25 @@ export default function Roles() {
   } = useRoleMutations();
 
   useEffect(() => {
-    if (createRoleData) {
+    if (!createRoleLoading && createRoleData) {
       setSubmitSuccess("Rôle créé avec succès");
       setFormDialogOpen(false);
-    } else if (editRoleData) {
+      refetch();
+    }
+  }, [createRoleData]);
+  useEffect(() => {
+    if (!editRoleLoading && editRoleData) {
       setSubmitSuccess("Rôle modifié avec succès");
       setFormDialogOpen(false);
-    } else if (deleteRoleData) {
-      setSubmitSuccess("Rôle supprimé avec succès");
+      refetch();
     }
-  }, [createRoleData, editRoleData, deleteRoleData]);
+  }, [editRoleData]);
+  useEffect(() => {
+    if (!deleteRoleLoading && deleteRoleData) {
+      setSubmitSuccess("Rôle supprimé avec succès");
+      refetch();
+    }
+  }, [deleteRoleData]);
 
   return (
     <>

@@ -17,7 +17,7 @@ export default function Stacks() {
 
   const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
 
-  const { stacks, loading, error } = useStacks();
+  const { stacks, loading, error, refetch } = useStacks();
 
   const {
     createStack,
@@ -35,16 +35,25 @@ export default function Stacks() {
   } = useStackMutations();
 
   useEffect(() => {
-    if (createStackData) {
+    if (!createStackLoading && createStackData) {
       setSubmitSuccess("Technologie créée avec succès");
       setFormDialogOpen(false);
-    } else if (editStackData) {
+      refetch();
+    }
+  }, [createStackData]);
+  useEffect(() => {
+    if (!editStackLoading && editStackData) {
       setSubmitSuccess("Technologie modifiée avec succès");
       setFormDialogOpen(false);
-    } else if (deleteStackData) {
-      setSubmitSuccess("Technologie supprimée avec succès");
+      refetch();
     }
-  }, [createStackData, editStackData, deleteStackData]);
+  }, [editStackData]);
+  useEffect(() => {
+    if (!deleteStackLoading && deleteStackData) {
+      setSubmitSuccess("Technologie supprimée avec succès");
+      refetch();
+    }
+  }, [deleteStackData]);
 
   return (
     <>

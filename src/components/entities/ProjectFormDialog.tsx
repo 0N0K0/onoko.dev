@@ -106,8 +106,11 @@ export default function ProjectFormDialog({
           color="success"
           onClick={() => {
             if (typeof open === "string" && editingProject?.id) {
+              const input = editingProject;
+              delete input.id;
+              delete (input as any).__typename;
               handleEdit({
-                variables: { id: editingProject.id, input: editingProject! },
+                variables: { id: open, input },
               });
             } else {
               handleAdd({ variables: { input: editingProject! } });

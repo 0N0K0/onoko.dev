@@ -215,8 +215,11 @@ export default function StackFormDialog({
           color="success"
           onClick={() => {
             if (typeof open === "string" && editingStack?.id) {
+              const input = editingStack;
+              delete input.id;
+              delete (input as any).__typename;
               handleEdit({
-                variables: { id: editingStack.id, input: editingStack! },
+                variables: { id: open, input },
               });
             } else {
               handleAdd({ variables: { input: editingStack! } });

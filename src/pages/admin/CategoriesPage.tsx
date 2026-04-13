@@ -15,7 +15,7 @@ export default function Categories() {
 
   const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
 
-  const { categories, loading, error } = useCategories();
+  const { categories, loading, error, refetch } = useCategories();
 
   const entitiesMap: { [key: string]: string } = {
     "": "",
@@ -40,16 +40,25 @@ export default function Categories() {
   } = useCategoryMutations();
 
   useEffect(() => {
-    if (createCategoryData) {
+    if (!createCategoryLoading && createCategoryData) {
       setSubmitSuccess("Catégorie créée avec succès");
       setFormDialogOpen(false);
-    } else if (editCategoryData) {
+      refetch();
+    }
+  }, [createCategoryData]);
+  useEffect(() => {
+    if (!editCategoryLoading && editCategoryData) {
       setSubmitSuccess("Catégorie modifiée avec succès");
       setFormDialogOpen(false);
-    } else if (deleteCategoryData) {
-      setSubmitSuccess("Catégorie supprimée avec succès");
+      refetch();
     }
-  }, [createCategoryData, editCategoryData, deleteCategoryData]);
+  }, [editCategoryData]);
+  useEffect(() => {
+    if (!deleteCategoryLoading && deleteCategoryData) {
+      setSubmitSuccess("Catégorie supprimée avec succès");
+      refetch();
+    }
+  }, [deleteCategoryData]);
 
   return (
     <>
