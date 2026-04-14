@@ -162,10 +162,14 @@ export default function SingleMediaDialog({
                           handleEdit({
                             variables: {
                               id: editingMedia!.id,
-                              input: editingMedia!,
+                              input: {
+                                label: editingMedia!.label,
+                                category: editingMedia!.category,
+                              },
                             },
                           });
                         }
+                        setOpen(false);
                       }}
                       disabled={
                         submitting || !hasChanges || !editingMedia?.label
