@@ -20,6 +20,8 @@ import type { Media } from "../../../types/entities/mediaTypes";
 import type { Category } from "../../../types/entities/categoryTypes";
 import useMedias from "../../../hooks/queries/useMedias";
 import useCategories from "../../../hooks/queries/useCategories";
+import type { useMutation } from "@apollo/client/react";
+import type { ApolloCache } from "@apollo/client";
 
 /**
  * Composant de gestion de la bibliothèque de médias.
@@ -37,11 +39,23 @@ export default function MediaLibrary({
   removeMedia,
   removeMediaLoading,
 }: {
-  addMedia: any;
+  addMedia: useMutation.MutationFunction<
+    boolean,
+    { input: { file: File | null } },
+    ApolloCache
+  >;
   addMediaLoading: boolean;
-  editMedia: any;
+  editMedia: useMutation.MutationFunction<
+    boolean,
+    { id: string; input: Partial<Media> },
+    ApolloCache
+  >;
   editMediaLoading: boolean;
-  removeMedia: any;
+  removeMedia: useMutation.MutationFunction<
+    boolean,
+    { id: string },
+    ApolloCache
+  >;
   removeMediaLoading: boolean;
 }) {
   const { medias, loading, error } = useMedias();

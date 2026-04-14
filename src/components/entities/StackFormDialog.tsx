@@ -218,6 +218,12 @@ export default function StackFormDialog({
               const input = editingStack;
               delete input.id;
               delete (input as any).__typename;
+              if (input.category) {
+                input.category =
+                  typeof input.category === "string"
+                    ? input.category
+                    : (input.category as Category).id;
+              }
               handleEdit({
                 variables: { id: open, input },
               });

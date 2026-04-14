@@ -153,6 +153,11 @@ export default function CoworkerFormDialog({
               const input = editingCoworker;
               delete input.id;
               delete (input as any).__typename;
+              if (input.roles) {
+                input.roles = input.roles.map((r) =>
+                  typeof r === "string" ? r : (r as Role).id,
+                );
+              }
               handleEdit({
                 variables: { id: open, input },
               });

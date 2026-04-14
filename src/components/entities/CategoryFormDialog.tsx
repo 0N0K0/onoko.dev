@@ -197,6 +197,12 @@ export default function CategoryFormDialog({
               const input = editingCategory;
               delete input.id;
               delete (input as any).__typename;
+              if (input.parent) {
+                input.parent =
+                  typeof input.parent === "string"
+                    ? input.parent
+                    : (input.parent as Category).id;
+              }
               handleEdit({
                 variables: { id: open, input },
               });
