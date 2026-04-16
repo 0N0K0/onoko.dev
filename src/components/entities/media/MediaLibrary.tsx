@@ -121,6 +121,7 @@ export default function MediaLibrary({
         medias.length > 0 &&
         (layout === "grid" ? (
           <MediaGrid
+            mode="library"
             medias={medias}
             setOpenDialog={setOpenMediaDialog}
             onDelete={removeMedia}

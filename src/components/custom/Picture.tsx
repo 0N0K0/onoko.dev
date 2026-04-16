@@ -43,7 +43,16 @@ export default function Picture({
       }}
     />
   ) : image.type === "webp" ? (
-    <picture key={image.id} style={style}>
+    <picture
+      key={image.id}
+      style={{
+        display: "block",
+        maxWidth: maxWidth,
+        maxHeight: maxHeight,
+        overflow: "hidden",
+        ...style,
+      }}
+    >
       <source
         srcSet={API_URL + paths.xs}
         media={`(max-width: ${IMAGE_WIDTHS.xs}px)`}

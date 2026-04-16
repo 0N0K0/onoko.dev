@@ -1,0 +1,202 @@
+import { useEffect, useState } from "react";
+import Picture from "../../custom/Picture";
+import { ResponsiveBox, ResponsiveStack } from "../../custom/ResponsiveLayout";
+import CustomIconButton from "../../custom/CustomIconButton";
+import { mdiDelete, mdiPencil, mdiPlus } from "@mdi/js";
+import type { Media } from "../../../types/entities/mediaTypes";
+import { Button, useTheme } from "@mui/material";
+import Icon from "@mdi/react";
+import CustomDialog from "../../custom/CustomDialog";
+import MediaGrid from "./MediaGrid";
+import useMedias from "../../../hooks/queries/useMedias";
+import useMediaMutations from "../../../hooks/mutations/useMediaMutations";
+import ClosableSnackbarAlert from "../../custom/ClosableSnackbarAlert";
+import SnackbarAlert from "../../custom/SnackbarAlert";
+
+export default function MediaPicker({
+  multiple = false,
+  required = false,
+  disabled = false,
+  labels = { singular: "un média", plural: "des médias" },
+  onChange,
+}: {
+  multiple?: boolean;
+  required?: boolean;
+  disabled?: boolean;
+  labels?: { singular: string; plural: string };
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+}) {
+  const theme = useTheme();
+
+  const { medias, refetch } = useMedias();
+  const {
+    addMedia,
+    addMediaData,
+    addMediaError,
+    addMediaLoading,
+    editMedia,
+    editMediaData,
+    editMediaError,
+    editMediaLoading,
+    removeMedia,
+    removeMediaData,
+    removeMediaLoading,
+    removeMediaError,
+  } = useMediaMutations();
+  const [images, setImages] = useState<Media[]>([]);
+
+  const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
+
+  const [submitSuccess, setSubmitSuccess] = useState<string>("");
+
+  useEffect(() => {
+    if (!removeMediaLoading && removeMediaData) {
+      setSubmitSuccess("Média supprimé avec succès");
+      refetch();
+    }
+  }, [removeMediaData]);
+
+  useEffect(() => {
+    if (!editMediaLoading && editMediaData) {
+      setSubmitSuccess("Média modifié avec succès");
+      refetch();
+    }
+  }, [editMediaData]);
+
+  useEffect(() => {
+    if (!addMediaLoading && addMediaData) {
+      setSubmitSuccess("Média ajouté avec succès");
+      refetch();
+    }
+  }, [addMediaData]);
+
+  return (
+    <>
+      {(multiple || images.length === 0) && (
+        <Button
+          startIcon={
+            <Icon path={images.length === 0 ? mdiPlus : mdiPencil} size={1} />
+          }
+          onClick={() => setMediaPickerOpen(true)}
+          disabled={disabled}
+        >
+          {images.length === 0
+            ? `Ajouter ${labels.singular}`
+            : `Modifier la liste ${labels.plural}`}
+          {required && (
+            <span style={{ color: theme.palette.error.main }}>&nbsp;*</span>
+          )}
+        </Button>
+      )}
+      <input
+        type="hidden"
+        required={required}
+        value={images.map((image) => image.id).join(",")}
+        onChange={onChange}
+      />
+      {images.length > 0 && (
+        <ResponsiveBox
+          rowGap={3}
+          columnGap={4}
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(6rem, 1fr))",
+            overflowY: "auto",
+            overflowX: "hidden",
+            width: "100%",
+            paddingX: "20px",
+          }}
+        >
+          {images.map((image) => (
+            <ResponsiveStack
+              key={image.id}
+              sx={{
+                position: "relative",
+                aspectRatio: "1 / 1",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              marginBottom="20px !important"
+            >
+              <Picture image={image} />
+              <ResponsiveStack
+                direction="row"
+                justifyContent="space-between"
+                sx={{
+                  position: "absolute",
+                  bottom: "-20px",
+                  left: "-20px",
+                  width: "calc(100% + 40px)",
+                }}
+              >
+                {!multiple && (
+                  <CustomIconButton
+                    icon={mdiPencil}
+                    color="primary"
+                    disabled={disabled}
+                    onClick={() => {
+                      setMediaPickerOpen(true);
+                    }}
+                  />
+                )}
+                {(!required || images.length > 1) && (
+                  <CustomIconButton
+                    icon={mdiDelete}
+                    color="error"
+                    disabled={disabled}
+                    onClick={() =>
+                      setImages((prev) =>
+                        prev.filter((img) => img.id !== image.id),
+                      )
+                    }
+                    style={{ marginLeft: "auto" }}
+                  />
+                )}
+              </ResponsiveStack>
+            </ResponsiveStack>
+          ))}
+        </ResponsiveBox>
+      )}
+      <CustomDialog
+        open={mediaPickerOpen}
+        onClose={() => setMediaPickerOpen(false)}
+        content={
+          <MediaGrid
+            mode="picker"
+            multiple={multiple}
+            medias={medias}
+            onDelete={removeMedia}
+            handleEdit={editMedia}
+            submitting={removeMediaLoading || editMediaLoading}
+            images={images}
+            setImages={(images) => {
+              setImages(images);
+              setMediaPickerOpen(false);
+            }}
+            handleAdd={addMedia}
+            addMediaLoading={addMediaLoading}
+          />
+        }
+        width={12}
+        height="calc(100dvh - 48px)"
+        closeButton
+      />
+      <ClosableSnackbarAlert
+        open={!!submitSuccess}
+        setOpen={() => setSubmitSuccess("")}
+        message={submitSuccess}
+        severity="success"
+      />
+      <SnackbarAlert
+        open={!!(removeMediaError || editMediaError || addMediaError)}
+        message={
+          removeMediaError?.message ||
+          editMediaError?.message ||
+          addMediaError?.message ||
+          "Une erreur est survenue"
+        }
+        severity="error"
+      />
+    </>
+  );
+}

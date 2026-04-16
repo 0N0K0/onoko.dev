@@ -55,6 +55,7 @@ export default function MediaDropZone({
           alignItems="center"
           {...getRootProps()}
           sx={{
+            opacity: submitting ? 0.5 : 1,
             width: "100%",
             height: "168px",
             border:

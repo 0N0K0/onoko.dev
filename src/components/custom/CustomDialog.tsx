@@ -70,7 +70,7 @@ export default function CustomDialog({
           {title}
         </DialogTitle>
       )}
-      <DialogContent>
+      <DialogContent sx={{ overflowX: "hidden" }}>
         {typeof content === "string" ? (
           <DialogContentText>{content}</DialogContentText>
         ) : (
