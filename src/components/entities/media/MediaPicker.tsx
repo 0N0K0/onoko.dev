@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Picture from "../../custom/Picture";
 import { ResponsiveBox, ResponsiveStack } from "../../custom/ResponsiveLayout";
 import CustomIconButton from "../../custom/CustomIconButton";
-import { mdiDelete, mdiPencil, mdiPlus } from "@mdi/js";
+import { mdiDelete, mdiDragVertical, mdiPencil, mdiPlus } from "@mdi/js";
 import type { Media } from "../../../types/entities/mediaTypes";
 import { Button, useTheme } from "@mui/material";
 import Icon from "@mdi/react";
@@ -12,6 +12,106 @@ import useMedias from "../../../hooks/queries/useMedias";
 import useMediaMutations from "../../../hooks/mutations/useMediaMutations";
 import ClosableSnackbarAlert from "../../custom/ClosableSnackbarAlert";
 import SnackbarAlert from "../../custom/SnackbarAlert";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  rectSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+function SortableMediaItem({
+  image,
+  multiple,
+  required,
+  disabled,
+  imagesLength,
+  onEdit,
+  onDelete,
+}: {
+  image: Media;
+  multiple: boolean;
+  required: boolean;
+  disabled: boolean;
+  imagesLength: number;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: image.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <ResponsiveStack
+      ref={setNodeRef}
+      style={style}
+      sx={{
+        position: "relative",
+        aspectRatio: "1 / 1",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+      marginBottom="20px !important"
+    >
+      <Picture image={image} />
+      <ResponsiveStack
+        direction="row"
+        justifyContent="space-between"
+        sx={{
+          position: "absolute",
+          bottom: "-20px",
+          left: "-20px",
+          width: "calc(100% + 40px)",
+        }}
+      >
+        <CustomIconButton
+          icon={mdiDragVertical}
+          color="default"
+          disabled={disabled}
+          style={{ cursor: "grab", touchAction: "none" }}
+          {...attributes}
+          {...listeners}
+        />
+        {!multiple && (
+          <CustomIconButton
+            icon={mdiPencil}
+            color="primary"
+            disabled={disabled}
+            onClick={onEdit}
+          />
+        )}
+        {(!required || imagesLength > 1) && (
+          <CustomIconButton
+            icon={mdiDelete}
+            color="error"
+            disabled={disabled}
+            onClick={onDelete}
+            style={{ marginLeft: "auto" }}
+          />
+        )}
+      </ResponsiveStack>
+    </ResponsiveStack>
+  );
+}
 
 export default function MediaPicker({
   multiple = false,
@@ -48,6 +148,19 @@ export default function MediaPicker({
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
 
   const [submitSuccess, setSubmitSuccess] = useState<string>("");
+
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setImages((prev) => {
+        const oldIndex = prev.findIndex((img) => img.id === active.id);
+        const newIndex = prev.findIndex((img) => img.id === over.id);
+        return arrayMove(prev, oldIndex, newIndex);
+      });
+    }
+  }
 
   useEffect(() => {
     if (!removeMediaLoading && removeMediaData) {
@@ -89,73 +202,52 @@ export default function MediaPicker({
         </Button>
       )}
       <input
-        type="hidden"
+        // type="hidden"
         required={required}
         value={images.map((image) => image.id).join(",")}
         onChange={onChange}
       />
       {images.length > 0 && (
-        <ResponsiveBox
-          rowGap={3}
-          columnGap={4}
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(6rem, 1fr))",
-            overflowY: "auto",
-            overflowX: "hidden",
-            width: "100%",
-            paddingX: "20px",
-          }}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
         >
-          {images.map((image) => (
-            <ResponsiveStack
-              key={image.id}
+          <SortableContext
+            items={images.map((img) => img.id)}
+            strategy={rectSortingStrategy}
+          >
+            <ResponsiveBox
+              rowGap={3}
+              columnGap={4}
               sx={{
-                position: "relative",
-                aspectRatio: "1 / 1",
-                justifyContent: "center",
-                alignItems: "center",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(6rem, 1fr))",
+                overflowY: "auto",
+                overflowX: "hidden",
+                width: "100%",
+                paddingX: "20px",
               }}
-              marginBottom="20px !important"
             >
-              <Picture image={image} />
-              <ResponsiveStack
-                direction="row"
-                justifyContent="space-between"
-                sx={{
-                  position: "absolute",
-                  bottom: "-20px",
-                  left: "-20px",
-                  width: "calc(100% + 40px)",
-                }}
-              >
-                {!multiple && (
-                  <CustomIconButton
-                    icon={mdiPencil}
-                    color="primary"
-                    disabled={disabled}
-                    onClick={() => {
-                      setMediaPickerOpen(true);
-                    }}
-                  />
-                )}
-                {(!required || images.length > 1) && (
-                  <CustomIconButton
-                    icon={mdiDelete}
-                    color="error"
-                    disabled={disabled}
-                    onClick={() =>
-                      setImages((prev) =>
-                        prev.filter((img) => img.id !== image.id),
-                      )
-                    }
-                    style={{ marginLeft: "auto" }}
-                  />
-                )}
-              </ResponsiveStack>
-            </ResponsiveStack>
-          ))}
-        </ResponsiveBox>
+              {images.map((image) => (
+                <SortableMediaItem
+                  key={image.id}
+                  image={image}
+                  multiple={multiple}
+                  required={required}
+                  disabled={disabled}
+                  imagesLength={images.length}
+                  onEdit={() => setMediaPickerOpen(true)}
+                  onDelete={() =>
+                    setImages((prev) =>
+                      prev.filter((img) => img.id !== image.id),
+                    )
+                  }
+                />
+              ))}
+            </ResponsiveBox>
+          </SortableContext>
+        </DndContext>
       )}
       <CustomDialog
         open={mediaPickerOpen}

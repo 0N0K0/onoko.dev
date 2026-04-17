@@ -10,6 +10,7 @@ export interface Media {
   type: string;
   file?: File | null;
   category?: Category | string;
+  position?: number;
 }
 
 export interface MediaFormDialogProps extends EntityFormDialogProps {

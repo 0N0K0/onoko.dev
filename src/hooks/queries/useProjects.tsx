@@ -44,11 +44,9 @@ export default function useProjects() {
         mockup: {
           ...project.mockup,
           images: project.mockup.images.map((image) => {
-            if (typeof image === "string") {
-              const fullImage = medias.find((m) => m.id === image);
-              return fullImage || {};
-            }
-            return image;
+            const fullImage = medias.find((m) => m.id === image.id);
+            if (fullImage) fullImage.position = image.position;
+            return fullImage || {};
           }) as Media[],
         },
       };
