@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Picture from "../../custom/Picture";
 import { ResponsiveBox, ResponsiveStack } from "../../custom/ResponsiveLayout";
 import CustomIconButton from "../../custom/CustomIconButton";
-import { mdiDelete, mdiDragVertical, mdiPencil, mdiPlus } from "@mdi/js";
+import { mdiDelete, mdiPencil, mdiPlus } from "@mdi/js";
 import type { Media } from "../../../types/entities/mediaTypes";
 import { Button, useTheme } from "@mui/material";
 import Icon from "@mdi/react";
@@ -45,6 +45,8 @@ function SortableMediaItem({
   onEdit: () => void;
   onDelete: () => void;
 }) {
+  const theme = useTheme();
+
   const {
     attributes,
     listeners,
@@ -64,11 +66,20 @@ function SortableMediaItem({
     <ResponsiveStack
       ref={setNodeRef}
       style={style}
+      {...attributes}
+      {...listeners}
       sx={{
         position: "relative",
         aspectRatio: "1 / 1",
         justifyContent: "center",
         alignItems: "center",
+        cursor: isDragging ? "grabbing" : "grab",
+        touchAction: "none",
+        "&:hover": {
+          backgroundColor: theme.palette.action.hover,
+          padding: 1,
+          borderRadius: 1,
+        },
       }}
       marginBottom="20px !important"
     >
@@ -83,14 +94,6 @@ function SortableMediaItem({
           width: "calc(100% + 40px)",
         }}
       >
-        <CustomIconButton
-          icon={mdiDragVertical}
-          color="default"
-          disabled={disabled}
-          style={{ cursor: "grab", touchAction: "none" }}
-          {...attributes}
-          {...listeners}
-        />
         {!multiple && (
           <CustomIconButton
             icon={mdiPencil}
@@ -202,7 +205,7 @@ export default function MediaPicker({
         </Button>
       )}
       <input
-        // type="hidden"
+        type="hidden"
         required={required}
         value={images.map((image) => image.id).join(",")}
         onChange={onChange}
