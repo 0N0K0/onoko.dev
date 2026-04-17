@@ -75,10 +75,12 @@ function SortableMediaItem({
         alignItems: "center",
         cursor: isDragging ? "grabbing" : "grab",
         touchAction: "none",
+        transition: `background ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}, padding ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}, border-radius ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut} !important`,
         "&:hover": {
           backgroundColor: theme.palette.action.hover,
           padding: 1,
           borderRadius: 1,
+          transition: `background ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}, padding ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}, border-radius ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut} !important`,
         },
       }}
       marginBottom="20px !important"
