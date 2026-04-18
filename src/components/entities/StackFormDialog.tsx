@@ -12,6 +12,9 @@ import { useEffect, useState } from "react";
 import FieldsRepeater from "../custom/FieldsRepeater";
 import type { Category } from "../../types/entities/categoryTypes";
 import useCategories from "../../hooks/queries/useCategories";
+import MediaPicker from "./media/MediaPicker";
+import useMedias from "../../hooks/queries/useMedias";
+import type { Media } from "../../types/entities/mediaTypes";
 
 /**
  * Composant de dialogue pour ajouter ou modifier une technologie (stack).
@@ -35,11 +38,10 @@ export default function StackFormDialog({
   submitting,
 }: StackFormDialogProps) {
   const { categories } = useCategories();
+  const { medias } = useMedias();
 
   const [initialStack, setInitialStack] = useState<Stack | null>(null);
-  const [editingStack, setEditingStack] = useState<Partial<
-    Stack & { iconFile?: File | null }
-  > | null>(null);
+  const [editingStack, setEditingStack] = useState<Partial<Stack> | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
 
   useEffect(() => {
@@ -65,6 +67,10 @@ export default function StackFormDialog({
     }
   }, [open, stacks]);
 
+  useEffect(() => {
+    console.log("editingStack", editingStack);
+  }, [editingStack]);
+
   return (
     <CustomDialog
       key="formDialog"
@@ -81,13 +87,32 @@ export default function StackFormDialog({
       content={(() => {
         return (
           <ResponsiveStack rowGap={3} style={{ overflow: "visible" }}>
+            <MediaPicker
+              initialImages={
+                editingStack &&
+                editingStack.icon &&
+                typeof editingStack.icon !== "string"
+                  ? (medias?.filter(
+                      (m) => m.id === (editingStack.icon as Media).id,
+                    ) ?? [])
+                  : []
+              }
+              multiple={false}
+              labels={{ singular: "une icône", plural: "des icônes" }}
+              required
+              onChange={(value) => {
+                setEditingStack(
+                  editingStack ? { ...editingStack, icon: value } : null,
+                );
+                setHasChanges(true);
+              }}
+            />
             <ResponsiveStack
               columnGap={2}
               rowGap={3}
               direction="row"
               flexWrap="wrap"
             >
-              {/* @TODO : MediaPicker */}
               <TextField
                 label="Label"
                 value={editingStack?.label || ""}

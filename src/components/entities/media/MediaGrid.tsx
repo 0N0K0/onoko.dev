@@ -163,6 +163,7 @@ export default function MediaGrid(props: MediaGridProps) {
               )}
             </ResponsiveStack>
           )}
+
           {/* Zone de dépôt de médias */}
           {showAddZone && handleAdd && (
             <MediaDropZone
@@ -182,6 +183,7 @@ export default function MediaGrid(props: MediaGridProps) {
               overflowX: "hidden",
               paddingX: mode === "library" ? "32px !important" : undefined,
               paddingRight: mode === "picker" ? "24px !important" : undefined,
+              paddingBottom: "20px !important",
               marginX: mode === "library" ? "-32px !important" : undefined,
               width:
                 mode === "library" ? "calc(100% + 64px)" : "calc(100% + 24px)",
@@ -215,7 +217,12 @@ export default function MediaGrid(props: MediaGridProps) {
                   }}
                   onClick={() => {
                     if (select) {
-                      if (selectedMedias.some((m) => m.id === media.id)) {
+                      if (!multiple && mode === "picker") {
+                        setSelectedMedias([media]);
+                        setEditingMedias([media]);
+                      } else if (
+                        selectedMedias.some((m) => m.id === media.id)
+                      ) {
                         setSelectedMedias((prev) =>
                           prev.filter((m) => m.id !== media.id),
                         );
@@ -360,14 +367,13 @@ export default function MediaGrid(props: MediaGridProps) {
                         label="Catégorie"
                         labelId="category-label"
                         value={(() => {
+                          if (editingMedias.length === 0) return "";
                           const getId = (m: Media) =>
                             typeof m.category === "string"
                               ? m.category
                               : m.category?.id || "";
                           const first = getId(editingMedias[0]);
-                          return editingMedias.every(
-                            (m) => getId(m) === first,
-                          )
+                          return editingMedias.every((m) => getId(m) === first)
                             ? first
                             : "";
                         })()}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Picture from "../../custom/Picture";
 import { ResponsiveBox, ResponsiveStack } from "../../custom/ResponsiveLayout";
 import CustomIconButton from "../../custom/CustomIconButton";
@@ -89,6 +89,7 @@ function SortableMediaItem({
       <ResponsiveStack
         direction="row"
         justifyContent="space-between"
+        onPointerDown={(e) => e.stopPropagation()}
         sx={{
           position: "absolute",
           bottom: "-20px",
@@ -119,17 +120,19 @@ function SortableMediaItem({
 }
 
 export default function MediaPicker({
+  initialImages = [],
   multiple = false,
   required = false,
   disabled = false,
   labels = { singular: "un média", plural: "des médias" },
   onChange,
 }: {
+  initialImages?: Media[];
   multiple?: boolean;
   required?: boolean;
   disabled?: boolean;
   labels?: { singular: string; plural: string };
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onChange: (value: string) => void;
 }) {
   const theme = useTheme();
 
@@ -148,7 +151,24 @@ export default function MediaPicker({
     removeMediaLoading,
     removeMediaError,
   } = useMediaMutations();
-  const [images, setImages] = useState<Media[]>([]);
+  const isInitialSync = useRef(true);
+  const initialImagesIds = initialImages.map((i) => i.id).join(",");
+  const [images, setImages] = useState<Media[]>(initialImages);
+
+  // Sync images when initialImages changes (e.g. async medias load after editingStack is set)
+  useEffect(() => {
+    isInitialSync.current = true;
+    setImages(initialImages);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialImagesIds]);
+
+  useEffect(() => {
+    if (isInitialSync.current) {
+      isInitialSync.current = false;
+      return;
+    }
+    onChange(images.map((img) => img.id).join(","));
+  }, [images]);
 
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
 
@@ -192,11 +212,13 @@ export default function MediaPicker({
     <>
       {(multiple || images.length === 0) && (
         <Button
+          variant="outlined"
           startIcon={
             <Icon path={images.length === 0 ? mdiPlus : mdiPencil} size={1} />
           }
           onClick={() => setMediaPickerOpen(true)}
           disabled={disabled}
+          sx={{ width: "fit-content", minWidth: "208px", marginX: "auto" }}
         >
           {images.length === 0
             ? `Ajouter ${labels.singular}`
@@ -206,12 +228,6 @@ export default function MediaPicker({
           )}
         </Button>
       )}
-      <input
-        type="hidden"
-        required={required}
-        value={images.map((image) => image.id).join(",")}
-        onChange={onChange}
-      />
       {images.length > 0 && (
         <DndContext
           sensors={sensors}
@@ -227,7 +243,8 @@ export default function MediaPicker({
               columnGap={4}
               sx={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(6rem, 1fr))",
+                gridTemplateColumns: "repeat(auto-fit, minmax(6rem, 8rem))",
+                justifyContent: "center",
                 overflowY: "auto",
                 overflowX: "hidden",
                 width: "100%",

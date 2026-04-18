@@ -3,8 +3,8 @@ import type { Stack } from "../../types/entities/stackTypes";
 import useStackMutations from "../../hooks/mutations/useStackMutation";
 import EntitiesContent from "../../layout/admin/EntitiesContent";
 import StackFormDialog from "../../components/entities/StackFormDialog";
-import { API_URL } from "../../constants/apiConstants";
 import useStacks from "../../hooks/queries/useStacks";
+import Picture from "../../components/custom/Picture";
 
 /**
  * Page d'administration pour la gestion des technologies (stacks).
@@ -71,14 +71,7 @@ export default function Stacks() {
             label: "Icone",
             content: (item: Stack) =>
               typeof item.icon === "object" ? (
-                <img
-                  src={API_URL + item.icon?.path}
-                  style={{
-                    width: "3rem",
-                    height: "3rem",
-                    objectFit: "contain",
-                  }}
-                />
+                <Picture image={item.icon} maxHeight="48px" maxWidth="48px" />
               ) : null,
           },
           { key: "label", label: "Label" },
