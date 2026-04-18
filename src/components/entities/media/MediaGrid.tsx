@@ -15,7 +15,7 @@ import {
   mdiPencil,
   mdiPlus,
 } from "@mdi/js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Media, MediaGridProps } from "../../../types/entities/mediaTypes";
 import Picture from "../../custom/Picture";
 import DeleteConfirmationDialog from "../DeleteConfirmationDialog";
@@ -23,12 +23,12 @@ import CustomSelect from "../../custom/CustomSelect";
 import type { Category } from "../../../types/entities/categoryTypes";
 import useCategories from "../../../hooks/queries/useCategories";
 import MediaDropZone from "./MediaDropZone";
+import BulkEditFormDialog from "../BulkEditFormDialog";
 
 export default function MediaGrid(props: MediaGridProps) {
-  const { mode, medias, onDelete, submitting } = props;
+  const { mode, medias, handleEdit, onDelete, submitting } = props;
   const setOpenDialog = mode === "library" ? props.setOpenDialog : undefined;
   const multiple = mode === "picker" ? props.multiple : false;
-  const handleEdit = mode === "picker" ? props.handleEdit : undefined;
   const images = mode === "picker" ? props.images : undefined;
   const setImages = mode === "picker" ? props.setImages : undefined;
   const handleAdd = mode === "picker" ? props.handleAdd : undefined;
@@ -41,25 +41,16 @@ export default function MediaGrid(props: MediaGridProps) {
   );
   const [selectedMedias, setSelectedMedias] = useState<Media[]>(images || []);
 
-  useEffect(() => {
-    if (mode === "picker" && images) {
-      console.log("Selected medias updated:", images);
-      setSelectedMedias(images);
-    }
-  }, [images]);
+  const [showAddZone, setShowAddZone] = useState(false);
 
-  useEffect(() => {
-    console.log("Selected medias changed:", selectedMedias);
-  }, [selectedMedias]);
+  const [bulkEditDialogOpen, setBulkEditDialogOpen] = useState(false);
 
-  const [editingMedia, setEditingMedia] = useState<Partial<Media> | null>(null);
+  const [editingMedias, setEditingMedias] = useState<Media[]>([]);
   const [hasChanges, setHasChanges] = useState(false);
 
   const { categories } = useCategories();
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  const [showAddZone, setShowAddZone] = useState(false);
 
   const paths: { [key: string]: string } = {
     xl: "",
@@ -88,10 +79,11 @@ export default function MediaGrid(props: MediaGridProps) {
         <ResponsiveStack
           rowGap={3}
           sx={{
-            overflowY: "auto",
+            overflowY: mode === "library" ? "auto" : "hidden",
             overflowX: "hidden",
-            height: mode === "library" ? "100%" : undefined,
+            maxHeight: mode === "picker" ? "100%" : undefined,
             paddingX: mode === "library" ? "32px !important" : undefined,
+            paddingRight: mode === "picker" ? "24px !important" : undefined,
             marginX: mode === "library" ? "-32px !important" : undefined,
             width: mode === "library" ? "calc(100% + 64px)" : undefined,
             flex: "1 1 0",
@@ -102,8 +94,8 @@ export default function MediaGrid(props: MediaGridProps) {
             mode === "library" ? "calc(100% + 64px) !important" : "100%"
           }
         >
+          {/* Barre d'actions */}
           {(mode === "library" || multiple) && (
-            /* Barre d'actions */
             <ResponsiveStack
               direction="row"
               rowGap={3}
@@ -171,7 +163,6 @@ export default function MediaGrid(props: MediaGridProps) {
               )}
             </ResponsiveStack>
           )}
-
           {/* Zone de dépôt de médias */}
           {showAddZone && handleAdd && (
             <MediaDropZone
@@ -187,12 +178,13 @@ export default function MediaGrid(props: MediaGridProps) {
             sx={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fill, minmax(6rem, 1fr))",
-              overflowY: mode === "library" ? "auto" : undefined,
-              overflowX: mode === "library" ? "hidden" : undefined,
+              overflowY: "auto",
+              overflowX: "hidden",
               paddingX: mode === "library" ? "32px !important" : undefined,
-              paddingRight: mode === "picker" ? "20px !important" : undefined,
+              paddingRight: mode === "picker" ? "24px !important" : undefined,
               marginX: mode === "library" ? "-32px !important" : undefined,
-              width: mode === "library" ? "calc(100% + 64px)" : undefined,
+              width:
+                mode === "library" ? "calc(100% + 64px)" : "calc(100% + 24px)",
             }}
             maxWidth={
               mode === "library" ? "calc(100% + 64px) !important" : undefined
@@ -227,12 +219,12 @@ export default function MediaGrid(props: MediaGridProps) {
                         setSelectedMedias((prev) =>
                           prev.filter((m) => m.id !== media.id),
                         );
-                        setEditingMedia(null);
+                        setEditingMedias((prev) =>
+                          prev.filter((m) => m.id !== media.id),
+                        );
                       } else {
-                        mode === "library" || multiple
-                          ? setSelectedMedias((prev) => [...prev, media])
-                          : setSelectedMedias([media]);
-                        setEditingMedia(media);
+                        setSelectedMedias((prev) => [...prev, media]);
+                        setEditingMedias((prev) => [...prev, media]);
                       }
                     } else if (setOpenDialog) {
                       setOpenDialog(media.id);
@@ -242,26 +234,14 @@ export default function MediaGrid(props: MediaGridProps) {
                   {/* Image */}
                   <Picture image={media} />
 
+                  {/* Checkbox de sélection */}
                   {select && (
-                    /* Checkbox de sélection */
                     <Checkbox
                       checked={selectedMedias.some((m) => m.id === media.id)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          mode === "library" || multiple
-                            ? setSelectedMedias((prev) => [...prev, media])
-                            : setSelectedMedias([media]);
-                        } else {
-                          setSelectedMedias((prev) =>
-                            prev.filter((m) => m.id !== media.id),
-                          );
-                        }
-                      }}
                       sx={{
                         position: "absolute",
                         bottom: "-20px",
                         right: "-20px",
-                        // backgroundColor: "background.paper",
                       }}
                     />
                   )}
@@ -271,7 +251,7 @@ export default function MediaGrid(props: MediaGridProps) {
           </ResponsiveBox>
 
           {/* Barre d'actions pour les éléments sélectionnés */}
-          {selectedMedias && mode === "library" && (
+          {selectedMedias.length > 0 && mode === "library" && (
             <ResponsiveStack
               direction="row"
               rowGap={3}
@@ -288,11 +268,33 @@ export default function MediaGrid(props: MediaGridProps) {
                 {selectedMedias.length > 1 ? "s" : ""}
               </span>
 
+              {/* Bouton de modification */}
+              <Button
+                startIcon={<Icon path={mdiPencil} size={1} />}
+                onClick={() => {
+                  if (selectedMedias.length === 1) {
+                    setOpenDialog?.(selectedMedias[0].id);
+                  } else {
+                    setEditingMedias(
+                      selectedMedias
+                        .map((selectedMedia) =>
+                          medias.find((media) => media.id === selectedMedia.id),
+                        )
+                        .filter((media): media is Media => media !== undefined),
+                    );
+                    setBulkEditDialogOpen(true);
+                  }
+                }}
+                disabled={submitting}
+                sx={{ marginLeft: "auto" }}
+              >
+                Modifier
+              </Button>
+
               {/* Bouton de suppression */}
               <Button
                 color="error"
                 startIcon={<Icon path={mdiDelete} size={1} />}
-                sx={{ marginLeft: "auto" }}
                 onClick={() => setDeleteDialogOpen(true)}
                 disabled={submitting}
               >
@@ -332,14 +334,20 @@ export default function MediaGrid(props: MediaGridProps) {
                           />
                           <TextField
                             label="Label"
-                            value={editingMedia?.label || ""}
+                            value={editingMedias[0]?.label || ""}
                             onChange={(e) => {
-                              setEditingMedia(
-                                editingMedia
-                                  ? { ...editingMedia, label: e.target.value }
-                                  : null,
+                              setEditingMedias(
+                                editingMedias.length > 0
+                                  ? [
+                                      {
+                                        ...editingMedias[0],
+                                        label: e.target.value,
+                                      },
+                                    ]
+                                  : [],
                               );
-                              e.target.value !== (editingMedia?.label || "") &&
+                              e.target.value !==
+                                (editingMedias[0]?.label || "") &&
                                 setHasChanges(true);
                             }}
                             required
@@ -351,11 +359,18 @@ export default function MediaGrid(props: MediaGridProps) {
                       <CustomSelect
                         label="Catégorie"
                         labelId="category-label"
-                        value={
-                          typeof editingMedia?.category === "string"
-                            ? editingMedia.category
-                            : editingMedia?.category?.id || ""
-                        }
+                        value={(() => {
+                          const getId = (m: Media) =>
+                            typeof m.category === "string"
+                              ? m.category
+                              : m.category?.id || "";
+                          const first = getId(editingMedias[0]);
+                          return editingMedias.every(
+                            (m) => getId(m) === first,
+                          )
+                            ? first
+                            : "";
+                        })()}
                         onChange={(e) => {
                           const nextValue =
                             typeof e.target === "object" &&
@@ -367,19 +382,13 @@ export default function MediaGrid(props: MediaGridProps) {
                             ? (nextValue[0] ?? "")
                             : nextValue;
 
-                          setEditingMedia(
-                            editingMedia
-                              ? {
-                                  ...editingMedia,
-                                  category: categoryValue as string,
-                                }
-                              : null,
+                          setEditingMedias(
+                            editingMedias.map((m) => ({
+                              ...m,
+                              category: categoryValue as string,
+                            })),
                           );
-                          categoryValue !==
-                            (typeof selectedMedia?.category === "string"
-                              ? selectedMedia.category
-                              : selectedMedia?.category?.id || "") &&
-                            setHasChanges(true);
+                          setHasChanges(true);
                         }}
                         options={
                           categories
@@ -410,23 +419,46 @@ export default function MediaGrid(props: MediaGridProps) {
                         key="edit"
                         color="success"
                         onClick={async () => {
-                          if (editingMedia && editingMedia.id) {
+                          if (selectedMedias.length > 1) {
+                            for (const media of editingMedias) {
+                              if (media.id) {
+                                await handleEdit?.({
+                                  variables: {
+                                    id: media.id,
+                                    input: {
+                                      category:
+                                        typeof media.category === "string"
+                                          ? media.category
+                                          : media.category?.id || "",
+                                    },
+                                  },
+                                });
+                              }
+                            }
+                          } else if (
+                            editingMedias.length > 0 &&
+                            editingMedias[0].id
+                          ) {
                             await handleEdit?.({
                               variables: {
-                                id: editingMedia!.id,
+                                id: editingMedias[0].id,
                                 input: {
-                                  label: editingMedia!.label,
+                                  label: editingMedias[0].label,
                                   category:
-                                    typeof editingMedia!.category === "string"
-                                      ? editingMedia!.category
-                                      : editingMedia!.category?.id || "",
+                                    typeof editingMedias[0].category ===
+                                    "string"
+                                      ? editingMedias[0].category
+                                      : editingMedias[0].category?.id || "",
                                 },
                               },
                             });
                           }
                         }}
                         disabled={
-                          submitting || !hasChanges || !editingMedia?.label
+                          submitting ||
+                          !hasChanges ||
+                          (selectedMedias.length === 1 &&
+                            !editingMedias[0]?.label)
                         }
                         startIcon={<Icon path={mdiPencil} size={1} />}
                         sx={{ width: "fit-content", minWidth: "208px" }}
@@ -452,6 +484,69 @@ export default function MediaGrid(props: MediaGridProps) {
             );
           })()}
       </ResponsiveStack>
+
+      {/* Dialogue de modification des médias sélectionnés en mode librairie */}
+      {mode === "library" && bulkEditDialogOpen && (
+        <BulkEditFormDialog
+          open={bulkEditDialogOpen}
+          setOpen={() => setBulkEditDialogOpen(false)}
+          title="Modifier les médias sélectionnés"
+          content={
+            <CustomSelect
+              label="Catégorie"
+              labelId="category-label"
+              value={
+                typeof editingMedias?.[0]?.category === "string"
+                  ? editingMedias[0].category
+                  : editingMedias?.[0]?.category?.id || ""
+              }
+              onChange={(e) => {
+                const valueRaw =
+                  typeof e.target === "object" &&
+                  e.target !== null &&
+                  "value" in e.target
+                    ? (e.target as { value: string | string[] }).value
+                    : "";
+                const value = Array.isArray(valueRaw)
+                  ? (valueRaw[0] ?? "")
+                  : valueRaw;
+
+                setEditingMedias((prev) =>
+                  prev.map((m) => ({
+                    ...m,
+                    category: value,
+                  })),
+                );
+              }}
+              options={
+                categories
+                  ?.filter((c: Category) => c.entity === "media")
+                  .map((c: Category) => ({
+                    id: c.id,
+                    label: c.depth
+                      ? "__".repeat(c.depth) + ` ${c.label}`
+                      : c.label,
+                  })) || []
+              }
+            />
+          }
+          onClick={() => {
+            if (editingMedias) {
+              for (const media of editingMedias) {
+                if (media.id) {
+                  handleEdit({
+                    variables: {
+                      id: media.id,
+                      input: { category: media.category },
+                    },
+                  });
+                }
+              }
+            }
+          }}
+          disabled={submitting}
+        />
+      )}
 
       {/* Dialogue de confirmation de suppression */}
       <DeleteConfirmationDialog

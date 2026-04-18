@@ -124,6 +124,7 @@ export default function MediaLibrary({
             mode="library"
             medias={medias}
             setOpenDialog={setOpenMediaDialog}
+            handleEdit={editMedia}
             onDelete={removeMedia}
             submitting={
               addMediaLoading || editMediaLoading || removeMediaLoading

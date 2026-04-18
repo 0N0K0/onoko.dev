@@ -19,6 +19,11 @@ export interface MediaFormDialogProps extends EntityFormDialogProps {
 
 export type MediaGridProps = {
   medias: Media[];
+  handleEdit: useMutation.MutationFunction<
+    boolean,
+    { id: string; input: Partial<Media> },
+    ApolloCache
+  >;
   onDelete: useMutation.MutationFunction<boolean, { id: string }, ApolloCache>;
   submitting: boolean;
 } & (
@@ -35,11 +40,6 @@ export type MediaGridProps = {
         ApolloCache
       >;
       addMediaLoading: boolean;
-      handleEdit: useMutation.MutationFunction<
-        boolean,
-        { id: string; input: Partial<Media> },
-        ApolloCache
-      >;
       images: Media[];
       setImages: React.Dispatch<React.SetStateAction<Media[]>>;
     }
