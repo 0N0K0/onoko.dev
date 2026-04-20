@@ -676,6 +676,8 @@ export default function ProjectFormDialog({
               >
                 <DatePicker
                   label="Date de début"
+                  views={["year", "month"]}
+                  format="MM/YYYY"
                   sx={{ flex: "1 1 208px" }}
                   value={editingProject?.startDate ?? null}
                   onChange={(date) => {
@@ -693,6 +695,9 @@ export default function ProjectFormDialog({
                 />
                 <DatePicker
                   label="Date de fin"
+                  views={["year", "month"]}
+                  format="MM/YYYY"
+                  minDate={editingProject?.startDate ?? undefined}
                   sx={{ flex: "1 1 208px" }}
                   value={editingProject?.endDate ?? null}
                   onChange={(date) => {
