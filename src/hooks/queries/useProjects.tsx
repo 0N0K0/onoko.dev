@@ -28,10 +28,10 @@ export default function useProjects() {
   const projects = (data?.projects ?? []).map((project) => {
     let newProject = { ...project };
     if (project.startDate) {
-      newProject.startDate = dayjs(project.startDate);
+      newProject.startDate = dayjs(Number(project.startDate));
     }
     if (project.endDate) {
-      newProject.endDate = dayjs(project.endDate);
+      newProject.endDate = dayjs(Number(project.endDate));
     }
     if (project.thumbnail) {
       newProject.thumbnail = medias.find((m) => m.id === project.thumbnail);
