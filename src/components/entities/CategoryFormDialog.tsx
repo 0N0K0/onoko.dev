@@ -204,7 +204,15 @@ export default function CategoryFormDialog({
                     : (input.parent as Category).id;
               }
               handleEdit({
-                variables: { id: open, input },
+                variables: {
+                  id: open,
+                  input: {
+                    label: input.label,
+                    entity: input.entity,
+                    description: input.description,
+                    parent: input.parent,
+                  },
+                },
               });
             } else {
               handleAdd({ variables: { input: editingCategory! } });
