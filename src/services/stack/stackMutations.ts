@@ -1,54 +1,15 @@
 import { gql } from "@apollo/client";
-import { STACK_FIELDS } from "./stackQueries";
 
 export const CREATE_STACK_MUTATION = gql`
-  mutation CreateStack(
-    $label: String!
-    $iconFile: Upload!
-    $description: String
-    $versions: [String!]
-    $skills: [String!]
-    $category: ID
-  ) {
-    createStack(
-      label: $label
-      iconFile: $iconFile
-      description: $description
-      versions: $versions
-      skills: $skills
-      category: $category
-    ) {
-      ...StackFields
-    }
+  mutation CreateStack($input: StackInput!) {
+    createStack(input: $input)
   }
-
-  ${STACK_FIELDS}
 `;
 
 export const UPDATE_STACK_MUTATION = gql`
-  mutation UpdateStack(
-    $id: ID!
-    $label: String
-    $iconFile: Upload
-    $description: String
-    $versions: [String!]
-    $skills: [String!]
-    $category: ID
-  ) {
-    updateStack(
-      id: $id
-      label: $label
-      iconFile: $iconFile
-      description: $description
-      versions: $versions
-      skills: $skills
-      category: $category
-    ) {
-      ...StackFields
-    }
+  mutation UpdateStack($id: ID!, $input: StackInput!) {
+    updateStack(id: $id, input: $input)
   }
-
-  ${STACK_FIELDS}
 `;
 
 export const DELETE_STACK_MUTATION = gql`

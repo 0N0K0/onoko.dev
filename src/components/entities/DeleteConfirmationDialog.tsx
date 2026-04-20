@@ -1,8 +1,8 @@
 import { Button } from "@mui/material";
-import CustomDialog from "../custom/customDialog";
+import CustomDialog from "../custom/CustomDialog";
 import Icon from "@mdi/react";
 import { mdiClose, mdiDelete } from "@mdi/js";
-import type { DeleteConfirmationDialogProps } from "../../types/entityTypes";
+import type { DeleteConfirmationDialogProps } from "../../types/entities/entityTypes";
 
 /**
  * Composant de dialogue de confirmation de suppression

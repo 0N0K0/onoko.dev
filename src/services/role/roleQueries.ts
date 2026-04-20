@@ -18,14 +18,3 @@ export const ROLES_QUERY = gql`
 
   ${ROLE_FIELDS}
 `;
-
-// Requête pour récupérer un rôle spécifique en fonction d'une clé (id ou label) et d'une valeur (valeur de l'id ou du label)
-export const ROLE_QUERY = gql`
-  query Role($key: String!, $value: String!) {
-    role(key: $key, value: $value) {
-      ...RoleFields
-    }
-  }
-
-  ${ROLE_FIELDS}
-`;

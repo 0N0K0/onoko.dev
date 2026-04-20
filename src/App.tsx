@@ -1,23 +1,28 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/public/homePage";
-import PublicLayout from "./layout/public/publicLayout";
-import AdminLayout from "./layout/admin/adminLayout";
-import Dashboard from "./pages/admin/dashboardPage";
-import Account from "./pages/admin/accountPage";
-import Login from "./pages/auth/loginPage";
-import RequestResetPassword from "./pages/auth/requestResetPasswordPage";
-import ResetPassword from "./pages/auth/resetPasswordPage";
-import LogoutPage from "./pages/auth/logoutPage";
-import RequireAuth from "./pages/admin/requireAuth";
+import Home from "./pages/public/HomePage";
+import PublicLayout from "./layout/public/PublicLayout";
+import AdminLayout from "./layout/admin/AdminLayout";
+import Dashboard from "./pages/admin/DashboardPage";
+import Account from "./pages/admin/AccountPage";
+import Login from "./pages/auth/LoginPage";
+import RequestResetPassword from "./pages/auth/RequestResetPasswordPage";
+import ResetPassword from "./pages/auth/ResetPasswordPage";
+import LogoutPage from "./pages/auth/LogoutPage";
+import RequireAuth from "./pages/admin/RequireAuth";
 import { LOGIN_ROUTE } from "./constants/apiConstants";
 import { AuthProvider } from "./context/AuthContext";
-import Categories from "./pages/admin/categoriesPage";
+import Categories from "./pages/admin/CategoriesPage";
 import { GlobalStyles, useTheme } from "@mui/material";
-import { CategoryProvider } from "./context/CategoryContext";
-import Stacks from "./pages/admin/stackPage";
-import Coworkers from "./pages/admin/coworkerPage";
-import Roles from "./pages/admin/rolePage";
-import { RoleProvider } from "./context/RoleContext";
+import Stacks from "./pages/admin/StackPage";
+import Coworkers from "./pages/admin/CoworkerPage";
+import Roles from "./pages/admin/RolePage";
+import Media from "./pages/admin/MediaPage";
+import { ApolloProvider } from "@apollo/client/react";
+import apolloClient from "./services/appolloClient";
+import Projects from "./pages/admin/ProjectsPage";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import "dayjs/locale/fr";
 
 export default function App() {
   const theme = useTheme();
@@ -38,16 +43,17 @@ export default function App() {
           },
           "::-webkit-scrollbar-thumb:hover": {
             background: theme.palette.text.secondary,
+            backgroundClip: "content-box",
           },
           "::-webkit-scrollbar-corner": {
-            background: theme.palette.background.paper,
+            background: "transparent",
           },
         }}
       />
       <Router>
-        <AuthProvider>
-          <CategoryProvider>
-            <RoleProvider>
+        <ApolloProvider client={apolloClient}>
+          <AuthProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
               <Routes>
                 {/* Routes publiques */}
                 <Route
@@ -87,15 +93,17 @@ export default function App() {
                           <Route path="/stacks" element={<Stacks />} />
                           <Route path="/roles" element={<Roles />} />
                           <Route path="/coworkers" element={<Coworkers />} />
+                          <Route path="/medias" element={<Media />} />
+                          <Route path="/projects" element={<Projects />} />
                         </Routes>
                       </AdminLayout>
                     </RequireAuth>
                   }
                 />
               </Routes>
-            </RoleProvider>
-          </CategoryProvider>
-        </AuthProvider>
+            </LocalizationProvider>
+          </AuthProvider>
+        </ApolloProvider>
       </Router>
     </>
   );

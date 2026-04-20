@@ -1,18 +1,34 @@
-import { Button, TextField, useTheme } from "@mui/material";
-import CustomDialog from "../custom/customDialog";
-import { ResponsiveBox, ResponsiveStack } from "../custom/responsiveLayout";
+import { Button, TextField } from "@mui/material";
+import CustomDialog from "../custom/CustomDialog";
+import { ResponsiveStack } from "../custom/ResponsiveLayout";
 import Icon from "@mdi/react";
-import { mdiCheck, mdiClose, mdiPencil } from "@mdi/js";
-import type { Stack, StackFormDialogProps } from "../../types/stackTypes";
-import { useCategory } from "../../hooks/useCategory";
-import CustomSelect from "../custom/customSelect";
-import Dropzone from "react-dropzone";
-import ResponsiveBodyTypography from "../custom/responsiveBodyTypography";
-import CustomIconButton from "../custom/customIconButton";
+import { mdiCheck, mdiClose } from "@mdi/js";
+import type {
+  Stack,
+  StackFormDialogProps,
+} from "../../types/entities/stackTypes";
+import CustomSelect from "../custom/CustomSelect";
 import { useEffect, useState } from "react";
-import { API_URL } from "../../constants/apiConstants";
-import FieldsRepeater from "../custom/fieldsRepeater";
+import FieldsRepeater from "../custom/FieldsRepeater";
+import type { Category } from "../../types/entities/categoryTypes";
+import useCategories from "../../hooks/queries/useCategories";
+import MediaPicker from "./media/MediaPicker";
+import useMedias from "../../hooks/queries/useMedias";
+import type { Media } from "../../types/entities/mediaTypes";
 
+/**
+ * Composant de dialogue pour ajouter ou modifier une technologie (stack).
+ * Ce composant affiche un formulaire dans un dialogue personnalisé, permettant à l'utilisateur de saisir les informations d'une technologie, telles que son label, sa description, ses versions, ses compétences associées et sa catégorie.
+ * Il gère à la fois les cas d'ajout et de modification en fonction de la valeur de la prop `open`, qui peut être un booléen ou une chaîne de caractères représentant l'ID d'une technologie existante.
+ * Le composant utilise des états locaux pour gérer les données du formulaire et détecter les changements, ainsi que des hooks personnalisés pour récupérer les catégories disponibles.
+ * @param {Object} props Les propriétés du composant.
+ * @param {boolean | string} props.open Indique si le dialogue est ouvert ou fermé, ou contient l'ID d'une technologie à modifier.
+ * @param {function} props.setOpen Fonction pour changer l'état d'ouverture du dialogue.
+ * @param {Stack[]} props.stacks La liste des technologies existantes, utilisée pour pré-remplir le formulaire en cas de modification.
+ * @param {function} props.handleAdd Fonction à appeler pour ajouter une nouvelle technologie avec les données du formulaire.
+ * @param {function} props.handleEdit Fonction à appeler pour modifier une technologie existante avec les données du formulaire.
+ * @param {boolean} props.submitting Indique si une opération de soumission est en cours, utilisé pour désactiver les actions du dialogue pendant la soumission.
+ */
 export default function StackFormDialog({
   open,
   setOpen,
@@ -21,16 +37,12 @@ export default function StackFormDialog({
   handleEdit,
   submitting,
 }: StackFormDialogProps) {
-  const theme = useTheme();
-  const { categories } = useCategory();
+  const { categories } = useCategories();
+  const { medias } = useMedias();
 
   const [initialStack, setInitialStack] = useState<Stack | null>(null);
-  const [editingStack, setEditingStack] = useState<Partial<
-    Stack & { iconFile?: File | null }
-  > | null>(null);
+  const [editingStack, setEditingStack] = useState<Partial<Stack> | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
-
-  const [editIcon, setEditIcon] = useState(false);
 
   useEffect(() => {
     if (open === true) {
@@ -56,21 +68,8 @@ export default function StackFormDialog({
   }, [open, stacks]);
 
   useEffect(() => {
-    if (editingStack?.iconFile || editingStack?.iconUrl) {
-      setEditIcon(false);
-    } else {
-      setEditIcon(true);
-    }
-  }, [editingStack?.iconFile, editingStack?.iconUrl]);
-
-  const handleDropIcon = (files: File[]) => {
-    if (files && files.length > 0) {
-      setEditingStack(
-        editingStack ? { ...editingStack, iconFile: files[0] } : null,
-      );
-      setHasChanges(true);
-    }
-  };
+    console.log("editingStack", editingStack);
+  }, [editingStack]);
 
   return (
     <CustomDialog
@@ -88,89 +87,92 @@ export default function StackFormDialog({
       content={(() => {
         return (
           <ResponsiveStack rowGap={3} style={{ overflow: "visible" }}>
-            {(editingStack?.iconUrl || editingStack?.iconFile) && (
-              <ResponsiveBox
-                padding={0}
-                sx={{
-                  position: "relative",
-                  width: "fit-content",
-                  margin: "0 auto",
-                }}
-              >
-                <img
-                  src={
-                    editingStack.iconFile
-                      ? URL.createObjectURL(editingStack.iconFile)
-                      : API_URL + editingStack.iconUrl
-                  }
-                  style={{
-                    width: "6rem",
-                    height: "6rem",
-                    objectFit: "contain",
-                  }}
-                />
-                <CustomIconButton
-                  icon={editIcon ? mdiClose : mdiPencil}
-                  color="primary"
-                  sx={{ position: "absolute", bottom: "-20px", right: "-20px" }}
-                  onClick={() => setEditIcon(!editIcon)}
-                  disabled={submitting}
-                />
-              </ResponsiveBox>
-            )}
-            {((!editingStack?.iconUrl && !editingStack?.iconFile) ||
-              editIcon) && (
-              <Dropzone
-                onDrop={(acceptedFiles) => {
-                  handleDropIcon(acceptedFiles);
-                  setEditIcon(false);
-                }}
-                accept={{
-                  "image/*": [".webp", ".png", ".jpg", ".jpeg", ".svg"],
-                }}
-              >
-                {({ getRootProps, getInputProps }) => (
-                  <ResponsiveBox
-                    paddingY={3}
-                    paddingX={4}
-                    {...getRootProps()}
-                    sx={{
-                      border: "2px dashed " + theme.palette.divider,
-                      borderRadius: "8px",
-                      textAlign: "center",
-                      cursor: "pointer",
-                      "&:hover": {
-                        backgroundColor: theme.palette.action.hover,
-                        border: "2px dashed " + theme.palette.text.secondary,
-                      },
-                    }}
-                  >
-                    <input {...getInputProps()} />
-                    <ResponsiveBodyTypography
-                      variant="bodySm"
-                      color="textSecondary"
-                    >
-                      Glisser l'icone&nbsp;ici, ou&nbsp;cliquer
-                      pour&nbsp;sélectionner un&nbsp;fichier
-                    </ResponsiveBodyTypography>
-                  </ResponsiveBox>
-                )}
-              </Dropzone>
-            )}
-            <TextField
-              label="Label"
-              value={editingStack?.label || ""}
-              onChange={(e) => {
-                setEditingStack(
-                  editingStack
-                    ? { ...editingStack, label: e.target.value }
-                    : null,
-                );
-                e.target.value !== (editingStack?.label || "") &&
-                  setHasChanges(true);
-              }}
+            <MediaPicker
+              initialImages={
+                editingStack &&
+                editingStack.icon &&
+                typeof editingStack.icon !== "string"
+                  ? (medias?.filter(
+                      (m) => m.id === (editingStack.icon as Media).id,
+                    ) ?? [])
+                  : []
+              }
+              multiple={false}
+              labels={{ singular: "une icône", plural: "des icônes" }}
               required
+              onChange={(value) => {
+                setEditingStack(
+                  editingStack ? { ...editingStack, icon: value } : null,
+                );
+                setHasChanges(true);
+              }}
             />
+            <ResponsiveStack
+              columnGap={2}
+              rowGap={3}
+              direction="row"
+              flexWrap="wrap"
+            >
+              <TextField
+                label="Label"
+                value={editingStack?.label || ""}
+                onChange={(e) => {
+                  setEditingStack(
+                    editingStack
+                      ? { ...editingStack, label: e.target.value }
+                      : null,
+                  );
+                  e.target.value !== (editingStack?.label || "") &&
+                    setHasChanges(true);
+                }}
+                required
+                fullWidth={false}
+                sx={{ flex: "1 0 208px" }}
+              />
+              <CustomSelect
+                label="Catégorie"
+                labelId="category-label"
+                value={
+                  typeof editingStack?.category === "string"
+                    ? editingStack.category
+                    : editingStack?.category?.id || ""
+                }
+                onChange={(e) => {
+                  const nextValue =
+                    typeof e.target === "object" &&
+                    e.target !== null &&
+                    "value" in e.target
+                      ? e.target.value
+                      : "";
+                  const categoryValue = Array.isArray(nextValue)
+                    ? (nextValue[0] ?? "")
+                    : nextValue;
+
+                  setEditingStack(
+                    editingStack
+                      ? { ...editingStack, category: categoryValue as string }
+                      : null,
+                  );
+                  categoryValue !==
+                    (typeof initialStack?.category === "string"
+                      ? initialStack.category
+                      : initialStack?.category?.id || "") &&
+                    setHasChanges(true);
+                }}
+                options={
+                  categories
+                    ?.filter((c: Category) => c.entity === "stack")
+                    .map((c: Category) => ({
+                      id: c.id,
+                      label: c.depth
+                        ? "__".repeat(c.depth) + ` ${c.label}`
+                        : c.label,
+                    })) || []
+                }
+                sx={{ flex: "1 0 208px" }}
+                fullWidth={false}
+              />
+            </ResponsiveStack>
             <TextField
               label="Description"
               value={editingStack?.description || ""}
@@ -198,6 +200,7 @@ export default function StackFormDialog({
                   onChange={(e) => onChange(e.target.value)}
                 />
               )}
+              minWidth="256px"
             />
             <FieldsRepeater
               label={{ title: "Compétences", add: "une compétence" }}
@@ -214,37 +217,6 @@ export default function StackFormDialog({
                 />
               )}
             />
-
-            <CustomSelect
-              label="Catégorie"
-              labelId="category-label"
-              value={
-                typeof editingStack?.category === "string"
-                  ? editingStack.category
-                  : editingStack?.category?.id || ""
-              }
-              onChange={(e) => {
-                setEditingStack(
-                  editingStack
-                    ? { ...editingStack, category: e.target.value as string }
-                    : null,
-                );
-                e.target.value !==
-                  (typeof initialStack?.category === "string"
-                    ? initialStack.category
-                    : initialStack?.category?.id || "") && setHasChanges(true);
-              }}
-              options={
-                categories
-                  ?.filter((c) => c.entity === "stack")
-                  .map((c) => ({
-                    id: c.id,
-                    label: c.depth
-                      ? "__".repeat(c.depth) + ` ${c.label}`
-                      : c.label,
-                  })) || []
-              }
-            />
           </ResponsiveStack>
         );
       })()}
@@ -259,7 +231,7 @@ export default function StackFormDialog({
           }}
           disabled={submitting}
           startIcon={<Icon path={mdiClose} size={1} />}
-          sx={{ flex: "1 1 auto" }}
+          sx={{ width: "fit-content", minWidth: "208px" }}
         >
           Annuler
         </Button>,
@@ -267,24 +239,36 @@ export default function StackFormDialog({
           key="confirm"
           color="success"
           onClick={() => {
-            if (typeof open === "string") {
-              handleEdit(editingStack!);
+            if (typeof open === "string" && editingStack?.id) {
+              const input = editingStack;
+              delete input.id;
+              delete (input as any).__typename;
+              if (input.category) {
+                input.category =
+                  typeof input.category === "string"
+                    ? input.category
+                    : (input.category as Category).id;
+              }
+              handleEdit({
+                variables: { id: open, input },
+              });
             } else {
-              handleAdd(editingStack!);
+              handleAdd({ variables: { input: editingStack! } });
             }
           }}
           disabled={
             submitting ||
             !hasChanges ||
             !editingStack?.label ||
-            (!editingStack?.iconFile && !editingStack?.iconUrl)
+            !editingStack?.icon
           }
           startIcon={<Icon path={mdiCheck} size={1} />}
-          sx={{ flex: "1 1 auto" }}
+          sx={{ width: "fit-content", minWidth: "208px" }}
         >
           {typeof open === "string" ? "Modifier" : "Ajouter"}
         </Button>,
       ]}
+      width={12}
     />
   );
 }

@@ -5,6 +5,8 @@ export const DIALOG = {
       padding: "24px 32px",
       margin: "24px auto",
       gap: "24px",
+      maxWidth: "100%",
+      maxHeight: "calc(100% - 48px)",
     },
   },
 };

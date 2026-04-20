@@ -1,6 +1,6 @@
-import { createHttpLink } from "@apollo/client";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
 
 /**
  * Configure et exporte une instance d'Apollo Client pour interagir avec le backend GraphQL.
@@ -8,7 +8,7 @@ import { setContext } from "@apollo/client/link/context";
  */
 
 // Lien HTTP vers ton endpoint GraphQL
-const httpLink = createHttpLink({
+const httpLink = new UploadHttpLink({
   uri: "http://localhost:4000/graphql",
 });
 
