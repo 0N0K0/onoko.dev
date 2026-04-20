@@ -4,12 +4,13 @@ import type { EntityFormDialogProps } from "./entityTypes";
 import type { Media } from "./mediaTypes";
 import type { Role } from "./roleTypes";
 import type { Stack } from "./stackTypes";
+import type { Dayjs } from "dayjs";
 
 export interface Project {
   id: string;
   label: string;
   thumbnail?: Media | string;
-  categories?: Category[] | string[];
+  categories?: (Category | string)[];
   website?: {
     url: string;
     label: string;
@@ -17,7 +18,7 @@ export interface Project {
   mockup?: {
     url: string;
     label: string;
-    images?: Media[];
+    images?: (Media | { id: string; position?: number })[];
   };
   client?: {
     label: string;
@@ -27,8 +28,8 @@ export interface Project {
     name: string;
     email?: string;
   };
-  startDate?: Date;
-  endDate?: Date;
+  startDate?: Dayjs;
+  endDate?: Dayjs;
   intro?: {
     context?: string;
     objective?: string;
@@ -51,7 +52,7 @@ export interface Project {
     evolution?: string;
     validation?: string;
   };
-  roles?: Role[] | string[];
+  roles?: (Role | string)[];
   coworkers?: Coworker[];
   stacks?: (Partial<Stack> & { section?: string; version?: string })[];
   kpis?: {

@@ -81,12 +81,22 @@ export default function FieldsRepeater({
               alignItems="center"
               key={idx}
             >
-              {fields(value, idx, (newValue: any) => {
-                const newValues = [...items];
-                newValues[idx] = newValue;
-                setEditingItem({ ...editingItem, [values]: newValues });
-                setHasChanges(true);
-              })}
+              {fields(
+                value,
+                idx,
+                (newValue: any) => {
+                  const newValues = [...items];
+                  newValues[idx] = newValue;
+                  setEditingItem({ ...editingItem, [values]: newValues });
+                  setHasChanges(true);
+                },
+                (key: string, newValue: any) => {
+                  const newValues = [...items];
+                  newValues[idx] = { ...newValues[idx], [key]: newValue };
+                  setEditingItem({ ...editingItem, [values]: newValues });
+                  setHasChanges(true);
+                },
+              )}
               <CustomIconButton
                 icon={mdiDelete}
                 color="error"

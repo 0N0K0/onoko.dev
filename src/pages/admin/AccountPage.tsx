@@ -127,7 +127,7 @@ export default function Account() {
 
   return (
     <>
-      <ResponsiveTitle variant="h1" width="100%">
+      <ResponsiveTitle variant="h1" sx={{ width: "100%" }}>
         Mon compte
       </ResponsiveTitle>
       <ClosableSnackbarAlert

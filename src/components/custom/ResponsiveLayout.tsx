@@ -20,11 +20,41 @@ export function ResponsiveLayout<ComponentProps extends { sx?: any }>(
   return React.forwardRef<any, ResponsiveLayoutProps<ComponentProps>>(
     (props, ref) => {
       const theme = useTheme();
-      let { marginY, paddingY, rowGap, maxWidth, sx, ...rest } = props;
+      let {
+        marginY,
+        marginBottom,
+        paddingY,
+        paddingX,
+        paddingLeft,
+        paddingRight,
+        rowGap,
+        columnGap,
+        alignItems,
+        justifyContent,
+        flexWrap,
+        flex,
+        height,
+        width,
+        overflow,
+        maxWidth,
+        sx,
+        ...rest
+      } = props;
       if (typeof marginY === "number") marginY = `${marginY * 8}px`;
+      if (typeof marginBottom === "number")
+        marginBottom = `${marginBottom * 8}px`;
       if (typeof paddingY === "number") paddingY = `${paddingY * 8}px`;
+      if (typeof paddingX === "number") paddingX = `${paddingX * 8}px`;
+      if (typeof paddingLeft === "number") paddingLeft = `${paddingLeft * 8}px`;
+      if (typeof paddingRight === "number")
+        paddingRight = `${paddingRight * 8}px`;
       if (typeof rowGap === "number") rowGap = `${rowGap * 8}px`;
-      const responsiveSx = getResponsiveSx({ marginY, paddingY, rowGap });
+      if (typeof columnGap === "number") columnGap = `${columnGap * 8}px`;
+      const responsiveSx = getResponsiveSx({
+        marginY,
+        paddingY,
+        rowGap,
+      });
       return (
         <Component
           ref={ref}
@@ -32,6 +62,17 @@ export function ResponsiveLayout<ComponentProps extends { sx?: any }>(
           sx={{
             ...sx,
             ...responsiveSx,
+            ...(columnGap !== undefined ? { columnGap } : {}),
+            ...(alignItems !== undefined ? { alignItems } : {}),
+            ...(justifyContent !== undefined ? { justifyContent } : {}),
+            ...(flexWrap !== undefined ? { flexWrap } : {}),
+            ...(flex !== undefined ? { flex } : {}),
+            ...(marginBottom !== undefined ? { marginBottom } : {}),
+            ...(paddingLeft !== undefined ? { paddingLeft } : {}),
+            ...(paddingRight !== undefined ? { paddingRight } : {}),
+            ...(height !== undefined ? { height } : {}),
+            ...(width !== undefined ? { width } : {}),
+            ...(overflow !== undefined ? { overflow } : {}),
             maxWidth: maxWidth || theme.breakpoints.values.xxl,
           }}
         />

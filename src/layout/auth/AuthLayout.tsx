@@ -54,9 +54,8 @@ export default function AuthLayout({
       >
         <ResponsiveTitle
           variant="h5"
-          textAlign="center"
           component="h1"
-          width="100%"
+          sx={{ textAlign: "center", width: "100%" }}
         >
           {title}
         </ResponsiveTitle>

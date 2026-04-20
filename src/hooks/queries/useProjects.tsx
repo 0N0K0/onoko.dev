@@ -6,10 +6,10 @@ import useMedias from "./useMedias";
 import type { Role } from "../../types/entities/roleTypes";
 import useRoles from "./useRoles";
 import type { Category } from "../../types/entities/categoryTypes";
-import type { Media } from "../../types/entities/mediaTypes";
 import useCoworkers from "./useCoworkers";
 import type { Coworker } from "../../types/entities/coworkerTypes";
 import useStacks from "./useStacks";
+import dayjs from "dayjs";
 
 export default function useProjects() {
   const { categories } = useCategories();
@@ -26,6 +26,12 @@ export default function useProjects() {
   );
   const projects = (data?.projects ?? []).map((project) => {
     let newProject = { ...project };
+    if (project.startDate) {
+      newProject.startDate = dayjs(project.startDate);
+    }
+    if (project.endDate) {
+      newProject.endDate = dayjs(project.endDate);
+    }
     if (project.thumbnail) {
       newProject.thumbnail = medias.find((m) => m.id === project.thumbnail);
     }
@@ -44,10 +50,16 @@ export default function useProjects() {
         mockup: {
           ...project.mockup,
           images: project.mockup.images.map((image) => {
-            const fullImage = medias.find((m) => m.id === image.id);
-            if (fullImage) fullImage.position = image.position;
-            return fullImage || {};
-          }) as Media[],
+            if (typeof image === "string") {
+              const fullImage = medias.find((m) => m.id === image);
+              return fullImage ?? { id: image };
+            }
+            if (!("path" in image)) {
+              const fullImage = medias.find((m) => m.id === image.id);
+              return fullImage ?? image;
+            }
+            return image;
+          }),
         },
       };
     }

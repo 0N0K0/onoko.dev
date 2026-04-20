@@ -7,7 +7,7 @@ import ResponsiveBodyTypography from "../custom/ResponsiveBodyTypography";
  */
 export default function ResetPasswordLink() {
   return (
-    <ResponsiveBodyTypography variant="bodyXs" textAlign="end">
+    <ResponsiveBodyTypography variant="bodyXs" sx={{ textAlign: "end" }}>
       Mot&nbsp;de&nbsp;passe&nbsp;oublié&nbsp;?{" "}
       <Link href="/request-reset-password">
         Réinitialiser&nbsp;mon&nbsp;mot&nbsp;de&nbsp;passe

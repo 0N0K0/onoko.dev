@@ -1,4 +1,4 @@
-import type { SnackbarCloseReason } from "@mui/material";
+import type { SelectChangeEvent, SnackbarCloseReason } from "@mui/material";
 import type { ReactNode } from "react";
 
 /**
@@ -91,6 +91,7 @@ export interface FieldsRepeaterProps {
     value: any,
     idx: number,
     onChange: (newValue: any) => void,
+    onChangeField: (key: string, newValue: any) => void,
   ) => React.ReactNode;
   minWidth?: number | string;
 }
@@ -99,11 +100,8 @@ export interface CustomSelectProps {
   label: string;
   labelId: string;
   value: string | string[];
-  onChange: (
-    event:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<{ value: string | string[] }>
-      | { target: { value: string | string[]; name?: string } },
+  onChange?: (
+    event: SelectChangeEvent<string | string[]>,
     child: ReactNode,
   ) => void;
   options: { id: string; label: string }[];
