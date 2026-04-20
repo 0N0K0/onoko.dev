@@ -95,74 +95,70 @@ export default function MediaGrid(props: MediaGridProps) {
           }
         >
           {/* Barre d'actions */}
-          {(mode === "library" || multiple) && (
-            <ResponsiveStack
-              direction="row"
-              rowGap={3}
-              columnGap={2}
-              justifyContent="space-between"
-              alignItems="center"
-              width="100%"
-              flexWrap="wrap-reverse"
-              maxWidth="100% !important"
-            >
-              {select && (mode === "library" || multiple) && (
-                /* Bouton de sélection multiple */
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={selectedMedias.length === medias.length}
-                      indeterminate={
-                        selectedMedias.length > 0 &&
-                        selectedMedias.length < medias.length
-                      }
-                      onChange={(e) =>
-                        setSelectedMedias(e.target.checked ? [...medias] : [])
-                      }
-                    />
-                  }
-                  label="Sélectionner tout"
-                />
-              )}
+          <ResponsiveStack
+            direction="row"
+            rowGap={3}
+            columnGap={2}
+            justifyContent="space-between"
+            alignItems="center"
+            width="100%"
+            flexWrap="wrap-reverse"
+            maxWidth="100% !important"
+          >
+            {select && (mode === "library" || multiple) && (
+              /* Bouton de sélection multiple */
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={selectedMedias.length === medias.length}
+                    indeterminate={
+                      selectedMedias.length > 0 &&
+                      selectedMedias.length < medias.length
+                    }
+                    onChange={(e) =>
+                      setSelectedMedias(e.target.checked ? [...medias] : [])
+                    }
+                  />
+                }
+                label="Sélectionner tout"
+              />
+            )}
 
-              {/* Bouton pour activer/désactiver le mode de sélection */}
-              {mode === "library" && (
-                <Button
-                  startIcon={
-                    <Icon
-                      path={
-                        select ? mdiClose : mdiCheckboxMultipleMarkedOutline
-                      }
-                      size={1}
-                    />
-                  }
-                  variant="outlined"
-                  onClick={() => {
-                    setSelect((prev) => !prev);
-                    setSelectedMedias([]);
-                  }}
-                  sx={{ marginLeft: "auto" }}
-                >
-                  Sélection multiple
-                </Button>
-              )}
+            {/* Bouton pour activer/désactiver le mode de sélection */}
+            {mode === "library" && (
+              <Button
+                startIcon={
+                  <Icon
+                    path={select ? mdiClose : mdiCheckboxMultipleMarkedOutline}
+                    size={1}
+                  />
+                }
+                variant="outlined"
+                onClick={() => {
+                  setSelect((prev) => !prev);
+                  setSelectedMedias([]);
+                }}
+                sx={{ marginLeft: "auto" }}
+              >
+                Sélection multiple
+              </Button>
+            )}
 
-              {/* Bouton pour afficher la zone d'ajout de média */}
-              {mode === "picker" && (
-                <Button
-                  startIcon={
-                    <Icon path={showAddZone ? mdiClose : mdiPlus} size={1} />
-                  }
-                  onClick={() => setShowAddZone((prev) => !prev)}
-                  sx={{ marginLeft: "auto" }}
-                >
-                  {showAddZone
-                    ? "Masquer la zone d'importation"
-                    : "Importer des médias"}
-                </Button>
-              )}
-            </ResponsiveStack>
-          )}
+            {/* Bouton pour afficher la zone d'ajout de média */}
+            {mode === "picker" && (
+              <Button
+                startIcon={
+                  <Icon path={showAddZone ? mdiClose : mdiPlus} size={1} />
+                }
+                onClick={() => setShowAddZone((prev) => !prev)}
+                sx={{ marginLeft: "auto" }}
+              >
+                {showAddZone
+                  ? "Masquer la zone d'importation"
+                  : "Importer des médias"}
+              </Button>
+            )}
+          </ResponsiveStack>
 
           {/* Zone de dépôt de médias */}
           {showAddZone && handleAdd && (

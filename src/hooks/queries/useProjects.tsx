@@ -24,6 +24,7 @@ export default function useProjects() {
       fetchPolicy: "cache-and-network",
     },
   );
+  console.log(data);
   const projects = (data?.projects ?? []).map((project) => {
     let newProject = { ...project };
     if (project.startDate) {
@@ -36,6 +37,7 @@ export default function useProjects() {
       newProject.thumbnail = medias.find((m) => m.id === project.thumbnail);
     }
     if (project.categories) {
+      console.log(project.categories);
       newProject.categories = project.categories.map((category) => {
         if (typeof category === "string") {
           const fullCategory = categories.find((c) => c.id === category);

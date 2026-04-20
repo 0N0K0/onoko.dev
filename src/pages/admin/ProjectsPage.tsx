@@ -17,6 +17,10 @@ export default function Projects() {
 
   const { projects, loading, error, refetch } = useProjects();
 
+  useEffect(() => {
+    console.log("Projects data:", projects);
+  }, [projects]);
+
   const {
     createProject,
     createProjectData,

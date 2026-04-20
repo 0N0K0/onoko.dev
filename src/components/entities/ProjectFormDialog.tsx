@@ -21,6 +21,7 @@ import useRoles from "../../hooks/queries/useRoles";
 import FieldsRepeater from "../custom/FieldsRepeater";
 import useCoworkers from "../../hooks/queries/useCoworkers";
 import useStacks from "../../hooks/queries/useStacks";
+import useMedias from "../../hooks/queries/useMedias";
 
 /**
  * Composant de dialogue pour ajouter ou modifier un projet.
@@ -53,6 +54,11 @@ export default function ProjectFormDialog({
   const { roles } = useRoles();
   const { coworkers } = useCoworkers();
   const { stacks } = useStacks();
+  const { medias } = useMedias();
+
+  useEffect(() => {
+    console.log("initialProject", initialProject);
+  }, [initialProject]);
 
   useEffect(() => {
     if (open === true) {
@@ -148,15 +154,12 @@ export default function ProjectFormDialog({
               labels={{ singular: "une miniature", plural: "des miniatures" }}
               initialImages={
                 editingProject && editingProject.thumbnail
-                  ? (projects
-                      ?.flatMap((p) =>
-                        p.thumbnail
-                          ? typeof p.thumbnail === "string"
-                            ? []
-                            : [p.thumbnail]
-                          : [],
-                      )
-                      .filter((m) => m.id === editingProject.thumbnail) ?? [])
+                  ? (medias?.filter((m) => {
+                      const thumb = editingProject.thumbnail;
+                      const thumbId =
+                        typeof thumb === "string" ? thumb : (thumb as any)?.id;
+                      return m.id === thumbId;
+                    }) ?? [])
                   : []
               }
               onChange={(value) => {
@@ -294,13 +297,19 @@ export default function ProjectFormDialog({
                   plural: "des images de maquette",
                 }}
                 multiple
-                initialImages={
-                  editingProject?.mockup?.images
-                    ? editingProject.mockup.images.filter(
-                        (i): i is Media => "path" in i,
-                      )
-                    : []
-                }
+                initialImages={(() => {
+                  const images = editingProject?.mockup?.images;
+                  if (!images?.length) return [];
+                  return (
+                    medias?.filter((m) =>
+                      images.some((img) => {
+                        const imgId =
+                          typeof img === "string" ? img : (img as any)?.id;
+                        return m.id === imgId;
+                      }),
+                    ) ?? []
+                  );
+                })()}
                 onChange={(value) => {
                   const newIds = value ? value.split(",").filter(Boolean) : [];
                   const existingMedia = (
@@ -392,16 +401,12 @@ export default function ProjectFormDialog({
                 }}
                 initialImages={
                   editingProject && editingProject.client?.logo
-                    ? (projects
-                        ?.flatMap((p) =>
-                          p.client?.logo
-                            ? typeof p.client.logo === "string"
-                              ? []
-                              : [p.client.logo]
-                            : [],
-                        )
-                        .filter((m) => m.id === editingProject.client!.logo) ??
-                      [])
+                    ? (medias?.filter((m) => {
+                        const logo = editingProject.client?.logo;
+                        const logoId =
+                          typeof logo === "string" ? logo : (logo as any)?.id;
+                        return m.id === logoId;
+                      }) ?? [])
                     : []
                 }
                 onChange={(value) => {
@@ -1161,15 +1166,63 @@ export default function ProjectFormDialog({
           key="confirm"
           color="success"
           onClick={() => {
+            if (!editingProject) return;
+
+            const toId = (v: any) => (typeof v === "string" ? v : (v?.id ?? v));
+
+            const stripTypename = (obj: any): any => {
+              if (Array.isArray(obj)) return obj.map(stripTypename);
+              if (obj && typeof obj === "object") {
+                const { __typename, ...rest } = obj;
+                return Object.fromEntries(
+                  Object.entries(rest).map(([k, v]) => [k, stripTypename(v)]),
+                );
+              }
+              return obj;
+            };
+
+            const input: any = {
+              ...stripTypename(editingProject),
+              categories: (editingProject.categories ?? []).map(toId),
+              roles: (editingProject.roles ?? []).map(toId),
+              thumbnail: editingProject.thumbnail
+                ? toId(editingProject.thumbnail)
+                : undefined,
+              client: editingProject.client
+                ? {
+                    ...stripTypename(editingProject.client),
+                    logo: editingProject.client.logo
+                      ? toId(editingProject.client.logo)
+                      : undefined,
+                  }
+                : undefined,
+              coworkers: (editingProject.coworkers ?? []).map((c) => ({
+                id: toId(c.id ?? c),
+                roles: (c.roles ?? []).map(toId),
+              })),
+              stacks: (editingProject.stacks ?? []).map((s) => ({
+                id: toId(s.id ?? s),
+                version: s.version,
+                section: s.section,
+              })),
+              mockup: editingProject.mockup
+                ? {
+                    ...stripTypename(editingProject.mockup),
+                    images: (editingProject.mockup.images ?? []).map((img) => ({
+                      id: toId(img),
+                      position: (img as any).position,
+                    })),
+                  }
+                : undefined,
+              startDate: editingProject.startDate?.toISOString(),
+              endDate: editingProject.endDate?.toISOString(),
+            };
+            delete input.id;
+
             if (typeof open === "string" && editingProject?.id) {
-              const input = editingProject;
-              delete input.id;
-              delete (input as any).__typename;
-              handleEdit({
-                variables: { id: open, input },
-              });
+              handleEdit({ variables: { id: open, input } });
             } else {
-              handleAdd({ variables: { input: editingProject! } });
+              handleAdd({ variables: { input } });
             }
           }}
           disabled={submitting || !hasChanges || !editingProject?.label}
