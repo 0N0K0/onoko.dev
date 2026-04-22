@@ -80,7 +80,7 @@ export const frontTheme = createTheme({
   ...baseOptions,
   typography: {
     ...TYPOGRAPHY,
-    fontFamily: `'League Spartan', "Helvetica", "Arial", sans-serif`,
+    fontFamily: `'League Spartan', sans-serif`,
   },
 });
 (frontTheme as any).sizes = SIZES();
