@@ -7,8 +7,7 @@
 export function joinUrl(baseUrl: string, path: string): string {
   try {
     return new URL(path, baseUrl).href;
-  } catch (err) {
-    console.error("URL invalide:", err);
+  } catch {
     return baseUrl + path;
   }
 }

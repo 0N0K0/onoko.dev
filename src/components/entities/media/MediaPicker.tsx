@@ -87,10 +87,10 @@ function SortableMediaItem({
     >
       <Picture image={image} />
       <ResponsiveStack
-        direction="row"
-        justifyContent="space-between"
         onPointerDown={(e) => e.stopPropagation()}
         sx={{
+          flexDirection: "row",
+          justifyContent: "space-between",
           position: "absolute",
           bottom: "-20px",
           left: "-20px",
@@ -137,20 +137,25 @@ export default function MediaPicker({
   const theme = useTheme();
 
   const { medias, refetch } = useMedias();
+  const mutations = useMediaMutations();
   const {
-    addMedia,
-    addMediaData,
-    addMediaError,
-    addMediaLoading,
-    editMedia,
-    editMediaData,
-    editMediaError,
-    editMediaLoading,
-    removeMedia,
-    removeMediaData,
-    removeMediaLoading,
-    removeMediaError,
-  } = useMediaMutations();
+    mutate: addMedia,
+    data: addMediaData,
+    error: addMediaError,
+    loading: addMediaLoading,
+  } = mutations.create;
+  const {
+    mutate: editMedia,
+    data: editMediaData,
+    error: editMediaError,
+    loading: editMediaLoading,
+  } = mutations.edit;
+  const {
+    mutate: removeMedia,
+    data: removeMediaData,
+    loading: removeMediaLoading,
+    error: removeMediaError,
+  } = mutations.delete;
   const isInitialSync = useRef(true);
   const initialImagesIds = initialImages.map((i) => i.id).join(",");
   const [images, setImages] = useState<Media[]>(initialImages);
@@ -240,8 +245,8 @@ export default function MediaPicker({
           >
             <ResponsiveBox
               rowGap={3}
-              columnGap={4}
               sx={{
+                columnGap: 4,
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fit, minmax(6rem, 8rem))",
                 justifyContent: "center",

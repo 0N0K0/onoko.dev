@@ -1,14 +1,4 @@
-import {
-  ResponsivePaper,
-  ResponsiveStack,
-} from "../../components/custom/ResponsiveLayout";
-import RootPaper from "../RootPaper";
-import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
-import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
-import { Button } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
-import ResetPasswordLink from "../../components/account/ResetPasswordLink";
-import type { AuthLayoutProps } from "../../types/authTypes";
+import Layout from "..";
 
 /**
  * Composant de layout pour les pages d'authentification (connexion, inscription, etc.)
@@ -22,83 +12,17 @@ import type { AuthLayoutProps } from "../../types/authTypes";
  */
 export default function AuthLayout({
   children,
-  title,
-  returnButton,
-  submitButton,
-  onSubmit,
-  hasResetPasswordLink = false,
-}: AuthLayoutProps) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <RootPaper
+    <Layout
       sx={{
         alignItems: "center",
         justifyContent: "center !important",
       }}
     >
-      <ResponsivePaper
-        component="form"
-        onSubmit={onSubmit}
-        paddingY={3}
-        rowGap={6}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          paddingX: 4,
-          width: {
-            xs: useResponsiveWidth(6),
-            xl: useResponsiveWidth(8),
-          },
-        }}
-        elevation={1}
-      >
-        <ResponsiveTitle
-          variant="h5"
-          component="h1"
-          sx={{ textAlign: "center", width: "100%" }}
-        >
-          {title}
-        </ResponsiveTitle>
-        {children}
-        <ResponsiveStack rowGap={3} width="100%" alignItems="end">
-          <ResponsiveStack
-            direction="row"
-            rowGap={0}
-            columnGap={2}
-            width="100%"
-            sx={{
-              flexWrap: "wrap-reverse",
-            }}
-          >
-            <Button
-              variant="text"
-              color="primary"
-              fullWidth
-              component={RouterLink}
-              to={returnButton.to}
-              disabled={returnButton.disabled}
-              sx={{
-                flex: "1 1 208px",
-              }}
-            >
-              {returnButton.text}
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              type="submit"
-              disabled={submitButton.disabled}
-              sx={{
-                flex: "1 1 208px",
-              }}
-            >
-              {submitButton.text}
-            </Button>
-          </ResponsiveStack>
-          {hasResetPasswordLink && <ResetPasswordLink />}
-        </ResponsiveStack>
-      </ResponsivePaper>
-    </RootPaper>
+      {children}
+    </Layout>
   );
 }

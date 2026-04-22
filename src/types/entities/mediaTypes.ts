@@ -1,7 +1,4 @@
-import type { useMutation } from "@apollo/client/react";
 import type { Category } from "./categoryTypes";
-import type { EntityFormDialogProps } from "./entityTypes";
-import type { ApolloCache } from "@apollo/client";
 
 export interface Media {
   id: string;
@@ -13,18 +10,12 @@ export interface Media {
   position?: number;
 }
 
-export interface MediaFormDialogProps extends EntityFormDialogProps {
-  medias?: Media[];
-}
-
 export type MediaGridProps = {
   medias: Media[];
-  handleEdit: useMutation.MutationFunction<
-    boolean,
-    { id: string; input: Partial<Media> },
-    ApolloCache
-  >;
-  onDelete: useMutation.MutationFunction<boolean, { id: string }, ApolloCache>;
+  handleEdit: (options: {
+    variables: { id: string; input: Partial<Media> };
+  }) => unknown;
+  onDelete: (options: { variables: { id: string } }) => unknown;
   submitting: boolean;
 } & (
   | {
@@ -34,11 +25,9 @@ export type MediaGridProps = {
   | {
       mode: "picker";
       multiple: boolean;
-      handleAdd: useMutation.MutationFunction<
-        boolean,
-        { input: { file: File | null } },
-        ApolloCache
-      >;
+      handleAdd: (options: {
+        variables: { input: { file: File | null } };
+      }) => unknown;
       addMediaLoading: boolean;
       images: Media[];
       setImages: React.Dispatch<React.SetStateAction<Media[]>>;

@@ -8,13 +8,14 @@ import type {
   StackFormDialogProps,
 } from "../../types/entities/stackTypes";
 import CustomSelect from "../custom/CustomSelect";
-import { useEffect, useState } from "react";
 import FieldsRepeater from "../custom/FieldsRepeater";
+import useFormDialog from "../../hooks/useFormDialog";
 import type { Category } from "../../types/entities/categoryTypes";
 import useCategories from "../../hooks/queries/useCategories";
 import MediaPicker from "./media/MediaPicker";
 import useMedias from "../../hooks/queries/useMedias";
 import type { Media } from "../../types/entities/mediaTypes";
+import { extractId, getSelectValue } from "../../utils/normalizeRef";
 
 /**
  * Composant de dialogue pour ajouter ou modifier une technologie (stack).
@@ -40,53 +41,35 @@ export default function StackFormDialog({
   const { categories } = useCategories();
   const { medias } = useMedias();
 
-  const [initialStack, setInitialStack] = useState<Stack | null>(null);
-  const [editingStack, setEditingStack] = useState<Partial<Stack> | null>(null);
-  const [hasChanges, setHasChanges] = useState(false);
-
-  useEffect(() => {
-    if (open === true) {
-      setInitialStack(null);
-      setEditingStack({
-        label: "",
-        description: "",
-        versions: [],
-        skills: [],
-        category: "",
-      });
-      setHasChanges(false);
-    } else if (typeof open === "string") {
-      const stack = stacks?.find((s) => s.id === open) || null;
-      setInitialStack(stack);
-      setEditingStack(stack);
-      setHasChanges(false);
-    } else if (!open) {
-      setInitialStack(null);
-      setEditingStack(null);
-      setHasChanges(false);
-    }
-  }, [open, stacks]);
-
-  useEffect(() => {
-    console.log("editingStack", editingStack);
-  }, [editingStack]);
+  const {
+    initialItem: initialStack,
+    editingItem: editingStack,
+    setEditingItem: setEditingStack,
+    hasChanges,
+    setHasChanges,
+  } = useFormDialog<Stack>({
+    open,
+    items: stacks,
+    defaults: {
+      label: "",
+      description: "",
+      versions: [],
+      skills: [],
+      category: "",
+    },
+  });
 
   return (
     <CustomDialog
       key="formDialog"
       open={!!open}
-      onClose={() => {
-        (setOpen(false),
-          setInitialStack(null),
-          setEditingStack(null),
-          setHasChanges(false));
-      }}
+      onClose={() => setOpen(false)}
       title={`${
         typeof open === "string" ? "Modifier la" : "Ajouter une"
       } technologie`}
       content={(() => {
         return (
-          <ResponsiveStack rowGap={3} style={{ overflow: "visible" }}>
+          <ResponsiveStack rowGap={3} sx={{ overflow: "visible" }}>
             <MediaPicker
               initialImages={
                 editingStack &&
@@ -108,10 +91,8 @@ export default function StackFormDialog({
               }}
             />
             <ResponsiveStack
-              columnGap={2}
               rowGap={3}
-              direction="row"
-              flexWrap="wrap"
+              sx={{ columnGap: 2, flexDirection: "row", flexWrap: "wrap" }}
             >
               <TextField
                 label="Label"
@@ -138,19 +119,10 @@ export default function StackFormDialog({
                     : editingStack?.category?.id || ""
                 }
                 onChange={(e) => {
-                  const nextValue =
-                    typeof e.target === "object" &&
-                    e.target !== null &&
-                    "value" in e.target
-                      ? e.target.value
-                      : "";
-                  const categoryValue = Array.isArray(nextValue)
-                    ? (nextValue[0] ?? "")
-                    : nextValue;
-
+                  const categoryValue = getSelectValue(e);
                   setEditingStack(
                     editingStack
-                      ? { ...editingStack, category: categoryValue as string }
+                      ? { ...editingStack, category: categoryValue }
                       : null,
                   );
                   categoryValue !==
@@ -223,12 +195,7 @@ export default function StackFormDialog({
       actions={[
         <Button
           key="cancel"
-          onClick={() => {
-            setOpen(false);
-            setInitialStack(null);
-            setEditingStack(null);
-            setHasChanges(false);
-          }}
+          onClick={() => setOpen(false)}
           disabled={submitting}
           startIcon={<Icon path={mdiClose} size={1} />}
           sx={{ width: "fit-content", minWidth: "208px" }}
@@ -243,12 +210,7 @@ export default function StackFormDialog({
               const input = editingStack;
               delete input.id;
               delete (input as any).__typename;
-              if (input.category) {
-                input.category =
-                  typeof input.category === "string"
-                    ? input.category
-                    : (input.category as Category).id;
-              }
+              input.category = extractId(input.category);
               handleEdit({
                 variables: { id: open, input },
               });

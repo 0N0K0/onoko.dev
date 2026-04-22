@@ -1,12 +1,13 @@
 import { mdiHome } from "@mdi/js";
 import { MenuItem } from "@mui/material";
 import CustomMenu from "../custom/CustomMenu";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { useState } from "react";
 import CustomIconButton from "../custom/CustomIconButton";
 
 export default function HomeMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const { pathname } = useLocation();
   return (
     <>
       <CustomIconButton
@@ -26,7 +27,7 @@ export default function HomeMenu() {
           component={Link}
           to="/"
           onClick={() => setAnchorEl(null)}
-          selected={location.pathname === "/"}
+          selected={pathname === "/"}
         >
           Site
         </MenuItem>
@@ -34,7 +35,7 @@ export default function HomeMenu() {
           component={Link}
           to="/admin"
           onClick={() => setAnchorEl(null)}
-          selected={location.pathname === "/admin"}
+          selected={pathname === "/admin"}
         >
           Tableau de bord
         </MenuItem>

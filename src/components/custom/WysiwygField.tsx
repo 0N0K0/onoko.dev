@@ -1,7 +1,6 @@
-import { useEffect, useRef } from "react";
-import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import { FormControl, FormLabel, Box, useTheme } from "@mui/material";
+import useWysiwyg from "../../hooks/useWysiwyg";
 
 interface WysiwygFieldProps {
   label: string;
@@ -15,65 +14,7 @@ export default function WysiwygField({
   onChange,
 }: WysiwygFieldProps) {
   const theme = useTheme();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const quillRef = useRef<Quill | null>(null);
-  const isInternalChange = useRef(false);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-    containerRef.current.innerHTML = "";
-    const editorDiv = document.createElement("div");
-    containerRef.current.appendChild(editorDiv);
-    quillRef.current = new Quill(editorDiv, {
-      theme: "snow",
-      modules: {
-        toolbar: [
-          [{ size: ["small", false, "large", "huge"] }],
-          ["bold", "italic", "underline"],
-          [{ color: [] }, { background: [] }],
-          [{ script: "sub" }, { script: "super" }],
-          [{ list: "ordered" }, { list: "bullet" }],
-          [{ indent: "-1" }, { indent: "+1" }],
-          [{ align: "center" }, { align: "right" }, { align: "justify" }],
-          [
-            { header: "3" },
-            { header: "4" },
-            { header: "5" },
-            { header: "6" },
-            "code",
-          ],
-          ["link"],
-          ["clean"],
-        ],
-      },
-    });
-    quillRef.current.on("text-change", () => {
-      if (!quillRef.current) return;
-      isInternalChange.current = true;
-      onChange(quillRef.current.getSemanticHTML());
-    });
-    return () => {
-      quillRef.current = null;
-      if (containerRef.current) {
-        containerRef.current.innerHTML = "";
-      }
-    };
-  }, []);
-
-  // Sync external value changes (e.g. when dialog opens with existing data)
-  useEffect(() => {
-    if (!quillRef.current) return;
-    if (isInternalChange.current) {
-      isInternalChange.current = false;
-      return;
-    }
-    const current = quillRef.current.getSemanticHTML();
-    if (current !== value) {
-      quillRef.current.setContents(
-        quillRef.current.clipboard.convert({ html: value || "" }),
-      );
-    }
-  }, [value]);
+  const { containerRef } = useWysiwyg({ value, onChange });
 
   return (
     <FormControl fullWidth>
@@ -81,7 +22,6 @@ export default function WysiwygField({
         sx={{
           fontSize: "0.75rem",
           lineHeight: 2,
-          //   marginBottom: "4px",
           color: theme.palette.text.secondary,
         }}
       >

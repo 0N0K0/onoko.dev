@@ -9,8 +9,9 @@ import type {
   CoworkerFormDialogProps,
 } from "../../types/entities/coworkerTypes";
 import type { Role } from "../../types/entities/roleTypes";
-import { useEffect, useState } from "react";
 import useRoles from "../../hooks/queries/useRoles";
+import useFormDialog from "../../hooks/useFormDialog";
+import { extractIds, getMultiSelectValue } from "../../utils/normalizeRef";
 
 /**
  * Composant de dialogue pour ajouter ou modifier un intervenant (coworker).
@@ -35,49 +36,29 @@ export default function CoworkerFormDialog({
 }: CoworkerFormDialogProps) {
   const { roles } = useRoles();
 
-  // State local pour le formulaire
-  const [initialCoworker, setInitialCoworker] = useState<Coworker | null>(null);
-  const [editingCoworker, setEditingCoworker] =
-    useState<Partial<Coworker> | null>(null);
-  const [hasChanges, setHasChanges] = useState(false);
-
-  // Réinitialise le formulaire à l'ouverture
-  useEffect(() => {
-    if (open === true) {
-      setInitialCoworker(null);
-      setEditingCoworker({
-        name: "",
-        roles: [],
-      });
-      setHasChanges(false);
-    } else if (typeof open === "string") {
-      const coworker = coworkers?.find((c) => c.id === open) || null;
-      setInitialCoworker(coworker);
-      setEditingCoworker(coworker);
-      setHasChanges(false);
-    } else if (!open) {
-      setInitialCoworker(null);
-      setEditingCoworker(null);
-      setHasChanges(false);
-    }
-  }, [open, coworkers]);
+  const {
+    initialItem: initialCoworker,
+    editingItem: editingCoworker,
+    setEditingItem: setEditingCoworker,
+    hasChanges,
+    setHasChanges,
+  } = useFormDialog<Coworker>({
+    open,
+    items: coworkers,
+    defaults: { name: "", roles: [] },
+  });
 
   return (
     <CustomDialog
       key="formDialog"
       open={!!open}
-      onClose={() => {
-        (setOpen(false),
-          setInitialCoworker(null),
-          setEditingCoworker(null),
-          setHasChanges(false));
-      }}
+      onClose={() => setOpen(false)}
       title={`${
         typeof open === "string" ? "Modifier l'" : "Ajouter un "
       }intervenant`}
       content={(() => {
         return (
-          <ResponsiveStack rowGap={3} style={{ overflow: "visible" }}>
+          <ResponsiveStack rowGap={3} sx={{ overflow: "visible" }}>
             <TextField
               label="Nom"
               value={editingCoworker?.name || ""}
@@ -95,30 +76,15 @@ export default function CoworkerFormDialog({
             <CustomSelect
               label="Rôles"
               labelId="roles-label"
-              value={
-                editingCoworker?.roles?.map((r) =>
-                  typeof r === "string" ? r : (r as Role).id,
-                ) || []
-              }
+              value={extractIds(editingCoworker?.roles) || []}
               onChange={(e) => {
-                const nextValue =
-                  typeof e.target === "object" &&
-                  e.target !== null &&
-                  "value" in e.target
-                    ? e.target.value
-                    : "";
-                const value = Array.isArray(nextValue)
-                  ? nextValue
-                  : [nextValue];
+                const value = getMultiSelectValue(e);
                 setEditingCoworker(
                   editingCoworker ? { ...editingCoworker, roles: value } : null,
                 );
-                const initial = Array.isArray(initialCoworker?.roles)
-                  ? initialCoworker.roles
-                  : [];
-                const changed =
-                  JSON.stringify(value) !== JSON.stringify(initial);
-                changed && setHasChanges(true);
+                const initialIds = extractIds(initialCoworker?.roles);
+                JSON.stringify(value) !== JSON.stringify(initialIds) &&
+                  setHasChanges(true);
               }}
               options={
                 roles?.map((r: Role) => ({
@@ -133,12 +99,7 @@ export default function CoworkerFormDialog({
       actions={[
         <Button
           key="cancel"
-          onClick={() => {
-            setOpen(false);
-            setInitialCoworker(null);
-            setEditingCoworker(null);
-            setHasChanges(false);
-          }}
+          onClick={() => setOpen(false)}
           disabled={submitting}
           startIcon={<Icon path={mdiClose} size={1} />}
           sx={{ flex: "1 1 auto" }}
@@ -153,11 +114,7 @@ export default function CoworkerFormDialog({
               const input = editingCoworker;
               delete input.id;
               delete (input as any).__typename;
-              if (input.roles) {
-                input.roles = input.roles.map((r) =>
-                  typeof r === "string" ? r : (r as Role).id,
-                );
-              }
+              input.roles = extractIds(input.roles);
               handleEdit({
                 variables: { id: open, input },
               });

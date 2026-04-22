@@ -8,7 +8,8 @@ import type {
   CategoryFormDialogProps,
 } from "../../types/entities/categoryTypes";
 import CustomSelect from "../custom/CustomSelect";
-import { useEffect, useState } from "react";
+import useFormDialog from "../../hooks/useFormDialog";
+import { extractId, getSelectValue } from "../../utils/normalizeRef";
 
 /**
  * Composant de dialogue pour ajouter ou modifier une catégorie
@@ -33,43 +34,23 @@ export default function CategoryFormDialog({
   handleEdit,
   submitting,
 }: CategoryFormDialogProps) {
-  const [initialCategory, setInitialCategory] = useState<Category | null>(null);
-  const [editingCategory, setEditingCategory] =
-    useState<Partial<Category> | null>(null);
-  const [hasChanges, setHasChanges] = useState(false);
-
-  useEffect(() => {
-    if (open === true) {
-      setInitialCategory(null);
-      setEditingCategory({
-        label: "",
-        entity: "",
-        description: "",
-        parent: "",
-      });
-      setHasChanges(false);
-    } else if (typeof open === "string") {
-      const cat = categories?.find((c) => c.id === open) || null;
-      setInitialCategory(cat);
-      setEditingCategory(cat);
-      setHasChanges(false);
-    } else if (!open) {
-      setInitialCategory(null);
-      setEditingCategory(null);
-      setHasChanges(false);
-    }
-  }, [open, categories]);
+  const {
+    initialItem: initialCategory,
+    editingItem: editingCategory,
+    setEditingItem: setEditingCategory,
+    hasChanges,
+    setHasChanges,
+  } = useFormDialog<Category>({
+    open,
+    items: categories,
+    defaults: { label: "", entity: "", description: "", parent: "" },
+  });
 
   return (
     <CustomDialog
       key="formDialog"
       open={!!open}
-      onClose={() => {
-        setOpen(false);
-        setInitialCategory(null);
-        setEditingCategory(null);
-        setHasChanges(false);
-      }}
+      onClose={() => setOpen(false)}
       title={`${typeof open === "string" ? "Modifier la" : "Ajouter une"} catégorie`}
       content={(() => {
         const category =
@@ -77,7 +58,7 @@ export default function CategoryFormDialog({
             ? categories?.find((c) => c.id === open)
             : null;
         return (
-          <ResponsiveStack rowGap={3} style={{ overflow: "visible" }}>
+          <ResponsiveStack rowGap={3} sx={{ overflow: "visible" }}>
             <TextField
               label="Label"
               value={editingCategory?.label || ""}
@@ -98,18 +79,10 @@ export default function CategoryFormDialog({
               labelId="entity-label"
               value={editingCategory?.entity || ""}
               onChange={(e) => {
-                const nextValue =
-                  typeof e.target === "object" &&
-                  e.target !== null &&
-                  "value" in e.target
-                    ? e.target.value
-                    : "";
-                const entityValue = Array.isArray(nextValue)
-                  ? (nextValue[0] ?? "")
-                  : nextValue;
+                const entityValue = getSelectValue(e);
                 setEditingCategory(
                   editingCategory
-                    ? { ...editingCategory, entity: entityValue as string }
+                    ? { ...editingCategory, entity: entityValue }
                     : null,
                 );
                 setHasChanges(entityValue !== (initialCategory?.entity || ""));
@@ -140,18 +113,10 @@ export default function CategoryFormDialog({
               labelId="parent-category-label"
               value={editingCategory?.parent || ""}
               onChange={(e) => {
-                const nextValue =
-                  typeof e.target === "object" &&
-                  e.target !== null &&
-                  "value" in e.target
-                    ? e.target.value
-                    : "";
-                const parentValue = Array.isArray(nextValue)
-                  ? (nextValue[0] ?? "")
-                  : nextValue;
+                const parentValue = getSelectValue(e);
                 setEditingCategory(
                   editingCategory
-                    ? { ...editingCategory, parent: parentValue as string }
+                    ? { ...editingCategory, parent: parentValue }
                     : null,
                 );
                 setHasChanges(parentValue !== (initialCategory?.parent || ""));
@@ -177,12 +142,7 @@ export default function CategoryFormDialog({
       actions={[
         <Button
           key="cancel"
-          onClick={() => {
-            setOpen(false);
-            setInitialCategory(null);
-            setEditingCategory(null);
-            setHasChanges(false);
-          }}
+          onClick={() => setOpen(false)}
           disabled={submitting}
           startIcon={<Icon path={mdiClose} size={1} />}
           sx={{ flex: "1 1 auto" }}
@@ -197,12 +157,7 @@ export default function CategoryFormDialog({
               const input = editingCategory;
               delete input.id;
               delete (input as any).__typename;
-              if (input.parent) {
-                input.parent =
-                  typeof input.parent === "string"
-                    ? input.parent
-                    : (input.parent as Category).id;
-              }
+              input.parent = extractId(input.parent);
               handleEdit({
                 variables: {
                   id: open,

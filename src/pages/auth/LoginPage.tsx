@@ -4,16 +4,16 @@ import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import PasswordField from "../../components/custom/PasswordField";
-import { useAuth } from "../../hooks/useAuth";
 import SnackbarAlert from "../../components/custom/SnackbarAlert";
-import AuthLayout from "../../layout/auth/AuthLayout";
+import { useAuthContext } from "../../context/AuthContext";
+import AuthForm from "../../layout/auth/AuthForm";
 
 /**
  * Page de connexion à l'espace admin.
  * Permet aux utilisateurs autorisés de se connecter pour accéder à l'administration du site.
  */
 export default function Login() {
-  const { login: loginContext, loading, isAuthenticated } = useAuth();
+  const { login: loginContext, loading, isAuthenticated } = useAuthContext();
 
   const navigate = useNavigate();
   const [redirecting, setRedirecting] = useState(false);
@@ -50,7 +50,7 @@ export default function Login() {
   if (loading || redirecting) return null;
 
   return (
-    <AuthLayout
+    <AuthForm
       title="Accéder à&nbsp;l'espace Administrateur"
       returnButton={{ to: "/", text: "Revenir au site", disabled: loading }}
       submitButton={{
@@ -61,7 +61,7 @@ export default function Login() {
       hasResetPasswordLink
     >
       {error && <SnackbarAlert open={true} message={error} severity="error" />}
-      <ResponsiveStack rowGap={3} width="100%">
+      <ResponsiveStack rowGap={3} sx={{ width: "100%" }}>
         <TextField
           label="Identifiant"
           value={login}
@@ -83,6 +83,6 @@ export default function Login() {
           required
         />
       </ResponsiveStack>
-    </AuthLayout>
+    </AuthForm>
   );
 }

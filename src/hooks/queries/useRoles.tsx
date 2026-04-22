@@ -1,13 +1,5 @@
-import { useQuery } from "@apollo/client/react";
 import type { Role } from "../../types/entities/roleTypes";
 import { ROLES_QUERY } from "../../services/role/roleQueries";
+import { createEntityQuery } from "./createEntityQuery";
 
-export default function useRoles() {
-  const { loading, error, data, refetch } = useQuery<{ roles: Role[] }>(
-    ROLES_QUERY,
-    {
-      fetchPolicy: "cache-and-network",
-    },
-  );
-  return { roles: data?.roles ?? [], loading, error, refetch };
-}
+export default createEntityQuery<Role, "roles">(ROLES_QUERY, "roles");

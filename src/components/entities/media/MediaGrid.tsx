@@ -24,6 +24,7 @@ import type { Category } from "../../../types/entities/categoryTypes";
 import useCategories from "../../../hooks/queries/useCategories";
 import MediaDropZone from "./MediaDropZone";
 import BulkEditFormDialog from "../BulkEditFormDialog";
+import { extractId, getSelectValue } from "../../../utils/normalizeRef";
 
 export default function MediaGrid(props: MediaGridProps) {
   const { mode, medias, handleEdit, onDelete, submitting } = props;
@@ -52,20 +53,18 @@ export default function MediaGrid(props: MediaGridProps) {
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const paths: { [key: string]: string } = {
-    xl: "",
-    l: "",
-    m: "",
-    s: "",
-    xs: "",
-  };
+  const selectedMedia =
+    mode === "picker"
+      ? medias.find((m) => m.id === selectedMedias[0]?.id)
+      : undefined;
 
   return (
     <>
       {/* Conteneur principal */}
       <ResponsiveStack
-        direction="row"
+        maxWidth={mode === "library" ? "calc(100% + 64px) !important" : "100%"}
         sx={{
+          flexDirection: "row",
           height: "100%",
           maxHeight: "100%",
           overflow: "hidden",
@@ -73,11 +72,13 @@ export default function MediaGrid(props: MediaGridProps) {
           marginX: mode === "library" ? "-32px !important" : undefined,
           width: mode === "library" ? "calc(100% + 64px)" : "100%",
         }}
-        maxWidth={mode === "library" ? "calc(100% + 64px) !important" : "100%"}
       >
         {/* Conteneur de médias */}
         <ResponsiveStack
           rowGap={3}
+          maxWidth={
+            mode === "library" ? "calc(100% + 64px) !important" : "100%"
+          }
           sx={{
             overflowY: mode === "library" ? "auto" : "hidden",
             overflowX: "hidden",
@@ -90,20 +91,19 @@ export default function MediaGrid(props: MediaGridProps) {
             minWidth: 0,
             minHeight: 0,
           }}
-          maxWidth={
-            mode === "library" ? "calc(100% + 64px) !important" : "100%"
-          }
         >
           {/* Barre d'actions */}
           <ResponsiveStack
-            direction="row"
             rowGap={3}
-            columnGap={2}
-            justifyContent="space-between"
-            alignItems="center"
-            width="100%"
-            flexWrap="wrap-reverse"
             maxWidth="100% !important"
+            sx={{
+              flexDirection: "row",
+              columnGap: 2,
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+              flexWrap: "wrap-reverse",
+            }}
           >
             {select && (mode === "library" || multiple) && (
               /* Bouton de sélection multiple */
@@ -171,8 +171,11 @@ export default function MediaGrid(props: MediaGridProps) {
           {/* Grille de médias */}
           <ResponsiveBox
             rowGap={3}
-            columnGap={4}
+            maxWidth={
+              mode === "library" ? "calc(100% + 64px) !important" : undefined
+            }
             sx={{
+              columnGap: 4,
               display: "grid",
               gridTemplateColumns: "repeat(auto-fill, minmax(6rem, 1fr))",
               overflowY: "auto",
@@ -184,16 +187,8 @@ export default function MediaGrid(props: MediaGridProps) {
               width:
                 mode === "library" ? "calc(100% + 64px)" : "calc(100% + 24px)",
             }}
-            maxWidth={
-              mode === "library" ? "calc(100% + 64px) !important" : undefined
-            }
           >
             {medias.map((media) => {
-              for (const key in paths) {
-                if (media.type === "webp") {
-                  paths[key] = media.path.replace(/\.webp$/, `_${key}.webp`);
-                }
-              }
               return (
                 /* Conteneur de chaque média */
                 <ResponsiveStack
@@ -216,6 +211,7 @@ export default function MediaGrid(props: MediaGridProps) {
                       if (!multiple && mode === "picker") {
                         setSelectedMedias([media]);
                         setEditingMedias([media]);
+                        setHasChanges(false);
                       } else if (
                         selectedMedias.some((m) => m.id === media.id)
                       ) {
@@ -256,13 +252,15 @@ export default function MediaGrid(props: MediaGridProps) {
           {/* Barre d'actions pour les éléments sélectionnés */}
           {selectedMedias.length > 0 && mode === "library" && (
             <ResponsiveStack
-              direction="row"
               rowGap={3}
-              columnGap={2}
-              justifyContent="space-between"
-              alignItems="center"
-              width="100%"
-              flexWrap="wrap-reverse"
+              sx={{
+                flexDirection: "row",
+                columnGap: 2,
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+                flexWrap: "wrap-reverse",
+              }}
             >
               {/* Nombre de médias sélectionnés */}
               <span>
@@ -310,14 +308,11 @@ export default function MediaGrid(props: MediaGridProps) {
         {/* Edition des médias sélectionnés en mode picker */}
         {mode === "picker" &&
           (() => {
-            const selectedMedia = medias.find(
-              (m) => m.id === selectedMedias[0]?.id,
-            );
             return (
               <ResponsiveStack
                 rowGap={3}
-                justifyContent="space-between"
                 sx={{
+                  justifyContent: "space-between",
                   flex: "0 0 240px",
                   borderLeft: `1px solid ${theme.palette.divider}`,
                   alignItems: "start",
@@ -364,30 +359,20 @@ export default function MediaGrid(props: MediaGridProps) {
                         labelId="category-label"
                         value={(() => {
                           if (editingMedias.length === 0) return "";
-                          const getId = (m: Media) =>
-                            typeof m.category === "string"
-                              ? m.category
-                              : m.category?.id || "";
-                          const first = getId(editingMedias[0]);
-                          return editingMedias.every((m) => getId(m) === first)
+                          const first =
+                            extractId(editingMedias[0].category) ?? "";
+                          return editingMedias.every(
+                            (m) => (extractId(m.category) ?? "") === first,
+                          )
                             ? first
                             : "";
                         })()}
                         onChange={(e) => {
-                          const nextValue =
-                            typeof e.target === "object" &&
-                            e.target !== null &&
-                            "value" in e.target
-                              ? e.target.value
-                              : "";
-                          const categoryValue = Array.isArray(nextValue)
-                            ? (nextValue[0] ?? "")
-                            : nextValue;
-
+                          const value = getSelectValue(e);
                           setEditingMedias(
                             editingMedias.map((m) => ({
                               ...m,
-                              category: categoryValue as string,
+                              category: value,
                             })),
                           );
                           setHasChanges(true);
@@ -428,10 +413,7 @@ export default function MediaGrid(props: MediaGridProps) {
                                   variables: {
                                     id: media.id,
                                     input: {
-                                      category:
-                                        typeof media.category === "string"
-                                          ? media.category
-                                          : media.category?.id || "",
+                                      category: extractId(media.category),
                                     },
                                   },
                                 });
@@ -446,11 +428,9 @@ export default function MediaGrid(props: MediaGridProps) {
                                 id: editingMedias[0].id,
                                 input: {
                                   label: editingMedias[0].label,
-                                  category:
-                                    typeof editingMedias[0].category ===
-                                    "string"
-                                      ? editingMedias[0].category
-                                      : editingMedias[0].category?.id || "",
+                                  category: extractId(
+                                    editingMedias[0].category,
+                                  ),
                                 },
                               },
                             });
@@ -497,27 +477,11 @@ export default function MediaGrid(props: MediaGridProps) {
             <CustomSelect
               label="Catégorie"
               labelId="category-label"
-              value={
-                typeof editingMedias?.[0]?.category === "string"
-                  ? editingMedias[0].category
-                  : editingMedias?.[0]?.category?.id || ""
-              }
+              value={extractId(editingMedias[0]?.category) ?? ""}
               onChange={(e) => {
-                const valueRaw =
-                  typeof e.target === "object" &&
-                  e.target !== null &&
-                  "value" in e.target
-                    ? (e.target as { value: string | string[] }).value
-                    : "";
-                const value = Array.isArray(valueRaw)
-                  ? (valueRaw[0] ?? "")
-                  : valueRaw;
-
+                const value = getSelectValue(e);
                 setEditingMedias((prev) =>
-                  prev.map((m) => ({
-                    ...m,
-                    category: value,
-                  })),
+                  prev.map((m) => ({ ...m, category: value })),
                 );
               }}
               options={
@@ -533,16 +497,14 @@ export default function MediaGrid(props: MediaGridProps) {
             />
           }
           onClick={() => {
-            if (editingMedias) {
-              for (const media of editingMedias) {
-                if (media.id) {
-                  handleEdit({
-                    variables: {
-                      id: media.id,
-                      input: { category: media.category },
-                    },
-                  });
-                }
+            for (const media of editingMedias) {
+              if (media.id) {
+                handleEdit({
+                  variables: {
+                    id: media.id,
+                    input: { category: extractId(media.category) },
+                  },
+                });
               }
             }
           }}

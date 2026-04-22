@@ -61,5 +61,3 @@ declare module "@mui/material/IconButton" {
     adminMenu: true;
   }
 }
-
-declare module "@m";

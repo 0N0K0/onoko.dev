@@ -1,13 +1,19 @@
 import Icon from "@mdi/react";
 import { IconButton } from "@mui/material";
+import type { CustomIconButtonProps } from "../../types/components/baseComponentTypes";
+import { Link as RouterLink } from "react-router-dom";
 
 export default function CustomIconButton({
   icon,
   iconSize = 1,
+  href,
   ...props
-}: any) {
+}: CustomIconButtonProps) {
+  const linkProps = href
+    ? { component: RouterLink, to: href }
+    : {};
   return (
-    <IconButton {...props}>
+    <IconButton {...linkProps} {...props}>
       <Icon path={icon} size={iconSize} />
     </IconButton>
   );

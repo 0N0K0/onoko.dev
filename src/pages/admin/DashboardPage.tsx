@@ -1,5 +1,4 @@
 import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
-import MediaPicker from "../../components/entities/media/MediaPicker";
 
 /**
  * Page d'accueil de l'espace admin.
@@ -10,7 +9,6 @@ export default function Dashboard() {
       <ResponsiveTitle variant="h1" sx={{ width: "100%" }}>
         Tableau de bord
       </ResponsiveTitle>
-      <MediaPicker multiple onChange={() => {}} />
     </>
   );
 }

@@ -4,7 +4,7 @@ import { ResponsiveStack } from "../custom/ResponsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiClose } from "@mdi/js";
 import type { Role, RoleFormDialogProps } from "../../types/entities/roleTypes";
-import { useEffect, useState } from "react";
+import useFormDialog from "../../hooks/useFormDialog";
 
 /**
  * Composant de dialogue pour ajouter ou modifier un rôle.
@@ -27,43 +27,27 @@ export default function RoleFormDialog({
   handleEdit,
   submitting,
 }: RoleFormDialogProps) {
-  const [initialRole, setInitialRole] = useState<Role | null>(null);
-  const [editingRole, setEditingRole] = useState<Partial<Role> | null>(null);
-  const [hasChanges, setHasChanges] = useState(false);
-
-  useEffect(() => {
-    if (open === true) {
-      setInitialRole(null);
-      setEditingRole({
-        label: "",
-      });
-      setHasChanges(false);
-    } else if (typeof open === "string") {
-      const role = roles?.find((r) => r.id === open) || null;
-      setInitialRole(role);
-      setEditingRole(role);
-      setHasChanges(false);
-    } else if (!open) {
-      setInitialRole(null);
-      setEditingRole(null);
-      setHasChanges(false);
-    }
-  }, [open, roles]);
+  const {
+    initialItem: initialRole,
+    editingItem: editingRole,
+    setEditingItem: setEditingRole,
+    hasChanges,
+    setHasChanges,
+  } = useFormDialog<Role>({
+    open,
+    items: roles,
+    defaults: { label: "" },
+  });
 
   return (
     <CustomDialog
       key="formDialog"
       open={!!open}
-      onClose={() => {
-        (setOpen(false),
-          setInitialRole(null),
-          setEditingRole(null),
-          setHasChanges(false));
-      }}
+      onClose={() => setOpen(false)}
       title={`${typeof open === "string" ? "Modifier le" : "Ajouter un"} rôle`}
       content={(() => {
         return (
-          <ResponsiveStack rowGap={3} style={{ overflow: "visible" }}>
+          <ResponsiveStack rowGap={3} sx={{ overflow: "visible" }}>
             <TextField
               label="Label"
               value={editingRole?.label || ""}
@@ -84,12 +68,7 @@ export default function RoleFormDialog({
       actions={[
         <Button
           key="cancel"
-          onClick={() => {
-            setOpen(false);
-            setInitialRole(null);
-            setEditingRole(null);
-            setHasChanges(false);
-          }}
+          onClick={() => setOpen(false)}
           disabled={submitting}
           startIcon={<Icon path={mdiClose} size={1} />}
           sx={{ flex: "1 1 auto" }}

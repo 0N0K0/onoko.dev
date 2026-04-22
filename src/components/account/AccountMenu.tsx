@@ -6,9 +6,9 @@ import { Link, useLocation } from "react-router";
 import { useState } from "react";
 import CustomMenu from "../custom/CustomMenu";
 import ResponsiveBodyTypography from "../custom/ResponsiveBodyTypography";
-import { useAuth } from "../../hooks/useAuth";
 import { ResponsiveStack } from "../custom/ResponsiveLayout";
 import CustomIconButton from "../custom/CustomIconButton";
+import { useAuthContext } from "../../context/AuthContext";
 
 export default function AccountMenu() {
   const [logoutConfirm, setLogoutConfirm] = useState(false);
@@ -18,10 +18,12 @@ export default function AccountMenu() {
     setAnchorEl(null);
   };
   const location = useLocation();
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
   return (
-    <ResponsiveStack direction="row" spacing={1} alignItems="center">
+    <ResponsiveStack
+      sx={{ flexDirection: "row", spacing: 1, alignItems: "center" }}
+    >
       <ResponsiveBodyTypography variant="bodySm" color="textSecondary">
         Bonjour {user} !
       </ResponsiveBodyTypography>

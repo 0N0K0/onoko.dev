@@ -1,7 +1,6 @@
 import AdminHeader from "./AdminHeader";
-import RootPaper from "../RootPaper";
-import { ResponsivePaper } from "../../components/custom/ResponsiveLayout";
 import AdminSidebar from "./AdminSidebar";
+import Layout from "..";
 import { useTheme } from "@mui/material";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 
@@ -15,32 +14,25 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const theme = useTheme();
+  const sidebarWidth = useResponsiveWidth(2);
   return (
-    <RootPaper maxWidth={"100% !important"} sx={{ width: "100% !important" }}>
+    <Layout maxWidth={"100% !important"} sx={{ width: "100% !important" }}>
       <AdminHeader />
       <AdminSidebar />
-      <ResponsivePaper
-        component="main"
-        paddingY={3}
+      <Layout.Content
         rowGap={6}
+        maxWidth={"100% !important"}
         sx={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          paddingX: 4,
           alignItems: "center",
           minHeight: "0",
           height: `calc(100vh - ${theme.sizes.adminHeaderHeight})`,
           maxHeight: `calc(100vh - ${theme.sizes.adminHeaderHeight})`,
           overflowY: "hidden",
-          marginLeft: { md: useResponsiveWidth(2), xs: 0 },
+          marginLeft: { md: sidebarWidth, xs: 0 },
         }}
-        square
-        elevation={0}
-        maxWidth={"100% !important"}
       >
         {children}
-      </ResponsivePaper>
-    </RootPaper>
+      </Layout.Content>
+    </Layout>
   );
 }

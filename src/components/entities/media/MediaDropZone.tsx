@@ -3,18 +3,14 @@ import { ResponsiveStack } from "../../custom/ResponsiveLayout";
 import { useTheme } from "@mui/material";
 import ResponsiveBodyTypography from "../../custom/ResponsiveBodyTypography";
 import { useState } from "react";
-import type { useMutation } from "@apollo/client/react";
-import type { ApolloCache } from "@apollo/client";
 
 export default function MediaDropZone({
   handleAdd,
   submitting,
 }: {
-  handleAdd: useMutation.MutationFunction<
-    boolean,
-    { input: { file: File | null } },
-    ApolloCache
-  >;
+  handleAdd: (options: {
+    variables: { input: { file: File | null } };
+  }) => unknown;
   submitting: boolean;
 }) {
   const theme = useTheme();
@@ -50,11 +46,11 @@ export default function MediaDropZone({
       {({ getRootProps, getInputProps }) => (
         <ResponsiveStack
           paddingY={3}
-          paddingX={4}
-          justifyContent="center"
-          alignItems="center"
           {...getRootProps()}
           sx={{
+            paddingX: 4,
+            justifyContent: "center",
+            alignItems: "center",
             opacity: submitting ? 0.5 : 1,
             width: "100%",
             height: "168px",

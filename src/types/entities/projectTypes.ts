@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from "react";
 import type { Category } from "./categoryTypes";
 import type { Coworker } from "./coworkerTypes";
 import type { EntityFormDialogProps } from "./entityTypes";
@@ -69,4 +70,11 @@ export interface Project {
 
 export interface ProjectFormDialogProps extends EntityFormDialogProps {
   projects?: Project[];
+}
+
+export interface ProjectSectionProps {
+  editingProject: Partial<Project> | null;
+  setEditingProject: Dispatch<SetStateAction<Partial<Project> | null>>;
+  initialProject: Project | null | undefined;
+  setHasChanges: (hasChanges: boolean) => void;
 }

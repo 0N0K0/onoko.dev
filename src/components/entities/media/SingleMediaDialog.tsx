@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CustomDialog from "../../custom/CustomDialog";
 import type { Media } from "../../../types/entities/mediaTypes";
 import Picture from "../../custom/Picture";
@@ -10,8 +10,8 @@ import Icon from "@mdi/react";
 import { mdiCheck, mdiDelete } from "@mdi/js";
 import DeleteConfirmationDialog from "../DeleteConfirmationDialog";
 import useCategories from "../../../hooks/queries/useCategories";
-import type { useMutation } from "@apollo/client/react";
-import type { ApolloCache } from "@apollo/client";
+import { extractId, getSelectValue } from "../../../utils/normalizeRef";
+import useFormDialog from "../../../hooks/useFormDialog";
 
 export default function SingleMediaDialog({
   open,
@@ -24,38 +24,27 @@ export default function SingleMediaDialog({
   open: string | false;
   setOpen: React.Dispatch<React.SetStateAction<string | false>>;
   medias: Media[] | undefined;
-  handleEdit: useMutation.MutationFunction<
-    boolean,
-    { id: string; input: Partial<Media> },
-    ApolloCache
-  >;
-  handleDelete: useMutation.MutationFunction<
-    boolean,
-    { id: string },
-    ApolloCache
-  >;
+  handleEdit: (options: {
+    variables: { id: string; input: Partial<Media> };
+  }) => unknown;
+  handleDelete: (options: { variables: { id: string } }) => unknown;
   submitting: boolean;
 }) {
-  const [initialMedia, setInitialMedia] = useState<Media | null>(null);
-  const [editingMedia, setEditingMedia] = useState<Partial<Media> | null>(null);
-  const [hasChanges, setHasChanges] = useState(false);
-
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const { categories } = useCategories();
+  const {
+    initialItem: initialMedia,
+    editingItem: editingMedia,
+    setEditingItem: setEditingMedia,
+    hasChanges,
+    setHasChanges,
+  } = useFormDialog<Media>({
+    open,
+    items: medias,
+    defaults: {},
+  });
 
-  useEffect(() => {
-    if (open) {
-      const media = medias?.find((m) => m.id === open) || null;
-      setInitialMedia(media);
-      setEditingMedia(media);
-      setHasChanges(false);
-    } else {
-      setInitialMedia(null);
-      setEditingMedia(null);
-      setHasChanges(false);
-    }
-  }, [open, medias]);
+  const { categories } = useCategories();
 
   return (
     <>
@@ -67,13 +56,15 @@ export default function SingleMediaDialog({
           return (
             initialMedia && (
               <ResponsiveStack
-                direction="row"
-                columnGap={2}
-                justifyContent="space-between"
-                alignItems="center"
-                width="100%"
-                height="100%"
-                overflow="hidden"
+                sx={{
+                  flexDirection: "row",
+                  columnGap: 2,
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                  height: "100%",
+                  overflow: "hidden",
+                }}
               >
                 <Picture
                   image={initialMedia}
@@ -88,9 +79,11 @@ export default function SingleMediaDialog({
                 />
                 <ResponsiveStack
                   rowGap={3}
-                  sx={{ flex: "0 1 0" }}
-                  height="100%"
-                  justifyContent="space-between"
+                  sx={{
+                    flex: "0 1 0",
+                    height: "100%",
+                    justifyContent: "space-between",
+                  }}
                 >
                   <ResponsiveStack rowGap={3}>
                     <TextField
@@ -110,34 +103,15 @@ export default function SingleMediaDialog({
                     <CustomSelect
                       label="Catégorie"
                       labelId="category-label"
-                      value={
-                        typeof editingMedia?.category === "string"
-                          ? editingMedia.category
-                          : editingMedia?.category?.id || ""
-                      }
+                      value={extractId(editingMedia?.category) ?? ""}
                       onChange={(e) => {
-                        const nextValue =
-                          typeof e.target === "object" &&
-                          e.target !== null &&
-                          "value" in e.target
-                            ? e.target.value
-                            : "";
-                        const categoryValue = Array.isArray(nextValue)
-                          ? (nextValue[0] ?? "")
-                          : nextValue;
-
+                        const value = getSelectValue(e);
                         setEditingMedia(
                           editingMedia
-                            ? {
-                                ...editingMedia,
-                                category: categoryValue as string,
-                              }
+                            ? { ...editingMedia, category: value }
                             : null,
                         );
-                        categoryValue !==
-                          (typeof initialMedia?.category === "string"
-                            ? initialMedia.category
-                            : initialMedia?.category?.id || "") &&
+                        value !== (extractId(initialMedia?.category) ?? "") &&
                           setHasChanges(true);
                       }}
                       options={
@@ -164,7 +138,7 @@ export default function SingleMediaDialog({
                               id: editingMedia!.id,
                               input: {
                                 label: editingMedia!.label,
-                                category: editingMedia!.category,
+                                category: extractId(editingMedia!.category),
                               },
                             },
                           });

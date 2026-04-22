@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuthContext } from "../../context/AuthContext";
 
 /**
  * Composant de protection des routes de l'espace admin. Redirige vers la page de login si l'utilisateur n'est pas authentifié.
@@ -12,12 +12,12 @@ export default function RequireAuth({
   children: React.ReactNode;
 }) {
   const location = useLocation();
-  const { isAuthenticated, loading, checkAuth } = useAuth();
+  const { isAuthenticated, loading, checkAuth } = useAuthContext();
 
   // Vérifie l'authentification à chaque changement de route pour s'assurer que l'utilisateur est toujours authentifié.
   useEffect(() => {
     checkAuth();
-  }, [location.pathname]);
+  }, [location.pathname, checkAuth]);
 
   if (loading) return null;
   if (!isAuthenticated) {

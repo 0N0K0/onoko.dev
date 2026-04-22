@@ -5,6 +5,7 @@ import {
   useState,
   useCallback,
   type ReactNode,
+  useContext,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginApi } from "../services/auth/authService";
@@ -14,6 +15,7 @@ import {
   REFRESH_TOKEN_MUTATION,
 } from "../services/auth/authMutations";
 import type { AuthContextType } from "../types/authTypes";
+import { decodeJwt } from "../utils/authUtils";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined,
@@ -26,7 +28,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<string | null>(null);
   const [lastActivity, setLastActivity] = useState(Date.now());
   const [tokenExp, setTokenExp] = useState<number | null>(null);
   const navigate = useNavigate();
@@ -56,16 +58,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return false;
     }
     try {
-      // Décoder l'expiration du token
-      const payload = (() => {
-        try {
-          const p = token.split(".")[1];
-          return JSON.parse(atob(p.replace(/-/g, "+").replace(/_/g, "/")));
-        } catch {
-          return null;
-        }
-      })();
-      if (payload && payload.exp) {
+      const payload = decodeJwt(token);
+      if (payload?.exp) {
         setTokenExp(payload.exp);
       } else {
         setTokenExp(null);
@@ -104,20 +98,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const token = await loginApi(loginValue, password);
         localStorage.setItem("token", token);
-        // Décoder l'expiration du token dès le login
-        const payload = (() => {
-          try {
-            const p = token.split(".")[1];
-            return JSON.parse(atob(p.replace(/-/g, "+").replace(/_/g, "/")));
-          } catch {
-            return null;
-          }
-        })();
-        if (payload && payload.exp) {
-          setTokenExp(payload.exp);
-        } else {
-          setTokenExp(null);
-        }
         const ok = await checkAuth();
         setLoading(false);
         return ok;
@@ -146,19 +126,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })();
   }, [checkAuth]);
 
-  const checkAndRefresh = async () => {
+  const checkAndRefresh = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
     try {
-      const payload = (() => {
-        try {
-          const p = token.split(".")[1];
-          return JSON.parse(atob(p.replace(/-/g, "+").replace(/_/g, "/")));
-        } catch {
-          return null;
-        }
-      })();
-      if (!payload || !payload.exp) return;
+      const payload = decodeJwt(token);
+      if (!payload?.exp) return;
       const now = Math.floor(Date.now() / 1000);
       const timeLeft = payload.exp - now;
       // Si actif dans les 10 dernières minutes et token expire dans moins de 5mn
@@ -180,7 +153,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
     } catch {}
-  };
+  }, [checkAuth, lastActivity]);
 
   // Planifie le rafraîchissement du token 5 minutes avant son expiration, si l'utilisateur est actif
   useEffect(() => {
@@ -190,10 +163,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const msBeforeRefresh = (tokenExp - 5 * 60 - now) * 1000;
     if (msBeforeRefresh <= 0) return; // trop tard ou déjà expiré
     const timeout = setTimeout(() => {
-      // Rafraîchir seulement si actif dans les 10 dernières minutes
-      if (Date.now() - lastActivity < 10 * 60 * 1000) {
-        checkAndRefresh();
-      }
+      checkAndRefresh();
     }, msBeforeRefresh);
     return () => clearTimeout(timeout);
   }, [isAuthenticated, tokenExp, lastActivity]);
@@ -205,4 +175,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
+}
+
+/**
+ * Hook personnalisé pour accéder au contexte d'authentification.
+ * Doit être utilisé à l'intérieur d'un composant enveloppé par AuthProvider.
+ * @returns {AuthContextType} Le contexte d'authentification avec les fonctions et états disponibles.
+ */
+export function useAuthContext(): AuthContextType {
+  const ctx = useContext(AuthContext);
+  if (!ctx)
+    throw new Error("useAuthContext must be used within an AuthProvider");
+  return ctx;
 }

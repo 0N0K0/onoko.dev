@@ -3,18 +3,18 @@ import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import apolloClient from "../../services/appolloClient";
 import { REQUEST_PASSWORD_RESET_MUTATION } from "../../services/account/accountMutations";
 import { useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
 import SnackbarAlert from "../../components/custom/SnackbarAlert";
 import ClosableSnackbarAlert from "../../components/custom/ClosableSnackbarAlert";
-import AuthLayout from "../../layout/auth/AuthLayout";
 import { LOGIN_ROUTE } from "../../constants/apiConstants";
+import { useAuthContext } from "../../context/AuthContext";
+import AuthForm from "../../layout/auth/AuthForm";
 
 /**
  * Page de demande de réinitialisation du mot de passe.
  * Permet aux utilisateurs de demander un lien de réinitialisation en fournissant leur adresse e-mail.
  */
 export default function RequestResetPassword() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuthContext();
 
   const [email, setEmail] = useState("");
 
@@ -42,7 +42,7 @@ export default function RequestResetPassword() {
   };
 
   return (
-    <AuthLayout
+    <AuthForm
       title="Demander la&nbsp;réinitialisation de&nbsp;mon&nbsp;mot&nbsp;de&nbsp;passe"
       onSubmit={handleSubmit}
       returnButton={{
@@ -64,7 +64,7 @@ export default function RequestResetPassword() {
         message="Si l'adresse existe, un e-mail de réinitialisation a été envoyé."
         severity="success"
       />
-      <ResponsiveStack rowGap={3} width="100%">
+      <ResponsiveStack rowGap={3} sx={{ width: "100%" }}>
         <TextField
           label="Adresse e-mail"
           type="email"
@@ -75,6 +75,6 @@ export default function RequestResetPassword() {
           autoComplete="email"
         />
       </ResponsiveStack>
-    </AuthLayout>
+    </AuthForm>
   );
 }

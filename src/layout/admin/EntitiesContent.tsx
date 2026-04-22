@@ -1,9 +1,9 @@
 import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
-import { Button, CircularProgress } from "@mui/material";
+import { Button, CircularProgress, Table, TableContainer } from "@mui/material";
 import Icon from "@mdi/react";
 import { mdiPlus } from "@mdi/js";
-import CustomTable from "../../components/custom/CustomTable";
+import CustomTable from "../../components/custom/CustomTable/index";
 import ClosableSnackbarAlert from "../../components/custom/ClosableSnackbarAlert";
 import SnackbarAlert from "../../components/custom/SnackbarAlert";
 import type { EntitiesContentProps } from "../../types/entities/entityTypes";
@@ -33,7 +33,7 @@ import type { EntitiesContentProps } from "../../types/entities/entityTypes";
  * @param {function} props.setSubmitSuccess Fonction pour définir le message de succès
  * @param {string} props.error Message d'erreur à afficher dans une alerte après une action échouée
  */
-export default function EntitiesContent({
+export default function EntitiesContent<T extends { id: string }>({
   labels,
   items,
   loading,
@@ -43,18 +43,20 @@ export default function EntitiesContent({
   submitSuccess,
   setSubmitSuccess,
   error,
-}: EntitiesContentProps) {
+}: EntitiesContentProps<T>) {
   return (
     <>
       <ResponsiveStack
-        direction="row"
         rowGap={3}
-        columnGap={2}
-        justifyContent="space-between"
-        alignItems="center"
-        width="100%"
-        flexWrap="wrap"
         maxWidth="100% !important"
+        sx={{
+          flexDirection: "row",
+          columnGap: 2,
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+          flexWrap: "wrap",
+        }}
       >
         <ResponsiveTitle variant="h1">{labels.title}</ResponsiveTitle>
         {!items || items.length === 0 ? (
@@ -72,7 +74,7 @@ export default function EntitiesContent({
       ) : (
         items &&
         items.length > 0 && (
-          <CustomTable
+          <CustomTable.Provider
             fields={fields}
             items={items}
             canSelect
@@ -84,7 +86,16 @@ export default function EntitiesContent({
               }
             }}
             submitting={submitting}
-          />
+          >
+            <TableContainer sx={{ flex: "1 1 auto", minHeight: 0 }}>
+              <Table stickyHeader>
+                <CustomTable.Header />
+                <CustomTable.Body />
+                <CustomTable.BulkFooter />
+              </Table>
+            </TableContainer>
+            <CustomTable.Dialogs />
+          </CustomTable.Provider>
         )
       )}
       <ClosableSnackbarAlert
