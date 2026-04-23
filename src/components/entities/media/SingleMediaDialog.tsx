@@ -2,7 +2,7 @@ import { useState } from "react";
 import CustomDialog from "../../custom/CustomDialog";
 import type { Media } from "../../../types/entities/mediaTypes";
 import Picture from "../../custom/Picture";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, useTheme } from "@mui/material";
 import CustomSelect from "../../custom/CustomSelect";
 import type { Category } from "../../../types/entities/categoryTypes";
 import { ResponsiveStack } from "../../custom/ResponsiveLayout";
@@ -11,6 +11,7 @@ import { mdiCheck, mdiDelete } from "@mdi/js";
 import DeleteConfirmationDialog from "../DeleteConfirmationDialog";
 import useCategories from "../../../hooks/queries/useCategories";
 import { extractId, getSelectValue } from "../../../utils/normalizeRef";
+import { ImageFocusField } from "../../custom/ImageFocusField";
 import useFormDialog from "../../../hooks/useFormDialog";
 
 export default function SingleMediaDialog({
@@ -30,6 +31,7 @@ export default function SingleMediaDialog({
   handleDelete: (options: { variables: { id: string } }) => unknown;
   submitting: boolean;
 }) {
+  const theme = useTheme();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const {
@@ -80,12 +82,24 @@ export default function SingleMediaDialog({
                 <ResponsiveStack
                   rowGap={3}
                   sx={{
-                    flex: "0 1 0",
+                    flex: "0 0 336px",
                     height: "100%",
                     justifyContent: "space-between",
+                    borderLeft: `1px solid ${theme.palette.divider}`,
+                    alignItems: "start",
+                    paddingLeft: 2,
+                    maxHeight: "100%",
+                    overflow: "hidden",
                   }}
                 >
-                  <ResponsiveStack rowGap={3}>
+                  <ResponsiveStack
+                    rowGap={3}
+                    sx={{
+                      flex: "0 1 auto",
+                      overflowY: "auto",
+                      overflowX: "hidden",
+                    }}
+                  >
                     <TextField
                       label="Label"
                       value={editingMedia?.label || ""}
@@ -125,9 +139,20 @@ export default function SingleMediaDialog({
                           })) || []
                       }
                     />
+                    <ImageFocusField
+                      image={initialMedia}
+                      value={editingMedia?.focus}
+                      onChange={(focus) => {
+                        setEditingMedia(
+                          editingMedia ? { ...editingMedia, focus } : null,
+                        );
+                        focus !== (initialMedia?.focus ?? "") &&
+                          setHasChanges(true);
+                      }}
+                    />
                   </ResponsiveStack>
 
-                  <ResponsiveStack>
+                  <ResponsiveStack sx={{ width: "100%" }}>
                     <Button
                       key="confirm"
                       color="success"
@@ -139,6 +164,7 @@ export default function SingleMediaDialog({
                               input: {
                                 label: editingMedia!.label,
                                 category: extractId(editingMedia!.category),
+                                focus: editingMedia!.focus,
                               },
                             },
                           });
@@ -149,7 +175,7 @@ export default function SingleMediaDialog({
                         submitting || !hasChanges || !editingMedia?.label
                       }
                       startIcon={<Icon path={mdiCheck} size={1} />}
-                      sx={{ width: "fit-content", minWidth: "208px" }}
+                      sx={{ width: "100%", minWidth: "208px" }}
                     >
                       Modifier
                     </Button>
@@ -161,7 +187,7 @@ export default function SingleMediaDialog({
                       }}
                       disabled={submitting}
                       startIcon={<Icon path={mdiDelete} size={1} />}
-                      sx={{ width: "fit-content", minWidth: "208px" }}
+                      sx={{ width: "100%", minWidth: "208px" }}
                     >
                       Supprimer
                     </Button>

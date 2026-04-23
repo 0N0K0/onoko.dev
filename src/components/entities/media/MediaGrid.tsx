@@ -25,6 +25,7 @@ import useCategories from "../../../hooks/queries/useCategories";
 import MediaDropZone from "./MediaDropZone";
 import BulkEditFormDialog from "../BulkEditFormDialog";
 import { extractId, getSelectValue } from "../../../utils/normalizeRef";
+import { ImageFocusField } from "../../custom/ImageFocusField";
 
 export default function MediaGrid(props: MediaGridProps) {
   const { mode, medias, handleEdit, onDelete, submitting } = props;
@@ -313,23 +314,22 @@ export default function MediaGrid(props: MediaGridProps) {
                 rowGap={3}
                 sx={{
                   justifyContent: "space-between",
-                  flex: "0 0 240px",
+                  flex: "0 0 336px",
                   borderLeft: `1px solid ${theme.palette.divider}`,
                   alignItems: "start",
                   paddingLeft: 2,
                   maxHeight: "100%",
-                  overflow: "auto",
+                  overflow: "hidden",
                 }}
               >
                 {selectedMedia && (
                   <>
-                    <ResponsiveStack rowGap={3}>
+                    <ResponsiveStack
+                      rowGap={3}
+                      sx={{ flex: "0 1 auto", overflowY: "auto" }}
+                    >
                       {selectedMedias.length === 1 ? (
                         <>
-                          <Picture
-                            image={selectedMedia}
-                            maxHeight="fit-content"
-                          />
                           <TextField
                             label="Label"
                             value={editingMedias[0]?.label || ""}
@@ -388,8 +388,22 @@ export default function MediaGrid(props: MediaGridProps) {
                             })) || []
                         }
                       />
+                      {selectedMedias.length === 1 && (
+                        <ImageFocusField
+                          image={selectedMedia}
+                          value={editingMedias[0]?.focus}
+                          onChange={(focus) => {
+                            setEditingMedias(
+                              editingMedias.length > 0
+                                ? [{ ...editingMedias[0], focus }]
+                                : [],
+                            );
+                            setHasChanges(true);
+                          }}
+                        />
+                      )}
                     </ResponsiveStack>
-                    <ResponsiveStack>
+                    <ResponsiveStack sx={{ width: "100%" }}>
                       <Button
                         key="select"
                         color="primary"
@@ -398,7 +412,7 @@ export default function MediaGrid(props: MediaGridProps) {
                         }
                         disabled={submitting}
                         startIcon={<Icon path={mdiCheck} size={1} />}
-                        sx={{ width: "fit-content", minWidth: "208px" }}
+                        sx={{ width: "100%", minWidth: "208px" }}
                       >
                         Sélectionner
                       </Button>
@@ -431,6 +445,7 @@ export default function MediaGrid(props: MediaGridProps) {
                                   category: extractId(
                                     editingMedias[0].category,
                                   ),
+                                  focus: editingMedias[0].focus,
                                 },
                               },
                             });
@@ -443,7 +458,7 @@ export default function MediaGrid(props: MediaGridProps) {
                             !editingMedias[0]?.label)
                         }
                         startIcon={<Icon path={mdiPencil} size={1} />}
-                        sx={{ width: "fit-content", minWidth: "208px" }}
+                        sx={{ width: "100%", minWidth: "208px" }}
                       >
                         Modifier
                       </Button>
@@ -455,7 +470,7 @@ export default function MediaGrid(props: MediaGridProps) {
                         }}
                         disabled={submitting}
                         startIcon={<Icon path={mdiDelete} size={1} />}
-                        sx={{ width: "fit-content", minWidth: "208px" }}
+                        sx={{ width: "100%", minWidth: "208px" }}
                       >
                         Supprimer
                       </Button>

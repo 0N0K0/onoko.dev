@@ -78,6 +78,12 @@ const theme = baseTheme as Theme;
 // Thème public (League Spartan) — fontFamily injecté AVANT que MUI peuple les variants
 export const frontTheme = createTheme({
   ...baseOptions,
+  palette: {
+    ...PALETTE,
+    primary: {
+      main: "rgb(170, 147, 113)",
+    },
+  },
   typography: {
     ...TYPOGRAPHY,
     fontFamily: `'League Spartan', sans-serif`,

@@ -9,6 +9,7 @@ export const MEDIAS_QUERY = gql`
       path
       type
       category
+      focus
     }
   }
 `;

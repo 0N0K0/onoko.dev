@@ -1,8 +1,8 @@
 import { TextField } from "@mui/material";
-import { ResponsiveStack } from "../../custom/ResponsiveLayout";
-import ResponsiveTitle from "../../custom/ResponsiveTitle";
-import WysiwygField from "../../custom/WysiwygField";
-import type { ProjectSectionProps } from "../../../types/entities/projectTypes";
+import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
+import ResponsiveTitle from "../../../custom/ResponsiveTitle";
+import WysiwygField from "../../../custom/WysiwygField";
+import type { ProjectSectionProps } from "../../../../types/entities/projectTypes";
 
 export default function ProjectKpisFeedbackSection({
   editingProject,

@@ -1,19 +1,19 @@
 import { TextField } from "@mui/material";
-import { ResponsiveStack } from "../../custom/ResponsiveLayout";
-import ResponsiveTitle from "../../custom/ResponsiveTitle";
-import WysiwygField from "../../custom/WysiwygField";
-import CustomSelect from "../../custom/CustomSelect";
-import FieldsRepeater from "../../custom/FieldsRepeater";
+import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
+import ResponsiveTitle from "../../../custom/ResponsiveTitle";
+import WysiwygField from "../../../custom/WysiwygField";
+import CustomSelect from "../../../custom/CustomSelect";
+import FieldsRepeater from "../../../custom/FieldsRepeater";
 import { DatePicker } from "@mui/x-date-pickers";
-import type { Role } from "../../../types/entities/roleTypes";
-import type { Coworker } from "../../../types/entities/coworkerTypes";
-import type { Stack } from "../../../types/entities/stackTypes";
-import { extractIds } from "../../../utils/normalizeRef";
+import type { Role } from "../../../../types/entities/roleTypes";
+import type { Coworker } from "../../../../types/entities/coworkerTypes";
+import type { Stack } from "../../../../types/entities/stackTypes";
+import { extractIds } from "../../../../utils/normalizeRef";
 import {
   getMultiSelectValue,
   getSelectValue,
-} from "../../../utils/normalizeRef";
-import type { ProjectSectionProps } from "../../../types/entities/projectTypes";
+} from "../../../../utils/normalizeRef";
+import type { ProjectSectionProps } from "../../../../types/entities/projectTypes";
 
 interface Props extends ProjectSectionProps {
   roles: Role[];

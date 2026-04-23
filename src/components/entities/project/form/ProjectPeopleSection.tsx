@@ -1,10 +1,10 @@
 import { TextField } from "@mui/material";
-import { ResponsiveStack } from "../../custom/ResponsiveLayout";
-import ResponsiveTitle from "../../custom/ResponsiveTitle";
-import MediaPicker from "../media/MediaPicker";
-import type { Media } from "../../../types/entities/mediaTypes";
-import { extractId } from "../../../utils/normalizeRef";
-import type { ProjectSectionProps } from "../../../types/entities/projectTypes";
+import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
+import ResponsiveTitle from "../../../custom/ResponsiveTitle";
+import MediaPicker from "../../media/MediaPicker";
+import type { Media } from "../../../../types/entities/mediaTypes";
+import { extractId } from "../../../../utils/normalizeRef";
+import type { ProjectSectionProps } from "../../../../types/entities/projectTypes";
 
 interface Props extends ProjectSectionProps {
   medias: Media[];

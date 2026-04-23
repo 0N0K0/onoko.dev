@@ -30,6 +30,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "dayjs/locale/fr";
 import theme, { frontTheme } from "./theme/theme";
 import AuthLayout from "./layout/auth/AuthLayout";
+import { FrontProjectsPage } from "./pages/public/FrontProjectsPage";
 
 export default function App() {
   return (
@@ -75,6 +76,14 @@ export default function App() {
                     element={
                       <PublicLayout>
                         <Home />
+                      </PublicLayout>
+                    }
+                  />
+                  <Route
+                    path="/projects"
+                    element={
+                      <PublicLayout>
+                        <FrontProjectsPage />
                       </PublicLayout>
                     }
                   />

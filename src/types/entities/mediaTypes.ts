@@ -8,6 +8,7 @@ export interface Media {
   file?: File | null;
   category?: Category | string;
   position?: number;
+  focus?: string;
 }
 
 export type MediaGridProps = {

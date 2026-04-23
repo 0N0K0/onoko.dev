@@ -16,10 +16,10 @@ export default function PublicLayout({
   const { isAuthenticated } = useAuthContext();
 
   return (
-    <Layout>
+    <Layout sx={{ maxHeight: "100dvh", overflow: "hidden" }}>
       {isAuthenticated ? <AdminHeader /> : null}
       <PublicHeader />
-      <Layout.Content>{children}</Layout.Content>
+      {children}
       <PublicFooter />
     </Layout>
   );

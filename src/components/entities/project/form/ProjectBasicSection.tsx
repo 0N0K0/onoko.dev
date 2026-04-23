@@ -1,11 +1,11 @@
 import { TextField } from "@mui/material";
-import MediaPicker from "../media/MediaPicker";
-import CustomSelect from "../../custom/CustomSelect";
-import type { Category } from "../../../types/entities/categoryTypes";
-import type { Media } from "../../../types/entities/mediaTypes";
-import { extractId, extractIds } from "../../../utils/normalizeRef";
-import { getMultiSelectValue } from "../../../utils/normalizeRef";
-import type { ProjectSectionProps } from "../../../types/entities/projectTypes";
+import MediaPicker from "../../media/MediaPicker";
+import CustomSelect from "../../../custom/CustomSelect";
+import type { Category } from "../../../../types/entities/categoryTypes";
+import type { Media } from "../../../../types/entities/mediaTypes";
+import { extractId, extractIds } from "../../../../utils/normalizeRef";
+import { getMultiSelectValue } from "../../../../utils/normalizeRef";
+import type { ProjectSectionProps } from "../../../../types/entities/projectTypes";
 
 interface Props extends ProjectSectionProps {
   categories: Category[];

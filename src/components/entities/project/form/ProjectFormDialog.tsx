@@ -1,19 +1,19 @@
 import { Button } from "@mui/material";
-import CustomDialog from "../../custom/CustomDialog";
-import { ResponsiveStack } from "../../custom/ResponsiveLayout";
+import CustomDialog from "../../../custom/CustomDialog";
+import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
 import Icon from "@mdi/react";
 import { mdiCheck, mdiClose } from "@mdi/js";
 import type {
   Project,
   ProjectFormDialogProps,
-} from "../../../types/entities/projectTypes";
-import useFormDialog from "../../../hooks/useFormDialog";
-import useCategories from "../../../hooks/queries/useCategories";
-import useRoles from "../../../hooks/queries/useRoles";
-import useCoworkers from "../../../hooks/queries/useCoworkers";
-import useStacks from "../../../hooks/queries/useStacks";
-import useMedias from "../../../hooks/queries/useMedias";
-import { extractId, extractIds } from "../../../utils/normalizeRef";
+} from "../../../../types/entities/projectTypes";
+import useFormDialog from "../../../../hooks/useFormDialog";
+import useCategories from "../../../../hooks/queries/useCategories";
+import useRoles from "../../../../hooks/queries/useRoles";
+import useCoworkers from "../../../../hooks/queries/useCoworkers";
+import useStacks from "../../../../hooks/queries/useStacks";
+import useMedias from "../../../../hooks/queries/useMedias";
+import { extractId, extractIds } from "../../../../utils/normalizeRef";
 import ProjectBasicSection from "./ProjectBasicSection";
 import ProjectLinksSection from "./ProjectLinksSection";
 import ProjectPeopleSection from "./ProjectPeopleSection";

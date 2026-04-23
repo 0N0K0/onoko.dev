@@ -17,22 +17,10 @@ export type ResponsiveTitleProps = TypographyProps & {
 
 export type ResponsiveLayoutProps<P> = P & {
   marginY?: string | number;
-  marginBottom?: string | number;
   paddingY?: string | number;
-  paddingX?: string | number;
-  paddingLeft?: string | number;
-  paddingRight?: string | number;
   rowGap?: string | number;
-  columnGap?: string | number;
-  alignItems?: string;
-  justifyContent?: string;
-  flexWrap?: string;
-  flex?: string | number;
   children: React.ReactNode;
-  height?: string | number;
-  width?: string | number;
   maxWidth?: number | string;
-  overflow?: string;
 };
 
 export type GetResponsiveSxProps = {

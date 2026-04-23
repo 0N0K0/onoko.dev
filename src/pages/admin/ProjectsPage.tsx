@@ -1,7 +1,7 @@
 import useProjectMutations from "../../hooks/mutations/useProjectMutations";
 import useProjects from "../../hooks/queries/useProjects";
 import EntitiesContent from "../../layout/admin/EntitiesContent";
-import ProjectFormDialog from "../../components/entities/project/ProjectFormDialog";
+import ProjectFormDialog from "../../components/entities/project/form/ProjectFormDialog";
 import type { Project } from "../../types/entities/projectTypes";
 import Picture from "../../components/custom/Picture";
 import type { Category } from "../../types/entities/categoryTypes";
