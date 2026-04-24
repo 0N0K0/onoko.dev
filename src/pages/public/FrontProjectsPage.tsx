@@ -41,7 +41,7 @@ export function FrontProjectsPage() {
         title={<>Logiciels</>}
         subtitle={<>Des solutions sur mesure</>}
         projects={softwareProjects}
-        minHeight="calc(100dvh - 20rem)"
+        minHeight="calc(100dvh - 18rem)"
       />
       <ProjectsCarousel
         title={<>Modules</>}
@@ -52,13 +52,13 @@ export function FrontProjectsPage() {
           </>
         }
         projects={toolProjects}
-        minHeight="calc(100dvh - 19.5rem)"
+        minHeight="calc(100dvh - 18rem)"
       />
       <ProjectsCarousel
         title={<>Bac à sable</>}
         subtitle={<>Libres curiosités</>}
         projects={persoProjects}
-        minHeight="calc(100dvh - 12rem)"
+        minHeight="calc(100dvh - 18rem)"
       />
     </Layout.Content>
   );

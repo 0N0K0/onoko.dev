@@ -11,6 +11,7 @@ export interface Category {
   entity?: string;
   description?: string;
   parent?: string;
+  children?: Category[];
   depth?: number;
 }
 
