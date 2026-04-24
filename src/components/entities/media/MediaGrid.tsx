@@ -411,7 +411,7 @@ export default function MediaGrid(
                     setSelect((prev) => !prev);
                     setSelectedMedias([]);
                   }}
-                  // sx={{ marginLeft: "auto" }}
+                  sx={{ marginLeft: "auto" }}
                 >
                   Sélection multiple
                 </Button>
@@ -423,7 +423,7 @@ export default function MediaGrid(
                   <Icon path={showAddZone ? mdiClose : mdiPlus} size={1} />
                 }
                 onClick={() => setShowAddZone((prev) => !prev)}
-                sx={{ marginLeft: "auto" }}
+                // sx={{ marginLeft: "auto" }}
               >
                 {showAddZone
                   ? "Masquer la zone d'importation"
