@@ -257,6 +257,9 @@ export default function MediaGrid(props: MediaGridProps) {
             maxHeight: "100%",
             overflow: "hidden",
             width: "100%",
+            marginRight: mode === "library" ? -4 : undefined,
+            paddingRight: mode === "picker" ? "24px !important" : 4,
+            boxSizing: "content-box",
           }}
         >
           <MediaCategorySidebar
@@ -274,12 +277,14 @@ export default function MediaGrid(props: MediaGridProps) {
               overflowY: mode === "library" ? "auto" : "hidden",
               overflowX: "hidden",
               maxHeight: mode === "picker" ? "100%" : undefined,
-              paddingX: mode === "library" ? "32px !important" : undefined,
-              paddingRight: mode === "picker" ? "24px !important" : undefined,
+              paddingLeft: 2,
+              marginRight: mode === "library" ? -4 : undefined,
+              paddingRight: mode === "library" ? 4 : "24px",
               width: "100%",
               flex: "1 1 0",
               minWidth: 0,
               minHeight: 0,
+              boxSizing: mode === "library" ? "content-box" : "border-box",
             }}
           >
             {/* Barre d'actions */}
@@ -370,9 +375,9 @@ export default function MediaGrid(props: MediaGridProps) {
                 gridTemplateColumns: "repeat(auto-fill, minmax(6rem, 1fr))",
                 overflowY: "auto",
                 overflowX: "hidden",
-                paddingX: mode === "library" ? "32px !important" : undefined,
-                paddingRight: mode === "picker" ? "24px !important" : undefined,
-                paddingBottom: "20px !important",
+                paddingBottom: "24px !important",
+                marginRight: mode === "library" ? -4 : undefined,
+                paddingRight: mode === "picker" ? "24px !important" : 4,
                 width: mode === "library" ? "100%" : "calc(100% + 24px)",
               }}
             >
@@ -499,7 +504,12 @@ export default function MediaGrid(props: MediaGridProps) {
                     <>
                       <ResponsiveStack
                         rowGap={3}
-                        sx={{ flex: "0 1 auto", overflowY: "auto" }}
+                        sx={{
+                          flex: "0 1 auto",
+                          overflowY: "auto",
+                          overflowX: "hidden",
+                          width: "100%",
+                        }}
                       >
                         {selectedMedias.length === 1 ? (
                           <>

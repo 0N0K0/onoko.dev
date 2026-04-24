@@ -42,6 +42,7 @@ export default function Picture({
         maxHeight: maxHeight,
         objectFit: objectFit,
         objectPosition: objectPosition || image.focus || "50% 50%",
+        boxSizing: "border-box",
         ...style,
       }}
     />
@@ -53,6 +54,7 @@ export default function Picture({
         maxWidth: maxWidth,
         maxHeight: maxHeight,
         overflow: "hidden",
+        boxSizing: "border-box",
         ...style,
       }}
     >
