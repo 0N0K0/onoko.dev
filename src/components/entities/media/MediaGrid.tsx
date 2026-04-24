@@ -41,6 +41,7 @@ import MediaCategorySidebar, {
   MEDIA_FILTER_UNCATEGORIZED,
   MEDIA_UNCATEGORIZED_DROP_ID,
 } from "./MediaCategorySidebar";
+import ResponsiveTitle from "../../custom/ResponsiveTitle";
 
 function DraggableMediaCard({
   media,
@@ -104,8 +105,22 @@ function DraggableMediaCard({
   );
 }
 
-export default function MediaGrid(props: MediaGridProps) {
-  const { mode, medias, handleEdit, onDelete, submitting } = props;
+export default function MediaGrid(
+  props: MediaGridProps & {
+    addMedias?: boolean;
+    setAddMedias?: (open: boolean) => void;
+    onAddMedia?: (file: File, category?: string) => void;
+  },
+) {
+  const {
+    mode,
+    medias,
+    handleEdit,
+    onDelete,
+    submitting,
+    setAddMedias,
+    onAddMedia,
+  } = props;
   const setOpenDialog = mode === "library" ? props.setOpenDialog : undefined;
   const multiple = mode === "picker" ? props.multiple : false;
   const images = mode === "picker" ? props.images : undefined;
@@ -191,43 +206,60 @@ export default function MediaGrid(props: MediaGridProps) {
     let nextCategoryId: string | undefined;
 
     if (overId === MEDIA_UNCATEGORIZED_DROP_ID) {
-      nextCategoryId = undefined;
+      nextCategoryId = "";
     } else if (overId.startsWith(MEDIA_CATEGORY_DROP_PREFIX)) {
       nextCategoryId = overId.replace(MEDIA_CATEGORY_DROP_PREFIX, "");
     } else {
       return;
     }
 
+    // Si le média draggué fait partie de la sélection, appliquer à tous les sélectionnés
+    // Sinon, ne l'appliquer qu'à ce média
     const draggedMedia = medias.find((media) => media.id === mediaId);
     if (!draggedMedia) return;
 
-    const currentCategoryId = mediaCategoryId(draggedMedia);
-    if ((currentCategoryId || "") === (nextCategoryId || "")) return;
+    // Déterminer la liste des médias à modifier
+    const mediasToUpdate = selectedMedias.some((m) => m.id === mediaId)
+      ? selectedMedias
+      : [draggedMedia];
 
-    setCategoryOverrides((prev) => ({
-      ...prev,
-      [draggedMedia.id]: nextCategoryId,
-    }));
+    // Vérifier si au moins un média doit changer de catégorie
+    const needUpdate = mediasToUpdate.some(
+      (media) => (mediaCategoryId(media) || "") !== (nextCategoryId || ""),
+    );
+    if (!needUpdate) return;
+
+    // Mettre à jour les overrides et les états locaux
+    setCategoryOverrides((prev) => {
+      const updated = { ...prev };
+      mediasToUpdate.forEach((media) => {
+        updated[media.id] = nextCategoryId;
+      });
+      return updated;
+    });
     setSelectedMedias((prev) =>
       prev.map((media) =>
-        media.id === draggedMedia.id
+        mediasToUpdate.some((m) => m.id === media.id)
           ? { ...media, category: nextCategoryId }
           : media,
       ),
     );
     setEditingMedias((prev) =>
       prev.map((media) =>
-        media.id === draggedMedia.id
+        mediasToUpdate.some((m) => m.id === media.id)
           ? { ...media, category: nextCategoryId }
           : media,
       ),
     );
 
-    handleEdit({
-      variables: {
-        id: draggedMedia.id,
-        input: { category: nextCategoryId },
-      },
+    // Appliquer la mutation à tous les médias concernés
+    mediasToUpdate.forEach((media) => {
+      handleEdit({
+        variables: {
+          id: media.id,
+          input: { category: nextCategoryId },
+        },
+      });
     });
   }
 
@@ -245,6 +277,13 @@ export default function MediaGrid(props: MediaGridProps) {
       ? medias.find((m) => m.id === selectedMedias[0]?.id)
       : undefined;
 
+  // Ouvre la zone d'importation si aucun média pour le filtre
+  useEffect(() => {
+    if (filteredMedias.length === 0) {
+      setShowAddZone(true);
+    }
+  }, [filteredMedias.length]);
+
   return (
     <>
       {/* Conteneur principal */}
@@ -252,9 +291,8 @@ export default function MediaGrid(props: MediaGridProps) {
         <ResponsiveStack
           maxWidth="100%"
           sx={{
+            flex: "1 1 auto",
             flexDirection: "row",
-            height: "100%",
-            maxHeight: "100%",
             overflow: "hidden",
             width: "100%",
             marginRight: mode === "library" ? -4 : undefined,
@@ -281,12 +319,49 @@ export default function MediaGrid(props: MediaGridProps) {
               marginRight: mode === "library" ? -4 : undefined,
               paddingRight: mode === "library" ? 4 : "24px",
               width: "100%",
-              flex: "1 1 0",
               minWidth: 0,
               minHeight: 0,
               boxSizing: mode === "library" ? "content-box" : "border-box",
             }}
           >
+            {/* Affichage du nom de la catégorie sélectionnée (sauf pour 'all') */}
+            {selectedCategoryFilter !== MEDIA_FILTER_ALL && (
+              <ResponsiveTitle variant="h5" component="h2">
+                {selectedCategoryFilter === MEDIA_FILTER_UNCATEGORIZED
+                  ? "Aucune catégorie"
+                  : categories?.find(
+                      (c: any) => c.id === selectedCategoryFilter,
+                    )?.label || ""}
+              </ResponsiveTitle>
+            )}
+
+            {/* Zone de dépôt de médias */}
+            {showAddZone && (
+              <MediaDropZone
+                handleAdd={(options) => {
+                  // Ajoute la catégorie sélectionnée si un filtre est actif (hors "tous" et "non catégorisé")
+                  let category = undefined;
+                  if (
+                    selectedCategoryFilter !== MEDIA_FILTER_ALL &&
+                    selectedCategoryFilter !== MEDIA_FILTER_UNCATEGORIZED
+                  ) {
+                    category = selectedCategoryFilter;
+                  }
+                  // Si la catégorie est définie, l'ajouter à l'input
+                  if (mode === "picker" && handleAdd) {
+                    const input = category
+                      ? { ...options.variables.input, category }
+                      : options.variables.input;
+                    handleAdd({ variables: { input } });
+                  } else if (mode === "library" && onAddMedia && setAddMedias) {
+                    onAddMedia(options.variables.input.file, category);
+                    setAddMedias(false);
+                  }
+                }}
+                submitting={addMediaLoading || false}
+              />
+            )}
+
             {/* Barre d'actions */}
             <ResponsiveStack
               rowGap={3}
@@ -336,35 +411,25 @@ export default function MediaGrid(props: MediaGridProps) {
                     setSelect((prev) => !prev);
                     setSelectedMedias([]);
                   }}
-                  sx={{ marginLeft: "auto" }}
+                  // sx={{ marginLeft: "auto" }}
                 >
                   Sélection multiple
                 </Button>
               )}
 
               {/* Bouton pour afficher la zone d'ajout de média */}
-              {mode === "picker" && (
-                <Button
-                  startIcon={
-                    <Icon path={showAddZone ? mdiClose : mdiPlus} size={1} />
-                  }
-                  onClick={() => setShowAddZone((prev) => !prev)}
-                  sx={{ marginLeft: "auto" }}
-                >
-                  {showAddZone
-                    ? "Masquer la zone d'importation"
-                    : "Importer des médias"}
-                </Button>
-              )}
+              <Button
+                startIcon={
+                  <Icon path={showAddZone ? mdiClose : mdiPlus} size={1} />
+                }
+                onClick={() => setShowAddZone((prev) => !prev)}
+                sx={{ marginLeft: "auto" }}
+              >
+                {showAddZone
+                  ? "Masquer la zone d'importation"
+                  : "Importer des médias"}
+              </Button>
             </ResponsiveStack>
-
-            {/* Zone de dépôt de médias */}
-            {showAddZone && handleAdd && (
-              <MediaDropZone
-                handleAdd={handleAdd}
-                submitting={addMediaLoading || false}
-              />
-            )}
 
             {/* Grille de médias */}
             <ResponsiveBox
@@ -372,13 +437,14 @@ export default function MediaGrid(props: MediaGridProps) {
               sx={{
                 columnGap: 4,
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(6rem, 1fr))",
+                gridTemplateColumns: "repeat(auto-fill, minmax(9rem, 1fr))",
                 overflowY: "auto",
                 overflowX: "hidden",
                 paddingBottom: "24px !important",
                 marginRight: mode === "library" ? -4 : undefined,
                 paddingRight: mode === "picker" ? "24px !important" : 4,
                 width: mode === "library" ? "100%" : "calc(100% + 24px)",
+                flex: "1 1 auto",
               }}
             >
               {filteredMedias.map((media) => {
@@ -420,9 +486,6 @@ export default function MediaGrid(props: MediaGridProps) {
                 );
               })}
             </ResponsiveBox>
-            {filteredMedias.length === 0 && (
-              <span>Aucun média pour ce filtre.</span>
-            )}
 
             {/* Barre d'actions pour les éléments sélectionnés */}
             {selectedMedias.length > 0 && mode === "library" && (

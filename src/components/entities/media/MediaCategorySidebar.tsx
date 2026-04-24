@@ -81,11 +81,18 @@ function CategoryFilterButton({
           sx={{
             padding: `12px 0 12px ${(depth + 1) * 16}px !important`,
             gap: 0,
+            maxHeight: "3rem",
+            overflow: "hidden",
+            maxWidth: "100%",
           }}
-          onClick={onClick}
+          onClick={() => {
+            onClick();
+            if (children?.length) setOpen(true);
+          }}
         >
           <ListItemText
             sx={{
+              margin: 0,
               "& .MuiListItemText-primary": {
                 display: "flex",
                 justifyContent: "space-between",
@@ -110,9 +117,7 @@ function CategoryFilterButton({
               style={{ display: "block", whiteSpace: "nowrap" }}
             >
               {count}
-              {children?.length && id
-                ? ` / ${getTotalCount(id, children)}`
-                : ""}
+              {children?.length && id ? `/${getTotalCount(id, children)}` : ""}
             </ResponsiveBodyTypography>
           </ListItemText>
           {children?.length ? (
@@ -124,7 +129,11 @@ function CategoryFilterButton({
               icon={open ? mdiChevronUp : mdiChevronDown}
             />
           ) : (
-            <div style={{ width: "48px" }}></div>
+            <div
+              style={{
+                flex: "0 0 48px",
+              }}
+            ></div>
           )}
         </ListItemButton>
       </ListItem>
@@ -199,6 +208,7 @@ export default function MediaCategorySidebar({
         borderRight: `1px solid ${theme.palette.divider}`,
         overflowY: "auto",
         overflowX: "hidden",
+        minHeight: "100%",
         maxHeight: "100%",
         // paddingRight: 2,
         // paddingBottom: 1,

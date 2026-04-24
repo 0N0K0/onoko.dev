@@ -9,7 +9,7 @@ export default function MediaDropZone({
   submitting,
 }: {
   handleAdd: (options: {
-    variables: { input: { file: File | null } };
+    variables: { input: { file: File; category?: string } };
   }) => unknown;
   submitting: boolean;
 }) {
@@ -68,6 +68,8 @@ export default function MediaDropZone({
             "&:hover": {
               border: "2px dashed " + theme.palette.text.secondary,
             },
+            boxSizing: "border-box",
+            transition: "all 300ms ease-in-out",
           }}
         >
           <input {...getInputProps()} />

@@ -37,7 +37,7 @@ export default function MediaLibrary({
   mutations,
 }: {
   mutations: EntityMutationsReturn<
-    { input: { file: File | null } },
+    { input: { file: File | null; category?: string } },
     { id: string; input: Partial<Media> }
   >;
 }) {
@@ -92,13 +92,15 @@ export default function MediaLibrary({
         }}
       >
         <ResponsiveTitle variant="h1">Médias</ResponsiveTitle>
-        <Button
-          onClick={() => setAddMedias(true)}
-          startIcon={<Icon path={mdiPlus} size={1} />}
-          sx={{ marginLeft: "auto" }}
-        >
-          Importer des médias
-        </Button>
+        {layout === "list" && (
+          <Button
+            onClick={() => setAddMedias(true)}
+            startIcon={<Icon path={mdiPlus} size={1} />}
+            sx={{ marginLeft: "auto" }}
+          >
+            Importer des médias
+          </Button>
+        )}
         <ToggleButtonGroup>
           <ToggleButton
             value="grid"
@@ -118,7 +120,7 @@ export default function MediaLibrary({
           </ToggleButton>
         </ToggleButtonGroup>
       </ResponsiveStack>
-      {medias?.length === 0 || !medias || addMedias ? (
+      {(medias?.length === 0 || !medias || addMedias) && layout === "list" ? (
         <MediaDropZone
           handleAdd={mutations.create.mutate}
           submitting={submitting}
@@ -137,6 +139,13 @@ export default function MediaLibrary({
             handleEdit={mutations.edit.mutate}
             onDelete={mutations.delete.mutate}
             submitting={submitting}
+            addMedias={addMedias}
+            setAddMedias={setAddMedias}
+            onAddMedia={(file, category) => {
+              mutations.create.mutate({
+                variables: { input: { file, category } },
+              });
+            }}
           />
         ) : (
           <CustomTable.Provider

@@ -102,9 +102,9 @@ export default function ProjectsCarousel({
       articleScrollLeft +
       mouseRatio * expandedWidth -
       (e.clientX - containerRect.left);
-    const clampMax = articleScrollLeft - paddingLeft - 48;
+    const clampMax = articleScrollLeft - paddingLeft - 64;
     const clampMin =
-      articleScrollLeft + expandedWidth - paddingLeft - visibleWidth + 48;
+      articleScrollLeft + expandedWidth - paddingLeft - visibleWidth + 64;
     if (clampMin <= clampMax) {
       target = Math.max(clampMin, Math.min(clampMax, target));
     } else {
