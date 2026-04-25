@@ -90,7 +90,7 @@ function SortableMediaItem({
         onPointerDown={(e) => e.stopPropagation()}
         sx={{
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
           position: "absolute",
           bottom: "-20px",
           left: "-20px",
@@ -111,7 +111,6 @@ function SortableMediaItem({
             color="error"
             disabled={disabled}
             onClick={onDelete}
-            style={{ marginLeft: "auto" }}
           />
         )}
       </ResponsiveStack>
@@ -248,12 +247,13 @@ export default function MediaPicker({
               sx={{
                 columnGap: 4,
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(6rem, 8rem))",
+                gridTemplateColumns: `repeat(auto-fit, minmax(9rem, ${images.length < 5 ? "20%" : "1fr"}))`,
                 justifyContent: "center",
                 overflowY: "auto",
                 overflowX: "hidden",
                 width: "100%",
                 paddingX: "20px",
+                // maxWidth: "12rem",
               }}
             >
               {images.map((image) => (
