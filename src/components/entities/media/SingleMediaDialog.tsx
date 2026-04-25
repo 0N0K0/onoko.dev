@@ -98,6 +98,7 @@ export default function SingleMediaDialog({
                       flex: "0 1 auto",
                       overflowY: "auto",
                       overflowX: "hidden",
+                      width: "100%",
                     }}
                   >
                     <TextField

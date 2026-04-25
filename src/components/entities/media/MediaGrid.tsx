@@ -43,7 +43,7 @@ import MediaCategorySidebar, {
   MEDIA_FILTER_UNCATEGORIZED,
   MEDIA_UNCATEGORIZED_DROP_ID,
 } from "./MediaCategorySidebar";
-import ResponsiveTitle from "../../custom/ResponsiveTitle";
+import ResponsiveBodyTypography from "../../custom/ResponsiveBodyTypography";
 
 function DraggableMediaCard({
   media,
@@ -335,96 +335,99 @@ export default function MediaGrid(
             }}
           >
             {/* Fil d'ariane des catégories */}
-            {selectedCategoryFilter !== MEDIA_FILTER_ALL && (
-              <>
-                {/* Fil d'ariane des catégories (breadcrumb) sauf pour 'all' et 'uncategorized' */}
-                {selectedCategoryFilter !== MEDIA_FILTER_UNCATEGORIZED && (
-                  <Breadcrumbs separator="|">
-                    <Link
-                      onClick={() =>
-                        setSelectedCategoryFilter(MEDIA_FILTER_ALL)
-                      }
-                      color="primary"
-                      sx={{ cursor: "pointer", textTransform: "uppercase" }}
-                      underline="hover"
-                    >
-                      Tous
-                    </Link>
-                    {(() => {
-                      // Construit la liste des catégories ascendantes
-                      const breadcrumbs = [];
-                      let current = categories?.find(
-                        (c: any) => c.id === selectedCategoryFilter,
-                      );
-                      while (current) {
-                        breadcrumbs.unshift(current);
-                        current = current.parent
-                          ? categories?.find(
-                              (c: any) => c.id === extractId(current?.parent),
-                            )
-                          : undefined;
-                      }
-                      return breadcrumbs.map((cat, idx) => (
-                        <Link
-                          component={
-                            idx === breadcrumbs.length - 1 ? "h2" : "span"
+            {selectedCategoryFilter !== MEDIA_FILTER_ALL &&
+              selectedCategoryFilter !== MEDIA_FILTER_UNCATEGORIZED && (
+                <Breadcrumbs separator="|">
+                  <Link
+                    onClick={() => setSelectedCategoryFilter(MEDIA_FILTER_ALL)}
+                    color="primary"
+                    sx={{ cursor: "pointer", textTransform: "uppercase" }}
+                    underline="hover"
+                  >
+                    Tous
+                  </Link>
+                  {(() => {
+                    // Construit la liste des catégories ascendantes
+                    const breadcrumbs = [];
+                    let current = categories?.find(
+                      (c: any) => c.id === selectedCategoryFilter,
+                    );
+                    while (current) {
+                      breadcrumbs.unshift(current);
+                      current = current.parent
+                        ? categories?.find(
+                            (c: any) => c.id === extractId(current?.parent),
+                          )
+                        : undefined;
+                    }
+                    return breadcrumbs.map((cat, idx) => (
+                      <Link
+                        component={
+                          idx === breadcrumbs.length - 1 ? "h2" : "span"
+                        }
+                        key={cat.id}
+                        color={
+                          idx === breadcrumbs.length - 1
+                            ? theme.palette.text.primary
+                            : "inherit"
+                        }
+                        onClick={() => {
+                          // Ouvre tous les ascendants et la catégorie cliquée
+                          const path = [];
+                          let node: Category | undefined = cat;
+                          while (node) {
+                            path.unshift(node.id);
+                            node = node.parent
+                              ? categories?.find(
+                                  (c) => c.id === extractId(node?.parent),
+                                )
+                              : undefined;
                           }
-                          key={cat.id}
-                          color={
+                          setOpenCategories(path);
+                          setSelectedCategoryFilter(cat.id);
+                          setTimeout(() => {
+                            const ref = categoryRefs.current[cat.id];
+                            if (ref)
+                              ref.scrollIntoView({
+                                behavior: "smooth",
+                                block: "center",
+                              });
+                          }, 500);
+                        }}
+                        sx={{
+                          cursor:
                             idx === breadcrumbs.length - 1
-                              ? theme.palette.text.primary
-                              : "inherit"
-                          }
-                          onClick={() => {
-                            // Ouvre tous les ascendants et la catégorie cliquée
-                            const path = [];
-                            let node: Category | undefined = cat;
-                            while (node) {
-                              path.unshift(node.id);
-                              node = node.parent
-                                ? categories?.find(
-                                    (c) => c.id === extractId(node?.parent),
-                                  )
-                                : undefined;
-                            }
-                            setOpenCategories(path);
-                            setSelectedCategoryFilter(cat.id);
-                            setTimeout(() => {
-                              const ref = categoryRefs.current[cat.id];
-                              if (ref)
-                                ref.scrollIntoView({
-                                  behavior: "smooth",
-                                  block: "center",
-                                });
-                            }, 500);
-                          }}
-                          sx={{
-                            cursor:
-                              idx === breadcrumbs.length - 1
-                                ? "default"
-                                : "pointer",
-                            // fontWeight:
-                            //   idx === breadcrumbs.length - 1 ? "700" : "400",
-                            textTransform: "uppercase",
-                          }}
-                          underline={
-                            idx === breadcrumbs.length - 1 ? "none" : "hover"
-                          }
-                        >
-                          {cat.label}
-                        </Link>
-                      ));
-                    })()}
-                  </Breadcrumbs>
-                )}
-                {/* Affichage texte pour uncategorized */}
-                {selectedCategoryFilter === MEDIA_FILTER_UNCATEGORIZED && (
-                  <ResponsiveTitle variant="h6" component="h2">
-                    Aucune catégorie
-                  </ResponsiveTitle>
-                )}
-              </>
+                              ? "default"
+                              : "pointer",
+                          // fontWeight:
+                          //   idx === breadcrumbs.length - 1 ? "700" : "400",
+                          textTransform: "uppercase",
+                        }}
+                        underline={
+                          idx === breadcrumbs.length - 1 ? "none" : "hover"
+                        }
+                      >
+                        {cat.label}
+                      </Link>
+                    ));
+                  })()}
+                </Breadcrumbs>
+              )}
+
+            {/* Titre pour toutes les catégories et aucune catégorie */}
+            {(selectedCategoryFilter === MEDIA_FILTER_ALL ||
+              selectedCategoryFilter === MEDIA_FILTER_UNCATEGORIZED) && (
+              <ResponsiveBodyTypography
+                variant="bodySm"
+                component="h2"
+                style={{ textTransform: "uppercase", fontWeight: 400 }}
+              >
+                {selectedCategoryFilter === MEDIA_FILTER_ALL
+                  ? "Tous les médias"
+                  : "Médias non catégorisés"}
+              </ResponsiveBodyTypography>
             )}
+
             {/* Zone de dépôt de médias */}
             {showAddZone && (
               <MediaDropZone
