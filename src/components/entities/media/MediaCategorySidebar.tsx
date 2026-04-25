@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import { useDroppable } from "@dnd-kit/core";
 import type { Category } from "../../../types/entities/categoryTypes";
-import { useState } from "react";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import ResponsiveBodyTypography from "../../custom/ResponsiveBodyTypography";
 import CustomIconButton from "../../custom/CustomIconButton";
@@ -36,6 +35,9 @@ function CategoryFilterButton({
   droppableId,
   dropEnabled,
   children,
+  openCategories,
+  setOpenCategories,
+  categoryRefs,
 }: {
   id?: string;
   label: string;
@@ -49,6 +51,9 @@ function CategoryFilterButton({
   droppableId?: string;
   dropEnabled?: boolean;
   children?: Category[];
+  openCategories: string[];
+  setOpenCategories: (ids: string[]) => void;
+  categoryRefs: React.RefObject<Record<string, HTMLLIElement | null>>;
 }) {
   const { setNodeRef } = useDroppable({
     id: droppableId || "",
@@ -68,13 +73,14 @@ function CategoryFilterButton({
     );
   }
 
-  const [open, setOpen] = useState(false);
-
   return (
     <>
       <ListItem
         disablePadding
-        ref={dropEnabled && droppableId ? setNodeRef : undefined}
+        ref={(el) => {
+          if (id && categoryRefs?.current) categoryRefs.current[id] = el;
+          if (dropEnabled && droppableId) setNodeRef?.(el);
+        }}
       >
         <ListItemButton
           selected={selected}
@@ -87,7 +93,7 @@ function CategoryFilterButton({
           }}
           onClick={() => {
             onClick();
-            if (children?.length) setOpen(true);
+            if (children?.length) setOpenCategories([...openCategories, id!]);
           }}
         >
           <ListItemText
@@ -124,9 +130,15 @@ function CategoryFilterButton({
             <CustomIconButton
               onClick={(e) => {
                 e.stopPropagation();
-                setOpen((prev) => !prev);
+                setOpenCategories(
+                  openCategories.includes(id!)
+                    ? openCategories.filter((c) => c !== id)
+                    : [...openCategories, id!],
+                );
               }}
-              icon={open ? mdiChevronUp : mdiChevronDown}
+              icon={
+                openCategories.includes(id!) ? mdiChevronUp : mdiChevronDown
+              }
             />
           ) : (
             <div
@@ -138,7 +150,11 @@ function CategoryFilterButton({
         </ListItemButton>
       </ListItem>
       {children?.length ? (
-        <Collapse in={open} timeout="auto" unmountOnExit>
+        <Collapse
+          in={!!(id && openCategories?.includes(id))}
+          timeout="auto"
+          unmountOnExit
+        >
           {children?.map((child) => (
             <CategoryFilterButton
               id={child.id}
@@ -153,6 +169,9 @@ function CategoryFilterButton({
               droppableId={getMediaCategoryDropId(child.id)}
               dropEnabled={dropEnabled}
               children={child.children}
+              openCategories={openCategories}
+              setOpenCategories={setOpenCategories}
+              categoryRefs={categoryRefs}
             />
           ))}
         </Collapse>
@@ -167,6 +186,9 @@ export default function MediaCategorySidebar({
   onSelectFilter,
   counts,
   enableDrop = true,
+  openCategories,
+  setOpenCategories,
+  categoryRefs,
 }: {
   categories: Category[] | undefined;
   selectedFilter: string;
@@ -177,6 +199,9 @@ export default function MediaCategorySidebar({
     byCategoryId: Record<string, number>;
   };
   enableDrop?: boolean;
+  openCategories: string[];
+  setOpenCategories: (ids: string[]) => void;
+  categoryRefs: React.RefObject<Record<string, HTMLLIElement | null>>;
 }) {
   console.log(counts);
   const theme = useTheme();
@@ -210,8 +235,6 @@ export default function MediaCategorySidebar({
         overflowX: "hidden",
         minHeight: "100%",
         maxHeight: "100%",
-        // paddingRight: 2,
-        // paddingBottom: 1,
       }}
     >
       <CategoryFilterButton
@@ -219,6 +242,9 @@ export default function MediaCategorySidebar({
         selected={selectedFilter === MEDIA_FILTER_ALL}
         onClick={() => onSelectFilter(MEDIA_FILTER_ALL)}
         count={counts.all}
+        openCategories={openCategories}
+        setOpenCategories={setOpenCategories}
+        categoryRefs={categoryRefs}
       />
       <CategoryFilterButton
         label="Sans catégorie"
@@ -227,6 +253,9 @@ export default function MediaCategorySidebar({
         count={counts.uncategorized}
         droppableId={MEDIA_UNCATEGORIZED_DROP_ID}
         dropEnabled={enableDrop}
+        openCategories={openCategories}
+        setOpenCategories={setOpenCategories}
+        categoryRefs={categoryRefs}
       />
       <Divider />
       {categoriesTree.map((category) => (
@@ -243,6 +272,9 @@ export default function MediaCategorySidebar({
           droppableId={getMediaCategoryDropId(category.id)}
           dropEnabled={enableDrop}
           children={category.children}
+          openCategories={openCategories}
+          setOpenCategories={setOpenCategories}
+          categoryRefs={categoryRefs}
         />
       ))}
     </List>

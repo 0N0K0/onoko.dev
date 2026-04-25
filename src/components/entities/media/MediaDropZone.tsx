@@ -53,7 +53,7 @@ export default function MediaDropZone({
             alignItems: "center",
             opacity: submitting ? 0.5 : 1,
             width: "100%",
-            height: "168px",
+            minHeight: "168px",
             border:
               "2px " +
               (dragOver

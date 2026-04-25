@@ -1,7 +1,9 @@
 import {
+  Breadcrumbs,
   Button,
   Checkbox,
   FormControlLabel,
+  Link,
   TextField,
   useTheme,
 } from "@mui/material";
@@ -24,7 +26,7 @@ import {
   type DragEndEvent,
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Media, MediaGridProps } from "../../../types/entities/mediaTypes";
 import Picture from "../../custom/Picture";
 import DeleteConfirmationDialog from "../DeleteConfirmationDialog";
@@ -284,6 +286,9 @@ export default function MediaGrid(
     }
   }, [filteredMedias.length]);
 
+  const categoryRefs = useRef<Record<string, HTMLLIElement | null>>({});
+  const [openCategories, setOpenCategories] = useState<string[]>([]);
+
   return (
     <>
       {/* Conteneur principal */}
@@ -298,13 +303,18 @@ export default function MediaGrid(
             marginRight: mode === "library" ? -4 : undefined,
             paddingRight: mode === "picker" ? "24px !important" : 4,
             boxSizing: "content-box",
+            maxHeight: mode === "picker" ? "100%" : undefined,
           }}
         >
+          {/* Sidebar des catégories */}
           <MediaCategorySidebar
             categories={categories}
             selectedFilter={selectedCategoryFilter}
             onSelectFilter={setSelectedCategoryFilter}
             counts={categoryCounts}
+            openCategories={openCategories}
+            setOpenCategories={setOpenCategories}
+            categoryRefs={categoryRefs}
           />
 
           {/* Conteneur de médias */}
@@ -324,17 +334,97 @@ export default function MediaGrid(
               boxSizing: mode === "library" ? "content-box" : "border-box",
             }}
           >
-            {/* Affichage du nom de la catégorie sélectionnée (sauf pour 'all') */}
+            {/* Fil d'ariane des catégories */}
             {selectedCategoryFilter !== MEDIA_FILTER_ALL && (
-              <ResponsiveTitle variant="h5" component="h2">
-                {selectedCategoryFilter === MEDIA_FILTER_UNCATEGORIZED
-                  ? "Aucune catégorie"
-                  : categories?.find(
-                      (c: any) => c.id === selectedCategoryFilter,
-                    )?.label || ""}
-              </ResponsiveTitle>
+              <>
+                {/* Fil d'ariane des catégories (breadcrumb) sauf pour 'all' et 'uncategorized' */}
+                {selectedCategoryFilter !== MEDIA_FILTER_UNCATEGORIZED && (
+                  <Breadcrumbs separator="|">
+                    <Link
+                      onClick={() =>
+                        setSelectedCategoryFilter(MEDIA_FILTER_ALL)
+                      }
+                      color="primary"
+                      sx={{ cursor: "pointer", textTransform: "uppercase" }}
+                      underline="hover"
+                    >
+                      Tous
+                    </Link>
+                    {(() => {
+                      // Construit la liste des catégories ascendantes
+                      const breadcrumbs = [];
+                      let current = categories?.find(
+                        (c: any) => c.id === selectedCategoryFilter,
+                      );
+                      while (current) {
+                        breadcrumbs.unshift(current);
+                        current = current.parent
+                          ? categories?.find(
+                              (c: any) => c.id === extractId(current?.parent),
+                            )
+                          : undefined;
+                      }
+                      return breadcrumbs.map((cat, idx) => (
+                        <Link
+                          component={
+                            idx === breadcrumbs.length - 1 ? "h2" : "span"
+                          }
+                          key={cat.id}
+                          color={
+                            idx === breadcrumbs.length - 1
+                              ? theme.palette.text.primary
+                              : "inherit"
+                          }
+                          onClick={() => {
+                            // Ouvre tous les ascendants et la catégorie cliquée
+                            const path = [];
+                            let node: Category | undefined = cat;
+                            while (node) {
+                              path.unshift(node.id);
+                              node = node.parent
+                                ? categories?.find(
+                                    (c) => c.id === extractId(node?.parent),
+                                  )
+                                : undefined;
+                            }
+                            setOpenCategories(path);
+                            setSelectedCategoryFilter(cat.id);
+                            setTimeout(() => {
+                              const ref = categoryRefs.current[cat.id];
+                              if (ref)
+                                ref.scrollIntoView({
+                                  behavior: "smooth",
+                                  block: "center",
+                                });
+                            }, 500);
+                          }}
+                          sx={{
+                            cursor:
+                              idx === breadcrumbs.length - 1
+                                ? "default"
+                                : "pointer",
+                            // fontWeight:
+                            //   idx === breadcrumbs.length - 1 ? "700" : "400",
+                            textTransform: "uppercase",
+                          }}
+                          underline={
+                            idx === breadcrumbs.length - 1 ? "none" : "hover"
+                          }
+                        >
+                          {cat.label}
+                        </Link>
+                      ));
+                    })()}
+                  </Breadcrumbs>
+                )}
+                {/* Affichage texte pour uncategorized */}
+                {selectedCategoryFilter === MEDIA_FILTER_UNCATEGORIZED && (
+                  <ResponsiveTitle variant="h6" component="h2">
+                    Aucune catégorie
+                  </ResponsiveTitle>
+                )}
+              </>
             )}
-
             {/* Zone de dépôt de médias */}
             {showAddZone && (
               <MediaDropZone
