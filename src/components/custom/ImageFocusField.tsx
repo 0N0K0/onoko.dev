@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import {
   Box,
-  TextField,
   IconButton,
   Tooltip,
   ToggleButton,
@@ -14,6 +13,7 @@ import { mdiRefresh } from "@mdi/js";
 import Picture from "./Picture";
 import type { Media } from "../../types/entities/mediaTypes";
 import { ResponsiveStack } from "./ResponsiveLayout";
+import NumberField from "./NumberField";
 
 const ASPECT_RATIOS = [
   { label: "21:9", value: 21 / 9 },
@@ -185,23 +185,25 @@ export function ImageFocusField({
           alignItems: "center",
         }}
       >
-        <TextField
+        <NumberField
           label="X (%)"
-          type="number"
-          size="small"
           value={x}
-          slotProps={{ htmlInput: { min: 0, max: 100 } }}
-          onChange={(e) => handleCoordChange("x", e.target.value)}
-          sx={{ flex: "1 1 auto" }}
+          onValueChange={(val) => {
+            handleCoordChange("x", String(val));
+          }}
+          min={0}
+          max={100}
+          style={{ flex: "1 1 auto" }}
         />
-        <TextField
+        <NumberField
           label="Y (%)"
-          type="number"
-          size="small"
           value={y}
-          slotProps={{ htmlInput: { min: 0, max: 100 } }}
-          onChange={(e) => handleCoordChange("y", e.target.value)}
-          sx={{ flex: "1 1 auto" }}
+          onValueChange={(val) => {
+            handleCoordChange("y", String(val));
+          }}
+          min={0}
+          max={100}
+          style={{ flex: "1 1 auto" }}
         />
         <Tooltip title="Réinitialiser (50% 50%)">
           <IconButton onClick={() => onChange("50% 50%")}>

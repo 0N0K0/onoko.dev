@@ -1,8 +1,8 @@
-import { TextField } from "@mui/material";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
 import ResponsiveTitle from "../../../custom/ResponsiveTitle";
 import WysiwygField from "../../../custom/WysiwygField";
 import type { ProjectSectionProps } from "../../../../types/entities/projectTypes";
+import NumberField from "../../../custom/NumberField";
 
 export default function ProjectKpisFeedbackSection({
   editingProject,
@@ -28,13 +28,15 @@ export default function ProjectKpisFeedbackSection({
               { key: "pullRequests", label: "Pull requests" },
             ] as const
           ).map(({ key, label }) => (
-            <TextField
+            <NumberField
               key={key}
               label={label}
-              type="number"
               value={editingProject?.kpis?.[key] ?? 0}
-              onChange={(e) => {
-                const newValue = parseInt(e.target.value, 10) || 0;
+              onValueChange={(value) => {
+                const newValue =
+                  typeof value === "number"
+                    ? value
+                    : parseInt(value ?? "0", 10) || 0;
                 setEditingProject((prev) =>
                   prev
                     ? { ...prev, kpis: { ...prev.kpis, [key]: newValue } }
@@ -43,6 +45,7 @@ export default function ProjectKpisFeedbackSection({
                 newValue !== (initialProject?.kpis?.[key] ?? 0) &&
                   setHasChanges(true);
               }}
+              min={0}
             />
           ))}
         </ResponsiveStack>
