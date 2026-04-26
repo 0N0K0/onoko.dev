@@ -92,7 +92,7 @@ export default function Home() {
             <br />
             / Applicatifs cross-plateformes
             <br />
-            / Logiciels métiers
+            / Solutions métiers
             <br />
             / Outils d'automatisation
             <br />/ Débogage & optimisation
