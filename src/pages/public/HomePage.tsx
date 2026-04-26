@@ -88,11 +88,14 @@ export default function Home() {
         }
         subtitle={
           <>
-            React | Wordpress
+            / Sites web
             <br />
-            Node JS | Express | Electron
+            / Applicatifs cross-plateformes
             <br />
-            PHP | Symfony
+            / Logiciels métiers
+            <br />
+            / Outils d'automatisation
+            <br />/ Débogage & optimisation
           </>
         }
         action={

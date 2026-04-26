@@ -530,7 +530,7 @@ export default function MediaGrid(
               sx={{
                 columnGap: 4,
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(9rem, 1fr))",
+                gridTemplateColumns: `repeat(auto-fit, minmax(9rem, ${filteredMedias.length < 5 ? "20%" : "1fr"}))`,
                 overflowY: "auto",
                 overflowX: "hidden",
                 paddingBottom: "24px !important",
@@ -538,6 +538,7 @@ export default function MediaGrid(
                 paddingRight: mode === "picker" ? "24px !important" : 4,
                 width: mode === "library" ? "100%" : "calc(100% + 24px)",
                 flex: "1 1 auto",
+                justifyContent: "center",
               }}
             >
               {filteredMedias.map((media) => {
