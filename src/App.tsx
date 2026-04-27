@@ -31,6 +31,7 @@ import "dayjs/locale/fr";
 import theme, { frontTheme } from "./theme/theme";
 import AuthLayout from "./layout/auth/AuthLayout";
 import { FrontProjectsPage } from "./pages/public/FrontProjectsPage";
+import { SingleProject } from "./layout/public/SingleProject";
 
 export default function App() {
   return (
@@ -84,6 +85,14 @@ export default function App() {
                     element={
                       <PublicLayout>
                         <FrontProjectsPage />
+                      </PublicLayout>
+                    }
+                  />
+                  <Route
+                    path="/projects/:slug"
+                    element={
+                      <PublicLayout>
+                        <SingleProject />
                       </PublicLayout>
                     }
                   />

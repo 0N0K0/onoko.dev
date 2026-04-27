@@ -6,6 +6,8 @@ import type { Media } from "../../../../types/entities/mediaTypes";
 import { extractId, extractIds } from "../../../../utils/normalizeRef";
 import { getMultiSelectValue } from "../../../../utils/normalizeRef";
 import type { ProjectSectionProps } from "../../../../types/entities/projectTypes";
+import { slugify } from "../../../../utils/urlUtils";
+import useProjects from "../../../../hooks/queries/useProjects";
 
 interface Props extends ProjectSectionProps {
   categories: Category[];
@@ -20,6 +22,7 @@ export default function ProjectBasicSection({
   categories,
   medias,
 }: Props) {
+  const { projects } = useProjects();
   return (
     <>
       <MediaPicker
@@ -43,11 +46,43 @@ export default function ProjectBasicSection({
         value={editingProject?.label || ""}
         onChange={(e) => {
           setEditingProject((prev) =>
-            prev ? { ...prev, label: e.target.value } : null,
+            prev
+              ? {
+                  ...prev,
+                  label: e.target.value,
+                  slug:
+                    e.target.value && !editingProject?.slug
+                      ? slugify(e.target.value)
+                      : editingProject?.slug,
+                }
+              : null,
           );
           e.target.value !== (initialProject?.label || "") &&
             setHasChanges(true);
         }}
+        required
+      />
+      <TextField
+        label="Slug"
+        value={editingProject?.slug || ""}
+        onChange={(e) => {
+          setEditingProject((prev) =>
+            prev ? { ...prev, slug: e.target.value } : null,
+          );
+          e.target.value !== (initialProject?.slug || "") &&
+            setHasChanges(true);
+        }}
+        error={projects?.some(
+          (p) => p.slug === editingProject?.slug && p.id !== editingProject.id,
+        )}
+        helperText={
+          projects?.some(
+            (p) =>
+              p.slug === editingProject?.slug && p.id !== editingProject.id,
+          )
+            ? "Ce slug est déjà utilisé par un autre projet."
+            : ""
+        }
         required
       />
       <CustomSelect

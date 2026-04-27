@@ -9,6 +9,7 @@ import type { Dayjs } from "dayjs";
 
 export interface Project {
   id: string;
+  slug: string;
   label: string;
   thumbnail?: Media | string;
   categories?: (Category | string)[];

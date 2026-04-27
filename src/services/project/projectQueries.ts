@@ -4,6 +4,7 @@ export const PROJECTS_QUERY = gql`
   query Projects {
     projects {
       id
+      slug
       label
       thumbnail
       categories

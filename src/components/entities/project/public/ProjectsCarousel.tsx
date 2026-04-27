@@ -5,7 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { useTheme } from "@mui/material";
+import { Link, useTheme } from "@mui/material";
 import Icon from "@mdi/react";
 import { mdiEye } from "@mdi/js";
 import {
@@ -256,7 +256,8 @@ export default function ProjectsCarousel({
               return (
                 <ResponsiveBox
                   key={project.id}
-                  component="article"
+                  component={Link}
+                  href={`/projects/${project.slug}`}
                   sx={{
                     flex:
                       activeProjectId === project.id
@@ -269,6 +270,7 @@ export default function ProjectsCarousel({
                     overflow: "hidden",
                     background: `url(${thumbnailUrl}) ${project.thumbnail && typeof project.thumbnail !== "string" ? project.thumbnail?.focus || "center" : "center"} / cover no-repeat`,
                     transition: `all 1800ms ${theme.transitions.easing.easeOut}`,
+                    cursor: "none",
                   }}
                   onMouseEnter={(e) => handleArticleHover(e, project.id)}
                 >
@@ -285,6 +287,7 @@ export default function ProjectsCarousel({
                       fontWeight: "900",
                       textShadow: `0 0 5px rgba(0,0,0,0.5)`,
                       textWrap: "nowrap",
+                      color: theme.palette.text.primary,
                     }}
                   >
                     {project.label}
@@ -301,6 +304,7 @@ export default function ProjectsCarousel({
                         zIndex: 1,
                         textShadow: `0 0 5px rgba(0,0,0,0.5)`,
                         textWrap: "nowrap",
+                        color: theme.palette.text.primary,
                       }}
                     >
                       {project.startDate.format("YYYY")}
