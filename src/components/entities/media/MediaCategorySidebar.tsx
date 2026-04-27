@@ -203,7 +203,6 @@ export default function MediaCategorySidebar({
   setOpenCategories: (ids: string[]) => void;
   categoryRefs: React.RefObject<Record<string, HTMLLIElement | null>>;
 }) {
-  console.log(counts);
   const theme = useTheme();
 
   function buildCategoryTree(): (Category & { children: Category[] })[] {

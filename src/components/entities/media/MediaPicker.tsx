@@ -253,25 +253,26 @@ export default function MediaPicker({
                 overflowX: "hidden",
                 width: "100%",
                 paddingX: "20px",
-                // maxWidth: "12rem",
               }}
             >
-              {images.map((image) => (
-                <SortableMediaItem
-                  key={image.id}
-                  image={image}
-                  multiple={multiple}
-                  required={required}
-                  disabled={disabled}
-                  imagesLength={images.length}
-                  onEdit={() => setMediaPickerOpen(true)}
-                  onDelete={() =>
-                    setImages((prev) =>
-                      prev.filter((img) => img.id !== image.id),
-                    )
-                  }
-                />
-              ))}
+              {[...images]
+                .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+                .map((image) => (
+                  <SortableMediaItem
+                    key={image.id}
+                    image={image}
+                    multiple={multiple}
+                    required={required}
+                    disabled={disabled}
+                    imagesLength={images.length}
+                    onEdit={() => setMediaPickerOpen(true)}
+                    onDelete={() =>
+                      setImages((prev) =>
+                        prev.filter((img) => img.id !== image.id),
+                      )
+                    }
+                  />
+                ))}
             </ResponsiveBox>
           </SortableContext>
         </DndContext>

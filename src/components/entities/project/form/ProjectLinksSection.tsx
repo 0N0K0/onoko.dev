@@ -3,20 +3,14 @@ import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
 import ResponsiveTitle from "../../../custom/ResponsiveTitle";
 import MediaPicker from "../../media/MediaPicker";
 import type { Media } from "../../../../types/entities/mediaTypes";
-import { extractIds } from "../../../../utils/normalizeRef";
 import type { ProjectSectionProps } from "../../../../types/entities/projectTypes";
-
-interface Props extends ProjectSectionProps {
-  medias: Media[];
-}
 
 export default function ProjectLinksSection({
   editingProject,
   setEditingProject,
   initialProject,
   setHasChanges,
-  medias,
-}: Props) {
+}: ProjectSectionProps) {
   return (
     <>
       {/* Site internet */}
@@ -83,9 +77,9 @@ export default function ProjectLinksSection({
           multiple
           initialImages={(() => {
             const images = editingProject?.mockup?.images;
-            if (!images?.length) return [];
-            const ids = new Set(extractIds(images));
-            return medias.filter((m) => ids.has(m.id));
+            return images?.length
+              ? images.filter((i): i is Media => "path" in i)
+              : [];
           })()}
           onChange={(value) => {
             const newIds = value ? value.split(",").filter(Boolean) : [];
@@ -94,6 +88,7 @@ export default function ProjectLinksSection({
             );
             const merged = newIds.map((id, position) => {
               const full = existingMedia.find((m) => m.id === id);
+              if (full) full.position = position; // Mettre à jour la position
               return full ? full : { id, position };
             });
             setEditingProject((prev) =>
@@ -110,8 +105,8 @@ export default function ProjectLinksSection({
                 : null,
             );
             const initialIds = (initialProject?.mockup?.images ?? [])
+              .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
               .map((i) => i.id)
-              .sort()
               .join(",");
             const newSortedIds = [...newIds].sort().join(",");
             initialIds !== newSortedIds && setHasChanges(true);

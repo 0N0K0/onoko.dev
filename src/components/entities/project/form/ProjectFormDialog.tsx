@@ -152,7 +152,7 @@ export default function ProjectFormDialog({
             categories={categories}
             medias={medias}
           />
-          <ProjectLinksSection {...sectionProps} medias={medias} />
+          <ProjectLinksSection {...sectionProps} />
           <ProjectPeopleSection {...sectionProps} medias={medias} />
           <ProjectContentSection {...sectionProps} />
           <ProjectOrganizationSection

@@ -36,9 +36,12 @@ export default function useProjects() {
     mockup: project.mockup
       ? {
           ...project.mockup,
-          images: project.mockup.images?.map(
-            (image) => normalizeRef(image, medias) ?? image,
-          ),
+          images: project.mockup.images?.map((image) => {
+            const media = medias.find((m) => m.id === image.id);
+            return media
+              ? { ...media, position: image.position }
+              : { id: image.id, position: image.position };
+          }),
         }
       : project.mockup,
     client: project.client
