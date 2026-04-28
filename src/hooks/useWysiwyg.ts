@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
-
 interface UseWysiwygOptions {
   value: string;
   onChange: (value: string) => void;
@@ -43,7 +42,7 @@ export default function useWysiwyg({ value, onChange }: UseWysiwygOptions) {
     quillRef.current.on("text-change", () => {
       if (!quillRef.current) return;
       isInternalChange.current = true;
-      onChange(quillRef.current.getSemanticHTML());
+      onChange(quillRef.current.root.innerHTML);
     });
     return () => {
       quillRef.current = null;
@@ -59,7 +58,7 @@ export default function useWysiwyg({ value, onChange }: UseWysiwygOptions) {
       isInternalChange.current = false;
       return;
     }
-    const current = quillRef.current.getSemanticHTML();
+    const current = quillRef.current.root.innerHTML;
     if (current !== value) {
       quillRef.current.setContents(
         quillRef.current.clipboard.convert({ html: value || "" }),

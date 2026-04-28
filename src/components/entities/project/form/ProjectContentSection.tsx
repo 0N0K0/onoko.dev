@@ -20,6 +20,7 @@ export default function ProjectContentSection({
           label="Contexte"
           value={editingProject?.intro?.context || ""}
           onChange={(val) => {
+            console.log(val);
             setEditingProject((prev) =>
               prev ? { ...prev, intro: { ...prev.intro, context: val } } : null,
             );
