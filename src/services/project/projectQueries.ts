@@ -30,13 +30,10 @@ export const PROJECTS_QUERY = gql`
       }
       startDate
       endDate
-      intro {
-        context
-        objective
-        client
-      }
+      intro
       presentation {
-        description
+        context
+        client
         issue
         audience
       }

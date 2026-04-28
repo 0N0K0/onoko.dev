@@ -32,13 +32,10 @@ export interface Project {
   };
   startDate?: Dayjs;
   endDate?: Dayjs;
-  intro?: {
-    context?: string;
-    objective?: string;
-    client?: string;
-  };
+  intro?: string;
   presentation?: {
-    description?: string;
+    context?: string;
+    client?: string;
     issue?: string;
     audience?: string;
   };

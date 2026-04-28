@@ -12,46 +12,14 @@ export default function ProjectContentSection({
   return (
     <>
       {/* Introduction */}
-      <ResponsiveStack rowGap={3}>
-        <ResponsiveTitle variant="h6" component="h3">
-          Introduction
-        </ResponsiveTitle>
-        <WysiwygField
-          label="Contexte"
-          value={editingProject?.intro?.context || ""}
-          onChange={(val) => {
-            setEditingProject((prev) =>
-              prev ? { ...prev, intro: { ...prev.intro, context: val } } : null,
-            );
-            val !== (initialProject?.intro?.context || "") &&
-              setHasChanges(true);
-          }}
-        />
-        <WysiwygField
-          label="Objectif"
-          value={editingProject?.intro?.objective || ""}
-          onChange={(val) => {
-            setEditingProject((prev) =>
-              prev
-                ? { ...prev, intro: { ...prev.intro, objective: val } }
-                : null,
-            );
-            val !== (initialProject?.intro?.objective || "") &&
-              setHasChanges(true);
-          }}
-        />
-        <WysiwygField
-          label="Client"
-          value={editingProject?.intro?.client || ""}
-          onChange={(val) => {
-            setEditingProject((prev) =>
-              prev ? { ...prev, intro: { ...prev.intro, client: val } } : null,
-            );
-            val !== (initialProject?.intro?.client || "") &&
-              setHasChanges(true);
-          }}
-        />
-      </ResponsiveStack>
+      <WysiwygField
+        label="Introduction"
+        value={editingProject?.intro || ""}
+        onChange={(val) => {
+          setEditingProject((prev) => (prev ? { ...prev, intro: val } : null));
+          val !== (initialProject?.intro || "") && setHasChanges(true);
+        }}
+      />
 
       {/* Présentation */}
       <ResponsiveStack rowGap={3}>
@@ -59,18 +27,34 @@ export default function ProjectContentSection({
           Présentation
         </ResponsiveTitle>
         <WysiwygField
-          label="Description"
-          value={editingProject?.presentation?.description || ""}
+          label="Contexte"
+          value={editingProject?.presentation?.context || ""}
           onChange={(val) => {
             setEditingProject((prev) =>
               prev
                 ? {
                     ...prev,
-                    presentation: { ...prev.presentation, description: val },
+                    presentation: { ...prev.presentation, context: val },
                   }
                 : null,
             );
-            val !== (initialProject?.presentation?.description || "") &&
+            val !== (initialProject?.presentation?.context || "") &&
+              setHasChanges(true);
+          }}
+        />
+        <WysiwygField
+          label="Client"
+          value={editingProject?.presentation?.client || ""}
+          onChange={(val) => {
+            setEditingProject((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    presentation: { ...prev.presentation, client: val },
+                  }
+                : null,
+            );
+            val !== (initialProject?.presentation?.client || "") &&
               setHasChanges(true);
           }}
         />
