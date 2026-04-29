@@ -12,7 +12,6 @@ import type { Media } from "../../types/entities/mediaTypes";
 import {
   Box,
   Button,
-  ImageList,
   ImageListItem,
   Link,
   Tab,
@@ -44,6 +43,8 @@ export function SingleProject() {
 
   if (project?.intro || project?.website?.url || project?.mockup?.url)
     sections.push({ id: "intro", label: "Introduction" });
+  if (project?.mockup?.images && project.mockup.images.length > 0)
+    sections.push({ id: "mockup", label: "Maquettes" });
   if (project?.roles && project.roles.length > 0)
     sections.push({ id: "roles", label: "Prestations" });
   if (project?.presentation) {
@@ -408,172 +409,104 @@ export function SingleProject() {
                       )}
                     </ResponsiveStack>
                   )}
-                  {project.mockup?.images &&
-                    project.mockup?.images.length > 0 && (
+                </ResponsiveStack>
+              </TableCell>
+            </TableRow>
+          )}
+          {project.mockup?.images && project.mockup?.images.length > 0 && (
+            <TableRow id="mockup">
+              <TableCell colSpan={2}>
+                <ResponsiveStack rowGap={3}>
+                  <ResponsiveTitle variant="h2">Maquettes</ResponsiveTitle>
+                  {(() => {
+                    const desktopImages = project.mockup.images.filter((img) =>
+                      (img as Media).label?.toLowerCase().startsWith("desktop"),
+                    );
+                    const tabletImages = project.mockup.images.filter((img) =>
+                      (img as Media).label?.toLowerCase().startsWith("tablet"),
+                    );
+                    const mobileImages = project.mockup.images.filter((img) =>
+                      (img as Media).label?.toLowerCase().startsWith("mobile"),
+                    );
+                    const otherImages = project.mockup.images.filter((img) => {
+                      const label = (img as Media).label?.toLowerCase() || "";
+                      return (
+                        !label.startsWith("desktop") &&
+                        !label.startsWith("tablet") &&
+                        !label.startsWith("mobile")
+                      );
+                    });
+                    return (
                       <>
+                        <Tabs
+                          value={selectedTab}
+                          onChange={(_, newValue) => setSelectedTab(newValue)}
+                          centered
+                        >
+                          {desktopImages.length > 0 && <Tab label="Desktop" />}
+                          {tabletImages.length > 0 && <Tab label="Tablet" />}
+                          {mobileImages.length > 0 && <Tab label="Mobile" />}
+                          {otherImages.length > 0 && <Tab label="Autres" />}
+                        </Tabs>
                         {(() => {
-                          const desktopImages = project.mockup.images.filter(
-                            (img) =>
-                              (img as Media).label
-                                ?.toLowerCase()
-                                .startsWith("desktop"),
-                          );
-                          const tabletImages = project.mockup.images.filter(
-                            (img) =>
-                              (img as Media).label
-                                ?.toLowerCase()
-                                .startsWith("tablet"),
-                          );
-                          const mobileImages = project.mockup.images.filter(
-                            (img) =>
-                              (img as Media).label
-                                ?.toLowerCase()
-                                .startsWith("mobile"),
-                          );
-                          return (
-                            <>
-                              <Tabs
-                                value={selectedTab}
-                                onChange={(_, newValue) =>
-                                  setSelectedTab(newValue)
-                                }
-                                centered
+                          const imageLists = [
+                            { images: desktopImages, label: "Desktop" },
+                            { images: tabletImages, label: "Tablet" },
+                            { images: mobileImages, label: "Mobile" },
+                            { images: otherImages, label: "Autres" },
+                          ];
+                          let tabIndex = 0;
+                          return imageLists.map((list, _) => {
+                            if (list.images.length === 0) return null;
+                            const currentIndex = tabIndex;
+                            tabIndex++;
+                            return (
+                              <ResponsiveImageList
+                                key={list.label}
+                                variant="masonry"
+                                gap={16}
+                                maxWidth="fit-content"
+                                role="tabpanel"
+                                sx={{
+                                  marginX: "auto",
+                                  display:
+                                    selectedTab === currentIndex
+                                      ? "block"
+                                      : "none",
+                                }}
                               >
-                                {desktopImages.length > 0 && (
-                                  <Tab label="Desktop" />
-                                )}
-                                {tabletImages.length > 0 && (
-                                  <Tab label="Tablet" />
-                                )}
-                                {mobileImages.length > 0 && (
-                                  <Tab label="Mobile" />
-                                )}
-                              </Tabs>
-                              {desktopImages.length > 0 && (
-                                <ResponsiveImageList
-                                  variant="masonry"
-                                  gap={16}
-                                  maxWidth="fit-content"
-                                  role="tabpanel"
-                                  sx={{
-                                    marginX: "auto",
-                                    display:
-                                      selectedTab === 0 ? "block" : "none",
-                                  }}
-                                >
-                                  {desktopImages.map((image) => (
-                                    <ImageListItem key={image.id}>
-                                      <Picture
-                                        image={image as Media}
-                                        maxWidth={theme.sizes.columnWidth(
-                                          3,
-                                          2,
-                                          "min(100dvw, 1920px)",
-                                        )}
-                                        style={{
-                                          border: `1px solid ${theme.palette.divider}`,
-                                          borderRadius: "8px",
-                                          overflow: "hidden",
-                                        }}
-                                      />
-                                    </ImageListItem>
-                                  ))}
-                                </ResponsiveImageList>
-                              )}
-                              {tabletImages.length > 0 && (
-                                <ResponsiveImageList
-                                  variant="masonry"
-                                  gap={16}
-                                  maxWidth="fit-content"
-                                  role="tabpanel"
-                                  sx={{
-                                    marginX: "auto",
-                                    display:
-                                      selectedTab ===
-                                      (desktopImages.length > 0 ? 1 : 0)
-                                        ? "block"
-                                        : "none",
-                                  }}
-                                >
-                                  {tabletImages.map((image) => (
-                                    <ImageListItem
-                                      key={image.id}
+                                {list.images.map((image) => (
+                                  <ImageListItem
+                                    key={image.id}
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <Picture
+                                      image={image as Media}
+                                      maxWidth={theme.sizes.columnWidth(
+                                        3,
+                                        2,
+                                        "min(100dvw, 1920px)",
+                                      )}
                                       style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
+                                        border: `1px solid ${theme.palette.divider}`,
+                                        borderRadius: "8px",
+                                        overflow: "hidden",
+                                        width: "fit-content",
                                       }}
-                                    >
-                                      <Picture
-                                        image={image as Media}
-                                        maxWidth={theme.sizes.columnWidth(
-                                          3,
-                                          2,
-                                          "min(100dvw, 1920px)",
-                                        )}
-                                        style={{
-                                          border: `1px solid ${theme.palette.divider}`,
-                                          borderRadius: "8px",
-                                          overflow: "hidden",
-                                        }}
-                                      />
-                                    </ImageListItem>
-                                  ))}
-                                </ResponsiveImageList>
-                              )}
-                              {mobileImages.length > 0 && (
-                                <ResponsiveImageList
-                                  variant="masonry"
-                                  gap={16}
-                                  maxWidth="fit-content"
-                                  role="tabpanel"
-                                  sx={{
-                                    marginX: "auto",
-                                    display:
-                                      selectedTab ===
-                                      (desktopImages.length > 0 &&
-                                      tabletImages.length > 0
-                                        ? 2
-                                        : desktopImages.length > 0 ||
-                                            tabletImages.length > 0
-                                          ? 1
-                                          : 0)
-                                        ? "block"
-                                        : "none",
-                                  }}
-                                >
-                                  {mobileImages.map((image) => (
-                                    <ImageListItem
-                                      key={image.id}
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                      }}
-                                    >
-                                      <Picture
-                                        image={image as Media}
-                                        maxWidth={theme.sizes.columnWidth(
-                                          3,
-                                          2,
-                                          "min(100dvw, 1920px)",
-                                        )}
-                                        style={{
-                                          border: `1px solid ${theme.palette.divider}`,
-                                          borderRadius: "8px",
-                                          overflow: "hidden",
-                                          width: "fit-content",
-                                        }}
-                                      />
-                                    </ImageListItem>
-                                  ))}
-                                </ResponsiveImageList>
-                              )}
-                            </>
-                          );
+                                    />
+                                  </ImageListItem>
+                                ))}
+                              </ResponsiveImageList>
+                            );
+                          });
                         })()}
                       </>
-                    )}
+                    );
+                  })()}
                 </ResponsiveStack>
               </TableCell>
             </TableRow>
