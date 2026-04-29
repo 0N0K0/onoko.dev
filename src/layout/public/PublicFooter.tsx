@@ -2,6 +2,8 @@ import { Toolbar, useTheme, Box, Link, AppBar } from "@mui/material";
 import ResponsiveBodyTypography from "../../components/custom/ResponsiveBodyTypography";
 import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import { useLocation } from "react-router-dom";
+import CustomIconButton from "../../components/custom/CustomIconButton";
+import { mdiEmail, mdiGithub, mdiLinkedin } from "@mdi/js";
 
 /**
  * Pied de page pour les pages publiques, affichant un message de copyright.
@@ -12,12 +14,6 @@ export default function PublicFooter() {
   const { pathname } = useLocation();
 
   const pages = [
-    {
-      label: "Scriptum",
-      sublabel: "Contact",
-      route: "/contact",
-      disabled: true,
-    },
     { label: "Ego", sublabel: "A propos", route: "/about", disabled: true },
     {
       label: "Musae",
@@ -37,13 +33,22 @@ export default function PublicFooter() {
     <AppBar
       component="footer"
       position="sticky"
-      sx={{ top: "calc(100dvh - 48px)", paddingX: { xs: 2, md: 4 } }}
+      sx={{
+        top: "calc(100dvh - 48px)",
+        paddingX: { xs: 2, md: 8 },
+      }}
       elevation={0}
     >
-      <Toolbar>
+      <Toolbar
+        sx={{
+          width: "100%",
+          paddingX: "0 !important",
+          justifyContent: "space-between",
+          alignItems: "end",
+        }}
+      >
         <ResponsiveStack
           sx={{
-            flexGrow: 1,
             flexDirection: "row",
             columnGap: 3,
           }}
@@ -107,6 +112,15 @@ export default function PublicFooter() {
               </Link>
             );
           })}
+        </ResponsiveStack>
+        <ResponsiveStack direction="row">
+          <CustomIconButton icon={mdiEmail} disabled />
+          <CustomIconButton
+            icon={mdiGithub}
+            component="a"
+            href="https://github.com/Noemie-Koelblen"
+          />
+          <CustomIconButton icon={mdiLinkedin} disabled />
         </ResponsiveStack>
         <ResponsiveBodyTypography
           variant="bodyXs"
