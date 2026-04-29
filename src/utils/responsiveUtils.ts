@@ -4,7 +4,6 @@ import type {
   GetResponsiveSxProps,
   ResponsiveSxProps,
 } from "../types/components/responsiveTypes";
-import { getFactors } from "./nbUtils";
 
 /**
  * Utilitaire pour générer des styles responsives basés sur les propriétés de marge, de padding et d'espacement entre les éléments.
@@ -53,67 +52,4 @@ export function getResponsiveSx({
       rowGap: `min(${rowGap}, ${maxTightSpacing})`,
     },
   };
-}
-
-/**
- * Fonction pour calculer la disposition optimale d'une grille d'éléments dans un conteneur donné.
- * Elle prend en compte le nombre d'éléments, les dimensions du conteneur, les marges, les espaces entre les éléments, et le ratio minimum des cellules.
- * @param {HTMLDivElement} container Le conteneur dans lequel la grille doit être affichée
- * @param {number} nbItems Le nombre total d'éléments à afficher
- * @param {number} padding La marge intérieure du conteneur
- * @param {number} gap L'espace entre les éléments dans la grille
- * @param {number} minRatio Le ratio minimum (largeur/hauteur) pour les cellules de la grille
- * @param {number} maxCols Le nombre maximum de colonnes autorisé dans la grille
- * @return {{ cols: number; rowHeight: number } | void} Un objet contenant le nombre de colonnes et la hauteur des lignes optimales, ou void si le nombre d'éléments est zéro
- */
-export function calculateGridLayout(
-  container: HTMLDivElement,
-  nbItems: number,
-  padding: number,
-  gap: number,
-  minRatio: number,
-  maxCols: number,
-): { cols: number; rowHeight: number } | void {
-  const w = container.clientWidth - 2 * padding;
-  const h = container.clientHeight - 2 * padding;
-  if (nbItems === 0) return;
-
-  const ratioContainer = w / h;
-
-  let bestCols = 1;
-  let bestRows = nbItems;
-  let bestDiff = Infinity;
-
-  const factorPairs = getFactors(nbItems, maxCols);
-
-  for (const [colsCandidate, rowsCandidate] of factorPairs) {
-    if (colsCandidate === undefined || rowsCandidate === undefined) continue;
-    const totalGapW = (colsCandidate - 1) * gap;
-    const totalGapH = (rowsCandidate - 1) * gap;
-
-    let cellW = (w - totalGapW) / colsCandidate;
-    let cellH = (h - totalGapH) / rowsCandidate;
-
-    const cellRatio = cellW / cellH;
-    if (cellRatio < minRatio) {
-      cellH = cellW / minRatio;
-    }
-
-    const ratioGrid = colsCandidate / rowsCandidate;
-    const diff = Math.abs(ratioGrid - ratioContainer);
-
-    if (diff < bestDiff) {
-      bestDiff = diff;
-      bestCols = colsCandidate;
-      bestRows = rowsCandidate;
-    }
-  }
-
-  const totalGapH = (bestRows - 1) * gap;
-  const rowHeight = Math.max(
-    (h - totalGapH) / bestRows,
-    w / bestCols / minRatio,
-  );
-
-  return { cols: bestCols, rowHeight };
 }
