@@ -87,7 +87,13 @@ export function SingleProject() {
   }
   if (project?.stacks && project.stacks.length > 0)
     sections.push({ id: "technologies", label: "Technologies" });
-  if (project?.kpis) sections.push({ id: "kpis", label: "KPI" });
+  if (
+    project?.kpis?.issues ||
+    project?.kpis?.points ||
+    project?.kpis?.commits ||
+    project?.kpis?.pullRequests
+  )
+    sections.push({ id: "kpis", label: "KPI" });
   if (project?.feedback) {
     if (project.feedback.client)
       sections.push({ id: "client-feedback", label: "Retours" });
@@ -222,10 +228,10 @@ export function SingleProject() {
                 variant="bodyLg"
                 style={{ fontWeight: "200" }}
               >
-                {`De ${project.startDate.locale("fr").format("MMMM YYYY")} à ${
+                {`${project.endDate ? "De" : "Depuis"} ${project.startDate.locale("fr").format("MMMM YYYY")} ${
                   project.endDate
-                    ? project.endDate.locale("fr").format("MMMM YYYY")
-                    : "aujourd'hui"
+                    ? `à ${project.endDate.locale("fr").format("MMMM YYYY")}`
+                    : ""
                 }`}
               </ResponsiveBodyTypography>
             )}
@@ -350,7 +356,7 @@ export function SingleProject() {
             <TableRow id="intro">
               <TableCell colSpan={2}>
                 <ResponsiveStack rowGap={6}>
-                  <WysiwygBox __html={project.intro || ""} />
+                  {project.intro && <WysiwygBox __html={project.intro} />}
                   {(project.website?.url || project.mockup?.url) && (
                     <ResponsiveStack
                       sx={{
@@ -728,7 +734,10 @@ export function SingleProject() {
               </TableCell>
             </TableRow>
           )}
-          {project.kpis && (
+          {(project.kpis?.issues ||
+            project.kpis?.points ||
+            project.kpis?.commits ||
+            project.kpis?.pullRequests) && (
             <TableRow id="kpis">
               <TableCell>
                 <ResponsiveTitle variant="h2">KPI</ResponsiveTitle>
@@ -743,18 +752,26 @@ export function SingleProject() {
                     justifyContent: "space-between",
                   }}
                 >
-                  <ResponsiveBodyTypography variant="bodyLg">
-                    Issues : {project.kpis.issues}
-                  </ResponsiveBodyTypography>
-                  <ResponsiveBodyTypography variant="bodyLg">
-                    Points : {project.kpis.points}
-                  </ResponsiveBodyTypography>
-                  <ResponsiveBodyTypography variant="bodyLg">
-                    Commits : {project.kpis.commits}
-                  </ResponsiveBodyTypography>
-                  <ResponsiveBodyTypography variant="bodyLg">
-                    Pull Requests : {project.kpis.pullRequests}
-                  </ResponsiveBodyTypography>
+                  {project.kpis.issues && (
+                    <ResponsiveBodyTypography variant="bodyLg">
+                      Issues : {project.kpis.issues}
+                    </ResponsiveBodyTypography>
+                  )}
+                  {project.kpis.points && (
+                    <ResponsiveBodyTypography variant="bodyLg">
+                      Points : {project.kpis.points}
+                    </ResponsiveBodyTypography>
+                  )}
+                  {project.kpis.commits && (
+                    <ResponsiveBodyTypography variant="bodyLg">
+                      Commits : {project.kpis.commits}
+                    </ResponsiveBodyTypography>
+                  )}
+                  {project.kpis.pullRequests && (
+                    <ResponsiveBodyTypography variant="bodyLg">
+                      Pull Requests : {project.kpis.pullRequests}
+                    </ResponsiveBodyTypography>
+                  )}
                 </ResponsiveStack>
               </TableCell>
             </TableRow>

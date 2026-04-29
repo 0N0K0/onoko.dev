@@ -7,12 +7,12 @@ export function FrontProjectsPage() {
 
   const webSiteProjects = projects.projects.filter((project) => {
     const labels = project.categories?.map((c) => c.label) ?? [];
-    return labels.includes("Site web") && !labels.includes("Personnel");
+    return labels.includes("Site web") && !labels.includes("Bac à sable");
   });
 
   const softwareProjects = projects.projects.filter((project) => {
     const labels = project.categories?.map((c) => c.label) ?? [];
-    return labels.includes("Logiciel") && !labels.includes("Personnel");
+    return labels.includes("Logiciel") && !labels.includes("Bac à sable");
   });
 
   const toolProjects = projects.projects.filter((project) => {
@@ -21,12 +21,12 @@ export function FrontProjectsPage() {
       (labels.includes("Libraire") ||
         labels.includes("Plugin") ||
         labels.includes("Automatisation")) &&
-      !labels.includes("Personnel")
+      !labels.includes("Bac à sable")
     );
   });
 
   const persoProjects = projects.projects.filter((project) =>
-    project.categories?.some((c) => c.label === "Personnel"),
+    project.categories?.some((c) => c.label === "Bac à sable"),
   );
 
   return (
