@@ -79,7 +79,7 @@ export function WysiwygBox({ __html }: { __html: string }) {
             bottom: "2px",
             left: 0,
             transform: "scaleX(0)",
-            transformOrigin: "left",
+            transformOrigin: "right",
             width: "100%",
             height: "1px",
             backgroundColor: theme.palette.primary.main,
@@ -89,6 +89,7 @@ export function WysiwygBox({ __html }: { __html: string }) {
             color: theme.palette.primary.main,
             "&::after": {
               transform: "scaleX(1)",
+              transformOrigin: "left",
             },
           },
         },

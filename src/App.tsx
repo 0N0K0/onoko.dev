@@ -56,6 +56,22 @@ export default function App() {
           "::-webkit-scrollbar-corner": {
             background: "transparent",
           },
+          "ul:not(.MuiList-root, .MuiImageList-root)": {
+            margin: "0 0 0 2rem",
+            paddingLeft: "0",
+            li: {
+              listStyleType: "none",
+              display: "flex",
+              columnGap: "0.5rem",
+              "&::before": {
+                content: '"•"',
+                display: "inline-block",
+                width: "1rem",
+                textAlign: "center",
+                margin: 0,
+              },
+            },
+          },
         }}
       />
       <Router>

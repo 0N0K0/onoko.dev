@@ -35,6 +35,7 @@ export default function ResponsiveBodyTypography({
           fontSize: `min(${theme.typography[variant].fontSize}, ${theme.typography.bodySm.fontSize})`,
           lineHeight: theme.typography.bodySm.lineHeight,
         },
+        ...props.sx,
       }}
     >
       {children}

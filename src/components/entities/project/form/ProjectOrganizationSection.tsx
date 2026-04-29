@@ -246,31 +246,12 @@ export default function ProjectOrganizationSection({
                 stacks.find((s) => s.id === item.id)?.versions ?? []
               ).map((v) => ({ id: v, label: v }))}
             />
-            <CustomSelect
+            <TextField
               label="Section"
-              labelId={`stack-${idx}-section-label`}
               value={typeof item.section === "string" ? item.section : ""}
               onChange={(e) => {
-                onChange({ ...item, section: getSelectValue(e) });
+                onChange({ ...item, section: e.target.value });
               }}
-              options={[
-                { id: "mockup", label: "Maquette" },
-                { id: "need", label: "Analyse du besoin" },
-                { id: "features", label: "__ Fonctionnalités" },
-                {
-                  id: "functionalConstraints",
-                  label: "__ Contraintes fonctionnelles",
-                },
-                {
-                  id: "technicalConstraints",
-                  label: "__ Contraintes techniques",
-                },
-                { id: "organisation", label: "Organisation" },
-                { id: "anticipation", label: "__ Anticipation des risques" },
-                { id: "methodology", label: "__ Méthodologie" },
-                { id: "evolution", label: "__ Evolutions" },
-                { id: "validation", label: "__ Modalités de validation" },
-              ]}
             />
           </>
         )}

@@ -57,11 +57,26 @@ export default function useProjects() {
         ? normalizeRefs(coworker.roles, roles)
         : coworker.roles,
     })) as Coworker[],
-    stacks: project.stacks?.map((stack) => ({
-      ...(stack.id ? (normalizeRef(stack.id, stacks) ?? stack) : stack),
-      section: stack.section,
-      version: stack.version,
-    })),
+    stacks: project.stacks
+      ?.map((stack) => ({
+        ...(stack.id ? (normalizeRef(stack.id, stacks) ?? stack) : stack),
+        section: stack.section,
+        version: stack.version,
+      }))
+      .sort((a, b) => {
+        if (!a.label) return 1;
+        if (!b.label) return -1;
+        if (a.label < b.label) return -1;
+        if (a.label > b.label) return 1;
+        return 0;
+      })
+      .sort((a, b) => {
+        if (!a.section) return 1;
+        if (!b.section) return -1;
+        if (a.section < b.section) return -1;
+        if (a.section > b.section) return 1;
+        return 0;
+      }),
   }));
 
   return { projects, loading, error, refetch };
