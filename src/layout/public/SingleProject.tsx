@@ -35,26 +35,66 @@ export function SingleProject() {
   const { isAuthenticated } = useAuthContext();
   const { coworkers } = useCoworkers();
 
-  const sections = [
-    { id: "intro", label: "Introduction" },
-    { id: "roles", label: "Prestations" },
-    { id: "context", label: "Contexte" },
-    { id: "client", label: "Client" },
-    { id: "issue", label: "Finalités" },
-    { id: "audience", label: "Audience" },
-    { id: "features", label: "Fonctionnalités" },
-    { id: "functional-constraints", label: "Contraintes fonctionnelles" },
-    { id: "technical-constraints", label: "Contraintes techniques" },
-    { id: "team", label: "Équipe" },
-    { id: "methodology", label: "Gestion de Projet" },
-    { id: "anticipation", label: "Anticipation" },
-    { id: "evolution", label: "Évolution" },
-    { id: "validation", label: "Validation" },
-    { id: "technologies", label: "Technologies" },
-    { id: "kpis", label: "KPIs" },
-    { id: "client-feedback", label: "Retour client" },
-    { id: "general-feedback", label: "Bilan" },
-  ];
+  const sections: { id: string; label: string }[] = [];
+
+  if (project?.intro || project?.website?.url || project?.mockup?.url)
+    sections.push({ id: "intro", label: "Introduction" });
+  if (project?.roles && project.roles.length > 0)
+    sections.push({ id: "roles", label: "Prestations" });
+  if (project?.presentation) {
+    if (project.presentation.context)
+      sections.push({ id: "context", label: "Contexte" });
+
+    if (project.presentation.client)
+      sections.push({ id: "client", label: "Client" });
+
+    if (project.presentation.issue)
+      sections.push({ id: "issue", label: "Finalités" });
+
+    if (project.presentation.audience)
+      sections.push({ id: "audience", label: "Audience" });
+  }
+  if (project?.need) {
+    if (project.need.features)
+      sections.push({ id: "features", label: "Fonctionnalités" });
+
+    if (project.need.functionalConstraints)
+      sections.push({
+        id: "functional-constraints",
+        label: "Contraintes fonctionnelles",
+      });
+
+    if (project.need.technicalConstraints)
+      sections.push({
+        id: "technical-constraints",
+        label: "Contraintes techniques",
+      });
+  }
+  if (project?.coworkers && project.coworkers.length > 0)
+    sections.push({ id: "team", label: "Équipe" });
+  if (project?.organization) {
+    if (project.organization.methodology)
+      sections.push({ id: "methodology", label: "Gestion de projet" });
+
+    if (project.organization.anticipation)
+      sections.push({ id: "anticipation", label: "Anticipation" });
+
+    if (project.organization.evolution)
+      sections.push({ id: "evolution", label: "Évolutions" });
+
+    if (project.organization.validation)
+      sections.push({ id: "validation", label: "Validation" });
+  }
+  if (project?.stacks && project.stacks.length > 0)
+    sections.push({ id: "technologies", label: "Technologies" });
+  if (project?.kpis) sections.push({ id: "kpis", label: "KPI" });
+  if (project?.feedback) {
+    if (project.feedback.client)
+      sections.push({ id: "client-feedback", label: "Retours" });
+    if (project.feedback.general)
+      sections.push({ id: "general-feedback", label: "Bilan" });
+  }
+
   const [activeSection, setActiveSection] = useState<string>("");
 
   useEffect(() => {
@@ -206,6 +246,7 @@ export function SingleProject() {
           overflowX: "auto",
           scrollbarWidth: "none",
           columnGap: 2,
+          justifyContent: "center",
           "&::-webkit-scrollbar": {
             display: "none",
           },
@@ -547,38 +588,37 @@ export function SingleProject() {
               )}
             </>
           )}
+          {project.coworkers.length > 0 && (
+            <TableRow id="team">
+              <TableCell>
+                <ResponsiveTitle variant="h2">Équipe</ResponsiveTitle>
+              </TableCell>
+              <TableCell
+                sx={{
+                  fontSize: "1.5rem",
+                  lineHeight: 2,
+                }}
+              >
+                <ul style={{ margin: 0 }}>
+                  {project.coworkers.map((coworker) => {
+                    const fullCoworker = coworkers?.find(
+                      (c) => c.id === coworker.id,
+                    );
+                    return (
+                      <li key={coworker.id}>
+                        {fullCoworker?.name} :{" "}
+                        {coworker.roles
+                          ?.map((role) => (role as Role).label)
+                          .join(" | ")}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </TableCell>
+            </TableRow>
+          )}
           {project.organization && (
             <>
-              {project.coworkers.length > 0 && (
-                <TableRow id="team">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">Équipe</ResponsiveTitle>
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      fontSize: "1.5rem",
-                      lineHeight: 2,
-                    }}
-                  >
-                    <ul style={{ margin: 0 }}>
-                      {project.coworkers.map((coworker) => {
-                        const fullCoworker = coworkers?.find(
-                          (c) => c.id === coworker.id,
-                        );
-                        return (
-                          <li key={coworker.id}>
-                            {fullCoworker?.name} :{" "}
-                            {coworker.roles
-                              ?.map((role) => (role as Role).label)
-                              .join(" | ")}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </TableCell>
-                </TableRow>
-              )}
-
               {project.organization.workload && (
                 <TableRow id="workload">
                   <TableCell>
