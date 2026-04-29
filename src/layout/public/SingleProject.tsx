@@ -233,83 +233,85 @@ export function SingleProject() {
         </ResponsiveStack>
       </ResponsiveStack>
 
-      <Toolbar
-        sx={{
-          position: "sticky",
-          top: "0",
-          height: "48px",
-          backgroundColor: theme.palette.background.default,
-          zIndex: 2,
-          paddingX: "64px !important",
-          borderTop: `1px solid ${theme.palette.divider}`,
-          borderBottom: `1px solid ${theme.palette.divider}`,
-          overflowX: "auto",
-          scrollbarWidth: "none",
-          columnGap: 2,
-          justifyContent: "center",
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
-          "& a": {
-            color: theme.palette.text.primary,
-            textDecoration: "none",
-            display: "inline-block",
-            position: "relative",
-            transition: `color ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
-            whiteSpace: "nowrap",
-            "&::after": {
-              content: '""',
-              display: "block",
-              position: "absolute",
-              bottom: "6px",
-              left: 0,
-              transform: "scaleX(0)",
-              transformOrigin: "right",
-              width: "100%",
-              height: "1px",
-              backgroundColor: theme.palette.primary.main,
-              transition: `transform ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
+      {sections.length > 3 && (
+        <Toolbar
+          sx={{
+            position: "sticky",
+            top: "0",
+            height: "48px",
+            backgroundColor: theme.palette.background.default,
+            zIndex: 2,
+            paddingX: "64px !important",
+            borderTop: `1px solid rgb(81, 81, 81)`,
+            borderBottom: `1px solid rgb(81, 81, 81)`,
+            overflowX: "auto",
+            scrollbarWidth: "none",
+            columnGap: 2,
+            justifyContent: "center",
+            "&::-webkit-scrollbar": {
+              display: "none",
             },
-            "&:hover": {
-              color: theme.palette.primary.main,
+            "& a": {
+              color: theme.palette.text.primary,
+              textDecoration: "none",
+              display: "inline-block",
+              position: "relative",
+              transition: `color ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
+              whiteSpace: "nowrap",
               "&::after": {
-                transform: "scaleX(1)",
-                transformOrigin: "left",
+                content: '""',
+                display: "block",
+                position: "absolute",
+                bottom: "6px",
+                left: 0,
+                transform: "scaleX(0)",
+                transformOrigin: "right",
+                width: "100%",
+                height: "1px",
+                backgroundColor: theme.palette.primary.main,
+                transition: `transform ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
+              },
+              "&:hover": {
+                color: theme.palette.primary.main,
+                "&::after": {
+                  transform: "scaleX(1)",
+                  transformOrigin: "left",
+                },
+              },
+              "&.active-section": {
+                color: theme.palette.primary.main,
+                "&::after": {
+                  transform: "scaleX(1)",
+                  transformOrigin: "left",
+                },
               },
             },
-            "&.active-section": {
-              color: theme.palette.primary.main,
-              "&::after": {
-                transform: "scaleX(1)",
-                transformOrigin: "left",
-              },
-            },
-          },
-        }}
-      >
-        {sections.map(({ id, label }) => (
-          <Link
-            key={id}
-            href={`#${id}`}
-            className={activeSection === id ? "active-section" : undefined}
-            onClick={(e) => {
-              e.preventDefault();
-              const el = document.getElementById(id);
-              if (el) {
-                const y =
-                  el.getBoundingClientRect().top +
-                  document.querySelector("main")!.scrollTop -
-                  96;
-                document
-                  .querySelector("main")
-                  ?.scrollTo({ top: y, behavior: "smooth" });
-              }
-            }}
-          >
-            {label}
-          </Link>
-        ))}
-      </Toolbar>
+          }}
+        >
+          {sections.map(({ id, label }) => (
+            <Link
+              key={id}
+              href={`#${id}`}
+              className={activeSection === id ? "active-section" : undefined}
+              onClick={(e) => {
+                e.preventDefault();
+                const el = document.getElementById(id);
+                if (el) {
+                  const y =
+                    el.getBoundingClientRect().top +
+                    document.querySelector("main")!.scrollTop -
+                    96;
+                  document
+                    .querySelector("main")
+                    ?.scrollTo({ top: y, behavior: "smooth" });
+                }
+              }}
+            >
+              {label}
+            </Link>
+          ))}
+        </Toolbar>
+      )}
 
       <Table
         sx={{
@@ -338,7 +340,12 @@ export function SingleProject() {
           },
         }}
       >
-        <TableBody>
+        <TableBody
+          sx={{
+            borderTop:
+              sections.length <= 3 ? `1px solid rgb(81, 81, 81)` : "none",
+          }}
+        >
           {(project.intro || project.website?.url || project.mockup?.url) && (
             <TableRow id="intro">
               <TableCell colSpan={2}>
