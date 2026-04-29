@@ -4,6 +4,7 @@ import Layout from "..";
 import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
 import {
   ResponsiveBox,
+  ResponsiveImageList,
   ResponsiveStack,
 } from "../../components/custom/ResponsiveLayout";
 import { API_URL } from "../../constants/apiConstants";
@@ -11,11 +12,15 @@ import type { Media } from "../../types/entities/mediaTypes";
 import {
   Box,
   Button,
+  ImageList,
+  ImageListItem,
   Link,
+  Tab,
   Table,
   TableBody,
   TableCell,
   TableRow,
+  Tabs,
   Toolbar,
   useTheme,
 } from "@mui/material";
@@ -130,6 +135,8 @@ export function SingleProject() {
     handleScrollSpy();
     return () => scrollContainer.removeEventListener("scroll", handleScrollSpy);
   }, [sections]);
+
+  const [selectedTab, setSelectedTab] = useState(0);
 
   if (!project) return null;
 
@@ -334,14 +341,13 @@ export function SingleProject() {
                 },
               },
             },
-            '&[colspan="2"] > *': {
-              maxWidth: theme.sizes.columnWidth(3, 2, "min(100dvw, 1920px)"),
-              margin: "0 auto",
-            },
             "&:last-child": {
               paddingRight: 8,
               paddingLeft: 4,
               width: theme.sizes.columnWidth(3, 2, "min(100dvw, 1920px)"),
+            },
+            "&[colspan='2']": {
+              paddingX: 8,
             },
           },
         }}
@@ -356,7 +362,19 @@ export function SingleProject() {
             <TableRow id="intro">
               <TableCell colSpan={2}>
                 <ResponsiveStack rowGap={6}>
-                  {project.intro && <WysiwygBox __html={project.intro} />}
+                  {project.intro && (
+                    <WysiwygBox
+                      __html={project.intro}
+                      sx={{
+                        maxWidth: theme.sizes.columnWidth(
+                          3,
+                          2,
+                          "min(100dvw, 1920px)",
+                        ),
+                        margin: "0 auto",
+                      }}
+                    />
+                  )}
                   {(project.website?.url || project.mockup?.url) && (
                     <ResponsiveStack
                       sx={{
@@ -390,6 +408,172 @@ export function SingleProject() {
                       )}
                     </ResponsiveStack>
                   )}
+                  {project.mockup?.images &&
+                    project.mockup?.images.length > 0 && (
+                      <>
+                        {(() => {
+                          const desktopImages = project.mockup.images.filter(
+                            (img) =>
+                              (img as Media).label
+                                ?.toLowerCase()
+                                .startsWith("desktop"),
+                          );
+                          const tabletImages = project.mockup.images.filter(
+                            (img) =>
+                              (img as Media).label
+                                ?.toLowerCase()
+                                .startsWith("tablet"),
+                          );
+                          const mobileImages = project.mockup.images.filter(
+                            (img) =>
+                              (img as Media).label
+                                ?.toLowerCase()
+                                .startsWith("mobile"),
+                          );
+                          return (
+                            <>
+                              <Tabs
+                                value={selectedTab}
+                                onChange={(_, newValue) =>
+                                  setSelectedTab(newValue)
+                                }
+                                centered
+                              >
+                                {desktopImages.length > 0 && (
+                                  <Tab label="Desktop" />
+                                )}
+                                {tabletImages.length > 0 && (
+                                  <Tab label="Tablet" />
+                                )}
+                                {mobileImages.length > 0 && (
+                                  <Tab label="Mobile" />
+                                )}
+                              </Tabs>
+                              {desktopImages.length > 0 && (
+                                <ResponsiveImageList
+                                  variant="masonry"
+                                  gap={16}
+                                  maxWidth="fit-content"
+                                  role="tabpanel"
+                                  sx={{
+                                    marginX: "auto",
+                                    display:
+                                      selectedTab === 0 ? "block" : "none",
+                                  }}
+                                >
+                                  {desktopImages.map((image) => (
+                                    <ImageListItem key={image.id}>
+                                      <Picture
+                                        image={image as Media}
+                                        maxWidth={theme.sizes.columnWidth(
+                                          3,
+                                          2,
+                                          "min(100dvw, 1920px)",
+                                        )}
+                                        style={{
+                                          border: `1px solid ${theme.palette.divider}`,
+                                          borderRadius: "8px",
+                                          overflow: "hidden",
+                                        }}
+                                      />
+                                    </ImageListItem>
+                                  ))}
+                                </ResponsiveImageList>
+                              )}
+                              {tabletImages.length > 0 && (
+                                <ResponsiveImageList
+                                  variant="masonry"
+                                  gap={16}
+                                  maxWidth="fit-content"
+                                  role="tabpanel"
+                                  sx={{
+                                    marginX: "auto",
+                                    display:
+                                      selectedTab ===
+                                      (desktopImages.length > 0 ? 1 : 0)
+                                        ? "block"
+                                        : "none",
+                                  }}
+                                >
+                                  {tabletImages.map((image) => (
+                                    <ImageListItem
+                                      key={image.id}
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      <Picture
+                                        image={image as Media}
+                                        maxWidth={theme.sizes.columnWidth(
+                                          3,
+                                          2,
+                                          "min(100dvw, 1920px)",
+                                        )}
+                                        style={{
+                                          border: `1px solid ${theme.palette.divider}`,
+                                          borderRadius: "8px",
+                                          overflow: "hidden",
+                                        }}
+                                      />
+                                    </ImageListItem>
+                                  ))}
+                                </ResponsiveImageList>
+                              )}
+                              {mobileImages.length > 0 && (
+                                <ResponsiveImageList
+                                  variant="masonry"
+                                  gap={16}
+                                  maxWidth="fit-content"
+                                  role="tabpanel"
+                                  sx={{
+                                    marginX: "auto",
+                                    display:
+                                      selectedTab ===
+                                      (desktopImages.length > 0 &&
+                                      tabletImages.length > 0
+                                        ? 2
+                                        : desktopImages.length > 0 ||
+                                            tabletImages.length > 0
+                                          ? 1
+                                          : 0)
+                                        ? "block"
+                                        : "none",
+                                  }}
+                                >
+                                  {mobileImages.map((image) => (
+                                    <ImageListItem
+                                      key={image.id}
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      <Picture
+                                        image={image as Media}
+                                        maxWidth={theme.sizes.columnWidth(
+                                          3,
+                                          2,
+                                          "min(100dvw, 1920px)",
+                                        )}
+                                        style={{
+                                          border: `1px solid ${theme.palette.divider}`,
+                                          borderRadius: "8px",
+                                          overflow: "hidden",
+                                          width: "fit-content",
+                                        }}
+                                      />
+                                    </ImageListItem>
+                                  ))}
+                                </ResponsiveImageList>
+                              )}
+                            </>
+                          );
+                        })()}
+                      </>
+                    )}
                 </ResponsiveStack>
               </TableCell>
             </TableRow>

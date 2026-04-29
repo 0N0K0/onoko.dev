@@ -1,10 +1,15 @@
 import { Box, useTheme } from "@mui/material";
+import type { BoxProps } from "@mui/material";
 
-export function WysiwygBox({ __html }: { __html: string }) {
+export function WysiwygBox({
+  __html,
+  ...props
+}: { __html: string } & BoxProps) {
   const theme = useTheme();
 
   return (
     <Box
+      {...props}
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -104,6 +109,7 @@ export function WysiwygBox({ __html }: { __html: string }) {
         "& .ql-indent-6": { paddingLeft: "12rem" },
         "& .ql-indent-7": { paddingLeft: "14rem" },
         "& .ql-indent-8": { paddingLeft: "16rem" },
+        ...props.sx,
       }}
       dangerouslySetInnerHTML={{ __html }}
     />
