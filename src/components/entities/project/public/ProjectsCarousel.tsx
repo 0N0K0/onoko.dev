@@ -37,6 +37,7 @@ export default function ProjectsCarousel({
 }) {
   const theme = useTheme();
   const isLg = useMediaQuery(theme.breakpoints.up("lg"));
+  const isMd = useMediaQuery(theme.breakpoints.up("md"));
 
   const containerRef = useRef<HTMLDivElement>(null);
   const isScrollingRef = useRef(false);
@@ -265,8 +266,8 @@ export default function ProjectsCarousel({
                   sx={{
                     flex:
                       activeProjectId === project.id
-                        ? `0 0 calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : 2.5} * 2)`
-                        : `0 0 calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : 2.5})`,
+                        ? `0 0 calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : isMd ? 2.5 : 1.5} * ${isLg || isMd ? 2 : 1.5})`
+                        : `0 0 calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : isMd ? 2.5 : 1.5})`,
                     maxHeight: "100%",
                     position: "relative",
                     border: `1px solid ${theme.palette.divider}`,

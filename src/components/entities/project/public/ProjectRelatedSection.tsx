@@ -52,7 +52,7 @@ export function ProjectRelatedSection({
   return (
     <ProjectTableRow
       merged
-      title="Ceux-ci pourraient vous intéresser"
+      title={"Ceux-ci pourraient vous\u00A0intéresser"}
       tableCellProps={{
         sx: {
           paddingX: "0 !important",
