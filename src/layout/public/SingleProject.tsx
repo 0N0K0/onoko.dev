@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import useProjects from "../../hooks/queries/useProjects";
 import Layout from "..";
-import { Table, TableBody, useTheme } from "@mui/material";
+import { Table, TableBody, useMediaQuery, useTheme } from "@mui/material";
 import ProjectTableRow from "../../components/entities/project/public/ProjectTableRow";
 import ProjectHeader from "../../components/entities/project/public/ProjectHeader";
 import ProjectMenuBar from "../../components/entities/project/public/ProjectMenuBar";
@@ -14,6 +14,7 @@ import ProjectNeedSection from "../../components/entities/project/public/Project
 import ProjectOrganizationSection from "../../components/entities/project/public/ProjectOrganizationSection";
 import ProjectFeedbackSection from "../../components/entities/project/public/ProjectFeedbackSection";
 import CallToAction from "../../components/CallToAction";
+import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 
 export function SingleProject() {
   const params = useParams();
@@ -21,6 +22,13 @@ export function SingleProject() {
   const project = projects?.find((p) => p.slug === params.slug);
 
   const theme = useTheme();
+  const isLg = useMediaQuery(theme.breakpoints.up("lg"));
+  const isXL = useMediaQuery(theme.breakpoints.up("xl"));
+  const mainCellWidth = isXL
+    ? useResponsiveWidth(8)
+    : isLg
+      ? useResponsiveWidth(6)
+      : useResponsiveWidth(4);
 
   if (!project) return null;
 
@@ -39,7 +47,7 @@ export function SingleProject() {
       <Table
         sx={{
           "& .MuiTableCell-root:first-of-type": {
-            maxWidth: `calc(100dvw - ${theme.sizes.columnWidth(3, 2, "min(100dvw, 1920px)")}) !important`,
+            maxWidth: `calc(100dvw - ${mainCellWidth}) !important`,
           },
         }}
       >

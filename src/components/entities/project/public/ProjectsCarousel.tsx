@@ -5,7 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { Link, useTheme } from "@mui/material";
+import { Link, useMediaQuery, useTheme } from "@mui/material";
 import Icon from "@mdi/react";
 import { mdiEye } from "@mdi/js";
 import {
@@ -36,6 +36,8 @@ export default function ProjectsCarousel({
   reverseMouseWheel?: boolean;
 }) {
   const theme = useTheme();
+  const isLg = useMediaQuery(theme.breakpoints.up("lg"));
+
   const containerRef = useRef<HTMLDivElement>(null);
   const isScrollingRef = useRef(false);
   const articlesStackRef = useRef<HTMLDivElement>(null);
@@ -180,7 +182,7 @@ export default function ProjectsCarousel({
           flexDirection: "row",
           flex: minHeight ? undefined : "1 1 auto",
           minHeight: minHeight || 0,
-          paddingX: 8,
+          paddingX: { lg: 8, xs: 4 },
           overflowX: "auto",
           overflowY: "hidden",
           transition: `all 1500ms ${theme.transitions.easing.easeOut}`,
@@ -263,8 +265,8 @@ export default function ProjectsCarousel({
                   sx={{
                     flex:
                       activeProjectId === project.id
-                        ? "0 0 calc((min(100dvw, 1920px) - 10rem) / 3.5 * 2)"
-                        : "0 0 calc((min(100dvw, 1920px) - 10rem) / 3.5)",
+                        ? `0 0 calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : 2.5} * 2)`
+                        : `0 0 calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : 2.5})`,
                     maxHeight: "100%",
                     position: "relative",
                     border: `1px solid ${theme.palette.divider}`,

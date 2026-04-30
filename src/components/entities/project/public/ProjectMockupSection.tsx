@@ -4,6 +4,8 @@ import { ResponsiveImageList } from "../../../custom/ResponsiveLayout";
 import ProjectTableRow from "./ProjectTableRow";
 import Picture from "../../../custom/Picture";
 import type { Media } from "../../../../types/entities/mediaTypes";
+import { useResponsiveWidth } from "../../../../hooks/layout/useResponsiveWidth";
+import { useMediaQuery } from "@mui/system";
 
 export default function ProjectMockupSection({
   project,
@@ -11,8 +13,11 @@ export default function ProjectMockupSection({
   project: Project;
 }) {
   const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down("md"));
+  const pictureMaxWidth = useResponsiveWidth(8);
 
-  if (!project.mockup?.images?.length && !project.mockup?.embed) return null;
+  if (!project.mockup?.images?.length && (!project.mockup?.embed || isSmall))
+    return null;
 
   return (
     <ProjectTableRow id="mockup" merged>
@@ -37,7 +42,7 @@ export default function ProjectMockupSection({
             >
               <Picture
                 image={image as Media}
-                maxWidth={theme.sizes.columnWidth(3, 2, "min(100dvw, 1920px)")}
+                maxWidth={pictureMaxWidth}
                 style={{
                   border: `1px solid ${theme.palette.divider}`,
                   borderRadius: "8px",
@@ -49,7 +54,7 @@ export default function ProjectMockupSection({
           ))}
         </ResponsiveImageList>
       )}
-      {project.mockup.embed && (
+      {project.mockup.embed && !isSmall && (
         <iframe
           src={project.mockup.embed}
           allowFullScreen

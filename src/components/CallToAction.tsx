@@ -1,9 +1,11 @@
 import { Button, useTheme } from "@mui/material";
 import ResponsiveBodyTypography from "./custom/ResponsiveBodyTypography";
 import { ResponsiveStack } from "./custom/ResponsiveLayout";
+import { useResponsiveWidth } from "../hooks/layout/useResponsiveWidth";
 
 export default function CallToAction({ emphasis }: { emphasis?: boolean }) {
   const theme = useTheme();
+  const minWidth = useResponsiveWidth(8);
   return (
     <ResponsiveStack
       paddingY={3}
@@ -15,7 +17,7 @@ export default function CallToAction({ emphasis }: { emphasis?: boolean }) {
         background: theme.palette.primary.dark,
         paddingX: 8,
         width: emphasis ? "100%" : "fit-content",
-        minWidth: theme.sizes.columnWidth(3, 2, "min(100dvw, 1920px)"),
+        minWidth: `min(${minWidth}, 100%)`,
         margin: "0 auto",
         borderRadius: emphasis ? 0 : 1,
       }}

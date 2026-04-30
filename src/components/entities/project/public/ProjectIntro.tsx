@@ -1,12 +1,13 @@
-import { Button, useTheme } from "@mui/material";
+import { Button } from "@mui/material";
 import type { Project } from "../../../../types/entities/projectTypes";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
 import { WysiwygBox } from "../../../custom/WysiwygBox";
 import ProjectTableRow from "./ProjectTableRow";
 import { Link as ReactLink } from "react-router-dom";
+import { useResponsiveWidth } from "../../../../hooks/layout/useResponsiveWidth";
 
 export default function ProjectIntro({ project }: { project: Project }) {
-  const theme = useTheme();
+  const maxWidth = useResponsiveWidth(8);
 
   if (project.intro || project.website?.url || project.mockup?.url)
     return (
@@ -16,7 +17,7 @@ export default function ProjectIntro({ project }: { project: Project }) {
             <WysiwygBox
               __html={project.intro}
               sx={{
-                maxWidth: theme.sizes.columnWidth(3, 2, "min(100dvw, 1920px)"),
+                maxWidth: maxWidth,
                 margin: "0 auto",
               }}
             />
@@ -27,7 +28,7 @@ export default function ProjectIntro({ project }: { project: Project }) {
                 flexDirection: "row",
                 columnGap: 4,
                 justifyContent: "space-around",
-                paddingX: 8,
+                flexWrap: "wrap",
               }}
             >
               {project.website?.url && (

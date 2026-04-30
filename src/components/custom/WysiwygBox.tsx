@@ -15,8 +15,14 @@ export function WysiwygBox({
         flexDirection: "column",
         rowGap: 3,
         "& p, & ol": { fontSize: "1rem", lineHeight: 1.5, margin: "0" },
-        "& .ql-size-huge": { fontSize: "2rem", lineHeight: 1.5 },
-        "& .ql-size-large": { fontSize: "1.25rem", lineHeight: 1.2 },
+        "& .ql-size-huge": {
+          fontSize: { xs: "1rem", sm: "1.25rem", md: "2rem" },
+          lineHeight: { xs: 1.5, sm: 1.2, md: 1.5 },
+        },
+        "& .ql-size-large": {
+          fontSize: { xs: "1rem", sm: "1.25rem" },
+          lineHeight: { xs: 1.2, sm: 1.2 },
+        },
         "& .ql-size-small": { fontSize: "0.75rem", lineHeight: 2 },
         "& h3, & h4, & h5, & h6": {
           margin: 0,
@@ -29,14 +35,15 @@ export function WysiwygBox({
           fontWeight: "400",
         },
         "& h3": {
-          fontSize: "3rem",
-          lineHeight: 1,
+          fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+          lineHeight: { xs: 1.5, sm: 1.2, md: 1 },
         },
         "& h4": {
-          fontSize: "2.5rem",
-          lineHeight: 1.2,
+          fontSize: { xs: "2rem", sm: "2.5rem" },
+          lineHeight: { xs: 1.5, sm: 1.2 },
           margin: 0,
           "&:not(:first-child)": { marginTop: "1.5rem" },
+          fontStyle: "italic",
         },
         "& h5": {
           fontSize: "2rem",
@@ -49,6 +56,7 @@ export function WysiwygBox({
           lineHeight: 1.2,
           margin: 0,
           "&:not(:first-child)": { marginTop: "1.5rem" },
+          fontStyle: "italic",
         },
         "& ol": {
           paddingLeft: "2rem",
@@ -101,14 +109,14 @@ export function WysiwygBox({
         "& .ql-align-center": { textAlign: "center" },
         "& .ql-align-right": { textAlign: "right" },
         "& .ql-align-justify": { textAlign: "justify" },
-        "& .ql-indent-1": { paddingLeft: "2rem" },
-        "& .ql-indent-2": { paddingLeft: "4rem" },
-        "& .ql-indent-3": { paddingLeft: "6rem" },
-        "& .ql-indent-4": { paddingLeft: "8rem" },
-        "& .ql-indent-5": { paddingLeft: "10rem" },
-        "& .ql-indent-6": { paddingLeft: "12rem" },
-        "& .ql-indent-7": { paddingLeft: "14rem" },
-        "& .ql-indent-8": { paddingLeft: "16rem" },
+        "& .ql-indent-1": { paddingLeft: { lg: "2rem", xs: "1rem" } },
+        "& .ql-indent-2": { paddingLeft: { lg: "4rem", xs: "2rem" } },
+        "& .ql-indent-3": { paddingLeft: { lg: "6rem", xs: "3rem" } },
+        "& .ql-indent-4": { paddingLeft: { lg: "8rem", xs: "4rem" } },
+        "& .ql-indent-5": { paddingLeft: { lg: "10rem", xs: "5rem" } },
+        "& .ql-indent-6": { paddingLeft: { lg: "12rem", xs: "6rem" } },
+        "& .ql-indent-7": { paddingLeft: { lg: "14rem", xs: "7rem" } },
+        "& .ql-indent-8": { paddingLeft: { lg: "16rem", xs: "8rem" } },
         ...props.sx,
       }}
       dangerouslySetInnerHTML={{ __html }}
