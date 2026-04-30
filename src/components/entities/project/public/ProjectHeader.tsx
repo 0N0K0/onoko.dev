@@ -39,10 +39,13 @@ export default function ProjectHeader({ project }: { project: Project }) {
     clientLogoSize = `calc(${theme.typography.h4.fontSize} * ${theme.typography.h4.lineHeight})`;
   else if (isXS)
     clientLogoSize = `calc(${theme.typography.h5.fontSize} * ${theme.typography.h5.lineHeight})`;
-  console.log(clientLogoSize);
 
   return (
-    <ResponsiveStack component="hgroup" rowGap={3}>
+    <ResponsiveStack
+      component="hgroup"
+      rowGap={3}
+      sx={{ borderBottom: `1px solid rgb(81, 81, 81)` }}
+    >
       {/* Miniature */}
       <Box
         sx={{
