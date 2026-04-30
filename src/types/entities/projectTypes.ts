@@ -18,9 +18,10 @@ export interface Project {
     label: string;
   };
   mockup?: {
-    url: string;
-    label: string;
+    url?: string;
+    label?: string;
     images?: (Media | { id: string; position?: number })[];
+    embed?: string;
   };
   client?: {
     label: string;

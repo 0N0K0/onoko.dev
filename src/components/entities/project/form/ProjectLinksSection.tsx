@@ -98,6 +98,7 @@ export default function ProjectLinksSection({
                     mockup: {
                       url: prev.mockup?.url ?? "",
                       label: prev.mockup?.label ?? "",
+                      embed: prev.mockup?.embed ?? "",
                       ...prev.mockup,
                       images: merged,
                     },
@@ -126,6 +127,7 @@ export default function ProjectLinksSection({
                       mockup: {
                         label: prev.mockup?.label ?? "",
                         images: prev.mockup?.images ?? [],
+                        embed: prev.mockup?.embed ?? "",
                         ...prev.mockup,
                         url: e.target.value,
                       },
@@ -147,6 +149,7 @@ export default function ProjectLinksSection({
                       mockup: {
                         url: prev.mockup?.url ?? "",
                         images: prev.mockup?.images ?? [],
+                        embed: prev.mockup?.embed ?? "",
                         ...prev.mockup,
                         label: e.target.value,
                       },
@@ -158,6 +161,28 @@ export default function ProjectLinksSection({
             }}
           />
         </ResponsiveStack>
+        <TextField
+          label="Embed URL"
+          value={editingProject?.mockup?.embed || ""}
+          onChange={(e) => {
+            setEditingProject((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    mockup: {
+                      url: prev.mockup?.url ?? "",
+                      label: prev.mockup?.label ?? "",
+                      images: prev.mockup?.images ?? [],
+                      ...prev.mockup,
+                      embed: e.target.value,
+                    },
+                  }
+                : null,
+            );
+            e.target.value !== (initialProject?.mockup?.embed || "") &&
+              setHasChanges(true);
+          }}
+        />
       </ResponsiveStack>
     </>
   );

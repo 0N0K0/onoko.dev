@@ -19,6 +19,7 @@ export const PROJECTS_QUERY = gql`
           id
           position
         }
+        embed
       }
       client {
         label
