@@ -25,8 +25,14 @@ export default function PublicHeader() {
 
   return (
     <AppBar
-      position="sticky"
-      sx={{ top: isAuthenticated ? "24px" : "0", paddingX: { xs: 2, md: 4 } }}
+      position="fixed"
+      sx={{
+        top: isAuthenticated ? "48px" : "0",
+        paddingX: { xs: 2, md: 4 },
+        maxWidth: "1920px",
+        left: "50%",
+        transform: "translateX(-50%)",
+      }}
       elevation={0}
     >
       <Toolbar>

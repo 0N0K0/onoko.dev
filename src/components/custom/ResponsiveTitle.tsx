@@ -36,6 +36,7 @@ export default function ResponsiveTitle({
           fontSize: `min(${theme.typography[variant].fontSize}, ${theme.typography.h5.fontSize})`,
           lineHeight: `min(${theme.typography[variant].lineHeight}, ${theme.typography.h5.lineHeight})`,
         },
+        ...props.sx,
       }}
     >
       {children}

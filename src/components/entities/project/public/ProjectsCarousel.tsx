@@ -27,7 +27,7 @@ export default function ProjectsCarousel({
   minHeight,
   reverseMouseWheel = false,
 }: {
-  title: ReactNode;
+  title?: ReactNode;
   titleLevel?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   subtitle?: ReactNode;
   action?: ReactNode;
@@ -190,52 +190,54 @@ export default function ProjectsCarousel({
           },
         }}
       >
-        <ResponsiveStack
-          ref={hgroupRef}
-          component="hgroup"
-          maxWidth="unset"
-          sx={{
-            flex: "0 0 auto",
-            maxWidth: !measured
-              ? "none"
-              : hgroupVisible
-                ? `${contentWidth}px`
-                : "0px",
-            minWidth: !measured
-              ? "none"
-              : hgroupVisible
-                ? `calc((min(100dvw, 1920px) - 10rem) / 3.5)`
-                : "0px",
-            overflow: !measured ? "visible" : "hidden",
-            rowGap: 4,
-            paddingY: 3,
-            paddingRight: hgroupVisible ? 4 : 0,
-            transition: measured
-              ? `min-width 1500ms ${theme.transitions.easing.easeInOut}, max-width 1500ms ${theme.transitions.easing.easeInOut}, padding 1500ms ${theme.transitions.easing.easeInOut}`
-              : "none",
-          }}
-        >
-          <ResponsiveTitle
-            variant={titleLevel || "h1"}
-            style={{
-              fontWeight: "100",
-              letterSpacing: "-0.067em",
-              textTransform: "uppercase",
-              whiteSpace: "nowrap",
+        {title && (
+          <ResponsiveStack
+            ref={hgroupRef}
+            component="hgroup"
+            maxWidth="unset"
+            sx={{
+              flex: "0 0 auto",
+              maxWidth: !measured
+                ? "none"
+                : hgroupVisible
+                  ? `${contentWidth}px`
+                  : "0px",
+              minWidth: !measured
+                ? "none"
+                : hgroupVisible
+                  ? `calc((min(100dvw, 1920px) - 10rem) / 3.5)`
+                  : "0px",
+              overflow: !measured ? "visible" : "hidden",
+              rowGap: 4,
+              paddingY: 3,
+              paddingRight: hgroupVisible ? 4 : 0,
+              transition: measured
+                ? `min-width 1500ms ${theme.transitions.easing.easeInOut}, max-width 1500ms ${theme.transitions.easing.easeInOut}, padding 1500ms ${theme.transitions.easing.easeInOut}`
+                : "none",
             }}
           >
-            {title}
-          </ResponsiveTitle>
-          {subtitle && (
-            <ResponsiveBodyTypography
-              variant="bodyLg"
-              style={{ whiteSpace: "nowrap", fontWeight: "300" }}
+            <ResponsiveTitle
+              variant={titleLevel || "h1"}
+              style={{
+                fontWeight: "100",
+                letterSpacing: "-0.067em",
+                textTransform: "uppercase",
+                whiteSpace: "nowrap",
+              }}
             >
-              {subtitle}
-            </ResponsiveBodyTypography>
-          )}
-          {action}
-        </ResponsiveStack>
+              {title}
+            </ResponsiveTitle>
+            {subtitle && (
+              <ResponsiveBodyTypography
+                variant="bodyLg"
+                style={{ whiteSpace: "nowrap", fontWeight: "300" }}
+              >
+                {subtitle}
+              </ResponsiveBodyTypography>
+            )}
+            {action}
+          </ResponsiveStack>
+        )}
         {projects.length > 0 && (
           <ResponsiveStack
             ref={articlesStackRef}

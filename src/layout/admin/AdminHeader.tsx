@@ -9,9 +9,9 @@ import { ADMIN_MENU_LINKS } from "../../constants/adminLayoutConstants";
 /**
  * Entête de l'espace admin, avec des liens vers les différentes sections et la déconnexion.
  */
-export default function AdminHeader() {
+export default function AdminHeader({ ...props }) {
   return (
-    <AppBar position="sticky" elevation={1}>
+    <AppBar position="sticky" elevation={1} {...props}>
       <Toolbar
         sx={{
           paddingX: "20px !important",

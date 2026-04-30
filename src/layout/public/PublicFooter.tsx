@@ -32,9 +32,11 @@ export default function PublicFooter() {
   return (
     <AppBar
       component="footer"
-      position="sticky"
       sx={{
+        maxWidth: "1920px",
         top: "calc(100dvh - 48px)",
+        left: "50%",
+        transform: "translateX(-50%)",
         paddingX: { xs: 2, md: 8 },
       }}
       elevation={0}

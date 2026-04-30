@@ -100,15 +100,10 @@ export default function Home() {
         }
         action={
           <Button
-            href="/contact"
+            size="large"
             sx={{
-              textWrap: "nowrap",
-              fontSize: "1.5rem",
-              lineHeight: 1,
-              width: "fit-content",
               marginTop: 9,
               margin: "auto",
-              padding: "12px 32px",
             }}
           >
             Me contacter

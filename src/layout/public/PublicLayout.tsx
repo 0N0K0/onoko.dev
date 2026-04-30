@@ -16,8 +16,8 @@ export default function PublicLayout({
   const { isAuthenticated } = useAuthContext();
 
   return (
-    <Layout sx={{ maxHeight: "100dvh", overflow: "hidden" }}>
-      {isAuthenticated ? <AdminHeader /> : null}
+    <Layout sx={{ minHeight: "100dvh", overflowX: "clip", paddingY: "48px" }}>
+      {isAuthenticated ? <AdminHeader position="fixed" /> : null}
       <PublicHeader />
       {children}
       <PublicFooter />
