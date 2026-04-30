@@ -10,31 +10,66 @@ import {
 import { API_URL } from "../../constants/apiConstants";
 import type { Media } from "../../types/entities/mediaTypes";
 import {
+  AppBar,
   Box,
   Button,
   ImageListItem,
   Link,
-  Tab,
   Table,
   TableBody,
-  TableCell,
-  TableRow,
-  Tabs,
   Toolbar,
   useTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ResponsiveBodyTypography from "../../components/custom/ResponsiveBodyTypography";
 import Picture from "../../components/custom/Picture";
 import { WysiwygBox } from "../../components/custom/WysiwygBox";
 import { useAuthContext } from "../../context/AuthContext";
 import type { Role } from "../../types/entities/roleTypes";
 import useCoworkers from "../../hooks/queries/useCoworkers";
+import ProjectsCarousel from "../../components/entities/project/public/ProjectsCarousel";
+import CustomIconButton from "../../components/custom/CustomIconButton";
+import { mdiChevronLeft, mdiChevronRight } from "@mdi/js";
+import ProjectTableRow from "../../components/entities/project/public/ProjectTableRow";
 
 export function SingleProject() {
   const params = useParams();
   const { projects } = useProjects();
   const project = projects?.find((p) => p.slug === params.slug);
+  // Récupère les catégories du projet courant, hors 'Professionnel'
+  const mainCategories =
+    project?.categories
+      ?.filter(
+        (cat) => cat.label !== "Professionnel" && cat.label !== "Epinglé",
+      )
+      ?.map((cat) => cat.id) ?? [];
+
+  // Projets similaires par catégorie (hors projet courant)
+  let relatedProjects =
+    projects
+      ?.filter(
+        (p) =>
+          p.id !== project?.id &&
+          p.categories?.some((cat) => mainCategories.includes(cat.id)),
+      )
+      .slice(0, 4) ?? [];
+
+  // Si moins de 4, compléter avec les projets épinglés (hors projet courant et déjà présents)
+  if (relatedProjects.length < 4 && projects) {
+    const alreadyIds = new Set([
+      project?.id,
+      ...relatedProjects.map((p) => p.id),
+    ]);
+    const pinned = projects.filter(
+      (p) =>
+        !alreadyIds.has(p.id) &&
+        p.categories?.some((cat) => cat.label === "Epinglé"),
+    );
+    relatedProjects = [
+      ...relatedProjects,
+      ...pinned.slice(0, 4 - relatedProjects.length),
+    ];
+  }
   const theme = useTheme();
   const { isAuthenticated } = useAuthContext();
   const { coworkers } = useCoworkers();
@@ -47,6 +82,15 @@ export function SingleProject() {
     sections.push({ id: "mockup", label: "Maquettes" });
   if (project?.roles && project.roles.length > 0)
     sections.push({ id: "roles", label: "Prestations" });
+  if (project?.stacks && project.stacks.length > 0)
+    sections.push({ id: "technologies", label: "Technologies" });
+  if (
+    project?.kpis?.issues ||
+    project?.kpis?.points ||
+    project?.kpis?.commits ||
+    project?.kpis?.pullRequests
+  )
+    sections.push({ id: "kpis", label: "KPI" });
   if (project?.presentation) {
     if (project.presentation.context)
       sections.push({ id: "context", label: "Contexte" });
@@ -91,15 +135,6 @@ export function SingleProject() {
     if (project.organization.validation)
       sections.push({ id: "validation", label: "Validation" });
   }
-  if (project?.stacks && project.stacks.length > 0)
-    sections.push({ id: "technologies", label: "Technologies" });
-  if (
-    project?.kpis?.issues ||
-    project?.kpis?.points ||
-    project?.kpis?.commits ||
-    project?.kpis?.pullRequests
-  )
-    sections.push({ id: "kpis", label: "KPI" });
   if (project?.feedback) {
     if (project.feedback.client)
       sections.push({ id: "client-feedback", label: "Retours" });
@@ -107,12 +142,10 @@ export function SingleProject() {
       sections.push({ id: "general-feedback", label: "Bilan" });
   }
 
+  const menuBarRef = useRef<HTMLDivElement | null>(null);
   const [activeSection, setActiveSection] = useState<string>("");
 
   useEffect(() => {
-    const scrollContainer = document.querySelector("main");
-    if (!scrollContainer) return;
-
     const handleScrollSpy = () => {
       let lastSectionId = "";
       for (const { id } of sections) {
@@ -128,16 +161,78 @@ export function SingleProject() {
         }
       }
       setActiveSection(lastSectionId);
+      // Ne scroller la toolbar que si le lien actif N'EST PAS visible ET que la toolbar n'est pas à une extrémité
+      const activeLink = document.querySelector(
+        `#toolbar-scrollable a[href="#${lastSectionId}"]`,
+      );
+      const toolbar = document.getElementById("toolbar-scrollable");
+      if (activeLink && toolbar) {
+        const linkRect = activeLink.getBoundingClientRect();
+        const toolbarRect = toolbar.getBoundingClientRect();
+        const scrollLeft = toolbar.scrollLeft;
+        const maxScroll = toolbar.scrollWidth - toolbar.clientWidth;
+        // On ne scroll que si le lien actif n'est pas visible ET qu'on n'est pas à une extrémité
+        if (
+          (linkRect.left < toolbarRect.left ||
+            linkRect.right > toolbarRect.right) &&
+          scrollLeft > 0 &&
+          scrollLeft < maxScroll - 1 // tolérance flottante
+        ) {
+          activeLink.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "nearest",
+          });
+        }
+      }
     };
 
-    scrollContainer.addEventListener("scroll", handleScrollSpy, {
+    window.addEventListener("scroll", handleScrollSpy, {
       passive: true,
     });
     handleScrollSpy();
-    return () => scrollContainer.removeEventListener("scroll", handleScrollSpy);
+    return () => window.removeEventListener("scroll", handleScrollSpy);
   }, [sections]);
 
-  const [selectedTab, setSelectedTab] = useState(0);
+  // Callback ref pour garantir l'attachement de l'écouteur scroll
+  const [showMenuBarArrows, setShowMenuBarArrows] = useState(false);
+  const [disableLeftMenuButton, setDisableLeftMenuButton] = useState(false);
+  const [disableRightMenuButton, setDisableRightMenuButton] = useState(false);
+
+  // checkOverflow doit être défini hors du useEffect pour être utilisé dans le callback ref
+  const checkOverflow = () => {
+    if (menuBarRef.current) {
+      setShowMenuBarArrows(
+        menuBarRef.current.scrollWidth > menuBarRef.current.clientWidth,
+      );
+      setDisableLeftMenuButton(menuBarRef.current.scrollLeft === 0);
+      setDisableRightMenuButton(
+        menuBarRef.current.scrollLeft + menuBarRef.current.clientWidth >=
+          menuBarRef.current.scrollWidth,
+      );
+    }
+  };
+
+  // Callback ref pour attacher/détacher l'écouteur scroll
+  const setMenuBarRef = (node: HTMLDivElement | null) => {
+    if (menuBarRef.current) {
+      menuBarRef.current.removeEventListener("scroll", checkOverflow);
+    }
+    if (node) {
+      node.addEventListener("scroll", checkOverflow);
+      // On vérifie l'overflow dès que le ref est attaché
+      setTimeout(checkOverflow, 0);
+    }
+    menuBarRef.current = node;
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", checkOverflow);
+    checkOverflow();
+    return () => {
+      window.removeEventListener("resize", checkOverflow);
+    };
+  }, []);
 
   if (!project) return null;
 
@@ -149,7 +244,6 @@ export function SingleProject() {
       sx={{
         paddingTop: "0 !important",
         paddingX: 0,
-        overflowY: "auto",
         scrollBehavior: "smooth",
       }}
       className="single-project-content"
@@ -158,7 +252,7 @@ export function SingleProject() {
         <Box
           sx={{
             position: "relative",
-            minHeight: `calc(100dvh - 96px - 168px - ${isAuthenticated ? "48px" : "0px"})`,
+            minHeight: `calc(100dvh - 96px - 168px)`,
             background: `url(${thumbnailUrl}) ${project.thumbnail?.focus || "center"} / cover no-repeat`,
             backgroundAttachment: "fixed",
             justifyContent: "end",
@@ -248,108 +342,122 @@ export function SingleProject() {
       </ResponsiveStack>
 
       {sections.length > 3 && (
-        <Toolbar
+        <AppBar
+          component="nav"
+          elevation={0}
           sx={{
             position: "sticky",
-            top: "0",
-            height: "48px",
-            backgroundColor: theme.palette.background.default,
+            top: isAuthenticated ? "96px" : "48px",
             zIndex: 2,
-            paddingX: "64px !important",
             borderTop: `1px solid rgb(81, 81, 81)`,
             borderBottom: `1px solid rgb(81, 81, 81)`,
-            overflowX: "auto",
-            scrollbarWidth: "none",
-            columnGap: 2,
+            width: "100%",
+            overflow: "hidden",
+            flexDirection: "row",
             justifyContent: "center",
-            "&::-webkit-scrollbar": {
-              display: "none",
-            },
-            "& a": {
-              color: theme.palette.text.primary,
-              textDecoration: "none",
-              display: "inline-block",
-              position: "relative",
-              transition: `color ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
-              whiteSpace: "nowrap",
-              "&::after": {
-                content: '""',
-                display: "block",
-                position: "absolute",
-                bottom: "6px",
-                left: 0,
-                transform: "scaleX(0)",
-                transformOrigin: "right",
-                width: "100%",
-                height: "1px",
-                backgroundColor: theme.palette.primary.main,
-                transition: `transform ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
-              },
-              "&:hover": {
-                color: theme.palette.primary.main,
-                "&::after": {
-                  transform: "scaleX(1)",
-                  transformOrigin: "left",
-                },
-              },
-              "&.active-section": {
-                color: theme.palette.primary.main,
-                "&::after": {
-                  transform: "scaleX(1)",
-                  transformOrigin: "left",
-                },
-              },
-            },
           }}
         >
-          {sections.map(({ id, label }) => (
-            <Link
-              key={id}
-              href={`#${id}`}
-              className={activeSection === id ? "active-section" : undefined}
-              onClick={(e) => {
-                e.preventDefault();
-                const el = document.getElementById(id);
-                if (el) {
-                  const y =
-                    el.getBoundingClientRect().top +
-                    document.querySelector("main")!.scrollTop -
-                    96;
-                  document
-                    .querySelector("main")
-                    ?.scrollTo({ top: y, behavior: "smooth" });
-                }
+          {/* Flèche gauche */}
+          {showMenuBarArrows && (
+            <CustomIconButton
+              id="toolbar-arrow-left"
+              icon={mdiChevronLeft}
+              onClick={() => {
+                menuBarRef.current?.scrollBy({
+                  left: -200,
+                  behavior: "smooth",
+                });
               }}
-            >
-              {label}
-            </Link>
-          ))}
-        </Toolbar>
+              disabled={disableLeftMenuButton}
+            />
+          )}
+          <Toolbar
+            id="toolbar-scrollable"
+            ref={setMenuBarRef}
+            sx={{
+              overflowX: "auto",
+              columnGap: 2,
+              // justifyContent: "center",
+              minHeight: "48px",
+              paddingX: "16px !important",
+              background: "none",
+              boxShadow: "none",
+              scrollbarWidth: "none",
+              flex: "1 1 auto",
+              maxWidth: "fit-content",
+              "&::-webkit-scrollbar": {
+                display: "none",
+              },
+              "& a": {
+                color: theme.palette.text.primary,
+                textDecoration: "none",
+                display: "inline-block",
+                position: "relative",
+                transition: `color ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
+                whiteSpace: "nowrap",
+                "&::after": {
+                  content: '""',
+                  display: "block",
+                  position: "absolute",
+                  bottom: "6px",
+                  left: 0,
+                  transform: "scaleX(0)",
+                  transformOrigin: "right",
+                  width: "100%",
+                  height: "1px",
+                  backgroundColor: theme.palette.primary.main,
+                  transition: `transform ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
+                },
+                "&:hover": {
+                  color: theme.palette.primary.main,
+                  "&::after": {
+                    transform: "scaleX(1)",
+                    transformOrigin: "left",
+                  },
+                },
+                "&.active-section": {
+                  color: theme.palette.primary.light,
+                },
+              },
+            }}
+          >
+            {sections.map(({ id, label }) => (
+              <Link
+                key={id}
+                href={`#${id}`}
+                className={activeSection === id ? "active-section" : undefined}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const el = document.getElementById(id);
+                  if (el) {
+                    const y =
+                      el.getBoundingClientRect().top + window.scrollY - 96;
+                    window.scrollTo({ top: y, behavior: "smooth" });
+                  }
+                }}
+              >
+                {label}
+              </Link>
+            ))}
+          </Toolbar>
+          {/* Flèche droite */}
+          {showMenuBarArrows && (
+            <CustomIconButton
+              id="toolbar-arrow-right"
+              icon={mdiChevronRight}
+              onClick={() => {
+                menuBarRef.current?.scrollBy({ left: 200, behavior: "smooth" });
+              }}
+              disabled={disableRightMenuButton}
+            />
+          )}
+        </AppBar>
       )}
 
       <Table
         sx={{
-          "& .MuiTableCell-root": {
-            paddingY: 6,
-            "&:first-child": {
-              verticalAlign: "top",
-              paddingLeft: 8,
-              paddingRight: 4,
-              '&:not([colspan="2"])': {
-                borderRight: `1px solid rgb(81, 81, 81)`,
-                "& h2": {
-                  textAlign: "right",
-                },
-              },
-            },
-            "&:last-child": {
-              paddingRight: 8,
-              paddingLeft: 4,
-              width: theme.sizes.columnWidth(3, 2, "min(100dvw, 1920px)"),
-            },
-            "&[colspan='2']": {
-              paddingX: 8,
-            },
+          "& .MuiTableCell-root:first-of-type": {
+            maxWidth: `calc(100dvw - ${theme.sizes.columnWidth(3, 2, "min(100dvw, 1920px)")}) !important`,
           },
         }}
       >
@@ -360,567 +468,527 @@ export function SingleProject() {
           }}
         >
           {(project.intro || project.website?.url || project.mockup?.url) && (
-            <TableRow id="intro">
-              <TableCell colSpan={2}>
-                <ResponsiveStack rowGap={6}>
-                  {project.intro && (
-                    <WysiwygBox
-                      __html={project.intro}
-                      sx={{
-                        maxWidth: theme.sizes.columnWidth(
+            <ProjectTableRow id="intro" merged>
+              <ResponsiveStack rowGap={6}>
+                {project.intro && (
+                  <WysiwygBox
+                    __html={project.intro}
+                    sx={{
+                      maxWidth: theme.sizes.columnWidth(
+                        3,
+                        2,
+                        "min(100dvw, 1920px)",
+                      ),
+                      margin: "0 auto",
+                    }}
+                  />
+                )}
+                {(project.website?.url || project.mockup?.url) && (
+                  <ResponsiveStack
+                    sx={{
+                      flexDirection: "row",
+                      columnGap: 4,
+                      justifyContent: "space-around",
+                      paddingX: 8,
+                    }}
+                  >
+                    {project.website?.url && (
+                      <Button
+                        component={ReactLink}
+                        to={project.website.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{ minWidth: "208px" }}
+                      >
+                        {project.website.label || "Visiter le site web"}
+                      </Button>
+                    )}
+                    {project.mockup?.url && (
+                      <Button
+                        component={ReactLink}
+                        to={project.mockup.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{ minWidth: "208px" }}
+                      >
+                        {project.mockup.label || "Explorer la maquette"}
+                      </Button>
+                    )}
+                  </ResponsiveStack>
+                )}
+              </ResponsiveStack>
+            </ProjectTableRow>
+          )}
+          {project.mockup && (
+            <ProjectTableRow id="mockup" merged>
+              {project.mockup.images && project.mockup.images.length > 0 && (
+                <ResponsiveImageList
+                  variant="masonry"
+                  gap={16}
+                  maxWidth="fit-content"
+                  role="tabpanel"
+                  sx={{
+                    marginX: "auto",
+                  }}
+                >
+                  {project.mockup.images.map((image) => (
+                    <ImageListItem
+                      key={image.id}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Picture
+                        image={image as Media}
+                        maxWidth={theme.sizes.columnWidth(
                           3,
                           2,
                           "min(100dvw, 1920px)",
-                        ),
-                        margin: "0 auto",
-                      }}
-                    />
-                  )}
-                  {(project.website?.url || project.mockup?.url) && (
-                    <ResponsiveStack
-                      sx={{
-                        flexDirection: "row",
-                        columnGap: 4,
-                        justifyContent: "space-around",
-                        paddingX: 8,
-                      }}
-                    >
-                      {project.website?.url && (
-                        <Button
-                          component={ReactLink}
-                          to={project.website.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          sx={{ minWidth: "208px" }}
-                        >
-                          {project.website.label || "Visiter le site web"}
-                        </Button>
-                      )}
-                      {project.mockup?.url && (
-                        <Button
-                          component={ReactLink}
-                          to={project.mockup.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          sx={{ minWidth: "208px" }}
-                        >
-                          {project.mockup.label || "Explorer la maquette"}
-                        </Button>
-                      )}
-                    </ResponsiveStack>
-                  )}
-                </ResponsiveStack>
-              </TableCell>
-            </TableRow>
-          )}
-          {project.mockup?.images && project.mockup?.images.length > 0 && (
-            <TableRow id="mockup">
-              <TableCell colSpan={2}>
-                <ResponsiveStack rowGap={3}>
-                  <ResponsiveTitle variant="h2">Maquettes</ResponsiveTitle>
-                  {(() => {
-                    const desktopImages = project.mockup.images.filter((img) =>
-                      (img as Media).label?.toLowerCase().startsWith("desktop"),
-                    );
-                    const tabletImages = project.mockup.images.filter((img) =>
-                      (img as Media).label?.toLowerCase().startsWith("tablet"),
-                    );
-                    const mobileImages = project.mockup.images.filter((img) =>
-                      (img as Media).label?.toLowerCase().startsWith("mobile"),
-                    );
-                    const otherImages = project.mockup.images.filter((img) => {
-                      const label = (img as Media).label?.toLowerCase() || "";
-                      return (
-                        !label.startsWith("desktop") &&
-                        !label.startsWith("tablet") &&
-                        !label.startsWith("mobile")
-                      );
-                    });
-                    return (
-                      <>
-                        <Tabs
-                          value={selectedTab}
-                          onChange={(_, newValue) => setSelectedTab(newValue)}
-                          centered
-                        >
-                          {desktopImages.length > 0 && <Tab label="Desktop" />}
-                          {tabletImages.length > 0 && <Tab label="Tablet" />}
-                          {mobileImages.length > 0 && <Tab label="Mobile" />}
-                          {otherImages.length > 0 && <Tab label="Autres" />}
-                        </Tabs>
-                        {(() => {
-                          const imageLists = [
-                            { images: desktopImages, label: "Desktop" },
-                            { images: tabletImages, label: "Tablet" },
-                            { images: mobileImages, label: "Mobile" },
-                            { images: otherImages, label: "Autres" },
-                          ];
-                          let tabIndex = 0;
-                          return imageLists.map((list, _) => {
-                            if (list.images.length === 0) return null;
-                            const currentIndex = tabIndex;
-                            tabIndex++;
-                            return (
-                              <ResponsiveImageList
-                                key={list.label}
-                                variant="masonry"
-                                gap={16}
-                                maxWidth="fit-content"
-                                role="tabpanel"
-                                sx={{
-                                  marginX: "auto",
-                                  display:
-                                    selectedTab === currentIndex
-                                      ? "block"
-                                      : "none",
-                                }}
-                              >
-                                {list.images.map((image) => (
-                                  <ImageListItem
-                                    key={image.id}
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    <Picture
-                                      image={image as Media}
-                                      maxWidth={theme.sizes.columnWidth(
-                                        3,
-                                        2,
-                                        "min(100dvw, 1920px)",
-                                      )}
-                                      style={{
-                                        border: `1px solid ${theme.palette.divider}`,
-                                        borderRadius: "8px",
-                                        overflow: "hidden",
-                                        width: "fit-content",
-                                      }}
-                                    />
-                                  </ImageListItem>
-                                ))}
-                              </ResponsiveImageList>
-                            );
-                          });
-                        })()}
-                      </>
-                    );
-                  })()}
-                </ResponsiveStack>
-              </TableCell>
-            </TableRow>
+                        )}
+                        style={{
+                          border: `1px solid ${theme.palette.divider}`,
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                          width: "fit-content",
+                        }}
+                      />
+                    </ImageListItem>
+                  ))}
+                </ResponsiveImageList>
+              )}
+              {project.mockup.embed && (
+                <iframe
+                  src={project.mockup.embed}
+                  allowFullScreen
+                  style={{
+                    height: "calc(100dvh - 144px)",
+                    border: `1px solid ${theme.palette.divider}`,
+                    borderRadius: "8px",
+                    width: "100%",
+                  }}
+                />
+              )}
+            </ProjectTableRow>
           )}
           {project.roles && (
-            <TableRow id="roles">
-              <TableCell>
-                <ResponsiveTitle variant="h2">Prestations</ResponsiveTitle>
-              </TableCell>
-              <TableCell>
-                {project.roles && (
-                  <ul style={{ margin: 0 }}>
-                    {project.roles
-                      ?.sort((a, b) => {
-                        const labelA = typeof a === "string" ? a : a.label;
-                        const labelB = typeof b === "string" ? b : b.label;
-                        return labelA.localeCompare(labelB);
-                      })
-                      .map((role) => (
-                        <li
-                          key={typeof role === "string" ? role : role.id}
-                          style={{
-                            fontSize: "1.5rem",
-                            lineHeight: 2,
-                          }}
-                        >
-                          {typeof role === "string" ? role : role.label}
-                        </li>
-                      ))}
-                  </ul>
+            <ProjectTableRow id="roles" title="Prestations">
+              {project.roles && (
+                <ul style={{ margin: 0 }}>
+                  {project.roles
+                    ?.sort((a, b) => {
+                      const labelA = typeof a === "string" ? a : a.label;
+                      const labelB = typeof b === "string" ? b : b.label;
+                      return labelA.localeCompare(labelB);
+                    })
+                    .map((role) => (
+                      <li
+                        key={typeof role === "string" ? role : role.id}
+                        style={{
+                          fontSize: "1.5rem",
+                          lineHeight: 2,
+                        }}
+                      >
+                        {typeof role === "string" ? role : role.label}
+                      </li>
+                    ))}
+                </ul>
+              )}
+            </ProjectTableRow>
+          )}
+          {project.stacks && project.stacks.length > 0 && (
+            <ProjectTableRow id="technologies" title="Technologies utilisées">
+              <ResponsiveBox
+                rowGap={6}
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: `repeat(auto-fit, minmax(72px, 1fr))`,
+                  columnGap: 4,
+                  width: "100%",
+                  maxWidth: "100%",
+                }}
+              >
+                {project.stacks.map((stack) => (
+                  <ResponsiveStack
+                    key={stack.id}
+                    rowGap={3}
+                    sx={{ alignItems: "center" }}
+                  >
+                    <Picture
+                      image={stack.icon as Media}
+                      style={{ aspectRatio: "1 / 1" }}
+                    />
+                    <ResponsiveBodyTypography variant="bodySm">
+                      {stack.label}
+                      {stack.version && ` (${stack.version})`}
+                    </ResponsiveBodyTypography>
+                  </ResponsiveStack>
+                ))}
+              </ResponsiveBox>
+            </ProjectTableRow>
+          )}
+          {(project.kpis?.issues ||
+            project.kpis?.points ||
+            project.kpis?.commits ||
+            project.kpis?.pullRequests) && (
+            <ProjectTableRow id="kpis" title="KPI">
+              <ResponsiveStack
+                rowGap={3}
+                sx={{
+                  flexDirection: "row",
+                  columnGap: 4,
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                }}
+              >
+                {project.kpis.issues && (
+                  <ResponsiveBodyTypography variant="bodyLg">
+                    Issues : {project.kpis.issues}
+                  </ResponsiveBodyTypography>
                 )}
-              </TableCell>
-            </TableRow>
+                {project.kpis.points && (
+                  <ResponsiveBodyTypography variant="bodyLg">
+                    Points : {project.kpis.points}
+                  </ResponsiveBodyTypography>
+                )}
+                {project.kpis.commits && (
+                  <ResponsiveBodyTypography variant="bodyLg">
+                    Commits : {project.kpis.commits}
+                  </ResponsiveBodyTypography>
+                )}
+                {project.kpis.pullRequests && (
+                  <ResponsiveBodyTypography variant="bodyLg">
+                    Pull Requests : {project.kpis.pullRequests}
+                  </ResponsiveBodyTypography>
+                )}
+              </ResponsiveStack>
+            </ProjectTableRow>
+          )}
+          {(project.presentation?.context ||
+            project.presentation?.client ||
+            project.presentation?.issue ||
+            project.presentation?.audience ||
+            project.need?.features ||
+            project.need?.functionalConstraints ||
+            project.need?.technicalConstraints ||
+            project.organization?.methodology ||
+            project.organization?.anticipation ||
+            project.organization?.evolution ||
+            project.organization?.validation) && (
+            <ProjectTableRow merged>
+              <ResponsiveStack
+                paddingY={3}
+                rowGap={3}
+                sx={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  background: theme.palette.primary.dark,
+                  paddingX: 8,
+                  width: "fit-content",
+                  minWidth: theme.sizes.columnWidth(
+                    3,
+                    2,
+                    "min(100dvw, 1920px)",
+                  ),
+                  margin: "0 auto",
+                  borderRadius: 1,
+                }}
+              >
+                <ResponsiveBodyTypography
+                  variant="bodyLg"
+                  sx={{ fontStyle: "italic" }}
+                >
+                  Une question&nbsp;?
+                  <br />
+                  Je serais ravie d'échanger avec vous&nbsp;!
+                </ResponsiveBodyTypography>
+                <Button
+                  size="large"
+                  color="inherit"
+                  sx={{
+                    marginTop: 9,
+                    margin: "auto",
+                  }}
+                >
+                  Me contacter
+                </Button>
+              </ResponsiveStack>
+            </ProjectTableRow>
           )}
           {project.presentation && (
             <>
               {project.presentation.context && (
-                <TableRow id="context">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">Contexte</ResponsiveTitle>
-                  </TableCell>
-                  <TableCell>
-                    <WysiwygBox __html={project.presentation.context} />
-                  </TableCell>
-                </TableRow>
+                <ProjectTableRow id="context" title="Contexte">
+                  <WysiwygBox __html={project.presentation.context} />
+                </ProjectTableRow>
               )}
               {project.presentation.client && (
-                <TableRow id="client">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">Client</ResponsiveTitle>
-                  </TableCell>
-                  <TableCell>
-                    <ResponsiveStack rowGap={6}>
-                      {(project.client || project.manager) && (
-                        <ResponsiveStack
-                          sx={{
-                            flexDirection: "row",
-                            columnGap: 4,
-                            borderBottom: `1px solid rgb(81, 81, 81)`,
-                            marginLeft: "-2rem",
-                            marginRight: "-4rem",
-                            paddingLeft: "2rem",
-                            paddingRight: "4rem",
-                            paddingBottom: "3rem !important",
-                          }}
-                        >
-                          {project.client && (
-                            <ResponsiveStack
-                              direction="row"
-                              sx={{
-                                alignItems: "center",
-                                columnGap: 1,
-                                flex: "1 1 auto",
-                              }}
-                            >
-                              <ResponsiveBodyTypography variant="bodyLg">
-                                Entité :
-                              </ResponsiveBodyTypography>
-                              {project.client.logo && (
-                                <Picture
-                                  image={project.client.logo}
-                                  maxHeight="48px"
-                                  maxWidth="48px"
-                                  style={{
-                                    minWidth: "48px",
-                                    minHeight: "48px",
-                                  }}
-                                />
-                              )}
-                              <ResponsiveBodyTypography variant="bodyLg">
-                                {project.client.label}
-                              </ResponsiveBodyTypography>
-                            </ResponsiveStack>
-                          )}
-                          {project.manager && (
-                            <ResponsiveBodyTypography
-                              variant="bodyLg"
-                              sx={{
-                                flex: "1 1 auto",
-                                "& a": {
-                                  color: theme.palette.primary.light,
-                                  textDecoration: "none",
-                                  display: "inline-block",
-                                  position: "relative",
-                                  transition: `color ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
+                <ProjectTableRow id="client" title="Client">
+                  <ResponsiveStack sx={{ rowGap: { md: 6, xs: 3 } }}>
+                    {(project.client || project.manager) && (
+                      <ResponsiveStack
+                        rowGap={3}
+                        sx={{
+                          flexDirection: "row",
+                          columnGap: 4,
+                          borderBottom: {
+                            md: `1px solid rgb(81, 81, 81)`,
+                          },
+                          marginLeft: "-2rem",
+                          marginRight: "-4rem",
+                          paddingLeft: "2rem",
+                          paddingRight: "4rem",
+                          paddingBottom: { md: "3rem !important" },
+                          flexWrap: "wrap",
+                          alignItems: "center",
+                        }}
+                      >
+                        {project.client && (
+                          <ResponsiveStack
+                            direction="row"
+                            sx={{
+                              alignItems: "center",
+                              columnGap: 1,
+                              flex: "1 1 auto",
+                            }}
+                          >
+                            <ResponsiveBodyTypography variant="bodyLg">
+                              Entité :
+                            </ResponsiveBodyTypography>
+                            {project.client.logo && (
+                              <Picture
+                                image={project.client.logo}
+                                maxHeight="48px"
+                                maxWidth="48px"
+                                style={{
+                                  minWidth: "48px",
+                                  minHeight: "48px",
+                                }}
+                              />
+                            )}
+                            <ResponsiveBodyTypography variant="bodyLg">
+                              {project.client.label}
+                            </ResponsiveBodyTypography>
+                          </ResponsiveStack>
+                        )}
+                        {project.manager && (
+                          <ResponsiveBodyTypography
+                            variant="bodyLg"
+                            sx={{
+                              flex: "1 1 auto",
+                              height: "fit-content",
+                              "& a": {
+                                color: theme.palette.primary.light,
+                                textDecoration: "none",
+                                display: "inline-block",
+                                position: "relative",
+                                transition: `color ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
+                                "&::after": {
+                                  content: '""',
+                                  display: "block",
+                                  position: "absolute",
+                                  bottom: "10px",
+                                  left: 0,
+                                  transform: "scaleX(0)",
+                                  transformOrigin: "right",
+                                  width: "100%",
+                                  height: "1px",
+                                  backgroundColor: theme.palette.primary.main,
+                                  transition: `transform ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
+                                },
+                                "&:hover": {
+                                  color: theme.palette.primary.main,
                                   "&::after": {
-                                    content: '""',
-                                    display: "block",
-                                    position: "absolute",
-                                    bottom: "10px",
-                                    left: 0,
-                                    transform: "scaleX(0)",
-                                    transformOrigin: "right",
-                                    width: "100%",
-                                    height: "1px",
-                                    backgroundColor: theme.palette.primary.main,
-                                    transition: `transform ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
-                                  },
-                                  "&:hover": {
-                                    color: theme.palette.primary.main,
-                                    "&::after": {
-                                      transform: "scaleX(1)",
-                                      transformOrigin: "left",
-                                    },
+                                    transform: "scaleX(1)",
+                                    transformOrigin: "left",
                                   },
                                 },
-                              }}
-                            >
-                              Responsable :{" "}
-                              {project.manager.email ? (
-                                <a href={`mailto:${project.manager.email}`}>
-                                  {project.manager.name}
-                                </a>
-                              ) : (
-                                project.manager.name
-                              )}
-                            </ResponsiveBodyTypography>
-                          )}
-                        </ResponsiveStack>
-                      )}
-                      <WysiwygBox __html={project.presentation.client} />
-                    </ResponsiveStack>
-                  </TableCell>
-                </TableRow>
+                              },
+                            }}
+                          >
+                            Responsable :{" "}
+                            {project.manager.email ? (
+                              <a href={`mailto:${project.manager.email}`}>
+                                {project.manager.name}
+                              </a>
+                            ) : (
+                              project.manager.name
+                            )}
+                          </ResponsiveBodyTypography>
+                        )}
+                      </ResponsiveStack>
+                    )}
+                    <WysiwygBox __html={project.presentation.client} />
+                  </ResponsiveStack>
+                </ProjectTableRow>
               )}
               {project.presentation.issue && (
-                <TableRow id="issue">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">
-                      Finalités & enjeux
-                    </ResponsiveTitle>
-                  </TableCell>
-                  <TableCell>
-                    <WysiwygBox __html={project.presentation.issue} />
-                  </TableCell>
-                </TableRow>
+                <ProjectTableRow id="issue" title="Finalités & enjeux">
+                  <WysiwygBox __html={project.presentation.issue} />
+                </ProjectTableRow>
               )}
               {project.presentation.audience && (
-                <TableRow id="audience">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">
-                      Utilisateurs & audience&nbsp;cible
-                    </ResponsiveTitle>
-                  </TableCell>
-                  <TableCell>
-                    <WysiwygBox __html={project.presentation.audience} />
-                  </TableCell>
-                </TableRow>
+                <ProjectTableRow
+                  id="audience"
+                  title={"Utilisateurs\u00A0& audience\u00A0cible"}
+                >
+                  <WysiwygBox __html={project.presentation.audience} />
+                </ProjectTableRow>
               )}
             </>
           )}
           {project.need && (
             <>
               {project.need.features && (
-                <TableRow id="features">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">
-                      Fonctionnalités attendues
-                    </ResponsiveTitle>
-                  </TableCell>
-                  <TableCell>
-                    <WysiwygBox __html={project.need.features} />
-                  </TableCell>
-                </TableRow>
+                <ProjectTableRow
+                  id="features"
+                  title="Fonctionnalités attendues"
+                >
+                  <WysiwygBox __html={project.need.features} />
+                </ProjectTableRow>
               )}
               {project.need.functionalConstraints && (
-                <TableRow id="functional-constraints">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">
-                      Contraintes fonctionnelles
-                    </ResponsiveTitle>
-                  </TableCell>
-                  <TableCell>
-                    <WysiwygBox __html={project.need.functionalConstraints} />
-                  </TableCell>
-                </TableRow>
+                <ProjectTableRow
+                  id="functional-constraints"
+                  title="Contraintes fonctionnelles"
+                >
+                  <WysiwygBox __html={project.need.functionalConstraints} />
+                </ProjectTableRow>
               )}
               {project.need.technicalConstraints && (
-                <TableRow id="technical-constraints">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">
-                      Contraintes techniques
-                    </ResponsiveTitle>
-                  </TableCell>
-                  <TableCell>
-                    <WysiwygBox __html={project.need.technicalConstraints} />
-                  </TableCell>
-                </TableRow>
+                <ProjectTableRow
+                  id="technical-constraints"
+                  title="Contraintes techniques"
+                >
+                  <WysiwygBox __html={project.need.technicalConstraints} />
+                </ProjectTableRow>
               )}
             </>
           )}
           {project.coworkers.length > 0 && (
-            <TableRow id="team">
-              <TableCell>
-                <ResponsiveTitle variant="h2">Équipe</ResponsiveTitle>
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontSize: "1.5rem",
-                  lineHeight: 2,
-                }}
-              >
-                <ul style={{ margin: 0 }}>
-                  {project.coworkers.map((coworker) => {
-                    const fullCoworker = coworkers?.find(
-                      (c) => c.id === coworker.id,
-                    );
-                    return (
-                      <li key={coworker.id}>
-                        {fullCoworker?.name} :{" "}
-                        {coworker.roles
-                          ?.map((role) => (role as Role).label)
-                          .join(" | ")}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </TableCell>
-            </TableRow>
+            <ProjectTableRow id="team" title="Équipe">
+              <ul style={{ margin: 0, fontSize: "1.5rem", lineHeight: 2 }}>
+                {project.coworkers.map((coworker) => {
+                  const fullCoworker = coworkers?.find(
+                    (c) => c.id === coworker.id,
+                  );
+                  return (
+                    <li key={coworker.id}>
+                      {fullCoworker?.name} :{" "}
+                      {coworker.roles
+                        ?.map((role) => (role as Role).label)
+                        .join(" | ")}
+                    </li>
+                  );
+                })}
+              </ul>
+            </ProjectTableRow>
           )}
           {project.organization && (
             <>
               {project.organization.workload && (
-                <TableRow id="workload">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">
-                      Charge de&nbsp;travail
-                    </ResponsiveTitle>
-                  </TableCell>
-                  <TableCell sx={{ fontSize: "1.5rem", lineHeight: 2 }}>
-                    {project.organization.workload}
-                  </TableCell>
-                </TableRow>
+                <ProjectTableRow id="workload" title={"Charge de\u00A0travail"}>
+                  {project.organization.workload}
+                </ProjectTableRow>
               )}
               {project.organization.methodology && (
-                <TableRow id="methodology">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">
-                      Gestion de&nbsp;projet
-                    </ResponsiveTitle>
-                  </TableCell>
-                  <TableCell>
-                    <WysiwygBox
-                      __html={project.organization.methodology || ""}
-                    />
-                  </TableCell>
-                </TableRow>
+                <ProjectTableRow
+                  id="methodology"
+                  title={"Gestion de\u00A0projet"}
+                >
+                  <WysiwygBox __html={project.organization.methodology} />
+                </ProjectTableRow>
               )}
               {project.organization.anticipation && (
-                <TableRow id="anticipation">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">
-                      Anticipation des&nbsp;risques
-                    </ResponsiveTitle>
-                  </TableCell>
-                  <TableCell>
-                    <WysiwygBox __html={project.organization.anticipation} />
-                  </TableCell>
-                </TableRow>
+                <ProjectTableRow
+                  id="anticipation"
+                  title={"Anticipation des\u00A0risques"}
+                >
+                  <WysiwygBox __html={project.organization.anticipation} />
+                </ProjectTableRow>
               )}
               {project.organization.evolution && (
-                <TableRow id="evolution">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">Évolutions</ResponsiveTitle>
-                  </TableCell>
-                  <TableCell>
-                    <WysiwygBox __html={project.organization.evolution || ""} />
-                  </TableCell>
-                </TableRow>
+                <ProjectTableRow id="evolution" title="Évolutions">
+                  <WysiwygBox __html={project.organization.evolution} />
+                </ProjectTableRow>
               )}
               {project.organization.validation && (
-                <TableRow id="validation">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">
-                      Modalités de&nbsp;validation
-                    </ResponsiveTitle>
-                  </TableCell>
-                  <TableCell>
-                    <WysiwygBox
-                      __html={project.organization.validation || ""}
-                    />
-                  </TableCell>
-                </TableRow>
+                <ProjectTableRow
+                  id="validation"
+                  title={"Modalités de\u00A0validation"}
+                >
+                  <WysiwygBox __html={project.organization.validation} />
+                </ProjectTableRow>
               )}
             </>
-          )}
-          {project.stacks && project.stacks.length > 0 && (
-            <TableRow id="technologies">
-              <TableCell>
-                <ResponsiveTitle variant="h2">
-                  Technologies utilisées
-                </ResponsiveTitle>
-              </TableCell>
-              <TableCell>
-                <ResponsiveBox
-                  rowGap={6}
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns: `repeat(auto-fit, minmax(72px, 1fr))`,
-                    columnGap: 4,
-                    width: "100%",
-                    maxWidth: "100%",
-                  }}
-                >
-                  {project.stacks.map((stack) => (
-                    <ResponsiveStack
-                      key={stack.id}
-                      rowGap={3}
-                      sx={{ alignItems: "center" }}
-                    >
-                      <Picture
-                        image={stack.icon as Media}
-                        style={{ aspectRatio: "1 / 1" }}
-                      />
-                      <ResponsiveBodyTypography variant="bodySm">
-                        {stack.label}
-                        {stack.version && ` (${stack.version})`}
-                      </ResponsiveBodyTypography>
-                    </ResponsiveStack>
-                  ))}
-                </ResponsiveBox>
-              </TableCell>
-            </TableRow>
-          )}
-          {(project.kpis?.issues ||
-            project.kpis?.points ||
-            project.kpis?.commits ||
-            project.kpis?.pullRequests) && (
-            <TableRow id="kpis">
-              <TableCell>
-                <ResponsiveTitle variant="h2">KPI</ResponsiveTitle>
-              </TableCell>
-              <TableCell>
-                <ResponsiveStack
-                  rowGap={3}
-                  sx={{
-                    flexDirection: "row",
-                    columnGap: 4,
-                    flexWrap: "wrap",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  {project.kpis.issues && (
-                    <ResponsiveBodyTypography variant="bodyLg">
-                      Issues : {project.kpis.issues}
-                    </ResponsiveBodyTypography>
-                  )}
-                  {project.kpis.points && (
-                    <ResponsiveBodyTypography variant="bodyLg">
-                      Points : {project.kpis.points}
-                    </ResponsiveBodyTypography>
-                  )}
-                  {project.kpis.commits && (
-                    <ResponsiveBodyTypography variant="bodyLg">
-                      Commits : {project.kpis.commits}
-                    </ResponsiveBodyTypography>
-                  )}
-                  {project.kpis.pullRequests && (
-                    <ResponsiveBodyTypography variant="bodyLg">
-                      Pull Requests : {project.kpis.pullRequests}
-                    </ResponsiveBodyTypography>
-                  )}
-                </ResponsiveStack>
-              </TableCell>
-            </TableRow>
           )}
           {project.feedback && (
             <>
               {project.feedback.client && (
-                <TableRow id="client-feedback">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">
-                      Retours client
-                    </ResponsiveTitle>
-                  </TableCell>
-                  <TableCell>
-                    <WysiwygBox __html={project.feedback.client} />
-                  </TableCell>
-                </TableRow>
+                <ProjectTableRow id="client-feedback" title="Retours client">
+                  <WysiwygBox __html={project.feedback.client} />
+                </ProjectTableRow>
               )}
               {project.feedback.general && (
-                <TableRow id="general-feedback">
-                  <TableCell>
-                    <ResponsiveTitle variant="h2">
-                      Bilan & enseignements
-                    </ResponsiveTitle>
-                  </TableCell>
-                  <TableCell>
-                    <WysiwygBox __html={project.feedback.general} />
-                  </TableCell>
-                </TableRow>
+                <ProjectTableRow
+                  id="general-feedback"
+                  title="Bilan & enseignements"
+                >
+                  <WysiwygBox __html={project.feedback.general} />
+                </ProjectTableRow>
               )}
             </>
           )}
+          <ProjectTableRow
+            merged
+            title="Ceux-ci pourraient vous intéresser"
+            tableCellProps={{
+              sx: {
+                paddingX: "0 !important",
+                "& h2": {
+                  marginLeft: 8,
+                },
+              },
+            }}
+          >
+            <ProjectsCarousel projects={relatedProjects} minHeight="384px" />
+          </ProjectTableRow>
+          <ProjectTableRow
+            merged
+            sx={{ background: theme.palette.primary.dark }}
+          >
+            <ResponsiveStack
+              paddingY={3}
+              rowGap={3}
+              sx={{
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+              }}
+            >
+              <ResponsiveBodyTypography
+                variant="bodyLg"
+                sx={{ fontStyle: "italic" }}
+              >
+                Une&nbsp;question&nbsp;? N'hésitez&nbsp;plus...
+                <br />
+                Je&nbsp;serais sincèrement ravie&nbsp;d'échanger
+                avec&nbsp;vous&nbsp;!
+              </ResponsiveBodyTypography>
+              <Button
+                size="large"
+                color="inherit"
+                sx={{
+                  marginTop: 9,
+                  margin: "auto",
+                }}
+              >
+                Me contacter
+              </Button>
+            </ResponsiveStack>
+          </ProjectTableRow>
         </TableBody>
       </Table>
     </Layout.Content>
