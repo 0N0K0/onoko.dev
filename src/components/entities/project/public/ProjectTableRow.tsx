@@ -40,7 +40,7 @@ export default function ProjectTableRow({
         <ProjectTableCell
           sx={{
             verticalAlign: "top",
-            paddingLeft: { lg: 8, md: 4 },
+            paddingLeft: { lg: 8, xs: 4 },
             paddingRight: 4,
             maxWidth: `calc(100dvw - ${theme.sizes.columnWidth(3, 2, "min(100dvw, 1920px)")}) !important`,
             borderRight: `1px solid rgb(81, 81, 81)`,
@@ -51,8 +51,8 @@ export default function ProjectTableRow({
             variant="h2"
             sx={{
               textAlign: "right",
-              fontSize: { lg: "3.5rem", md: "2rem" },
-              lineHeight: { lg: "72px", md: 1.5 },
+              fontSize: { lg: "3.5rem", xs: "2rem" },
+              lineHeight: { lg: "72px", xs: 1.5 },
             }}
           >
             {title}
@@ -63,8 +63,8 @@ export default function ProjectTableRow({
         colSpan={merged ? 2 : 1}
         {...tableCellProps}
         sx={{
-          paddingRight: { lg: 8, md: 4 },
-          paddingLeft: merged ? { lg: 8, md: 4 } : 4,
+          paddingRight: { lg: 8, xs: 4 },
+          paddingLeft: merged ? { lg: 8, xs: 4 } : 4,
           minWidth: theme.sizes.columnWidth(3, 2, "min(100dvw, 1920px)"),
           ...tableCellProps?.sx,
         }}
@@ -74,8 +74,8 @@ export default function ProjectTableRow({
             <ResponsiveTitle
               variant="h2"
               sx={{
-                fontSize: { lg: "3.5rem", sm: "2rem" },
-                lineHeight: { lg: "72px", sm: 1.5 },
+                fontSize: { lg: "3.5rem", xs: "2rem" },
+                lineHeight: { lg: "72px", xs: 1.5 },
                 display: { md: merged ? "block" : "none", xs: "block" },
               }}
             >

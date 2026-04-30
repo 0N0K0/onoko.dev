@@ -1,17 +1,14 @@
 import { Link as ReactLink, useParams } from "react-router-dom";
 import useProjects from "../../hooks/queries/useProjects";
 import Layout from "..";
-import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
 import {
   ResponsiveBox,
   ResponsiveImageList,
   ResponsiveStack,
 } from "../../components/custom/ResponsiveLayout";
-import { API_URL } from "../../constants/apiConstants";
 import type { Media } from "../../types/entities/mediaTypes";
 import {
   AppBar,
-  Box,
   Button,
   ImageListItem,
   Link,
@@ -31,6 +28,7 @@ import ProjectsCarousel from "../../components/entities/project/public/ProjectsC
 import CustomIconButton from "../../components/custom/CustomIconButton";
 import { mdiChevronLeft, mdiChevronRight } from "@mdi/js";
 import ProjectTableRow from "../../components/entities/project/public/ProjectTableRow";
+import ProjectHeader from "../../components/entities/project/public/ProjectHeader";
 
 export function SingleProject() {
   const params = useParams();
@@ -71,6 +69,7 @@ export function SingleProject() {
     ];
   }
   const theme = useTheme();
+
   const { isAuthenticated } = useAuthContext();
   const { coworkers } = useCoworkers();
 
@@ -236,9 +235,6 @@ export function SingleProject() {
 
   if (!project) return null;
 
-  const thumbnailUrl =
-    API_URL + (project.thumbnail as Media)?.path.replace(/\.webp$/, `_xl.webp`);
-
   return (
     <Layout.Content
       sx={{
@@ -248,98 +244,7 @@ export function SingleProject() {
       }}
       className="single-project-content"
     >
-      <ResponsiveStack component="hgroup" rowGap={3}>
-        <Box
-          sx={{
-            position: "relative",
-            minHeight: `calc(100dvh - 96px - 168px)`,
-            background: `url(${thumbnailUrl}) ${project.thumbnail?.focus || "center"} / cover no-repeat`,
-            backgroundAttachment: "fixed",
-            justifyContent: "end",
-            alignItems: "center",
-            borderTop: `1px solid ${theme.palette.divider}`,
-            borderBottom: `1px solid ${theme.palette.divider}`,
-          }}
-        />
-        <ResponsiveStack
-          sx={{ paddingX: 8, paddingBottom: "1.5rem !important" }}
-        >
-          <ResponsiveStack
-            direction="row"
-            sx={{
-              alignItems: "end",
-              justifyContent: "space-between",
-            }}
-          >
-            <ResponsiveTitle
-              variant="h1"
-              style={{ position: "relative", zIndex: 2, fontWeight: "900" }}
-            >
-              {project ? project.label : "Project not found"}
-            </ResponsiveTitle>
-            {project.client && (
-              <ResponsiveStack
-                direction="row"
-                sx={{ alignItems: "center", columnGap: 1 }}
-              >
-                {project.client.logo && (
-                  <Picture
-                    image={project.client.logo}
-                    maxHeight="72px"
-                    maxWidth="72px"
-                    style={{ minWidth: "72px", minHeight: "72px" }}
-                  />
-                )}
-                <ResponsiveBodyTypography
-                  variant="bodyLg"
-                  style={{
-                    fontSize: "4rem",
-                    lineHeight: 1.125,
-                    fontWeight: "100",
-                  }}
-                >
-                  {project.client.label}
-                </ResponsiveBodyTypography>
-              </ResponsiveStack>
-            )}
-          </ResponsiveStack>
-          <ResponsiveStack
-            direction="row"
-            sx={{
-              columnGap: 2,
-              alignItems: "center",
-              justifyContent: "space-between",
-              fontStyle: "italic",
-              fontWeight: "200",
-            }}
-          >
-            {project.categories && (
-              <ResponsiveBodyTypography variant="bodyLg">
-                {project.categories
-                  .filter(
-                    (category) =>
-                      category.label !== "Epinglé" &&
-                      category.label !== "Professionnel",
-                  )
-                  .map((category) => category.label)
-                  .join(" | ")}
-              </ResponsiveBodyTypography>
-            )}
-            {project.startDate && (
-              <ResponsiveBodyTypography
-                variant="bodyLg"
-                style={{ fontWeight: "200" }}
-              >
-                {`${project.endDate ? "De" : "Depuis"} ${project.startDate.locale("fr").format("MMMM YYYY")} ${
-                  project.endDate
-                    ? `à ${project.endDate.locale("fr").format("MMMM YYYY")}`
-                    : ""
-                }`}
-              </ResponsiveBodyTypography>
-            )}
-          </ResponsiveStack>
-        </ResponsiveStack>
-      </ResponsiveStack>
+      <ProjectHeader project={project} />
 
       {sections.length > 3 && (
         <AppBar
