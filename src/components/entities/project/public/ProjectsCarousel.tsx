@@ -223,7 +223,7 @@ export default function ProjectsCarousel({
               overflow: !hgroupWidthMeasured ? "visible" : "hidden",
               opacity: hgroupVisible ? 1 : 0,
               rowGap: "48px !important",
-              paddingY: "48px !important",
+              paddingY: "24px !important",
               paddingRight: hgroupVisible ? 4 : 0,
               transition: hgroupWidthMeasured
                 ? `opacity 900ms ${theme.transitions.easing.easeInOut}, min-width 1500ms ${theme.transitions.easing.easeInOut}, max-width 1500ms ${theme.transitions.easing.easeInOut}, padding 1500ms ${theme.transitions.easing.easeInOut}`

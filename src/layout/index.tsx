@@ -38,7 +38,7 @@ function LayoutContent({ children, sx, ...props }: LayoutProps) {
         display: "flex",
         flexDirection: "column",
         paddingX: 4,
-        paddingY: "48px !important",
+        paddingY: "24px !important",
         ...sx,
       }}
     >
