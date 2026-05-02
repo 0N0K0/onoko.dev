@@ -22,11 +22,6 @@ export default function ResponsiveBodyTypography({
       variant={variant}
       {...props}
       sx={{
-        fontSize: {
-          xs: `min(${theme.typography[variant].fontSize}, ${theme.typography.bodySm.fontSize})`,
-          sm: `min(${theme.typography[variant].fontSize}, ${theme.typography.bodyMd.fontSize})`,
-          md: theme.typography[variant].fontSize,
-        },
         [verticalMediaQuery("loose", "down")]: {
           fontSize: `min(${theme.typography[variant].fontSize}, ${theme.typography.bodyMd.fontSize})`,
           lineHeight: theme.typography.bodySm.lineHeight,
@@ -34,6 +29,11 @@ export default function ResponsiveBodyTypography({
         [verticalMediaQuery("compact", "down")]: {
           fontSize: `min(${theme.typography[variant].fontSize}, ${theme.typography.bodySm.fontSize})`,
           lineHeight: theme.typography.bodySm.lineHeight,
+        },
+        fontSize: {
+          xs: `min(${theme.typography[variant].fontSize}, ${theme.typography.bodySm.fontSize})`,
+          sm: `min(${theme.typography[variant].fontSize}, ${theme.typography.bodyMd.fontSize})`,
+          md: theme.typography[variant].fontSize,
         },
         ...props.sx,
       }}

@@ -4,12 +4,12 @@ import type { ResponsiveLayoutProps } from "../types/components/responsiveTypes"
 
 type LayoutProps = ResponsiveLayoutProps<Record<string, unknown>> & PaperProps;
 
-function LayoutRoot({ children, style, ...props }: LayoutProps) {
+function LayoutRoot({ children, sx, ...props }: LayoutProps) {
   return (
     <ResponsivePaper
       square
       {...props}
-      style={{
+      sx={{
         position: "relative",
         minHeight: "100vh",
         display: "flex",
@@ -17,7 +17,7 @@ function LayoutRoot({ children, style, ...props }: LayoutProps) {
         justifyContent: "space-between",
         marginLeft: "auto",
         marginRight: "auto",
-        ...style,
+        ...sx,
       }}
       elevation={0}
     >
@@ -30,7 +30,6 @@ function LayoutContent({ children, sx, ...props }: LayoutProps) {
   return (
     <ResponsivePaper
       component="main"
-      paddingY={3}
       square
       elevation={0}
       {...props}
@@ -39,6 +38,7 @@ function LayoutContent({ children, sx, ...props }: LayoutProps) {
         display: "flex",
         flexDirection: "column",
         paddingX: 4,
+        paddingY: "48px !important",
         ...sx,
       }}
     >
