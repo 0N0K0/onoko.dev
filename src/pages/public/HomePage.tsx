@@ -102,8 +102,9 @@ export default function Home() {
           <Button
             size="large"
             sx={{
-              marginTop: 9,
               margin: "auto",
+              whiteSpace: "nowrap",
+              width: "fit-content",
             }}
           >
             Me contacter

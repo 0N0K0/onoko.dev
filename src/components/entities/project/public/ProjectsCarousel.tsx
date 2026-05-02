@@ -6,7 +6,6 @@ import {
   type ReactNode,
 } from "react";
 import { Link, useMediaQuery, useTheme } from "@mui/material";
-import Icon from "@mdi/react";
 import { mdiEye } from "@mdi/js";
 import {
   ResponsiveBox,
@@ -17,6 +16,8 @@ import ResponsiveBodyTypography from "../../../custom/ResponsiveBodyTypography";
 import { API_URL } from "../../../../constants/apiConstants";
 import type { Project } from "../../../../types/entities/projectTypes";
 import type { Media } from "../../../../types/entities/mediaTypes";
+import CustomCursor from "../../../custom/CustomCursor";
+import { handleReverseMouseWheel } from "../../../../utils/scrollUtils";
 
 export default function ProjectsCarousel({
   title,
@@ -40,96 +41,139 @@ export default function ProjectsCarousel({
   const isMd = useMediaQuery(theme.breakpoints.up("md"));
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const isScrollingRef = useRef(false);
-  const articlesStackRef = useRef<HTMLDivElement>(null);
-  const hgroupRef = useRef<HTMLDivElement>(null);
+  const projectsListRef = useRef<HTMLDivElement>(null);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
+
+  const hgroupRef = useRef<HTMLDivElement>(null);
   const [hgroupVisible, setHgroupVisible] = useState(false);
-  const hgroupCollapsedRef = useRef(false);
-  const [measured, setMeasured] = useState(false);
+  const [hgroupWidthMeasured, setHgroupWidthMeasured] = useState(false);
   const [contentWidth, setContentWidth] = useState(0);
+
   const cursorRef = useRef<HTMLDivElement>(null);
 
+  // Mesure la largeur du hgroup
   useLayoutEffect(() => {
     const hgroup = hgroupRef.current;
     if (!hgroup) return;
     setContentWidth(hgroup.getBoundingClientRect().width);
-    setMeasured(true);
+    setHgroupWidthMeasured(true);
   }, []);
 
+  // Affiche le hgroup selon sa largeur mesurée
   useEffect(() => {
-    if (!measured) return;
+    if (!hgroupWidthMeasured) return;
     const id = requestAnimationFrame(() => setHgroupVisible(true));
     return () => cancelAnimationFrame(id);
-  }, [measured]);
+  }, [hgroupWidthMeasured]);
 
-  const handleWheel = (e: React.WheelEvent) => {
-    if (containerRef.current) {
-      containerRef.current.scrollLeft += e.deltaY + e.deltaX;
+  // Affiche le curseur personnalisé au survol des projets
+  const handleProjectsListMouseMove = (e: React.MouseEvent) => {
+    const cursor = cursorRef.current;
+    if (!cursor) return;
+
+    // Positionne le curseur personnalisé
+    cursor.style.left = `${e.clientX}px`;
+    cursor.style.top = `${e.clientY}px`;
+
+    const projectsList = projectsListRef.current;
+    if (projectsList) {
+      const r = projectsList.getBoundingClientRect();
+
+      // Vérifie si la souris est au-dessus de la liste des projets
+      const over =
+        e.clientX >= r.left &&
+        e.clientX <= r.right &&
+        e.clientY >= r.top &&
+        e.clientY <= r.bottom;
+
+      // Affiche le curseur personnalisé
+      cursor.style.opacity = over ? "1" : "0";
+
+      // Masque le curseur natif
+      const container = containerRef.current;
+      if (container) container.style.cursor = over ? "none" : "";
     }
   };
 
-  const handleArticleHover = (
+  // Gère la sortie de la souris du conteneur des projets
+  const handleProjectsListMouseLeave = () => {
+    // Réinitialise l'état du hgroup et des projets
+    setHgroupVisible(true);
+    setActiveProjectId(null);
+
+    // Masque le curseur personnalisé et réactive les interactions
+    if (cursorRef.current) cursorRef.current.style.opacity = "0";
+    if (containerRef.current) containerRef.current.style.cursor = "";
+
+    const container = containerRef.current;
+    if (!container) return;
+    const projectsList = projectsListRef.current;
+    if (!projectsList) return;
+
+    projectsList.style.pointerEvents = "";
+
+    if (container.scrollLeft === 0) return;
+
+    // Remet le conteneur à la position initiale
+    const startScroll = container.scrollLeft;
+    const startTime = performance.now();
+    const duration = 1500;
+    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+    const scrollBack = (now: number) => {
+      const t = Math.min((now - startTime) / duration, 1);
+      container.scrollLeft = startScroll * (1 - easeOut(t));
+      if (t < 1) requestAnimationFrame(scrollBack);
+    };
+    requestAnimationFrame(scrollBack);
+  };
+
+  const handleProjectHover = (
     e: React.MouseEvent<HTMLElement>,
     projectId: string,
   ) => {
     setHgroupVisible(false);
-    hgroupCollapsedRef.current = true;
 
-    if (
-      isScrollingRef.current ||
-      projectId === activeProjectId ||
-      !hgroupCollapsedRef.current
-    )
-      return;
-    const article = e.currentTarget;
     const container = containerRef.current;
-    const stack = articlesStackRef.current;
     if (!container) return;
-    isScrollingRef.current = true;
-    if (stack) stack.style.pointerEvents = "none";
+
+    const projectRect = e.currentTarget.getBoundingClientRect();
+    let isAfter = true;
+    if (activeProjectId) {
+      const prevActiveProject = document.getElementById(
+        `project-${activeProjectId}`,
+      );
+      const prevActiveProjectRect = prevActiveProject?.getBoundingClientRect();
+      if (prevActiveProjectRect)
+        isAfter = projectRect.left > prevActiveProjectRect.left;
+    }
+    setActiveProjectId(projectId);
+    const isFirstProject = projects[0].id === projectId;
 
     const containerRect = container.getBoundingClientRect();
-    const articleRect = article.getBoundingClientRect();
-    const style = getComputedStyle(container);
-    const paddingLeft = parseFloat(style.paddingLeft);
-    const paddingRight = parseFloat(style.paddingRight);
-    const visibleWidth = container.clientWidth - paddingLeft - paddingRight;
-
-    const articleScrollLeft =
-      articleRect.left - containerRect.left + container.scrollLeft;
-    const currentWidth = article.offsetWidth;
-    const expandedWidth = currentWidth * 2;
-    const mouseRatio = (e.clientX - articleRect.left) / currentWidth;
-    let target =
-      articleScrollLeft +
-      mouseRatio * expandedWidth -
-      (e.clientX - containerRect.left);
-    const clampMax = articleScrollLeft - paddingLeft - 64;
-    const clampMin =
-      articleScrollLeft + expandedWidth - paddingLeft - visibleWidth + 64;
-    if (clampMin <= clampMax) {
-      target = Math.max(clampMin, Math.min(clampMax, target));
-    } else {
-      target = articleScrollLeft - paddingLeft;
-    }
-    target = Math.max(0, target);
-
-    setActiveProjectId(projectId);
+    const expandedWidth = projectRect.width * (isMd ? 2 : 1.5);
+    const widthDiff = expandedWidth - projectRect.width;
+    const delta =
+      projectRect.left +
+      projectRect.width / 2 +
+      (widthDiff / 2) * (isAfter ? -1 : 1) -
+      containerRect.width / 2;
+    console.log({ delta });
 
     const startScroll = container.scrollLeft;
+    console.log({ startScroll });
     const duration = 1500;
     const startTime = performance.now();
     const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
+    if (isFirstProject && container.scrollLeft === 0) return;
+
     const animate = (now: number) => {
       const t = Math.min((now - startTime) / duration, 1);
-      container.scrollLeft = startScroll + (target - startScroll) * easeOut(t);
+      container.scrollLeft = isFirstProject
+        ? startScroll * (1 - easeOut(t))
+        : startScroll + delta * easeOut(t);
       if (t < 1) {
         requestAnimationFrame(animate);
-      } else {
-        isScrollingRef.current = false;
-        if (stack) stack.style.pointerEvents = "";
       }
     };
     requestAnimationFrame(animate);
@@ -139,59 +183,26 @@ export default function ProjectsCarousel({
     <>
       <ResponsiveStack
         ref={containerRef}
-        onWheel={reverseMouseWheel ? handleWheel : undefined}
-        onMouseMove={(e: React.MouseEvent) => {
-          const cursor = cursorRef.current;
-          if (!cursor) return;
-          cursor.style.left = `${e.clientX}px`;
-          cursor.style.top = `${e.clientY}px`;
-          const stack = articlesStackRef.current;
-          if (stack) {
-            const r = stack.getBoundingClientRect();
-            const over =
-              e.clientX >= r.left &&
-              e.clientX <= r.right &&
-              e.clientY >= r.top &&
-              e.clientY <= r.bottom;
-            cursor.style.opacity = over ? "1" : "0";
-            const container = containerRef.current;
-            if (container) container.style.cursor = over ? "none" : "";
-          }
-        }}
-        onMouseLeave={() => {
-          setHgroupVisible(true);
-          setActiveProjectId(null);
-          isScrollingRef.current = false;
-          if (cursorRef.current) cursorRef.current.style.opacity = "0";
-          if (containerRef.current) containerRef.current.style.cursor = "";
-          if (articlesStackRef.current)
-            articlesStackRef.current.style.pointerEvents = "";
-          const container = containerRef.current;
-          if (!container || container.scrollLeft === 0) return;
-          const startScroll = container.scrollLeft;
-          const startTime = performance.now();
-          const duration = 900;
-          const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
-          const scrollBack = (now: number) => {
-            const t = Math.min((now - startTime) / duration, 1);
-            container.scrollLeft = startScroll * (1 - easeOut(t));
-            if (t < 1) requestAnimationFrame(scrollBack);
-          };
-          requestAnimationFrame(scrollBack);
-        }}
         sx={{
           flexDirection: "row",
           flex: minHeight ? undefined : "1 1 auto",
           minHeight: minHeight || 0,
-          paddingX: { lg: 8, xs: 4 },
+          paddingLeft: {
+            lg: 8,
+            xs: 4,
+          },
           overflowX: "auto",
           overflowY: "hidden",
-          transition: `all 1500ms ${theme.transitions.easing.easeOut}`,
           scrollbarWidth: "none",
           "::-webkit-scrollbar": {
             display: "none",
           },
         }}
+        onWheel={
+          reverseMouseWheel
+            ? (e) => handleReverseMouseWheel(e, containerRef)
+            : undefined
+        }
       >
         {title && (
           <ResponsiveStack
@@ -200,22 +211,23 @@ export default function ProjectsCarousel({
             maxWidth="unset"
             sx={{
               flex: "0 0 auto",
-              maxWidth: !measured
+              maxWidth: !hgroupWidthMeasured
                 ? "none"
                 : hgroupVisible
                   ? `${contentWidth}px`
                   : "0px",
-              minWidth: !measured
+              minWidth: !hgroupWidthMeasured
                 ? "none"
                 : hgroupVisible
                   ? `calc((min(100dvw, 1920px) - 10rem) / 3.5)`
                   : "0px",
-              overflow: !measured ? "visible" : "hidden",
+              overflow: !hgroupWidthMeasured ? "visible" : "hidden",
+              opacity: hgroupVisible ? 1 : 0,
               rowGap: 4,
               paddingY: 3,
               paddingRight: hgroupVisible ? 4 : 0,
-              transition: measured
-                ? `min-width 1500ms ${theme.transitions.easing.easeInOut}, max-width 1500ms ${theme.transitions.easing.easeInOut}, padding 1500ms ${theme.transitions.easing.easeInOut}`
+              transition: hgroupWidthMeasured
+                ? `opacity 900ms ${theme.transitions.easing.easeInOut}, min-width 1500ms ${theme.transitions.easing.easeInOut}, max-width 1500ms ${theme.transitions.easing.easeInOut}, padding 1500ms ${theme.transitions.easing.easeInOut}`
                 : "none",
             }}
           >
@@ -242,115 +254,106 @@ export default function ProjectsCarousel({
           </ResponsiveStack>
         )}
         {projects.length > 0 && (
-          <ResponsiveStack
-            ref={articlesStackRef}
-            sx={{
-              flexDirection: "row",
-              gap: 2,
-              maxWidth: "unset",
-              cursor: "none",
+          <div
+            style={{
+              minHeight: "100%",
+              // flex: "0 1 100%", overflow: "hidden"
             }}
+            onMouseLeave={handleProjectsListMouseLeave}
+            onMouseMove={handleProjectsListMouseMove}
           >
-            {projects.map((project) => {
-              const thumbnailUrl =
-                API_URL +
-                (project.thumbnail as Media)?.path.replace(
-                  /\.webp$/,
-                  `_xl.webp`,
-                );
-              return (
-                <ResponsiveBox
-                  key={project.id}
-                  component={Link}
-                  href={`/projects/${project.slug}`}
-                  sx={{
-                    flex:
-                      activeProjectId === project.id
-                        ? `0 0 calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : isMd ? 2.5 : 1.5} * ${isLg || isMd ? 2 : 1.5})`
-                        : `0 0 calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : isMd ? 2.5 : 1.5})`,
-                    maxHeight: "100%",
-                    position: "relative",
-                    border: `1px solid ${theme.palette.divider}`,
-                    borderRadius: 1,
-                    overflow: "hidden",
-                    background: `url(${thumbnailUrl}) ${project.thumbnail && typeof project.thumbnail !== "string" ? project.thumbnail?.focus || "center" : "center"} / cover no-repeat`,
-                    transition: `all 1800ms ${theme.transitions.easing.easeOut}`,
-                    cursor: "none",
-                  }}
-                  onMouseEnter={(e) => handleArticleHover(e, project.id)}
-                >
-                  <ResponsiveTitle
-                    variant="h1"
-                    component="h2"
-                    style={{
-                      opacity: activeProjectId === project.id ? 1 : 0,
-                      transition: `opacity 1200ms ${theme.transitions.easing.easeInOut}`,
-                      position: "absolute",
-                      bottom: "1.5rem",
-                      right: "2rem",
-                      zIndex: 1,
-                      fontWeight: "900",
-                      textShadow: `0 0 5px rgba(0,0,0,0.5)`,
-                      textWrap: "nowrap",
-                      color: theme.palette.text.primary,
+            <ResponsiveStack
+              ref={projectsListRef}
+              sx={{
+                flexDirection: "row",
+                gap: 2,
+                maxWidth: "100%",
+                cursor: "none",
+                minHeight: "100%",
+              }}
+            >
+              {projects.map((project, idx) => {
+                const thumbnailUrl =
+                  API_URL +
+                  (project.thumbnail as Media)?.path.replace(
+                    /\.webp$/,
+                    `_xl.webp`,
+                  );
+                return (
+                  <ResponsiveBox
+                    key={project.id}
+                    id={`project-${project.id}`}
+                    component={Link}
+                    href={`/projects/${project.slug}`}
+                    sx={{
+                      flex:
+                        activeProjectId === project.id
+                          ? `0 0 calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : isMd ? 2.5 : 1.5} * ${isMd ? 2 : 1.5})`
+                          : `0 0 calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : isMd ? 2.5 : 1.5})`,
+                      maxHeight: "100%",
+                      position: "relative",
+                      border: `1px solid ${theme.palette.divider}`,
+                      borderRadius: 1,
+                      overflow: "hidden",
+                      background: `url(${thumbnailUrl}) ${project.thumbnail && typeof project.thumbnail !== "string" ? project.thumbnail?.focus || "center" : "center"} / cover no-repeat`,
+                      transition: `all 1500ms ${theme.transitions.easing.easeOut}`,
+                      cursor: "none",
+                      marginRight:
+                        idx === projects.length - 1 ? { lg: 8, xs: 4 } : 0,
                     }}
+                    onMouseEnter={(e) => handleProjectHover(e, project.id)}
                   >
-                    {project.label}
-                  </ResponsiveTitle>
-                  {project.startDate && (
-                    <ResponsiveBodyTypography
-                      variant="bodyLg"
+                    <ResponsiveTitle
+                      variant="h1"
+                      component="h2"
                       style={{
                         opacity: activeProjectId === project.id ? 1 : 0,
                         transition: `opacity 1200ms ${theme.transitions.easing.easeInOut}`,
                         position: "absolute",
-                        top: "1.5rem",
-                        left: "2rem",
+                        bottom: "1.5rem",
+                        right: "2rem",
                         zIndex: 1,
+                        fontWeight: "900",
                         textShadow: `0 0 5px rgba(0,0,0,0.5)`,
                         textWrap: "nowrap",
                         color: theme.palette.text.primary,
                       }}
                     >
-                      {project.startDate.format("YYYY")}
-                      {project.endDate
-                        ? project.endDate.format("YYYY") !==
+                      {project.label}
+                    </ResponsiveTitle>
+                    {project.startDate && (
+                      <ResponsiveBodyTypography
+                        variant="bodyLg"
+                        style={{
+                          opacity: activeProjectId === project.id ? 1 : 0,
+                          transition: `opacity 1200ms ${theme.transitions.easing.easeInOut}`,
+                          position: "absolute",
+                          top: "1.5rem",
+                          left: "2rem",
+                          zIndex: 1,
+                          textShadow: `0 0 5px rgba(0,0,0,0.5)`,
+                          textWrap: "nowrap",
+                          color: theme.palette.text.primary,
+                        }}
+                      >
+                        {!project.endDate && project.startDate && "Depuis "}
+                        {project.startDate.format("YYYY")}
+                        {project.endDate &&
+                        project.endDate.format("YYYY") !==
                           project.startDate.format("YYYY")
                           ? ` - ${project.endDate.format("YYYY")}`
-                          : ""
-                        : " - Présent"}
-                    </ResponsiveBodyTypography>
-                  )}
-                </ResponsiveBox>
-              );
-            })}
-          </ResponsiveStack>
+                          : ""}
+                      </ResponsiveBodyTypography>
+                    )}
+                  </ResponsiveBox>
+                );
+              })}
+            </ResponsiveStack>
+          </div>
         )}
       </ResponsiveStack>
 
-      <div
-        ref={cursorRef}
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: 48,
-          height: 48,
-          borderRadius: "50%",
-          background: "rgba(0,0,0,0.5)",
-          backdropFilter: "blur(8px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          pointerEvents: "none",
-          zIndex: 9999,
-          transform: "translate(-50%, -50%)",
-          opacity: 0,
-          transition: "opacity 180ms ease",
-        }}
-      >
-        <Icon path={mdiEye} size={1} />
-      </div>
+      <CustomCursor icon={mdiEye} ref={cursorRef} />
     </>
   );
 }
