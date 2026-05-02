@@ -1,21 +1,12 @@
 import { gql } from "@apollo/client";
 
-// Requêtes GraphQL pour la gestion des rôles (récupération de la liste des rôles, récupération d'un rôle spécifique)
-export const COWORKER_FIELDS = gql`
-  fragment CoworkerFields on Coworker {
-    id
-    name
-    roles
-  }
-`;
-
-// Requête pour récupérer la liste de tous les rôles (permet d'obtenir tous les rôles disponibles)
+// Requête pour récupérer la liste de tous les intervenants
 export const COWORKERS_QUERY = gql`
   query Coworkers {
     coworkers {
-      ...CoworkerFields
+      id
+      name
+      roles
     }
   }
-
-  ${COWORKER_FIELDS}
 `;

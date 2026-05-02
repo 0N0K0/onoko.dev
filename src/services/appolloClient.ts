@@ -1,6 +1,7 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
+import { API_URL } from "../constants/apiConstants";
 
 /**
  * Configure et exporte une instance d'Apollo Client pour interagir avec le backend GraphQL.
@@ -9,7 +10,7 @@ import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
 
 // Lien HTTP vers ton endpoint GraphQL
 const httpLink = new UploadHttpLink({
-  uri: "http://localhost:4000/graphql",
+  uri: `${API_URL}/graphql`,
 });
 
 // Middleware pour ajouter le JWT à chaque requête

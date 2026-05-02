@@ -6,6 +6,7 @@ import {
   ListItemText,
   useTheme,
 } from "@mui/material";
+import { useLocation } from "react-router-dom";
 import { ResponsiveDrawer } from "../../components/custom/ResponsiveLayout";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 import Icon from "@mdi/react";
@@ -16,6 +17,7 @@ import { ADMIN_MENU_LINKS } from "../../constants/adminLayoutConstants";
  */
 export default function AdminSidebar() {
   const theme = useTheme();
+  const { pathname } = useLocation();
   const drawerWidth = useResponsiveWidth(2);
 
   return (
@@ -47,7 +49,7 @@ export default function AdminSidebar() {
             <ListItemButton
               component="a"
               href={path}
-              selected={window.location.pathname === path}
+              selected={pathname === path}
               sx={{
                 paddingLeft: "32px",
               }}

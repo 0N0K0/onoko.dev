@@ -76,6 +76,7 @@ function SortableMediaItem({
         cursor: isDragging ? "grabbing" : "grab",
         touchAction: "none",
         transition: `background ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}, padding ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}, border-radius ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut} !important`,
+        marginBottom: "20px !important",
         "&:hover": {
           backgroundColor: theme.palette.action.hover,
           padding: 1,
@@ -83,14 +84,13 @@ function SortableMediaItem({
           transition: `background ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}, padding ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}, border-radius ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut} !important`,
         },
       }}
-      marginBottom="20px !important"
     >
       <Picture image={image} />
       <ResponsiveStack
-        direction="row"
-        justifyContent="space-between"
         onPointerDown={(e) => e.stopPropagation()}
         sx={{
+          flexDirection: "row",
+          justifyContent: "flex-end",
           position: "absolute",
           bottom: "-20px",
           left: "-20px",
@@ -111,7 +111,6 @@ function SortableMediaItem({
             color="error"
             disabled={disabled}
             onClick={onDelete}
-            style={{ marginLeft: "auto" }}
           />
         )}
       </ResponsiveStack>
@@ -137,20 +136,25 @@ export default function MediaPicker({
   const theme = useTheme();
 
   const { medias, refetch } = useMedias();
+  const mutations = useMediaMutations();
   const {
-    addMedia,
-    addMediaData,
-    addMediaError,
-    addMediaLoading,
-    editMedia,
-    editMediaData,
-    editMediaError,
-    editMediaLoading,
-    removeMedia,
-    removeMediaData,
-    removeMediaLoading,
-    removeMediaError,
-  } = useMediaMutations();
+    mutate: addMedia,
+    data: addMediaData,
+    error: addMediaError,
+    loading: addMediaLoading,
+  } = mutations.create;
+  const {
+    mutate: editMedia,
+    data: editMediaData,
+    error: editMediaError,
+    loading: editMediaLoading,
+  } = mutations.edit;
+  const {
+    mutate: removeMedia,
+    data: removeMediaData,
+    loading: removeMediaLoading,
+    error: removeMediaError,
+  } = mutations.delete;
   const isInitialSync = useRef(true);
   const initialImagesIds = initialImages.map((i) => i.id).join(",");
   const [images, setImages] = useState<Media[]>(initialImages);
@@ -240,10 +244,10 @@ export default function MediaPicker({
           >
             <ResponsiveBox
               rowGap={3}
-              columnGap={4}
               sx={{
+                columnGap: 4,
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(6rem, 8rem))",
+                gridTemplateColumns: `repeat(auto-fit, minmax(9rem, ${images.length < 5 ? "20%" : "1fr"}))`,
                 justifyContent: "center",
                 overflowY: "auto",
                 overflowX: "hidden",
@@ -251,22 +255,24 @@ export default function MediaPicker({
                 paddingX: "20px",
               }}
             >
-              {images.map((image) => (
-                <SortableMediaItem
-                  key={image.id}
-                  image={image}
-                  multiple={multiple}
-                  required={required}
-                  disabled={disabled}
-                  imagesLength={images.length}
-                  onEdit={() => setMediaPickerOpen(true)}
-                  onDelete={() =>
-                    setImages((prev) =>
-                      prev.filter((img) => img.id !== image.id),
-                    )
-                  }
-                />
-              ))}
+              {[...images]
+                .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+                .map((image) => (
+                  <SortableMediaItem
+                    key={image.id}
+                    image={image}
+                    multiple={multiple}
+                    required={required}
+                    disabled={disabled}
+                    imagesLength={images.length}
+                    onEdit={() => setMediaPickerOpen(true)}
+                    onDelete={() =>
+                      setImages((prev) =>
+                        prev.filter((img) => img.id !== image.id),
+                      )
+                    }
+                  />
+                ))}
             </ResponsiveBox>
           </SortableContext>
         </DndContext>

@@ -5,17 +5,17 @@ import NewPasswordFields from "../../components/account/NewPasswordFields";
 import { LOGIN_ROUTE } from "../../constants/apiConstants";
 import apolloClient from "../../services/appolloClient";
 import { RESET_PASSWORD_MUTATION } from "../../services/account/accountMutations";
-import { useAuth } from "../../hooks/useAuth";
 import ClosableSnackbarAlert from "../../components/custom/ClosableSnackbarAlert";
 import SnackbarAlert from "../../components/custom/SnackbarAlert";
-import AuthLayout from "../../layout/auth/AuthLayout";
+import { useAuthContext } from "../../context/AuthContext";
+import AuthForm from "../../layout/auth/AuthForm";
 
 /**
  * Page de réinitialisation du mot de passe. Permet aux utilisateurs de réinitialiser leur mot de passe en fournissant un nouveau mot de passe et une confirmation, après avoir cliqué sur le lien de réinitialisation reçu par e-mail.
  * Gère la validation des champs, l'envoi de la requête de réinitialisation au backend et l'affichage des messages de succès ou d'erreur.
  */
 export default function ResetPassword() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuthContext();
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token") || "";
 
@@ -49,7 +49,7 @@ export default function ResetPassword() {
   };
 
   return (
-    <AuthLayout
+    <AuthForm
       title="Réinitialiser mon&nbsp;mot&nbsp;de&nbsp;passe"
       onSubmit={handleSubmit}
       returnButton={{
@@ -71,7 +71,7 @@ export default function ResetPassword() {
         message="Votre mot de passe a été réinitialisé avec succès."
         severity="success"
       />
-      <ResponsiveStack rowGap={3} width="100%">
+      <ResponsiveStack rowGap={3} sx={{ width: "100%" }}>
         <NewPasswordFields
           newPassword={newPassword}
           setNewPassword={setNewPassword}
@@ -83,6 +83,6 @@ export default function ResetPassword() {
           setConfirmPasswordError={setConfirmPasswordError}
         />
       </ResponsiveStack>
-    </AuthLayout>
+    </AuthForm>
   );
 }

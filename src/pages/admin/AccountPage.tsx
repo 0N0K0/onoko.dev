@@ -1,5 +1,10 @@
-import { Button, CircularProgress, Container, TextField } from "@mui/material";
-import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
+import {
+  Button,
+  CircularProgress,
+  Container,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useState, useEffect } from "react";
 import apolloClient from "../../services/appolloClient";
 import { ACCOUNT_QUERY } from "../../services/account/accountQueries";
@@ -17,10 +22,9 @@ import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
  * Permet de voir et modifier le login, l'email et le mot de passe du compte.
  */
 export default function Account() {
-  const containerMaxWidth = {
-    xs: useResponsiveWidth(6),
-    xl: useResponsiveWidth(8),
-  };
+  const widthXs = useResponsiveWidth(6);
+  const widthXl = useResponsiveWidth(8);
+  const containerMaxWidth = { xs: widthXs, xl: widthXl };
   const [loadingUser, setLoadingUser] = useState(true);
   const [initialUser, setInitialUser] = useState<{
     login: string;
@@ -127,9 +131,9 @@ export default function Account() {
 
   return (
     <>
-      <ResponsiveTitle variant="h1" sx={{ width: "100%" }}>
+      <Typography variant="h1" sx={{ width: "100%" }}>
         Mon compte
-      </ResponsiveTitle>
+      </Typography>
       <ClosableSnackbarAlert
         open={successSnackbarOpen}
         setOpen={setSuccessSnackbarOpen}
@@ -156,14 +160,14 @@ export default function Account() {
           }}
           component="form"
         >
-          <ResponsiveStack rowGap={3} width="100%">
+          <ResponsiveStack rowGap={3} sx={{ width: "100%" }}>
             <ResponsiveStack
+              rowGap={3}
               sx={{
                 flexDirection: { xs: "column", sm: "row" },
+                columnGap: 2,
+                width: "100%",
               }}
-              rowGap={3}
-              columnGap={2}
-              width="100%"
             >
               <TextField
                 label="Nom d'utilisateur"
@@ -181,14 +185,14 @@ export default function Account() {
             </ResponsiveStack>
 
             <ResponsiveStack
+              rowGap={3}
               sx={{
                 flexDirection: { xs: "column", sm: "row" },
+                columnGap: 2,
+                width: "100%",
               }}
-              rowGap={3}
-              columnGap={2}
-              width="100%"
             >
-              <ResponsiveStack width="100%" alignItems="end">
+              <ResponsiveStack sx={{ width: "100%", alignItems: "end" }}>
                 <PasswordField
                   label="Mot de passe actuel"
                   value={currentPassword}
@@ -209,7 +213,7 @@ export default function Account() {
                 />
                 <ResetPasswordLink />
               </ResponsiveStack>
-              <ResponsiveStack rowGap={3} width="100%">
+              <ResponsiveStack rowGap={3} sx={{ width: "100%" }}>
                 <NewPasswordFields
                   newPassword={newPassword}
                   setNewPassword={setNewPassword}

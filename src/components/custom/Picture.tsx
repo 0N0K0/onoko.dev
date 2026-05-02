@@ -7,12 +7,14 @@ export default function Picture({
   maxWidth = "100%",
   maxHeight = "100%",
   objectFit = "contain",
+  objectPosition,
   style,
 }: {
   image: Media;
   maxWidth?: string;
   maxHeight?: string;
   objectFit?: "contain" | "cover" | "fill" | "none" | "scale-down";
+  objectPosition?: string;
   style?: React.CSSProperties;
 }) {
   const paths: { [key: string]: string } = {
@@ -39,6 +41,8 @@ export default function Picture({
         maxWidth: maxWidth,
         maxHeight: maxHeight,
         objectFit: objectFit,
+        objectPosition: objectPosition || image.focus || "50% 50%",
+        boxSizing: "border-box",
         ...style,
       }}
     />
@@ -50,6 +54,7 @@ export default function Picture({
         maxWidth: maxWidth,
         maxHeight: maxHeight,
         overflow: "hidden",
+        boxSizing: "border-box",
         ...style,
       }}
     >
@@ -77,6 +82,7 @@ export default function Picture({
           maxWidth: maxWidth,
           maxHeight: maxHeight,
           objectFit: objectFit,
+          objectPosition: objectPosition || image.focus || "50% 50%",
         }}
       />
     </picture>

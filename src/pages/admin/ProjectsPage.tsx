@@ -1,64 +1,24 @@
-import { useEffect, useState } from "react";
 import useProjectMutations from "../../hooks/mutations/useProjectMutations";
 import useProjects from "../../hooks/queries/useProjects";
 import EntitiesContent from "../../layout/admin/EntitiesContent";
-import ProjectFormDialog from "../../components/entities/ProjectFormDialog";
+import ProjectFormDialog from "../../components/entities/project/form/ProjectFormDialog";
 import type { Project } from "../../types/entities/projectTypes";
 import Picture from "../../components/custom/Picture";
 import type { Category } from "../../types/entities/categoryTypes";
+import useEntityPage from "../../hooks/useEntityPage";
 
-/**
- * Page d'administration pour la gestion des projets.
- * Cette page affiche une liste de projets existants, avec la possibilité d'ajouter, de modifier ou de supprimer des projets via des dialogues de formulaire.
- * Elle utilise des hooks personnalisés pour récupérer les données des projets et effectuer les mutations nécessaires à leur gestion.
- * Le composant `EntitiesPage` est utilisé pour afficher la liste des projets et gérer les actions d'ajout, de modification et de suppression, tandis que les fonctions de mutation sont gérées par le hook `useProjectMutations`.
- */
 export default function Projects() {
-  const [submitSuccess, setSubmitSuccess] = useState<string>("");
-
-  const [formDialogOpen, setFormDialogOpen] = useState<string | boolean>(false);
-
   const { projects, loading, error, refetch } = useProjects();
-
-  useEffect(() => {
-    console.log("Projects data:", projects);
-  }, [projects]);
-
-  const {
-    createProject,
-    createProjectData,
-    createProjectLoading,
-    createProjectError,
-    editProject,
-    editProjectData,
-    editProjectLoading,
-    editProjectError,
-    deleteProject,
-    deleteProjectData,
-    deleteProjectLoading,
-    deleteProjectError,
-  } = useProjectMutations();
-
-  useEffect(() => {
-    if (!createProjectLoading && createProjectData) {
-      setSubmitSuccess("Projet créé avec succès");
-      setFormDialogOpen(false);
-      refetch();
-    }
-  }, [createProjectData]);
-  useEffect(() => {
-    if (!editProjectLoading && editProjectData) {
-      setSubmitSuccess("Projet modifié avec succès");
-      setFormDialogOpen(false);
-      refetch();
-    }
-  }, [editProjectData]);
-  useEffect(() => {
-    if (!deleteProjectLoading && deleteProjectData) {
-      setSubmitSuccess("Projet supprimé avec succès");
-      refetch();
-    }
-  }, [deleteProjectData]);
+  const mutations = useProjectMutations();
+  const { contentProps, formDialogProps } = useEntityPage({
+    query: { loading, error, refetch },
+    mutations,
+    messages: {
+      create: "Projet créé avec succès",
+      edit: "Projet modifié avec succès",
+      delete: "Projet supprimé avec succès",
+    },
+  });
 
   return (
     <>
@@ -111,34 +71,9 @@ export default function Projects() {
                 .join(", "),
           },
         ]}
-        onClickActions={{
-          add: () => setFormDialogOpen(true),
-          edit: (id: string) => setFormDialogOpen(id),
-          delete: deleteProject,
-        }}
-        submitting={
-          createProjectLoading || editProjectLoading || deleteProjectLoading
-        }
-        submitSuccess={submitSuccess}
-        setSubmitSuccess={setSubmitSuccess}
-        error={
-          error?.message ||
-          createProjectError?.message ||
-          editProjectError?.message ||
-          deleteProjectError?.message ||
-          ""
-        }
+        {...contentProps}
       />
-      <ProjectFormDialog
-        open={formDialogOpen}
-        setOpen={setFormDialogOpen}
-        projects={projects}
-        handleAdd={createProject}
-        handleEdit={editProject}
-        submitting={
-          createProjectLoading || editProjectLoading || deleteProjectLoading
-        }
-      />
+      <ProjectFormDialog {...formDialogProps} projects={projects} />
     </>
   );
 }

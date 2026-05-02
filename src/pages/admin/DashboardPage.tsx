@@ -1,5 +1,4 @@
-import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
-import MediaPicker from "../../components/entities/media/MediaPicker";
+import { Typography } from "@mui/material";
 
 /**
  * Page d'accueil de l'espace admin.
@@ -7,10 +6,9 @@ import MediaPicker from "../../components/entities/media/MediaPicker";
 export default function Dashboard() {
   return (
     <>
-      <ResponsiveTitle variant="h1" sx={{ width: "100%" }}>
+      <Typography variant="h1" sx={{ width: "100%" }}>
         Tableau de bord
-      </ResponsiveTitle>
-      <MediaPicker multiple onChange={() => {}} />
+      </Typography>
     </>
   );
 }

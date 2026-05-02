@@ -1,7 +1,6 @@
-import { useEffect, useRef } from "react";
-import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import { FormControl, FormLabel, Box, useTheme } from "@mui/material";
+import useWysiwyg from "../../hooks/useWysiwyg";
 
 interface WysiwygFieldProps {
   label: string;
@@ -15,65 +14,7 @@ export default function WysiwygField({
   onChange,
 }: WysiwygFieldProps) {
   const theme = useTheme();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const quillRef = useRef<Quill | null>(null);
-  const isInternalChange = useRef(false);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-    containerRef.current.innerHTML = "";
-    const editorDiv = document.createElement("div");
-    containerRef.current.appendChild(editorDiv);
-    quillRef.current = new Quill(editorDiv, {
-      theme: "snow",
-      modules: {
-        toolbar: [
-          [{ size: ["small", false, "large", "huge"] }],
-          ["bold", "italic", "underline"],
-          [{ color: [] }, { background: [] }],
-          [{ script: "sub" }, { script: "super" }],
-          [{ list: "ordered" }, { list: "bullet" }],
-          [{ indent: "-1" }, { indent: "+1" }],
-          [{ align: "center" }, { align: "right" }, { align: "justify" }],
-          [
-            { header: "3" },
-            { header: "4" },
-            { header: "5" },
-            { header: "6" },
-            "code",
-          ],
-          ["link"],
-          ["clean"],
-        ],
-      },
-    });
-    quillRef.current.on("text-change", () => {
-      if (!quillRef.current) return;
-      isInternalChange.current = true;
-      onChange(quillRef.current.getSemanticHTML());
-    });
-    return () => {
-      quillRef.current = null;
-      if (containerRef.current) {
-        containerRef.current.innerHTML = "";
-      }
-    };
-  }, []);
-
-  // Sync external value changes (e.g. when dialog opens with existing data)
-  useEffect(() => {
-    if (!quillRef.current) return;
-    if (isInternalChange.current) {
-      isInternalChange.current = false;
-      return;
-    }
-    const current = quillRef.current.getSemanticHTML();
-    if (current !== value) {
-      quillRef.current.setContents(
-        quillRef.current.clipboard.convert({ html: value || "" }),
-      );
-    }
-  }, [value]);
+  const { containerRef } = useWysiwyg({ value, onChange });
 
   return (
     <FormControl fullWidth>
@@ -81,7 +22,6 @@ export default function WysiwygField({
         sx={{
           fontSize: "0.75rem",
           lineHeight: 2,
-          //   marginBottom: "4px",
           color: theme.palette.text.secondary,
         }}
       >
@@ -105,17 +45,6 @@ export default function WysiwygField({
               padding: "11px 7px 12px",
             },
           },
-          "& .ql-toolbar.ql-snow": {
-            border: "none",
-            borderBottom: `1px solid ${theme.palette.divider}`,
-            color: theme.palette.text.secondary,
-            fontFamily: "Roboto, sans-serif",
-            fontSize: "16px",
-            lineHeight: 1.5,
-            padding: "12px 8px",
-            boxSizing: "border-box",
-            height: "48px",
-          },
           "& .ql-container.ql-snow": {
             border: "none",
             color: theme.palette.text.primary,
@@ -124,43 +53,154 @@ export default function WysiwygField({
             lineHeight: 1.5,
           },
           "& .ql-editor": {
-            fontFamily: "Roboto, sans-serif",
+            display: "flex",
+            flexDirection: "column",
+            rowGap: 3,
+            fontFamily: "League Spartan, sans-serif",
             fontSize: "16px",
             lineHeight: 1.5,
             padding: "12px 16px",
             minHeight: "96px",
-          },
-          "& .ql-editor.ql-blank::before": {
-            color: theme.palette.text.disabled,
-          },
-          "& .ql-toolbar .ql-picker-label, & .ql-toolbar .ql-picker-options": {
-            color: theme.palette.text.secondary,
-            border: `1px solid ${theme.palette.divider} !important`,
-            borderRadius: "4px",
-          },
-          "& .ql-toolbar .ql-picker-options": {
-            backgroundColor: theme.palette.background.paper,
-            backgroundImage:
-              "linear-gradient(rgba(255, 255, 255, 0.051), rgba(255, 255, 255, 0.051))",
-          },
-          "& .ql-toolbar .ql-picker-label:hover, & .ql-toolbar .ql-picker-label.ql-active, & .ql-toolbar .ql-picker-item:hover, & .ql-toolbar .ql-picker-item.ql-selected":
-            {
-              color: theme.palette.primary.main,
+            "&.ql-blank::before": {
+              color: theme.palette.text.disabled,
             },
-          "& .ql-toolbar .ql-stroke": {
-            stroke: theme.palette.text.secondary,
-          },
-          "& .ql-toolbar .ql-fill": {
-            fill: theme.palette.text.secondary,
-          },
-          "& .ql-toolbar button:hover .ql-stroke, & .ql-toolbar button:focus .ql-stroke, & .ql-toolbar button.ql-active .ql-stroke, & .ql-toolbar .ql-picker-label:hover .ql-stroke, & .ql-toolbar .ql-picker-label.ql-active .ql-stroke, & .ql-toolbar .ql-picker-item:hover .ql-stroke, & .ql-toolbar .ql-picker-item.ql-selected .ql-stroke":
-            {
-              stroke: theme.palette.primary.main,
+            "& .ql-size-huge": { fontSize: "2rem", lineHeight: 1.5 },
+            "& .ql-size-large": { fontSize: "1.25rem", lineHeight: 1.2 },
+            "& .ql-size-small": { fontSize: "0.75rem", lineHeight: 2 },
+            "& h3, & h4, & h5, & h6": {
+              margin: 0,
+              "&:not(:first-child)": { marginTop: "1.5rem" },
             },
-          "& .ql-toolbar button:hover .ql-fill, & .ql-toolbar button:focus .ql-fill, & .ql-toolbar button.ql-active .ql-fill, & .ql-toolbar .ql-picker-label:hover .ql-fill, & .ql-toolbar .ql-picker-label.ql-active .ql-fill, & .ql-toolbar .ql-picker-item:hover .ql-fill, & .ql-toolbar .ql-picker-item.ql-selected .ql-fill":
-            {
-              fill: theme.palette.primary.main,
+            "& h3, & h4": {
+              fontWeight: "100",
             },
+            "& h5, & h6": {
+              fontWeight: "400",
+            },
+            "& h3": {
+              fontSize: "3rem",
+              lineHeight: 1,
+            },
+            "& h4": {
+              fontSize: "2.5rem",
+              lineHeight: 1.2,
+              margin: 0,
+              "&:not(:first-child)": { marginTop: "1.5rem" },
+            },
+            "& h5": {
+              fontSize: "2rem",
+              lineHeight: 1.5,
+              margin: 0,
+              "&:not(:first-child)": { marginTop: "1.5rem" },
+            },
+            "& h6": {
+              fontSize: "1.25rem",
+              lineHeight: 1.2,
+              margin: 0,
+              "&:not(:first-child)": { marginTop: "1.5rem" },
+            },
+            "& ol": {
+              paddingLeft: "2rem",
+              "& li": {
+                marginLeft: "1rem",
+                paddingLeft: "0.5rem",
+                '&[data-list="bullet"]': {
+                  marginLeft: "0",
+                  paddingLeft: "0rem",
+                  listStyleType: "none",
+                  display: "flex",
+                  columnGap: "0.5rem",
+                  "& .ql-ui": {
+                    position: "relative",
+                    boxSizing: "inherit",
+                    "&::before": {
+                      content: '"•"',
+                      display: "inline-block",
+                      width: "1rem",
+                      textAlign: "center",
+                      margin: 0,
+                    },
+                  },
+                },
+              },
+            },
+            "& a": {
+              color: theme.palette.primary.light,
+              textDecoration: "none",
+              display: "inline-block",
+              position: "relative",
+              transition: `color ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
+              "&::after": {
+                content: '""',
+                display: "block",
+                position: "absolute",
+                bottom: "2px",
+                left: 0,
+                transform: "scaleX(0)",
+                transformOrigin: "left",
+                width: "100%",
+                height: "1px",
+                backgroundColor: theme.palette.primary.main,
+                transition: `transform ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
+              },
+              "&:hover": {
+                color: theme.palette.primary.main,
+                "&::after": {
+                  transform: "scaleX(1)",
+                },
+              },
+            },
+            "& .ql-indent-1": { paddingLeft: "2rem" },
+            "& .ql-indent-2": { paddingLeft: "4rem" },
+            "& .ql-indent-3": { paddingLeft: "6rem" },
+            "& .ql-indent-4": { paddingLeft: "8rem" },
+            "& .ql-indent-5": { paddingLeft: "10rem" },
+            "& .ql-indent-6": { paddingLeft: "12rem" },
+            "& .ql-indent-7": { paddingLeft: "14rem" },
+            "& .ql-indent-8": { paddingLeft: "16rem" },
+          },
+          "& .ql-toolbar": {
+            "&.ql-snow": {
+              border: "none",
+              borderBottom: `1px solid ${theme.palette.divider}`,
+              color: theme.palette.text.secondary,
+              fontFamily: "Roboto, sans-serif",
+              fontSize: "16px",
+              lineHeight: 1.5,
+              padding: "12px 8px",
+              boxSizing: "border-box",
+              height: "48px",
+            },
+
+            "& .ql-picker-label, & .ql-picker-options": {
+              color: theme.palette.text.secondary,
+              border: `1px solid ${theme.palette.divider} !important`,
+              borderRadius: "4px",
+            },
+            "& .ql-picker-options": {
+              backgroundColor: theme.palette.background.paper,
+              backgroundImage:
+                "linear-gradient(rgba(255, 255, 255, 0.051), rgba(255, 255, 255, 0.051))",
+            },
+            "& .ql-picker-label:hover, & .ql-picker-label.ql-active, & .ql-picker-item:hover, & .ql-picker-item.ql-selected":
+              {
+                color: theme.palette.primary.main,
+              },
+            "& .ql-stroke": {
+              stroke: theme.palette.text.secondary,
+            },
+            "& .ql-fill": {
+              fill: theme.palette.text.secondary,
+            },
+            "& button:hover .ql-stroke, & button:focus .ql-stroke, & button.ql-active .ql-stroke, & .ql-picker-label:hover .ql-stroke, & .ql-picker-label.ql-active .ql-stroke, & .ql-picker-item:hover .ql-stroke, & .ql-picker-item.ql-selected .ql-stroke":
+              {
+                stroke: theme.palette.primary.main,
+              },
+            "& button:hover .ql-fill, & button:focus .ql-fill, & button.ql-active .ql-fill, & .ql-picker-label:hover .ql-fill, & .ql-picker-label.ql-active .ql-fill, & .ql-picker-item:hover .ql-fill, & .ql-picker-item.ql-selected .ql-fill":
+              {
+                fill: theme.palette.primary.main,
+              },
+          },
         }}
       >
         <div ref={containerRef} />

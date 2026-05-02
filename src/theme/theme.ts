@@ -1,8 +1,12 @@
-import { createTheme, type Theme } from "@mui/material/styles";
+import {
+  createTheme,
+  type Theme,
+  type ThemeOptions,
+} from "@mui/material/styles";
 import { BREAKPOINTS } from "./options/breakpoints";
 import { PALETTE } from "./options/palette";
 import { SHAPE } from "./options/shape";
-import { TYPOGRAPHY } from "./options/typography";
+import { RESPONSIVE_TYPOGRAPHY } from "./options/typography";
 import { SIZES } from "./options/sizes";
 import { TOOLBAR } from "./components/toolbar";
 import { TEXT_FIELD } from "./components/textField";
@@ -31,12 +35,12 @@ import { SELECT } from "./components/select";
 import { INPUT_BASE, INPUT_LABEL } from "./components/input";
 import { CHECKBOX } from "./components/checkbox";
 
-// Thème personnalisé pour l'application, basé sur le thème sombre de Material-UI avec des couleurs et des typographies adaptées.
-const baseTheme = createTheme({
+// Options brutes partagées entre les deux thèmes
+const baseOptions: ThemeOptions = {
   breakpoints: BREAKPOINTS,
   palette: PALETTE,
   shape: SHAPE,
-  typography: TYPOGRAPHY,
+  typography: RESPONSIVE_TYPOGRAPHY,
   components: {
     MuiAlert: ALERT,
     MuiButton: BUTTON,
@@ -64,11 +68,27 @@ const baseTheme = createTheme({
     MuiTextField: TEXT_FIELD,
     MuiToolbar: TOOLBAR,
   },
-});
+};
 
-// Injection des tailles personnalisées dans le thème
+// Thème admin (Roboto)
+const baseTheme = createTheme(baseOptions);
 (baseTheme as any).sizes = SIZES();
-
 const theme = baseTheme as Theme;
+
+// Thème public (League Spartan) — fontFamily injecté AVANT que MUI peuple les variants
+export const frontTheme = createTheme({
+  ...baseOptions,
+  palette: {
+    ...PALETTE,
+    primary: {
+      main: "rgb(170, 147, 113)",
+    },
+  },
+  typography: {
+    ...RESPONSIVE_TYPOGRAPHY,
+    fontFamily: `'League Spartan', sans-serif`,
+  },
+});
+(frontTheme as any).sizes = SIZES();
 
 export default theme;

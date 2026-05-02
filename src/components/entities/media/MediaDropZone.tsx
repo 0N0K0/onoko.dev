@@ -1,20 +1,15 @@
 import Dropzone from "react-dropzone";
 import { ResponsiveStack } from "../../custom/ResponsiveLayout";
-import { useTheme } from "@mui/material";
-import ResponsiveBodyTypography from "../../custom/ResponsiveBodyTypography";
+import { Typography, useTheme } from "@mui/material";
 import { useState } from "react";
-import type { useMutation } from "@apollo/client/react";
-import type { ApolloCache } from "@apollo/client";
 
 export default function MediaDropZone({
   handleAdd,
   submitting,
 }: {
-  handleAdd: useMutation.MutationFunction<
-    boolean,
-    { input: { file: File | null } },
-    ApolloCache
-  >;
+  handleAdd: (options: {
+    variables: { input: { file: File; category?: string } };
+  }) => unknown;
   submitting: boolean;
 }) {
   const theme = useTheme();
@@ -50,14 +45,14 @@ export default function MediaDropZone({
       {({ getRootProps, getInputProps }) => (
         <ResponsiveStack
           paddingY={3}
-          paddingX={4}
-          justifyContent="center"
-          alignItems="center"
           {...getRootProps()}
           sx={{
+            paddingX: 4,
+            justifyContent: "center",
+            alignItems: "center",
             opacity: submitting ? 0.5 : 1,
             width: "100%",
-            height: "168px",
+            minHeight: "168px",
             border:
               "2px " +
               (dragOver
@@ -72,10 +67,12 @@ export default function MediaDropZone({
             "&:hover": {
               border: "2px dashed " + theme.palette.text.secondary,
             },
+            boxSizing: "border-box",
+            transition: "all 300ms ease-in-out",
           }}
         >
           <input {...getInputProps()} />
-          <ResponsiveBodyTypography
+          <Typography
             variant="bodyMd"
             color="textSecondary"
             style={{ whiteSpace: "pre-line" }}
@@ -83,7 +80,7 @@ export default function MediaDropZone({
             {dragOver
               ? "Déposer les\u00A0médias dans\u00A0la\u00A0zone"
               : `Glisser les\u00A0médias dans\u00A0la\u00A0zone,\nou\u00A0cliquer pour\u00A0sélectionner des\u00A0fichiers`}
-          </ResponsiveBodyTypography>
+          </Typography>
         </ResponsiveStack>
       )}
     </Dropzone>

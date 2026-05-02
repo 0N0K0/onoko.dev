@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from "react";
 import type { Category } from "./categoryTypes";
 import type { Coworker } from "./coworkerTypes";
 import type { EntityFormDialogProps } from "./entityTypes";
@@ -8,6 +9,7 @@ import type { Dayjs } from "dayjs";
 
 export interface Project {
   id: string;
+  slug: string;
   label: string;
   thumbnail?: Media | string;
   categories?: (Category | string)[];
@@ -16,9 +18,10 @@ export interface Project {
     label: string;
   };
   mockup?: {
-    url: string;
-    label: string;
+    url?: string;
+    label?: string;
     images?: (Media | { id: string; position?: number })[];
+    embed?: string;
   };
   client?: {
     label: string;
@@ -30,13 +33,10 @@ export interface Project {
   };
   startDate?: Dayjs;
   endDate?: Dayjs;
-  intro?: {
-    context?: string;
-    objective?: string;
-    client?: string;
-  };
+  intro?: string;
   presentation?: {
-    description?: string;
+    context?: string;
+    client?: string;
     issue?: string;
     audience?: string;
   };
@@ -69,4 +69,11 @@ export interface Project {
 
 export interface ProjectFormDialogProps extends EntityFormDialogProps {
   projects?: Project[];
+}
+
+export interface ProjectSectionProps {
+  editingProject: Partial<Project> | null;
+  setEditingProject: Dispatch<SetStateAction<Partial<Project> | null>>;
+  initialProject: Project | null | undefined;
+  setHasChanges: (hasChanges: boolean) => void;
 }

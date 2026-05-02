@@ -14,7 +14,7 @@ export default function CustomSelect({
   onChange,
   options,
   ...props
-}: CustomSelectProps & FormControlProps) {
+}: CustomSelectProps & Omit<FormControlProps, "onChange">) {
   return (
     <FormControl fullWidth {...props}>
       <InputLabel id={labelId}>{label}</InputLabel>

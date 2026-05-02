@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Outlet,
+} from "react-router-dom";
 import Home from "./pages/public/HomePage";
 import PublicLayout from "./layout/public/PublicLayout";
 import AdminLayout from "./layout/admin/AdminLayout";
@@ -12,7 +17,7 @@ import RequireAuth from "./pages/admin/RequireAuth";
 import { LOGIN_ROUTE } from "./constants/apiConstants";
 import { AuthProvider } from "./context/AuthContext";
 import Categories from "./pages/admin/CategoriesPage";
-import { GlobalStyles, useTheme } from "@mui/material";
+import { CssBaseline, GlobalStyles, ThemeProvider } from "@mui/material";
 import Stacks from "./pages/admin/StackPage";
 import Coworkers from "./pages/admin/CoworkerPage";
 import Roles from "./pages/admin/RolePage";
@@ -23,9 +28,12 @@ import Projects from "./pages/admin/ProjectsPage";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "dayjs/locale/fr";
+import theme, { frontTheme } from "./theme/theme";
+import AuthLayout from "./layout/auth/AuthLayout";
+import { FrontProjectsPage } from "./pages/public/FrontProjectsPage";
+import { SingleProject } from "./layout/public/SingleProject";
 
 export default function App() {
-  const theme = useTheme();
   return (
     <>
       <GlobalStyles
@@ -48,6 +56,22 @@ export default function App() {
           "::-webkit-scrollbar-corner": {
             background: "transparent",
           },
+          "ul:not(.MuiList-root, .MuiImageList-root)": {
+            margin: "0 0 0 2rem",
+            paddingLeft: "0",
+            li: {
+              listStyleType: "none",
+              display: "flex",
+              columnGap: "0.5rem",
+              "&::before": {
+                content: '"•"',
+                display: "inline-block",
+                width: "1rem",
+                textAlign: "center",
+                margin: 0,
+              },
+            },
+          },
         }}
       />
       <Router>
@@ -55,49 +79,97 @@ export default function App() {
           <AuthProvider>
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
               <Routes>
-                {/* Routes publiques */}
+                {/* Routes front (public + auth) — theme League Spartan */}
                 <Route
-                  path="/*"
                   element={
-                    <PublicLayout>
-                      <Routes>
-                        <Route path="/" element={<Home />} />
-                      </Routes>
-                    </PublicLayout>
+                    <ThemeProvider theme={frontTheme}>
+                      <CssBaseline />
+                      <Outlet />
+                    </ThemeProvider>
                   }
-                />
-
-                {/* Routes d'authentification */}
-                <Route path={`/${LOGIN_ROUTE}`} element={<Login />} />
-                <Route path="/logout" element={<LogoutPage />} />
-                <Route
-                  path="/request-reset-password"
-                  element={<RequestResetPassword />}
-                />
-                <Route
-                  path="/request-reset-password"
-                  element={<RequestResetPassword />}
-                />
-                <Route path="/reset-password" element={<ResetPassword />} />
+                >
+                  <Route
+                    path="/"
+                    element={
+                      <PublicLayout>
+                        <Home />
+                      </PublicLayout>
+                    }
+                  />
+                  <Route
+                    path="/projects"
+                    element={
+                      <PublicLayout>
+                        <FrontProjectsPage />
+                      </PublicLayout>
+                    }
+                  />
+                  <Route
+                    path="/projects/:slug"
+                    element={
+                      <PublicLayout>
+                        <SingleProject />
+                      </PublicLayout>
+                    }
+                  />
+                  <Route
+                    path={`/${LOGIN_ROUTE}`}
+                    element={
+                      <AuthLayout>
+                        <Login />
+                      </AuthLayout>
+                    }
+                  />
+                  <Route
+                    path="/logout"
+                    element={
+                      <AuthLayout>
+                        <LogoutPage />
+                      </AuthLayout>
+                    }
+                  />
+                  <Route
+                    path="/request-reset-password"
+                    element={
+                      <AuthLayout>
+                        <RequestResetPassword />
+                      </AuthLayout>
+                    }
+                  />
+                  <Route
+                    path="/reset-password"
+                    element={
+                      <AuthLayout>
+                        <ResetPassword />
+                      </AuthLayout>
+                    }
+                  />
+                </Route>
 
                 {/* Routes admin */}
                 <Route
                   path="/admin/*"
                   element={
-                    <RequireAuth>
-                      <AdminLayout>
-                        <Routes>
-                          <Route path="/" element={<Dashboard />} />
-                          <Route path="/account" element={<Account />} />
-                          <Route path="/categories" element={<Categories />} />
-                          <Route path="/stacks" element={<Stacks />} />
-                          <Route path="/roles" element={<Roles />} />
-                          <Route path="/coworkers" element={<Coworkers />} />
-                          <Route path="/medias" element={<Media />} />
-                          <Route path="/projects" element={<Projects />} />
-                        </Routes>
-                      </AdminLayout>
-                    </RequireAuth>
+                    <ThemeProvider theme={theme}>
+                      <CssBaseline />
+                      <RequireAuth>
+                        <AdminLayout>
+                          <Routes>
+                            <Route path="/" element={<Dashboard />} />
+                            <Route path="/account" element={<Account />} />
+                            <Route
+                              path="/categories"
+                              element={<Categories />}
+                            />
+                            <Route path="/stacks" element={<Stacks />} />
+                            <Route path="/roles" element={<Roles />} />
+                            <Route path="/coworkers" element={<Coworkers />} />
+                            <Route path="/medias" element={<Media />} />
+                            <Route path="/projects" element={<Projects />} />
+                          </Routes>
+                        </AdminLayout>
+                      </RequireAuth>
+                    </ThemeProvider>
                   }
                 />
               </Routes>

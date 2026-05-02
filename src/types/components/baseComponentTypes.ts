@@ -1,4 +1,8 @@
-import type { SelectChangeEvent, SnackbarCloseReason } from "@mui/material";
+import type {
+  IconButtonProps,
+  SelectChangeEvent,
+  SnackbarCloseReason,
+} from "@mui/material";
 import type { ReactNode } from "react";
 
 /**
@@ -52,7 +56,7 @@ export interface CustomTableProps {
   items: any[];
   canSelect?: boolean;
   onClickAdd?: () => void;
-  onClickEdit?: (item: any) => void;
+  onClickEdit?: (id: string) => void;
   onClickDelete?: (ids: string[]) => void;
   submitting?: boolean;
   deleteLabel?: string;
@@ -78,15 +82,18 @@ export interface CustomDialogProps {
   closeButton?: boolean;
 }
 
-export interface FieldsRepeaterProps {
+export interface FieldsRepeaterProps<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> {
   label: {
     title: string;
     add: string;
   };
-  editingItem: any;
+  editingItem: T | null | undefined;
   values: string;
-  setEditingItem: React.Dispatch<React.SetStateAction<any>>;
+  setEditingItem: React.Dispatch<React.SetStateAction<T | null>>;
   setHasChanges: (hasChanges: boolean) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fields: (
     value: any,
     idx: number,
@@ -105,4 +112,10 @@ export interface CustomSelectProps {
     child: ReactNode,
   ) => void;
   options: { id: string; label: string }[];
+}
+
+export interface CustomIconButtonProps extends IconButtonProps {
+  icon: string;
+  iconSize?: number;
+  href?: string;
 }
