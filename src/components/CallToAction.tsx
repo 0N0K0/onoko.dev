@@ -43,6 +43,8 @@ export default function CallToAction({
           margin: "auto",
           whiteSpace: "nowrap",
         }}
+        component="a"
+        href="mailto:hello@onoko.dev"
       >
         Me contacter
       </Button>
