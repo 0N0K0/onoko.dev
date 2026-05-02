@@ -88,14 +88,17 @@ export default function Home() {
         }
         subtitle={
           <>
-            / Sites web
+            /** <br />
+            {"\u00A0\u00A0"}* Sites web
             <br />
-            / Applicatifs cross-plateformes
+            {"\u00A0\u00A0"}* Applicatifs cross-plateformes
             <br />
-            / Solutions métiers
+            {"\u00A0\u00A0"}* Solutions métiers
             <br />
-            / Outils d'automatisation
-            <br />/ Débogage & optimisation
+            {"\u00A0\u00A0"}* Outils d'automatisation
+            <br />
+            {"\u00A0\u00A0"}* Débogage & optimisation <br />
+            {"\u00A0\u00A0"}*/
           </>
         }
         action={

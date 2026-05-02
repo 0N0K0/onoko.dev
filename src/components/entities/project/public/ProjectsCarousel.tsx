@@ -305,21 +305,29 @@ export default function ProjectsCarousel({
                     <Typography
                       variant="h1"
                       component="h2"
-                      style={{
+                      sx={{
                         opacity:
                           activeProjectId === project.id || !canHover ? 1 : 0,
                         transition: `opacity 1200ms ${theme.transitions.easing.easeInOut}`,
                         position: "absolute",
                         bottom: "1.5rem",
-                        right: "2rem",
+                        right: { sm: "2rem", xs: "1rem" },
+                        maxWidth: {
+                          sm: "calc(100% - 4rem)",
+                          xs: "calc(100% - 2rem)",
+                        },
                         zIndex: 1,
                         fontWeight: "900",
                         textShadow: `0 0 5px rgba(0,0,0,0.5)`,
-                        textWrap: "nowrap",
+                        textWrap: "pretty",
+                        textAlign: "right",
                         color: theme.palette.text.primary,
                       }}
                     >
-                      {project.label}
+                      {new DOMParser().parseFromString(
+                        project.label,
+                        "text/html",
+                      ).body.textContent ?? project.label}
                     </Typography>
                     {project.startDate && (
                       <Typography
@@ -342,7 +350,7 @@ export default function ProjectsCarousel({
                         {project.endDate &&
                         project.endDate.format("YYYY") !==
                           project.startDate.format("YYYY")
-                          ? ` - ${project.endDate.format("YYYY")}`
+                          ? ` -${project.endDate.format("YYYY")}`
                           : ""}
                       </Typography>
                     )}

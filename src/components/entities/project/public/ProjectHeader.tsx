@@ -31,12 +31,9 @@ export default function ProjectHeader({ project }: { project: Project }) {
   }, []);
 
   let clientLogoSize;
-  if (isMD)
-    clientLogoSize = `calc(${theme.typography.h1.fontSize} * ${theme.typography.h1.lineHeight})`;
-  else if (isSM)
-    clientLogoSize = `calc(${theme.typography.h4.fontSize} * ${theme.typography.h4.lineHeight})`;
-  else if (isXS)
-    clientLogoSize = `calc(${theme.typography.h5.fontSize} * ${theme.typography.h5.lineHeight})`;
+  if (isMD) clientLogoSize = theme.typography.h1.fontSize;
+  else if (isSM) clientLogoSize = theme.typography.h4.fontSize;
+  else if (isXS) clientLogoSize = theme.typography.h5.fontSize;
 
   return (
     <ResponsiveStack
@@ -75,7 +72,10 @@ export default function ProjectHeader({ project }: { project: Project }) {
         >
           {/* Titre */}
           <Typography variant="h1" style={{ fontWeight: "900" }}>
-            {project ? project.label : "Project not found"}
+            {project
+              ? (new DOMParser().parseFromString(project.label, "text/html")
+                  .body.textContent ?? project.label)
+              : "Project not found"}
           </Typography>
 
           {/* Client */}
@@ -88,8 +88,8 @@ export default function ProjectHeader({ project }: { project: Project }) {
                 <Picture
                   image={project.client.logo as Media}
                   style={{
-                    minWidth: clientLogoSize,
-                    minHeight: clientLogoSize,
+                    width: clientLogoSize,
+                    height: clientLogoSize,
                   }}
                 />
               )}

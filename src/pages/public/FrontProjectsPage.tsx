@@ -1,3 +1,4 @@
+import CallToAction from "../../components/CallToAction";
 import ProjectsCarousel from "../../components/entities/project/public/ProjectsCarousel";
 import useProjects from "../../hooks/queries/useProjects";
 import Layout from "../../layout";
@@ -60,6 +61,7 @@ export function FrontProjectsPage() {
         projects={persoProjects}
         minHeight="calc(100dvh - 18rem)"
       />
+      <CallToAction emphasis />
     </Layout.Content>
   );
 }
