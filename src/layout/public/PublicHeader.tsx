@@ -10,10 +10,10 @@ import {
 } from "@mui/material";
 import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import { Link as RouterLink, useLocation } from "react-router-dom";
-import { useBreakpoints } from "../../hooks/mediaQueries";
+import { useBreakpoints, useCanHover } from "../../hooks/mediaQueries";
 import CustomIconButton from "../../components/custom/CustomIconButton";
 import { mdiClose, mdiMenu } from "@mdi/js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * Entête pour les pages publiques, avec des liens vers l'accueil et l'espace admin.
@@ -22,10 +22,13 @@ import { useState } from "react";
 export default function PublicHeader() {
   const theme = useTheme();
   const { isSm } = useBreakpoints();
+  const canHover = useCanHover();
+
   const { isAuthenticated } = useAuthContext();
   const { pathname } = useLocation();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isLogoAutoAnimated, setIsLogoAutoAnimated] = useState(() => !canHover);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -33,6 +36,22 @@ export default function PublicHeader() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    if (canHover) {
+      setIsLogoAutoAnimated(false);
+      return;
+    }
+
+    setIsLogoAutoAnimated(true);
+    const timeoutId = window.setTimeout(() => {
+      setIsLogoAutoAnimated(false);
+    }, 1500);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [canHover]);
 
   const pages = [
     {
@@ -44,7 +63,6 @@ export default function PublicHeader() {
     { label: "Exerceo", sublabel: "Méthode", route: "/method", disabled: true },
     { label: "Pretium", sublabel: "Tarifs", route: "/pricing", disabled: true },
   ];
-
   if (!isSm) {
     pages.unshift({
       label: "Receptio",
@@ -68,6 +86,7 @@ export default function PublicHeader() {
       },
     );
   }
+
   return (
     <AppBar
       position="fixed"
@@ -83,6 +102,7 @@ export default function PublicHeader() {
       <Toolbar sx={{ justifyContent: "space-between" }}>
         <Link
           href="/"
+          className={isLogoAutoAnimated ? "auto-animate" : undefined}
           underline="none"
           color="inherit"
           sx={{
@@ -106,6 +126,20 @@ export default function PublicHeader() {
               "&.right": { transform: "translateX(-8.67px)" },
             },
             "&:hover": {
+              "& .hide": {
+                opacity: 1,
+                transition: "opacity 600ms ease-in-out 300ms",
+                "&.left, &.right": {
+                  transform: "translateX(0)",
+                  transition:
+                    "transform 900ms ease-in-out, opacity 600ms ease-in-out 300ms",
+                },
+              },
+              "& .show.left, & .show.right": {
+                transform: "translateX(0)",
+              },
+            },
+            "&.auto-animate": {
               "& .hide": {
                 opacity: 1,
                 transition: "opacity 600ms ease-in-out 300ms",
