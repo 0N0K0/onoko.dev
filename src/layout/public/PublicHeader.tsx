@@ -71,8 +71,8 @@ export default function PublicHeader() {
       {
         label: "Legalis",
         sublabel: "Mentions légales",
-        route: "/legal",
-        disabled: true,
+        route: "/legal-notice",
+        disabled: false,
       },
     );
   }
