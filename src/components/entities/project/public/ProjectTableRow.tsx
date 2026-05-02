@@ -1,15 +1,14 @@
 import {
   TableCell,
   TableRow,
-  useTheme,
   type TableCellProps,
   type TableRowProps,
 } from "@mui/material";
 import ResponsiveTitle from "../../../custom/ResponsiveTitle";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
 import { useResponsiveWidth } from "../../../../hooks/layout/useResponsiveWidth";
-import { useMediaQuery } from "@mui/system";
 import { useLayoutEffect, useRef, useState } from "react";
+import { useBreakpoints } from "../../../../hooks/mediaQueries";
 
 function ProjectTableCell({
   children,
@@ -36,10 +35,8 @@ export default function ProjectTableRow({
   children: React.ReactNode;
   tableCellProps?: TableCellProps;
 } & TableRowProps) {
-  const theme = useTheme();
-  const isLg = useMediaQuery(theme.breakpoints.up("lg"));
-  const isXL = useMediaQuery(theme.breakpoints.up("xl"));
-  const mainCellWidth = isXL
+  const { isLg, isXl } = useBreakpoints();
+  const mainCellWidth = isXl
     ? useResponsiveWidth(8)
     : isLg
       ? useResponsiveWidth(6)

@@ -5,7 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { Link, useMediaQuery, useTheme } from "@mui/material";
+import { Link, useTheme } from "@mui/material";
 import { mdiEye } from "@mdi/js";
 import {
   ResponsiveBox,
@@ -18,6 +18,7 @@ import type { Project } from "../../../../types/entities/projectTypes";
 import type { Media } from "../../../../types/entities/mediaTypes";
 import CustomCursor from "../../../custom/CustomCursor";
 import { handleReverseMouseWheel } from "../../../../utils/scrollUtils";
+import { useBreakpoints, useCanHover } from "../../../../hooks/mediaQueries";
 
 export default function ProjectsCarousel({
   title,
@@ -37,8 +38,8 @@ export default function ProjectsCarousel({
   reverseMouseWheel?: boolean;
 }) {
   const theme = useTheme();
-  const isLg = useMediaQuery(theme.breakpoints.up("lg"));
-  const isMd = useMediaQuery(theme.breakpoints.up("md"));
+  const { isLg, isMd } = useBreakpoints();
+  const canHover = useCanHover();
 
   const containerRef = useRef<HTMLDivElement>(null);
   const projectsListRef = useRef<HTMLDivElement>(null);
@@ -287,7 +288,7 @@ export default function ProjectsCarousel({
                     href={`/projects/${project.slug}`}
                     sx={{
                       flex:
-                        activeProjectId === project.id
+                        activeProjectId === project.id || !canHover
                           ? `0 0 calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : isMd ? 2.5 : 1.5} * ${isMd ? 2 : 1.5})`
                           : `0 0 calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : isMd ? 2.5 : 1.5})`,
                       maxHeight: "100%",
@@ -307,7 +308,8 @@ export default function ProjectsCarousel({
                       variant="h1"
                       component="h2"
                       style={{
-                        opacity: activeProjectId === project.id ? 1 : 0,
+                        opacity:
+                          activeProjectId === project.id || !canHover ? 1 : 0,
                         transition: `opacity 1200ms ${theme.transitions.easing.easeInOut}`,
                         position: "absolute",
                         bottom: "1.5rem",
@@ -325,7 +327,8 @@ export default function ProjectsCarousel({
                       <ResponsiveBodyTypography
                         variant="bodyLg"
                         style={{
-                          opacity: activeProjectId === project.id ? 1 : 0,
+                          opacity:
+                            activeProjectId === project.id || !canHover ? 1 : 0,
                           transition: `opacity 1200ms ${theme.transitions.easing.easeInOut}`,
                           position: "absolute",
                           top: "1.5rem",
@@ -353,7 +356,7 @@ export default function ProjectsCarousel({
         )}
       </ResponsiveStack>
 
-      <CustomCursor icon={mdiEye} ref={cursorRef} />
+      {canHover && <CustomCursor icon={mdiEye} ref={cursorRef} />}
     </>
   );
 }

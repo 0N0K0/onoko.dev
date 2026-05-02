@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import useProjects from "../../hooks/queries/useProjects";
 import Layout from "..";
-import { Table, TableBody, useMediaQuery, useTheme } from "@mui/material";
+import { Table, TableBody, useTheme } from "@mui/material";
 import ProjectTableRow from "../../components/entities/project/public/ProjectTableRow";
 import ProjectHeader from "../../components/entities/project/public/ProjectHeader";
 import ProjectMenuBar from "../../components/entities/project/public/ProjectMenuBar";
@@ -15,6 +15,7 @@ import ProjectOrganizationSection from "../../components/entities/project/public
 import ProjectFeedbackSection from "../../components/entities/project/public/ProjectFeedbackSection";
 import CallToAction from "../../components/CallToAction";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
+import { useBreakpoints } from "../../hooks/mediaQueries";
 
 export function SingleProject() {
   const params = useParams();
@@ -22,9 +23,8 @@ export function SingleProject() {
   const project = projects?.find((p) => p.slug === params.slug);
 
   const theme = useTheme();
-  const isLg = useMediaQuery(theme.breakpoints.up("lg"));
-  const isXL = useMediaQuery(theme.breakpoints.up("xl"));
-  const mainCellWidth = isXL
+  const { isLg, isXl } = useBreakpoints();
+  const mainCellWidth = isXl
     ? useResponsiveWidth(8)
     : isLg
       ? useResponsiveWidth(6)
