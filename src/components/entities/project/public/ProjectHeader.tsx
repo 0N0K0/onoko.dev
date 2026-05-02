@@ -1,9 +1,7 @@
 import { Box } from "@mui/system";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
-import { useMediaQuery, useTheme } from "@mui/material";
-import ResponsiveTitle from "../../../custom/ResponsiveTitle";
+import { Typography, useMediaQuery, useTheme } from "@mui/material";
 import Picture from "../../../custom/Picture";
-import ResponsiveBodyTypography from "../../../custom/ResponsiveBodyTypography";
 import type { Project } from "../../../../types/entities/projectTypes";
 import type { Media } from "../../../../types/entities/mediaTypes";
 import type { Category } from "../../../../types/entities/categoryTypes";
@@ -76,9 +74,9 @@ export default function ProjectHeader({ project }: { project: Project }) {
           }}
         >
           {/* Titre */}
-          <ResponsiveTitle variant="h1" style={{ fontWeight: "900" }}>
+          <Typography variant="h1" style={{ fontWeight: "900" }}>
             {project ? project.label : "Project not found"}
-          </ResponsiveTitle>
+          </Typography>
 
           {/* Client */}
           {project.client && (
@@ -95,7 +93,7 @@ export default function ProjectHeader({ project }: { project: Project }) {
                   }}
                 />
               )}
-              <ResponsiveTitle
+              <Typography
                 variant="h1"
                 component="p"
                 style={{
@@ -103,7 +101,7 @@ export default function ProjectHeader({ project }: { project: Project }) {
                 }}
               >
                 {project.client.label}
-              </ResponsiveTitle>
+              </Typography>
             </ResponsiveStack>
           )}
         </ResponsiveStack>
@@ -122,7 +120,7 @@ export default function ProjectHeader({ project }: { project: Project }) {
         >
           {/* Catégories */}
           {project.categories && (
-            <ResponsiveBodyTypography variant="bodyLg">
+            <Typography variant="bodyLg">
               {project.categories
                 .filter(
                   (category) =>
@@ -131,21 +129,18 @@ export default function ProjectHeader({ project }: { project: Project }) {
                 )
                 .map((category) => (category as Category).label)
                 .join(" | ")}
-            </ResponsiveBodyTypography>
+            </Typography>
           )}
 
           {/* Dates */}
           {project.startDate && (
-            <ResponsiveBodyTypography
-              variant="bodyLg"
-              style={{ fontWeight: "200" }}
-            >
+            <Typography variant="bodyLg" style={{ fontWeight: "200" }}>
               {`${project.endDate ? "De" : "Depuis"} ${project.startDate.locale("fr").format("MMMM YYYY")} ${
                 project.endDate
                   ? `à ${project.endDate.locale("fr").format("MMMM YYYY")}`
                   : ""
               }`}
-            </ResponsiveBodyTypography>
+            </Typography>
           )}
         </ResponsiveStack>
       </ResponsiveStack>

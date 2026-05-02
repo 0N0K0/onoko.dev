@@ -1,10 +1,10 @@
 import {
   TableCell,
   TableRow,
+  Typography,
   type TableCellProps,
   type TableRowProps,
 } from "@mui/material";
-import ResponsiveTitle from "../../../custom/ResponsiveTitle";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
 import { useResponsiveWidth } from "../../../../hooks/layout/useResponsiveWidth";
 import { useLayoutEffect, useRef, useState } from "react";
@@ -85,7 +85,7 @@ export default function ProjectTableRow({
             display: { md: "table-cell", xs: "none" },
           }}
         >
-          <ResponsiveTitle
+          <Typography
             ref={titleRef}
             variant="h2"
             sx={{
@@ -99,7 +99,7 @@ export default function ProjectTableRow({
             }}
           >
             {title}
-          </ResponsiveTitle>
+          </Typography>
         </ProjectTableCell>
       )}
       <ProjectTableCell
@@ -114,7 +114,7 @@ export default function ProjectTableRow({
       >
         <ResponsiveStack rowGap={3} maxWidth="100%" sx={{ overflow: "hidden" }}>
           {title && (
-            <ResponsiveTitle
+            <Typography
               variant="h2"
               sx={{
                 fontSize: { lg: "3.5rem", xs: "2.5rem" },
@@ -124,7 +124,7 @@ export default function ProjectTableRow({
               }}
             >
               {title}
-            </ResponsiveTitle>
+            </Typography>
           )}
           {children}
         </ResponsiveStack>

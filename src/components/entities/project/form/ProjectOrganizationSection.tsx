@@ -1,6 +1,5 @@
-import { TextField } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
-import ResponsiveTitle from "../../../custom/ResponsiveTitle";
 import WysiwygField from "../../../custom/WysiwygField";
 import CustomSelect from "../../../custom/CustomSelect";
 import FieldsRepeater from "../../../custom/FieldsRepeater";
@@ -34,9 +33,9 @@ export default function ProjectOrganizationSection({
     <>
       {/* Organisation */}
       <ResponsiveStack rowGap={3}>
-        <ResponsiveTitle variant="h6" component="h3">
+        <Typography variant="h6" component="h3">
           Gestion de projet
-        </ResponsiveTitle>
+        </Typography>
         <ResponsiveStack
           sx={{ flexDirection: "row", columnGap: 2, alignItems: "center" }}
         >

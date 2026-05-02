@@ -2,8 +2,7 @@ import {
   ResponsivePaper,
   ResponsiveStack,
 } from "../../components/custom/ResponsiveLayout";
-import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import ResetPasswordLink from "../../components/account/ResetPasswordLink";
 import type { AuthLayoutProps } from "../../types/authTypes";
@@ -38,13 +37,13 @@ export default function AuthForm({
       }}
       elevation={1}
     >
-      <ResponsiveTitle
+      <Typography
         variant="h5"
         component="h1"
         sx={{ textAlign: "center", width: "100%" }}
       >
         {title}
-      </ResponsiveTitle>
+      </Typography>
       {children}
       <ResponsiveStack rowGap={3} sx={{ width: "100%", alignItems: "end" }}>
         <ResponsiveStack

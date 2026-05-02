@@ -3,11 +3,11 @@ import {
   CircularProgress,
   ToggleButton,
   ToggleButtonGroup,
+  Typography,
 } from "@mui/material";
 import ClosableSnackbarAlert from "../../custom/ClosableSnackbarAlert";
 import SnackbarAlert from "../../custom/SnackbarAlert";
 import MediaDropZone from "./MediaDropZone";
-import ResponsiveTitle from "../../custom/ResponsiveTitle";
 import { ResponsiveStack } from "../../custom/ResponsiveLayout";
 import { useEffect, useState } from "react";
 import Icon from "@mdi/react";
@@ -91,7 +91,7 @@ export default function MediaLibrary({
           flexWrap: "wrap",
         }}
       >
-        <ResponsiveTitle variant="h1">Médias</ResponsiveTitle>
+        <Typography variant="h1">Médias</Typography>
         {layout === "list" && (
           <Button
             onClick={() => setAddMedias(true)}

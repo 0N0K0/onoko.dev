@@ -1,6 +1,5 @@
-import { TextField } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
-import ResponsiveTitle from "../../../custom/ResponsiveTitle";
 import MediaPicker from "../../media/MediaPicker";
 import type { Media } from "../../../../types/entities/mediaTypes";
 import type { ProjectSectionProps } from "../../../../types/entities/projectTypes";
@@ -15,9 +14,9 @@ export default function ProjectLinksSection({
     <>
       {/* Site internet */}
       <ResponsiveStack rowGap={3}>
-        <ResponsiveTitle variant="h6" component="h3">
+        <Typography variant="h6" component="h3">
           Site internet
-        </ResponsiveTitle>
+        </Typography>
         <ResponsiveStack
           sx={{ flexDirection: "row", columnGap: 2, alignItems: "center" }}
         >
@@ -66,9 +65,9 @@ export default function ProjectLinksSection({
 
       {/* Maquette */}
       <ResponsiveStack rowGap={3}>
-        <ResponsiveTitle variant="h6" component="h3">
+        <Typography variant="h6" component="h3">
           Maquette
-        </ResponsiveTitle>
+        </Typography>
         <MediaPicker
           labels={{
             singular: "une image de maquette",

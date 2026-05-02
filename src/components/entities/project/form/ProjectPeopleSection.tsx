@@ -1,6 +1,5 @@
-import { TextField } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
-import ResponsiveTitle from "../../../custom/ResponsiveTitle";
 import MediaPicker from "../../media/MediaPicker";
 import type { Media } from "../../../../types/entities/mediaTypes";
 import { extractId } from "../../../../utils/normalizeRef";
@@ -21,9 +20,9 @@ export default function ProjectPeopleSection({
     <>
       {/* Client */}
       <ResponsiveStack rowGap={3}>
-        <ResponsiveTitle variant="h6" component="h3">
+        <Typography variant="h6" component="h3">
           Client
-        </ResponsiveTitle>
+        </Typography>
         <MediaPicker
           labels={{ singular: "un logo", plural: "des logos" }}
           initialImages={
@@ -74,9 +73,9 @@ export default function ProjectPeopleSection({
 
       {/* Responsable */}
       <ResponsiveStack rowGap={3}>
-        <ResponsiveTitle variant="h6" component="h3">
+        <Typography variant="h6" component="h3">
           Responsable
-        </ResponsiveTitle>
+        </Typography>
         <ResponsiveStack
           sx={{ flexDirection: "row", columnGap: 2, alignItems: "center" }}
         >

@@ -1,5 +1,11 @@
-import { Toolbar, useTheme, Box, Link, AppBar } from "@mui/material";
-import ResponsiveBodyTypography from "../../components/custom/ResponsiveBodyTypography";
+import {
+  Toolbar,
+  useTheme,
+  Box,
+  Link,
+  AppBar,
+  Typography,
+} from "@mui/material";
 import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import { useLocation } from "react-router-dom";
 import CustomIconButton from "../../components/custom/CustomIconButton";
@@ -132,14 +138,14 @@ export default function PublicFooter() {
           />
           <CustomIconButton icon={mdiLinkedin} />
         </ResponsiveStack>
-        <ResponsiveBodyTypography
+        <Typography
           variant="bodyXs"
           color="textSecondary"
           component="p"
           sx={{ lineHeight: "24px !important", marginLeft: "auto" }}
         >
           &copy;2024-{new Date().getFullYear()} Onoko Tous droits réservés.
-        </ResponsiveBodyTypography>
+        </Typography>
       </Toolbar>
     </AppBar>
   );

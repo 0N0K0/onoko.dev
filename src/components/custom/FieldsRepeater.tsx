@@ -1,9 +1,8 @@
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { ResponsiveBox, ResponsiveStack } from "./ResponsiveLayout";
 import { mdiDelete } from "@mdi/js";
 import type { FieldsRepeaterProps } from "../../types/components/baseComponentTypes";
 import CustomIconButton from "./CustomIconButton";
-import ResponsiveTitle from "./ResponsiveTitle";
 import type React from "react";
 
 /**
@@ -50,9 +49,9 @@ export default function FieldsRepeater<T extends Record<string, unknown>>({
         }}
       >
         {items.length > 0 && (
-          <ResponsiveTitle variant="h6" component="h3">
+          <Typography variant="h6" component="h3">
             {label.title}
-          </ResponsiveTitle>
+          </Typography>
         )}
         <Button
           variant="outlined"

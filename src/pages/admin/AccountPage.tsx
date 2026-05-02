@@ -1,5 +1,10 @@
-import { Button, CircularProgress, Container, TextField } from "@mui/material";
-import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
+import {
+  Button,
+  CircularProgress,
+  Container,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useState, useEffect } from "react";
 import apolloClient from "../../services/appolloClient";
 import { ACCOUNT_QUERY } from "../../services/account/accountQueries";
@@ -126,9 +131,9 @@ export default function Account() {
 
   return (
     <>
-      <ResponsiveTitle variant="h1" sx={{ width: "100%" }}>
+      <Typography variant="h1" sx={{ width: "100%" }}>
         Mon compte
-      </ResponsiveTitle>
+      </Typography>
       <ClosableSnackbarAlert
         open={successSnackbarOpen}
         setOpen={setSuccessSnackbarOpen}

@@ -1,5 +1,4 @@
-import { Button, useTheme } from "@mui/material";
-import ResponsiveBodyTypography from "./custom/ResponsiveBodyTypography";
+import { Button, Typography, useTheme } from "@mui/material";
 import { ResponsiveStack } from "./custom/ResponsiveLayout";
 import { useResponsiveWidth } from "../hooks/layout/useResponsiveWidth";
 
@@ -22,12 +21,12 @@ export default function CallToAction({ emphasis }: { emphasis?: boolean }) {
         borderRadius: emphasis ? 0 : 1,
       }}
     >
-      <ResponsiveBodyTypography variant="bodyLg" sx={{ fontStyle: "italic" }}>
+      <Typography variant="bodyLg" sx={{ fontStyle: "italic" }}>
         Une&nbsp;question&nbsp;? {emphasis ? "N'hésitez\u00A0plus... " : ""}
         <br />
         Je&nbsp;serais {emphasis ? "sincèrement " : ""}ravie&nbsp;d'échanger
         avec&nbsp;vous&nbsp;!
-      </ResponsiveBodyTypography>
+      </Typography>
       <Button
         size="large"
         color="inherit"

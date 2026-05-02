@@ -5,12 +5,12 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Typography,
   useTheme,
 } from "@mui/material";
 import { useDroppable } from "@dnd-kit/core";
 import type { Category } from "../../../types/entities/categoryTypes";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
-import ResponsiveBodyTypography from "../../custom/ResponsiveBodyTypography";
 import CustomIconButton from "../../custom/CustomIconButton";
 
 export const MEDIA_FILTER_ALL = "all";
@@ -106,7 +106,7 @@ function CategoryFilterButton({
               },
             }}
           >
-            <ResponsiveBodyTypography
+            <Typography
               variant="bodySm"
               style={{
                 flex: "0 1 auto",
@@ -117,14 +117,14 @@ function CategoryFilterButton({
               }}
             >
               {label}
-            </ResponsiveBodyTypography>
-            <ResponsiveBodyTypography
+            </Typography>
+            <Typography
               variant="bodySm"
               style={{ display: "block", whiteSpace: "nowrap" }}
             >
               {count}
               {children?.length && id ? `/${getTotalCount(id, children)}` : ""}
-            </ResponsiveBodyTypography>
+            </Typography>
           </ListItemText>
           {children?.length ? (
             <CustomIconButton

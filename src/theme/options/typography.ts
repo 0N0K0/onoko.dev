@@ -1,3 +1,5 @@
+import { BREAKPOINTS, VERTICAL_BREAKPOINTS } from "./breakpoints";
+
 export const TYPOGRAPHY = {
   fontSize: 16,
   htmlFontSize: 16,
@@ -13,4 +15,59 @@ export const TYPOGRAPHY = {
   bodyMd: { fontSize: "1.25rem", lineHeight: 1.2 },
   bodySm: { fontSize: "1rem", lineHeight: 1.5 },
   bodyXs: { fontSize: "0.75rem", lineHeight: 2 },
+};
+
+const MEDIA_COMPACT = `@media (max-width: ${BREAKPOINTS.values.sm - 1}px), (max-height: ${VERTICAL_BREAKPOINTS.compact - 1}px)`;
+const MEDIA_LOOSE = `@media (max-width: ${BREAKPOINTS.values.md - 1}px), (max-height: ${VERTICAL_BREAKPOINTS.loose - 1}px)`;
+
+export const RESPONSIVE_TYPOGRAPHY = {
+  ...TYPOGRAPHY,
+  h1: {
+    ...TYPOGRAPHY.h1,
+    [MEDIA_LOOSE]: {
+      ...TYPOGRAPHY.h4,
+    },
+    [MEDIA_COMPACT]: {
+      ...TYPOGRAPHY.h5,
+    },
+  },
+  h2: {
+    ...TYPOGRAPHY.h2,
+    [MEDIA_LOOSE]: {
+      ...TYPOGRAPHY.h4,
+    },
+    [MEDIA_COMPACT]: {
+      ...TYPOGRAPHY.h5,
+    },
+  },
+  h3: {
+    ...TYPOGRAPHY.h3,
+    [MEDIA_LOOSE]: {
+      ...TYPOGRAPHY.h4,
+    },
+    [MEDIA_COMPACT]: {
+      ...TYPOGRAPHY.h5,
+    },
+  },
+  h4: {
+    ...TYPOGRAPHY.h4,
+    [MEDIA_COMPACT]: {
+      ...TYPOGRAPHY.h5,
+    },
+  },
+  bodyLg: {
+    ...TYPOGRAPHY.bodyLg,
+    [MEDIA_LOOSE]: {
+      ...TYPOGRAPHY.bodyMd,
+    },
+    [MEDIA_COMPACT]: {
+      ...TYPOGRAPHY.bodySm,
+    },
+  },
+  bodyMd: {
+    ...TYPOGRAPHY.bodyMd,
+    [MEDIA_COMPACT]: {
+      ...TYPOGRAPHY.bodySm,
+    },
+  },
 };

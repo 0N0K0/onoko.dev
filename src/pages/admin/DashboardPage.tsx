@@ -1,4 +1,4 @@
-import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
+import { Typography } from "@mui/material";
 
 /**
  * Page d'accueil de l'espace admin.
@@ -6,9 +6,9 @@ import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
 export default function Dashboard() {
   return (
     <>
-      <ResponsiveTitle variant="h1" sx={{ width: "100%" }}>
+      <Typography variant="h1" sx={{ width: "100%" }}>
         Tableau de bord
-      </ResponsiveTitle>
+      </Typography>
     </>
   );
 }

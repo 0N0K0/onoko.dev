@@ -1,5 +1,4 @@
-import { Link } from "@mui/material";
-import ResponsiveBodyTypography from "../custom/ResponsiveBodyTypography";
+import { Link, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
 /**
@@ -8,11 +7,11 @@ import { Link as RouterLink } from "react-router-dom";
  */
 export default function ResetPasswordLink() {
   return (
-    <ResponsiveBodyTypography variant="bodyXs" sx={{ textAlign: "end" }}>
+    <Typography variant="bodyXs" sx={{ textAlign: "end" }}>
       Mot&nbsp;de&nbsp;passe&nbsp;oublié&nbsp;?{" "}
       <Link component={RouterLink} to="/request-reset-password">
         Réinitialiser&nbsp;mon&nbsp;mot&nbsp;de&nbsp;passe
       </Link>
-    </ResponsiveBodyTypography>
+    </Typography>
   );
 }

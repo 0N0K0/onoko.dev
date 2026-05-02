@@ -1,8 +1,7 @@
-import { useTheme } from "@mui/material";
+import { Typography, useTheme } from "@mui/material";
 import type { Media } from "../../../../types/entities/mediaTypes";
 import type { Project } from "../../../../types/entities/projectTypes";
 import Picture from "../../../custom/Picture";
-import ResponsiveBodyTypography from "../../../custom/ResponsiveBodyTypography";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
 import { WysiwygBox } from "../../../custom/WysiwygBox";
 import ProjectTableRow from "./ProjectTableRow";
@@ -53,9 +52,7 @@ export default function ProjectPresentationSection({
                       flex: "1 1 auto",
                     }}
                   >
-                    <ResponsiveBodyTypography variant="bodyLg">
-                      Entité :
-                    </ResponsiveBodyTypography>
+                    <Typography variant="bodyLg">Entité :</Typography>
                     {project.client.logo && (
                       <Picture
                         image={project.client.logo as Media}
@@ -67,13 +64,13 @@ export default function ProjectPresentationSection({
                         }}
                       />
                     )}
-                    <ResponsiveBodyTypography variant="bodyLg">
+                    <Typography variant="bodyLg">
                       {project.client.label}
-                    </ResponsiveBodyTypography>
+                    </Typography>
                   </ResponsiveStack>
                 )}
                 {project.manager && (
-                  <ResponsiveBodyTypography
+                  <Typography
                     variant="bodyLg"
                     sx={{
                       flex: "1 1 auto",
@@ -115,7 +112,7 @@ export default function ProjectPresentationSection({
                     ) : (
                       project.manager.name
                     )}
-                  </ResponsiveBodyTypography>
+                  </Typography>
                 )}
               </ResponsiveStack>
             )}

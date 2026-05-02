@@ -1,6 +1,11 @@
 import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
-import ResponsiveTitle from "../../components/custom/ResponsiveTitle";
-import { Button, CircularProgress, Table, TableContainer } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Table,
+  TableContainer,
+  Typography,
+} from "@mui/material";
 import Icon from "@mdi/react";
 import { mdiPlus } from "@mdi/js";
 import CustomTable from "../../components/custom/CustomTable/index";
@@ -58,7 +63,7 @@ export default function EntitiesContent<T extends { id: string }>({
           flexWrap: "wrap",
         }}
       >
-        <ResponsiveTitle variant="h1">{labels.title}</ResponsiveTitle>
+        <Typography variant="h1">{labels.title}</Typography>
         {!items || items.length === 0 ? (
           <Button
             onClick={() => onClickActions.add()}

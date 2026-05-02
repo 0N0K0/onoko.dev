@@ -6,7 +6,7 @@ import {
 import { BREAKPOINTS } from "./options/breakpoints";
 import { PALETTE } from "./options/palette";
 import { SHAPE } from "./options/shape";
-import { TYPOGRAPHY } from "./options/typography";
+import { RESPONSIVE_TYPOGRAPHY } from "./options/typography";
 import { SIZES } from "./options/sizes";
 import { TOOLBAR } from "./components/toolbar";
 import { TEXT_FIELD } from "./components/textField";
@@ -40,7 +40,7 @@ const baseOptions: ThemeOptions = {
   breakpoints: BREAKPOINTS,
   palette: PALETTE,
   shape: SHAPE,
-  typography: TYPOGRAPHY,
+  typography: RESPONSIVE_TYPOGRAPHY,
   components: {
     MuiAlert: ALERT,
     MuiButton: BUTTON,
@@ -85,7 +85,7 @@ export const frontTheme = createTheme({
     },
   },
   typography: {
-    ...TYPOGRAPHY,
+    ...RESPONSIVE_TYPOGRAPHY,
     fontFamily: `'League Spartan', sans-serif`,
   },
 });

@@ -1,11 +1,16 @@
 import { mdiAccount, mdiAccountCog, mdiLogout } from "@mdi/js";
 import Icon from "@mdi/react";
-import { Button, ListItemIcon, ListItemText, MenuItem } from "@mui/material";
+import {
+  Button,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  Typography,
+} from "@mui/material";
 import CustomDialog from "../custom/CustomDialog";
 import { Link, useLocation } from "react-router";
 import { useState } from "react";
 import CustomMenu from "../custom/CustomMenu";
-import ResponsiveBodyTypography from "../custom/ResponsiveBodyTypography";
 import { ResponsiveStack } from "../custom/ResponsiveLayout";
 import CustomIconButton from "../custom/CustomIconButton";
 import { useAuthContext } from "../../context/AuthContext";
@@ -24,9 +29,9 @@ export default function AccountMenu() {
     <ResponsiveStack
       sx={{ flexDirection: "row", spacing: 1, alignItems: "center" }}
     >
-      <ResponsiveBodyTypography variant="bodySm" color="textSecondary">
+      <Typography variant="bodySm" color="textSecondary">
         Bonjour {user} !
-      </ResponsiveBodyTypography>
+      </Typography>
       <CustomIconButton
         icon={mdiAccount}
         onClick={(e: React.MouseEvent<HTMLElement>) =>

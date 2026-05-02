@@ -1,8 +1,8 @@
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
-import ResponsiveTitle from "../../../custom/ResponsiveTitle";
 import WysiwygField from "../../../custom/WysiwygField";
 import type { ProjectSectionProps } from "../../../../types/entities/projectTypes";
 import NumberField from "../../../custom/NumberField";
+import { Typography } from "@mui/material";
 
 export default function ProjectKpisFeedbackSection({
   editingProject,
@@ -14,9 +14,9 @@ export default function ProjectKpisFeedbackSection({
     <>
       {/* KPIs */}
       <ResponsiveStack rowGap={3}>
-        <ResponsiveTitle variant="h6" component="h3">
+        <Typography variant="h6" component="h3">
           KPIs
-        </ResponsiveTitle>
+        </Typography>
         <ResponsiveStack
           sx={{ flexDirection: "row", columnGap: 2, alignItems: "center" }}
         >
@@ -53,9 +53,9 @@ export default function ProjectKpisFeedbackSection({
 
       {/* Retours */}
       <ResponsiveStack rowGap={3}>
-        <ResponsiveTitle variant="h6" component="h3">
+        <Typography variant="h6" component="h3">
           Retours
-        </ResponsiveTitle>
+        </Typography>
         <WysiwygField
           label="Général"
           value={editingProject?.feedback?.general || ""}

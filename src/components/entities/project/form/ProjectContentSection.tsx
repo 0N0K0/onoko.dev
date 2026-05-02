@@ -1,6 +1,6 @@
+import { Typography } from "@mui/material";
 import type { ProjectSectionProps } from "../../../../types/entities/projectTypes";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
-import ResponsiveTitle from "../../../custom/ResponsiveTitle";
 import WysiwygField from "../../../custom/WysiwygField";
 
 export default function ProjectContentSection({
@@ -23,9 +23,9 @@ export default function ProjectContentSection({
 
       {/* Présentation */}
       <ResponsiveStack rowGap={3}>
-        <ResponsiveTitle variant="h6" component="h3">
+        <Typography variant="h6" component="h3">
           Présentation
-        </ResponsiveTitle>
+        </Typography>
         <WysiwygField
           label="Contexte"
           value={editingProject?.presentation?.context || ""}
@@ -94,9 +94,9 @@ export default function ProjectContentSection({
 
       {/* Besoin */}
       <ResponsiveStack rowGap={3}>
-        <ResponsiveTitle variant="h6" component="h3">
+        <Typography variant="h6" component="h3">
           Analyse du besoin
-        </ResponsiveTitle>
+        </Typography>
         <WysiwygField
           label="Fonctionnalités attendues"
           value={editingProject?.need?.features || ""}

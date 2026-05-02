@@ -5,14 +5,12 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { Link, useTheme } from "@mui/material";
+import { Link, Typography, useTheme } from "@mui/material";
 import { mdiEye } from "@mdi/js";
 import {
   ResponsiveBox,
   ResponsiveStack,
 } from "../../../custom/ResponsiveLayout";
-import ResponsiveTitle from "../../../custom/ResponsiveTitle";
-import ResponsiveBodyTypography from "../../../custom/ResponsiveBodyTypography";
 import { API_URL } from "../../../../constants/apiConstants";
 import type { Project } from "../../../../types/entities/projectTypes";
 import type { Media } from "../../../../types/entities/mediaTypes";
@@ -232,7 +230,7 @@ export default function ProjectsCarousel({
                 : "none",
             }}
           >
-            <ResponsiveTitle
+            <Typography
               variant={titleLevel || "h1"}
               style={{
                 fontWeight: "100",
@@ -242,14 +240,14 @@ export default function ProjectsCarousel({
               }}
             >
               {title}
-            </ResponsiveTitle>
+            </Typography>
             {subtitle && (
-              <ResponsiveBodyTypography
+              <Typography
                 variant="bodyLg"
                 style={{ whiteSpace: "nowrap", fontWeight: "300" }}
               >
                 {subtitle}
-              </ResponsiveBodyTypography>
+              </Typography>
             )}
             {action}
           </ResponsiveStack>
@@ -304,7 +302,7 @@ export default function ProjectsCarousel({
                     }}
                     onMouseEnter={(e) => handleProjectHover(e, project.id)}
                   >
-                    <ResponsiveTitle
+                    <Typography
                       variant="h1"
                       component="h2"
                       style={{
@@ -322,9 +320,9 @@ export default function ProjectsCarousel({
                       }}
                     >
                       {project.label}
-                    </ResponsiveTitle>
+                    </Typography>
                     {project.startDate && (
-                      <ResponsiveBodyTypography
+                      <Typography
                         variant="bodyLg"
                         style={{
                           opacity:
@@ -346,7 +344,7 @@ export default function ProjectsCarousel({
                           project.startDate.format("YYYY")
                           ? ` - ${project.endDate.format("YYYY")}`
                           : ""}
-                      </ResponsiveBodyTypography>
+                      </Typography>
                     )}
                   </ResponsiveBox>
                 );

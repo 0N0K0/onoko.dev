@@ -1,7 +1,6 @@
 import Dropzone from "react-dropzone";
 import { ResponsiveStack } from "../../custom/ResponsiveLayout";
-import { useTheme } from "@mui/material";
-import ResponsiveBodyTypography from "../../custom/ResponsiveBodyTypography";
+import { Typography, useTheme } from "@mui/material";
 import { useState } from "react";
 
 export default function MediaDropZone({
@@ -73,7 +72,7 @@ export default function MediaDropZone({
           }}
         >
           <input {...getInputProps()} />
-          <ResponsiveBodyTypography
+          <Typography
             variant="bodyMd"
             color="textSecondary"
             style={{ whiteSpace: "pre-line" }}
@@ -81,7 +80,7 @@ export default function MediaDropZone({
             {dragOver
               ? "Déposer les\u00A0médias dans\u00A0la\u00A0zone"
               : `Glisser les\u00A0médias dans\u00A0la\u00A0zone,\nou\u00A0cliquer pour\u00A0sélectionner des\u00A0fichiers`}
-          </ResponsiveBodyTypography>
+          </Typography>
         </ResponsiveStack>
       )}
     </Dropzone>

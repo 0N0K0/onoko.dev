@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   Link,
   TextField,
+  Typography,
   useTheme,
 } from "@mui/material";
 import { ResponsiveBox, ResponsiveStack } from "../../custom/ResponsiveLayout";
@@ -43,7 +44,6 @@ import MediaCategorySidebar, {
   MEDIA_FILTER_UNCATEGORIZED,
   MEDIA_UNCATEGORIZED_DROP_ID,
 } from "./MediaCategorySidebar";
-import ResponsiveBodyTypography from "../../custom/ResponsiveBodyTypography";
 
 function DraggableMediaCard({
   media,
@@ -417,7 +417,7 @@ export default function MediaGrid(
             {/* Titre pour toutes les catégories et aucune catégorie */}
             {(selectedCategoryFilter === MEDIA_FILTER_ALL ||
               selectedCategoryFilter === MEDIA_FILTER_UNCATEGORIZED) && (
-              <ResponsiveBodyTypography
+              <Typography
                 variant="bodySm"
                 component="h2"
                 style={{ textTransform: "uppercase", fontWeight: 400 }}
@@ -425,7 +425,7 @@ export default function MediaGrid(
                 {selectedCategoryFilter === MEDIA_FILTER_ALL
                   ? "Tous les médias"
                   : "Médias non catégorisés"}
-              </ResponsiveBodyTypography>
+              </Typography>
             )}
 
             {/* Zone de dépôt de médias */}

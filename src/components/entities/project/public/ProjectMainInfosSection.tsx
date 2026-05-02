@@ -1,7 +1,7 @@
+import { Typography } from "@mui/material";
 import type { Media } from "../../../../types/entities/mediaTypes";
 import type { Project } from "../../../../types/entities/projectTypes";
 import Picture from "../../../custom/Picture";
-import ResponsiveBodyTypography from "../../../custom/ResponsiveBodyTypography";
 import {
   ResponsiveBox,
   ResponsiveStack,
@@ -62,10 +62,10 @@ export default function ProjectMainInfosSection({
                   image={stack.icon as Media}
                   style={{ aspectRatio: "1 / 1" }}
                 />
-                <ResponsiveBodyTypography variant="bodySm">
+                <Typography variant="bodySm">
                   {stack.label}
                   {stack.version && ` (${stack.version})`}
-                </ResponsiveBodyTypography>
+                </Typography>
               </ResponsiveStack>
             ))}
           </ResponsiveBox>
@@ -86,24 +86,24 @@ export default function ProjectMainInfosSection({
             }}
           >
             {project.kpis.issues && (
-              <ResponsiveBodyTypography variant="bodyLg">
+              <Typography variant="bodyLg">
                 Issues : {project.kpis.issues}
-              </ResponsiveBodyTypography>
+              </Typography>
             )}
             {project.kpis.points && (
-              <ResponsiveBodyTypography variant="bodyLg">
+              <Typography variant="bodyLg">
                 Points : {project.kpis.points}
-              </ResponsiveBodyTypography>
+              </Typography>
             )}
             {project.kpis.commits && (
-              <ResponsiveBodyTypography variant="bodyLg">
+              <Typography variant="bodyLg">
                 Commits : {project.kpis.commits}
-              </ResponsiveBodyTypography>
+              </Typography>
             )}
             {project.kpis.pullRequests && (
-              <ResponsiveBodyTypography variant="bodyLg">
+              <Typography variant="bodyLg">
                 Pull Requests : {project.kpis.pullRequests}
-              </ResponsiveBodyTypography>
+              </Typography>
             )}
           </ResponsiveStack>
         </ProjectTableRow>
