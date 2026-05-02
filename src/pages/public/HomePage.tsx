@@ -109,6 +109,8 @@ export default function Home() {
               whiteSpace: "nowrap",
               width: "fit-content",
             }}
+            component="a"
+            href="mailto:hello@onoko.dev"
           >
             Me contacter
           </Button>

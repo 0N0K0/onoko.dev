@@ -130,13 +130,15 @@ export default function PublicFooter() {
           </ResponsiveStack>
         )}
         <ResponsiveStack direction="row" sx={{ marginX: "-12px" }}>
-          <CustomIconButton icon={mdiEmail} disabled />
+          <CustomIconButton icon={mdiEmail} href="mailto:hello@onoko.dev" />
           <CustomIconButton
             icon={mdiGithub}
-            component="a"
             href="https://github.com/Noemie-Koelblen"
           />
-          <CustomIconButton icon={mdiLinkedin} />
+          <CustomIconButton
+            icon={mdiLinkedin}
+            href="https://www.linkedin.com/in/no%C3%A9mie-koelblen/"
+          />
         </ResponsiveStack>
         <Typography
           variant="bodyXs"
