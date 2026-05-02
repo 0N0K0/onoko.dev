@@ -1,10 +1,4 @@
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { Link, Typography, useTheme } from "@mui/material";
 import { mdiEye } from "@mdi/js";
 import {
@@ -54,15 +48,21 @@ export default function ProjectsCarousel({
   useLayoutEffect(() => {
     const hgroup = hgroupRef.current;
     if (!hgroup) return;
-    setContentWidth(hgroup.getBoundingClientRect().width);
-    setHgroupWidthMeasured(true);
-  }, []);
 
-  // Affiche le hgroup selon sa largeur mesurée
-  useEffect(() => {
+    const expandedPaddingRight = Number.parseFloat(theme.spacing(4));
+    setContentWidth(hgroup.scrollWidth + expandedPaddingRight);
+    setHgroupWidthMeasured(true);
+  }, [theme]);
+
+  // Affiche le hgroup selon sa largeur mesuree
+  useLayoutEffect(() => {
     if (!hgroupWidthMeasured) return;
-    const id = requestAnimationFrame(() => setHgroupVisible(true));
-    return () => cancelAnimationFrame(id);
+
+    const frameId = requestAnimationFrame(() => {
+      setHgroupVisible(true);
+    });
+
+    return () => cancelAnimationFrame(frameId);
   }, [hgroupWidthMeasured]);
 
   // Affiche le curseur personnalisé au survol des projets

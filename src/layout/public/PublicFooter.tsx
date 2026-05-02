@@ -142,7 +142,11 @@ export default function PublicFooter() {
           variant="bodyXs"
           color="textSecondary"
           component="p"
-          sx={{ lineHeight: "24px !important", marginLeft: "auto" }}
+          sx={{
+            lineHeight: "24px !important",
+            marginLeft: "auto",
+            marginRight: { xs: "-24px", lg: "-56px" },
+          }}
         >
           &copy;2024-{new Date().getFullYear()} Onoko Tous droits réservés.
         </Typography>

@@ -27,8 +27,14 @@ export default function PublicHeader() {
   const { isAuthenticated } = useAuthContext();
   const { pathname } = useLocation();
 
+  const [isLogoOpen, setIsLogoOpen] = useState(!canHover);
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLogoOpen(false);
+    }, 900);
+  }, [canHover]);
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [isLogoAutoAnimated, setIsLogoAutoAnimated] = useState(() => !canHover);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -36,22 +42,6 @@ export default function PublicHeader() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  useEffect(() => {
-    if (canHover) {
-      setIsLogoAutoAnimated(false);
-      return;
-    }
-
-    setIsLogoAutoAnimated(true);
-    const timeoutId = window.setTimeout(() => {
-      setIsLogoAutoAnimated(false);
-    }, 1500);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [canHover]);
 
   const pages = [
     {
@@ -102,7 +92,7 @@ export default function PublicHeader() {
       <Toolbar sx={{ justifyContent: "space-between" }}>
         <Link
           href="/"
-          className={isLogoAutoAnimated ? "auto-animate" : undefined}
+          className={isLogoOpen ? "open" : "collapsed"}
           underline="none"
           color="inherit"
           sx={{
@@ -125,21 +115,7 @@ export default function PublicHeader() {
               "&.left": { transform: "translateX(8.67px)" },
               "&.right": { transform: "translateX(-8.67px)" },
             },
-            "&:hover": {
-              "& .hide": {
-                opacity: 1,
-                transition: "opacity 600ms ease-in-out 300ms",
-                "&.left, &.right": {
-                  transform: "translateX(0)",
-                  transition:
-                    "transform 900ms ease-in-out, opacity 600ms ease-in-out 300ms",
-                },
-              },
-              "& .show.left, & .show.right": {
-                transform: "translateX(0)",
-              },
-            },
-            "&.auto-animate": {
+            "&:hover, &.open": {
               "& .hide": {
                 opacity: 1,
                 transition: "opacity 600ms ease-in-out 300ms",

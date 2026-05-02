@@ -102,7 +102,7 @@ export default function Home() {
           <Button
             size="large"
             sx={{
-              margin: "auto",
+              margin: "auto !important",
               whiteSpace: "nowrap",
               width: "fit-content",
             }}
