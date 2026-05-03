@@ -17,6 +17,8 @@ import { useBreakpoints } from "../../hooks/mediaQueries";
  * Utilisé sur les pages d'accueil, de connexion, etc.
  */
 export default function PublicFooter() {
+  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === "true";
+
   const theme = useTheme();
   const { isSm } = useBreakpoints();
   const { pathname } = useLocation();
@@ -59,7 +61,7 @@ export default function PublicFooter() {
           columnGap: 4,
         }}
       >
-        {isSm && (
+        {isSm && !maintenanceMode && (
           <ResponsiveStack
             sx={{
               flexDirection: "row",

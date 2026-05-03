@@ -20,6 +20,8 @@ import { useEffect, useState } from "react";
  * Utilisé sur les pages d'accueil, de connexion, etc.
  */
 export default function PublicHeader() {
+  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === "true";
+
   const theme = useTheme();
   const { isSm } = useBreakpoints();
   const canHover = useCanHover();
@@ -137,7 +139,7 @@ export default function PublicHeader() {
           <span className="show right">K</span>
           <span className="hide right">O</span>
         </Link>
-        {isSm ? (
+        {isSm && !maintenanceMode ? (
           <ResponsiveStack
             sx={{
               flexGrow: 1,
@@ -205,7 +207,7 @@ export default function PublicHeader() {
               );
             })}
           </ResponsiveStack>
-        ) : (
+        ) : !maintenanceMode ? (
           <>
             <CustomIconButton
               icon={open ? mdiClose : mdiMenu}
@@ -233,7 +235,7 @@ export default function PublicHeader() {
               })}
             </Menu>
           </>
-        )}
+        ) : null}
       </Toolbar>
     </AppBar>
   );

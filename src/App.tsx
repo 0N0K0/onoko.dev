@@ -3,6 +3,8 @@ import {
   Routes,
   Route,
   Outlet,
+  Navigate,
+  useLocation,
 } from "react-router-dom";
 import Home from "./pages/public/HomePage";
 import PublicLayout from "./layout/public/PublicLayout";
@@ -33,6 +35,33 @@ import AuthLayout from "./layout/auth/AuthLayout";
 import { FrontProjectsPage } from "./pages/public/FrontProjectsPage";
 import { SingleProject } from "./layout/public/SingleProject";
 import LegalPage from "./pages/public/LegalPage";
+import { useAuthContext } from "./context/AuthContext";
+import NotFound from "./pages/404";
+
+function MaintenanceGuard() {
+  const location = useLocation();
+  const { isAuthenticated, loading } = useAuthContext();
+  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === "true";
+
+  const allowedDuringMaintenance = new Set([
+    "/",
+    `/${LOGIN_ROUTE}`,
+    "/request-reset-password",
+    "/reset-password",
+    "/logout",
+  ]);
+
+  if (
+    maintenanceMode &&
+    !loading &&
+    !isAuthenticated &&
+    !allowedDuringMaintenance.has(location.pathname)
+  ) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
+}
 
 export default function App() {
   return (
@@ -89,38 +118,40 @@ export default function App() {
                     </ThemeProvider>
                   }
                 >
-                  <Route
-                    path="/"
-                    element={
-                      <PublicLayout>
-                        <Home />
-                      </PublicLayout>
-                    }
-                  />
-                  <Route
-                    path="/projects"
-                    element={
-                      <PublicLayout>
-                        <FrontProjectsPage />
-                      </PublicLayout>
-                    }
-                  />
-                  <Route
-                    path="/projects/:slug"
-                    element={
-                      <PublicLayout>
-                        <SingleProject />
-                      </PublicLayout>
-                    }
-                  />
-                  <Route
-                    path="/legal-notice"
-                    element={
-                      <PublicLayout>
-                        <LegalPage />
-                      </PublicLayout>
-                    }
-                  />
+                  <Route element={<MaintenanceGuard />}>
+                    <Route
+                      path="/"
+                      element={
+                        <PublicLayout>
+                          <Home />
+                        </PublicLayout>
+                      }
+                    />
+                    <Route
+                      path="/projects"
+                      element={
+                        <PublicLayout>
+                          <FrontProjectsPage />
+                        </PublicLayout>
+                      }
+                    />
+                    <Route
+                      path="/projects/:slug"
+                      element={
+                        <PublicLayout>
+                          <SingleProject />
+                        </PublicLayout>
+                      }
+                    />
+                    <Route
+                      path="/legal-notice"
+                      element={
+                        <PublicLayout>
+                          <LegalPage />
+                        </PublicLayout>
+                      }
+                    />
+                  </Route>
                   <Route
                     path={`/${LOGIN_ROUTE}`}
                     element={
@@ -151,6 +182,14 @@ export default function App() {
                       <AuthLayout>
                         <ResetPassword />
                       </AuthLayout>
+                    }
+                  />
+                  <Route
+                    path="*"
+                    element={
+                      <PublicLayout>
+                        <NotFound />
+                      </PublicLayout>
                     }
                   />
                 </Route>
