@@ -48,8 +48,8 @@ export default function ProjectFormDialog({
       manager: { name: "", email: "" },
       startDate: undefined,
       endDate: undefined,
-      intro: { context: "", objective: "", client: "" },
-      presentation: { description: "", issue: "", audience: "" },
+      intro: "",
+      presentation: { context: "", client: "", issue: "", audience: "" },
       need: {
         features: "",
         functionalConstraints: "",
