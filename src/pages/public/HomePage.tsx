@@ -3,11 +3,14 @@ import useProjects from "../../hooks/queries/useProjects";
 import Layout from "../../layout";
 import ProjectsCarousel from "../../components/entities/project/public/ProjectsCarousel";
 import { Button } from "@mui/material";
+import Maintenance from "../../components/Maintenance";
 
 /**
  * Page d'accueil publique du site.
  */
 export default function Home() {
+  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === "true";
+
   const TITLE_2 = "Web FullStack";
   const [titleLine2, setTitleLine2] = useState(TITLE_2);
 
@@ -78,46 +81,50 @@ export default function Home() {
     <Layout.Content
       sx={{ padding: 0, flex: "1 1 auto", minHeight: 0, overflow: "hidden" }}
     >
-      <ProjectsCarousel
-        title={
-          <>
-            Développement
-            <br />
-            {titleLine2}
-          </>
-        }
-        subtitle={
-          <>
-            /** <br />
-            {"\u00A0\u00A0"}* Sites web
-            <br />
-            {"\u00A0\u00A0"}* Applicatifs cross-plateformes
-            <br />
-            {"\u00A0\u00A0"}* Solutions métiers
-            <br />
-            {"\u00A0\u00A0"}* Outils d'automatisation
-            <br />
-            {"\u00A0\u00A0"}* Débogage & optimisation <br />
-            {"\u00A0\u00A0"}*/
-          </>
-        }
-        action={
-          <Button
-            size="large"
-            sx={{
-              margin: "auto !important",
-              whiteSpace: "nowrap",
-              width: "fit-content",
-            }}
-            component="a"
-            href="mailto:hello@onoko.dev"
-          >
-            Me contacter
-          </Button>
-        }
-        projects={pinnedProjects}
-        reverseMouseWheel
-      />
+      {maintenanceMode ? (
+        <Maintenance />
+      ) : (
+        <ProjectsCarousel
+          title={
+            <>
+              Développement
+              <br />
+              {titleLine2}
+            </>
+          }
+          subtitle={
+            <>
+              /** <br />
+              {"\u00A0\u00A0"}* Sites web
+              <br />
+              {"\u00A0\u00A0"}* Applicatifs cross-plateformes
+              <br />
+              {"\u00A0\u00A0"}* Solutions métiers
+              <br />
+              {"\u00A0\u00A0"}* Outils d'automatisation
+              <br />
+              {"\u00A0\u00A0"}* Débogage & optimisation <br />
+              {"\u00A0\u00A0"}*/
+            </>
+          }
+          action={
+            <Button
+              size="large"
+              sx={{
+                margin: "auto !important",
+                whiteSpace: "nowrap",
+                width: "fit-content",
+              }}
+              component="a"
+              href="mailto:hello@onoko.dev"
+            >
+              Me contacter
+            </Button>
+          }
+          projects={pinnedProjects}
+          reverseMouseWheel
+        />
+      )}
     </Layout.Content>
   );
 }
