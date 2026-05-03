@@ -1,6 +1,6 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { ResponsiveStack } from "./custom/ResponsiveLayout";
-import superDuckSrc from "../assets/images/SuperDuck-transparent.png";
+import superDuckSrc from "../assets/images/SuperDuck.png";
 
 export default function Maintenance() {
   const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === "true";
