@@ -128,111 +128,107 @@ export default function MediaLibrary({
       ) : null}
       {loading ? (
         <CircularProgress />
+      ) : layout === "grid" ? (
+        <MediaGrid
+          mode="library"
+          medias={medias}
+          setOpenDialog={setOpenMediaDialog}
+          handleEdit={mutations.edit.mutate}
+          onDelete={mutations.delete.mutate}
+          submitting={submitting}
+          addMedias={addMedias}
+          setAddMedias={setAddMedias}
+          onAddMedia={(file, category) => {
+            mutations.create.mutate({
+              variables: { input: { file, category } },
+            });
+          }}
+        />
       ) : (
-        medias &&
-        medias.length > 0 &&
-        (layout === "grid" ? (
-          <MediaGrid
-            mode="library"
-            medias={medias}
-            setOpenDialog={setOpenMediaDialog}
-            handleEdit={mutations.edit.mutate}
-            onDelete={mutations.delete.mutate}
-            submitting={submitting}
-            addMedias={addMedias}
-            setAddMedias={setAddMedias}
-            onAddMedia={(file, category) => {
-              mutations.create.mutate({
-                variables: { input: { file, category } },
-              });
-            }}
-          />
-        ) : (
-          <CustomTable.Provider
-            fields={[
-              {
-                key: "id",
-                label: "Miniature",
-                content: (media: any) => (
-                  <Picture image={media} maxWidth="3rem" maxHeight="3rem" />
-                ),
-              },
-              {
-                key: "label",
-                label: "Label",
-              },
-              {
-                key: "category",
-                label: "Catégorie",
-                content: (media: any) =>
-                  typeof media.category === "string"
-                    ? media.category
-                    : media.category?.label || "",
-              },
-            ]}
-            items={medias}
-            canSelect
-            onClickAdd={() => setAddMedias(true)}
-            onClickEdit={(mediaId: string) => setOpenMediaDialog(mediaId)}
-            onClickDelete={(selectedMedias: string[]) => {
-              for (const mediaId of selectedMedias) {
-                mutations.delete.mutate({ variables: { id: mediaId } });
-              }
-            }}
-            submitting={submitting}
-            deleteLabel={`le(s) média(s)`}
-            bulkEditTitle="Modifier les médias sélectionnés"
-            onClickBulkEdit={() => {
-              if (editingMedias) {
-                for (const media of editingMedias) {
-                  if (media.id) {
-                    mutations.edit.mutate({
-                      variables: { id: media.id, input: media },
-                    });
-                  }
-                }
-              }
-            }}
-            setBulkEditItems={setEditingMedias}
-            bulkEditContent={
-              <CustomSelect
-                label="Catégorie"
-                labelId="category-label"
-                value={extractId(editingMedias?.[0]?.category) ?? ""}
-                onChange={(e) => {
-                  const value = getSelectValue(e);
-                  setEditingMedias((prev) =>
-                    prev
-                      ? prev.map((m) => ({
-                          ...m,
-                          category: value,
-                        }))
-                      : null,
-                  );
-                }}
-                options={
-                  categories
-                    ?.filter((c: Category) => c.entity === "media")
-                    .map((c: Category) => ({
-                      id: c.id,
-                      label: c.depth
-                        ? "__".repeat(c.depth) + ` ${c.label}`
-                        : c.label,
-                    })) || []
-                }
-              />
+        <CustomTable.Provider
+          fields={[
+            {
+              key: "id",
+              label: "Miniature",
+              content: (media: any) => (
+                <Picture image={media} maxWidth="3rem" maxHeight="3rem" />
+              ),
+            },
+            {
+              key: "label",
+              label: "Label",
+            },
+            {
+              key: "category",
+              label: "Catégorie",
+              content: (media: any) =>
+                typeof media.category === "string"
+                  ? media.category
+                  : media.category?.label || "",
+            },
+          ]}
+          items={medias}
+          canSelect
+          onClickAdd={() => setAddMedias(true)}
+          onClickEdit={(mediaId: string) => setOpenMediaDialog(mediaId)}
+          onClickDelete={(selectedMedias: string[]) => {
+            for (const mediaId of selectedMedias) {
+              mutations.delete.mutate({ variables: { id: mediaId } });
             }
-          >
-            <TableContainer sx={{ flex: "1 1 auto", minHeight: 0 }}>
-              <Table stickyHeader>
-                <CustomTable.Header />
-                <CustomTable.Body />
-                <CustomTable.BulkFooter />
-              </Table>
-            </TableContainer>
-            <CustomTable.Dialogs />
-          </CustomTable.Provider>
-        ))
+          }}
+          submitting={submitting}
+          deleteLabel={`le(s) média(s)`}
+          bulkEditTitle="Modifier les médias sélectionnés"
+          onClickBulkEdit={() => {
+            if (editingMedias) {
+              for (const media of editingMedias) {
+                if (media.id) {
+                  mutations.edit.mutate({
+                    variables: { id: media.id, input: media },
+                  });
+                }
+              }
+            }
+          }}
+          setBulkEditItems={setEditingMedias}
+          bulkEditContent={
+            <CustomSelect
+              label="Catégorie"
+              labelId="category-label"
+              value={extractId(editingMedias?.[0]?.category) ?? ""}
+              onChange={(e) => {
+                const value = getSelectValue(e);
+                setEditingMedias((prev) =>
+                  prev
+                    ? prev.map((m) => ({
+                        ...m,
+                        category: value,
+                      }))
+                    : null,
+                );
+              }}
+              options={
+                categories
+                  ?.filter((c: Category) => c.entity === "media")
+                  .map((c: Category) => ({
+                    id: c.id,
+                    label: c.depth
+                      ? "__".repeat(c.depth) + ` ${c.label}`
+                      : c.label,
+                  })) || []
+              }
+            />
+          }
+        >
+          <TableContainer sx={{ flex: "1 1 auto", minHeight: 0 }}>
+            <Table stickyHeader>
+              <CustomTable.Header />
+              <CustomTable.Body />
+              <CustomTable.BulkFooter />
+            </Table>
+          </TableContainer>
+          <CustomTable.Dialogs />
+        </CustomTable.Provider>
       )}
       <ClosableSnackbarAlert
         open={!!submitSuccess}

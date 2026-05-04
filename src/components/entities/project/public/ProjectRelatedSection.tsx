@@ -13,11 +13,7 @@ export function ProjectRelatedSection({
   // Récupère les catégories du projet courant, hors 'Professionnel'
   const mainCategories =
     project?.categories
-      ?.filter(
-        (cat) =>
-          (cat as Category).label !== "Professionnel" &&
-          (cat as Category).label !== "Epinglé",
-      )
+      ?.filter((cat) => (cat as Category).label !== "Professionnel")
       ?.map((cat) => (cat as Category).id) ?? [];
 
   // Projets similaires par catégorie (hors projet courant)
@@ -38,11 +34,7 @@ export function ProjectRelatedSection({
       project?.id,
       ...relatedProjects.map((p) => p.id),
     ]);
-    const pinned = projects.filter(
-      (p) =>
-        !alreadyIds.has(p.id) &&
-        p.categories?.some((cat) => (cat as Category).label === "Epinglé"),
-    );
+    const pinned = projects.filter((p) => !alreadyIds.has(p.id) && p.pined);
     relatedProjects = [
       ...relatedProjects,
       ...pinned.slice(0, 4 - relatedProjects.length),

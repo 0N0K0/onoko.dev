@@ -4,12 +4,14 @@ import Layout from "../../layout";
 import ProjectsCarousel from "../../components/entities/project/public/ProjectsCarousel";
 import { Button } from "@mui/material";
 import Maintenance from "../../components/Maintenance";
+import { useAuthContext } from "../../context/AuthContext";
 
 /**
  * Page d'accueil publique du site.
  */
 export default function Home() {
   const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === "true";
+  const { isAuthenticated } = useAuthContext();
 
   const TITLE_2 = "Web FullStack";
   const [titleLine2, setTitleLine2] = useState(TITLE_2);
@@ -74,14 +76,14 @@ export default function Home() {
   const projects = useProjects();
 
   const pinnedProjects = projects.projects.filter((project) =>
-    project.categories?.some((c) => c.label === "Epinglé"),
+    project.pined ? project.pined : false,
   );
 
   return (
     <Layout.Content
       sx={{ padding: 0, flex: "1 1 auto", minHeight: 0, overflow: "hidden" }}
     >
-      {maintenanceMode ? (
+      {maintenanceMode && !isAuthenticated ? (
         <Maintenance />
       ) : (
         <ProjectsCarousel

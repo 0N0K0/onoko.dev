@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Checkbox, FormControlLabel, TextField } from "@mui/material";
 import MediaPicker from "../../media/MediaPicker";
 import CustomSelect from "../../../custom/CustomSelect";
 import type { Category } from "../../../../types/entities/categoryTypes";
@@ -8,6 +8,7 @@ import { getMultiSelectValue } from "../../../../utils/normalizeRef";
 import type { ProjectSectionProps } from "../../../../types/entities/projectTypes";
 import { slugify } from "../../../../utils/urlUtils";
 import useProjects from "../../../../hooks/queries/useProjects";
+import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
 
 interface Props extends ProjectSectionProps {
   categories: Category[];
@@ -85,26 +86,43 @@ export default function ProjectBasicSection({
         }
         required
       />
-      <CustomSelect
-        label="Catégories"
-        labelId="categories-label"
-        value={extractIds(editingProject?.categories)}
-        onChange={(e) => {
-          const value = getMultiSelectValue(e);
-          setEditingProject((prev) =>
-            prev ? { ...prev, categories: value } : prev,
-          );
-          const initial = extractIds(initialProject?.categories);
-          JSON.stringify([...initial].sort()) !==
-            JSON.stringify([...value].sort()) && setHasChanges(true);
-        }}
-        options={categories
-          .filter((c) => c.entity === "project")
-          .map((c) => ({
-            id: c.id,
-            label: c.depth ? "__".repeat(c.depth) + ` ${c.label}` : c.label,
-          }))}
-      />
+      <ResponsiveStack rowGap={3} sx={{ flexDirection: "row", columnGap: 2 }}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={editingProject?.pined || false}
+              onChange={(e) => {
+                setEditingProject((prev) =>
+                  prev ? { ...prev, pined: e.target.checked } : prev,
+                );
+                e.target.checked !== (initialProject?.pined || false) &&
+                  setHasChanges(true);
+              }}
+            />
+          }
+          label="Épinglé"
+        />
+        <CustomSelect
+          label="Catégories"
+          labelId="categories-label"
+          value={extractIds(editingProject?.categories)}
+          onChange={(e) => {
+            const value = getMultiSelectValue(e);
+            setEditingProject((prev) =>
+              prev ? { ...prev, categories: value } : prev,
+            );
+            const initial = extractIds(initialProject?.categories);
+            JSON.stringify([...initial].sort()) !==
+              JSON.stringify([...value].sort()) && setHasChanges(true);
+          }}
+          options={categories
+            .filter((c) => c.entity === "project")
+            .map((c) => ({
+              id: c.id,
+              label: c.depth ? "__".repeat(c.depth) + ` ${c.label}` : c.label,
+            }))}
+        />
+      </ResponsiveStack>
     </>
   );
 }
