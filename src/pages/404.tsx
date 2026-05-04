@@ -1,16 +1,13 @@
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import notFoundSrc from "../assets/images/not-found.jpg";
 import { ResponsiveStack } from "../components/custom/ResponsiveLayout";
+import Layout from "../layout";
 
 export default function NotFound() {
-  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === "true";
-
   const theme = useTheme();
 
-  if (!maintenanceMode) return null;
-
   return (
-    <ResponsiveStack
+    <Layout.Content
       rowGap={6}
       sx={{
         flexDirection: "row",
@@ -77,6 +74,6 @@ export default function NotFound() {
           },
         }}
       />
-    </ResponsiveStack>
+    </Layout.Content>
   );
 }
