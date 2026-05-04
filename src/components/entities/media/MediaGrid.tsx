@@ -137,7 +137,7 @@ export default function MediaGrid(
   );
   const [selectedMedias, setSelectedMedias] = useState<Media[]>(images || []);
 
-  const [showAddZone, setShowAddZone] = useState(false);
+  const [showAddZone, setShowAddZone] = useState(medias.length === 0);
 
   const [bulkEditDialogOpen, setBulkEditDialogOpen] = useState(false);
 
@@ -489,7 +489,7 @@ export default function MediaGrid(
               )}
 
               {/* Bouton pour activer/désactiver le mode de sélection */}
-              {mode === "library" && (
+              {mode === "library" && filteredMedias.length > 0 && (
                 <Button
                   startIcon={
                     <Icon
@@ -516,7 +516,9 @@ export default function MediaGrid(
                   <Icon path={showAddZone ? mdiClose : mdiPlus} size={1} />
                 }
                 onClick={() => setShowAddZone((prev) => !prev)}
-                // sx={{ marginLeft: "auto" }}
+                sx={{
+                  marginLeft: filteredMedias.length > 0 ? undefined : "auto",
+                }}
               >
                 {showAddZone
                   ? "Masquer la zone d'importation"
@@ -539,6 +541,7 @@ export default function MediaGrid(
                 width: mode === "library" ? "100%" : "calc(100% + 24px)",
                 flex: "1 1 auto",
                 justifyContent: "center",
+                minHeight: "240px",
               }}
             >
               {filteredMedias.map((media) => {
