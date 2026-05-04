@@ -13,6 +13,7 @@ export interface Project {
   label: string;
   thumbnail?: Media | string;
   categories?: (Category | string)[];
+  pined?: boolean;
   website?: {
     url: string;
     label: string;

@@ -74,7 +74,7 @@ export default function Home() {
   const projects = useProjects();
 
   const pinnedProjects = projects.projects.filter((project) =>
-    project.categories?.some((c) => c.label === "Epinglé"),
+    project.pined ? project.pined : false,
   );
 
   return (
