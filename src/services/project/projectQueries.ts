@@ -8,6 +8,7 @@ export const PROJECTS_QUERY = gql`
       label
       thumbnail
       categories
+      pined
       website {
         url
         label

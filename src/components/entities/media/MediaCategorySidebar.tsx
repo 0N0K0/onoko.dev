@@ -257,6 +257,20 @@ export default function MediaCategorySidebar({
         categoryRefs={categoryRefs}
       />
       <Divider />
+      {categoriesTree.length === 0 && (
+        <ListItem disablePadding>
+          <ListItemText
+            sx={{
+              padding: "12px 16px",
+              margin: 0,
+              color: theme.palette.text.secondary,
+            }}
+            primary={
+              <Typography variant="bodySm">Aucune categorie</Typography>
+            }
+          />
+        </ListItem>
+      )}
       {categoriesTree.map((category) => (
         <CategoryFilterButton
           id={category.id}

@@ -42,6 +42,7 @@ export default function ProjectFormDialog({
       label: "",
       thumbnail: "",
       categories: [],
+      pined: false,
       website: { url: "", label: "" },
       mockup: { url: "", label: "", images: [] },
       client: { label: "", logo: "" },

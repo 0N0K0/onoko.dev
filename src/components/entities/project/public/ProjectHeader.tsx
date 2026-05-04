@@ -124,7 +124,6 @@ export default function ProjectHeader({ project }: { project: Project }) {
               {project.categories
                 .filter(
                   (category) =>
-                    (category as Category).label !== "Epinglé" &&
                     (category as Category).label !== "Professionnel",
                 )
                 .map((category) => (category as Category).label)
