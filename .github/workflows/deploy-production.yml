@@ -42,7 +42,7 @@ jobs:
             cd ~/onoko.dev
             git pull origin prod
             source /home/kono7602/nodevenv/onoko.dev/24/bin/activate && cd /home/kono7602/onoko.dev
-            npm install
+            npm install --include=dev
             npm run build
       # 6. Retirer l'IP de la liste blanche (nettoyage)
       - name: Remove runner IP from whitelist
