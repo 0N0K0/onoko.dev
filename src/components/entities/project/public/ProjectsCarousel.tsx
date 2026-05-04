@@ -308,18 +308,15 @@ export default function ProjectsCarousel({
                       sx={{
                         opacity:
                           activeProjectId === project.id || !canHover ? 1 : 0,
-                        transition: `opacity 1200ms ${theme.transitions.easing.easeInOut}`,
+                        transition: `opacity 900ms 300ms ${theme.transitions.easing.easeInOut}`,
                         position: "absolute",
                         bottom: "1.5rem",
                         right: { sm: "2rem", xs: "1rem" },
-                        maxWidth: {
-                          sm: "calc(100% - 4rem)",
-                          xs: "calc(100% - 2rem)",
-                        },
+                        width: `calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : isMd ? 2.5 : 1.5} * ${isMd ? 2 : 1.5} - ${isMd ? "4rem" : "2rem"})`,
                         zIndex: 1,
                         fontWeight: "900",
                         textShadow: `0 0 5px rgba(0,0,0,0.5)`,
-                        textWrap: "pretty",
+                        textWrap: "balance",
                         textAlign: "right",
                         color: theme.palette.text.primary,
                       }}
@@ -335,7 +332,7 @@ export default function ProjectsCarousel({
                         style={{
                           opacity:
                             activeProjectId === project.id || !canHover ? 1 : 0,
-                          transition: `opacity 1200ms ${theme.transitions.easing.easeInOut}`,
+                          transition: `opacity 900ms 300ms ${theme.transitions.easing.easeInOut}`,
                           position: "absolute",
                           top: "1.5rem",
                           left: "2rem",
