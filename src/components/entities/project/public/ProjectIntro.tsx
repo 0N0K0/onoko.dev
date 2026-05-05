@@ -5,6 +5,7 @@ import { WysiwygBox } from "../../../custom/WysiwygBox";
 import ProjectTableRow from "./ProjectTableRow";
 import { Link as ReactLink } from "react-router-dom";
 import { useResponsiveWidth } from "../../../../hooks/layout/useResponsiveWidth";
+import { stripHtml } from "../../../../utils/stringUtils";
 
 export default function ProjectIntro({ project }: { project: Project }) {
   const maxWidth = useResponsiveWidth(8);
@@ -39,7 +40,9 @@ export default function ProjectIntro({ project }: { project: Project }) {
                   rel="noopener noreferrer"
                   sx={{ minWidth: "208px" }}
                 >
-                  {project.website.label || "Visiter le site web"}
+                  {project.website.label
+                    ? stripHtml(project.website.label)
+                    : "Visiter le site web"}
                 </Button>
               )}
               {project.mockup?.url && (
@@ -50,7 +53,9 @@ export default function ProjectIntro({ project }: { project: Project }) {
                   rel="noopener noreferrer"
                   sx={{ minWidth: "208px" }}
                 >
-                  {project.mockup.label || "Explorer la maquette"}
+                  {project.mockup.label
+                    ? stripHtml(project.mockup.label)
+                    : "Explorer la maquette"}
                 </Button>
               )}
             </ResponsiveStack>

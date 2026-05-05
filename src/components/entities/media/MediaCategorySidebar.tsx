@@ -12,6 +12,7 @@ import { useDroppable } from "@dnd-kit/core";
 import type { Category } from "../../../types/entities/categoryTypes";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import CustomIconButton from "../../custom/CustomIconButton";
+import { stripHtml } from "../../../utils/stringUtils";
 
 export const MEDIA_FILTER_ALL = "all";
 export const MEDIA_FILTER_UNCATEGORIZED = "uncategorized";
@@ -116,7 +117,7 @@ function CategoryFilterButton({
                 textOverflow: "ellipsis",
               }}
             >
-              {label}
+              {stripHtml(label)}
             </Typography>
             <Typography
               variant="bodySm"
@@ -265,9 +266,7 @@ export default function MediaCategorySidebar({
               margin: 0,
               color: theme.palette.text.secondary,
             }}
-            primary={
-              <Typography variant="bodySm">Aucune categorie</Typography>
-            }
+            primary={<Typography variant="bodySm">Aucune categorie</Typography>}
           />
         </ListItem>
       )}

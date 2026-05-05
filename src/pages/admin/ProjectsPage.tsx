@@ -6,6 +6,7 @@ import type { Project } from "../../types/entities/projectTypes";
 import Picture from "../../components/custom/Picture";
 import type { Category } from "../../types/entities/categoryTypes";
 import useEntityPage from "../../hooks/useEntityPage";
+import { stripHtml } from "../../utils/stringUtils";
 
 export default function Projects() {
   const { projects, loading, error, refetch } = useProjects();
@@ -46,12 +47,13 @@ export default function Projects() {
           {
             key: "client.label",
             label: "Client",
-            content: (item: Project) => item.client?.label,
+            content: (item: Project) =>
+              item.client?.label && stripHtml(item.client.label),
           },
           {
             key: "label",
             label: "Label",
-            content: (item: Project) => item.label,
+            content: (item: Project) => stripHtml(item.label),
           },
           {
             key: "startDate",
@@ -67,7 +69,7 @@ export default function Projects() {
                   (category): category is Category =>
                     typeof category === "object",
                 )
-                .map((category: Category) => category.label)
+                .map((category: Category) => stripHtml(category.label))
                 .join(", "),
           },
         ]}

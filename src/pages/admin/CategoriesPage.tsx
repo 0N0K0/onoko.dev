@@ -4,6 +4,7 @@ import CategoryFormDialog from "../../components/entities/CategoryFormDialog";
 import useCategories from "../../hooks/queries/useCategories";
 import EntitiesContent from "../../layout/admin/EntitiesContent";
 import useEntityPage from "../../hooks/useEntityPage";
+import { stripHtml } from "../../utils/stringUtils";
 
 const entitiesMap: { [key: string]: string } = {
   "": "",
@@ -42,7 +43,7 @@ export default function Categories() {
             content: (item) => (
               <p style={{ paddingLeft: `${(item.depth ?? 0) * 16}px` }}>
                 {(item.depth ?? 0) > 0 ? `- ` : ""}
-                {item.label}
+                {stripHtml(item.label)}
               </p>
             ),
           },

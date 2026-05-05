@@ -10,6 +10,7 @@ import type {
 import CustomSelect from "../custom/CustomSelect";
 import useFormDialog from "../../hooks/useFormDialog";
 import { extractId, getSelectValue } from "../../utils/normalizeRef";
+import { stripHtml } from "../../utils/stringUtils";
 
 /**
  * Composant de dialogue pour ajouter ou modifier une catégorie
@@ -131,8 +132,8 @@ export default function CategoryFormDialog({
                   .map((c) => ({
                     id: c.id,
                     label: c.depth
-                      ? "__".repeat(c.depth) + ` ${c.label}`
-                      : c.label,
+                      ? "__".repeat(c.depth) + ` ${stripHtml(c.label)}`
+                      : stripHtml(c.label),
                   })) || []
               }
             />

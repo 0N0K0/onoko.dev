@@ -12,6 +12,7 @@ import type { Role } from "../../types/entities/roleTypes";
 import useRoles from "../../hooks/queries/useRoles";
 import useFormDialog from "../../hooks/useFormDialog";
 import { extractIds, getMultiSelectValue } from "../../utils/normalizeRef";
+import { stripHtml } from "../../utils/stringUtils";
 
 /**
  * Composant de dialogue pour ajouter ou modifier un intervenant (coworker).
@@ -89,7 +90,7 @@ export default function CoworkerFormDialog({
               options={
                 roles?.map((r: Role) => ({
                   id: r.id,
-                  label: r.label,
+                  label: stripHtml(r.label),
                 })) || []
               }
             />

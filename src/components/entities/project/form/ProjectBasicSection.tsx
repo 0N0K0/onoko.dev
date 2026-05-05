@@ -9,6 +9,7 @@ import type { ProjectSectionProps } from "../../../../types/entities/projectType
 import { slugify } from "../../../../utils/urlUtils";
 import useProjects from "../../../../hooks/queries/useProjects";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
+import { stripHtml } from "../../../../utils/stringUtils";
 
 interface Props extends ProjectSectionProps {
   categories: Category[];
@@ -119,7 +120,9 @@ export default function ProjectBasicSection({
             .filter((c) => c.entity === "project")
             .map((c) => ({
               id: c.id,
-              label: c.depth ? "__".repeat(c.depth) + ` ${c.label}` : c.label,
+              label: c.depth
+                ? "__".repeat(c.depth) + ` ${stripHtml(c.label)}`
+                : stripHtml(c.label),
             }))}
         />
       </ResponsiveStack>

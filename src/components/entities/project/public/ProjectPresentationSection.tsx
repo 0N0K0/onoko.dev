@@ -5,6 +5,7 @@ import Picture from "../../../custom/Picture";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
 import { WysiwygBox } from "../../../custom/WysiwygBox";
 import ProjectTableRow from "./ProjectTableRow";
+import { stripHtml } from "../../../../utils/stringUtils";
 
 export default function ProjectPresentationSection({
   project,
@@ -65,7 +66,7 @@ export default function ProjectPresentationSection({
                       />
                     )}
                     <Typography variant="bodyLg">
-                      {project.client.label}
+                      {stripHtml(project.client.label)}
                     </Typography>
                   </ResponsiveStack>
                 )}
@@ -107,10 +108,10 @@ export default function ProjectPresentationSection({
                     Responsable :{" "}
                     {project.manager.email ? (
                       <a href={`mailto:${project.manager.email}`}>
-                        {project.manager.name}
+                        {stripHtml(project.manager.name)}
                       </a>
                     ) : (
-                      project.manager.name
+                      stripHtml(project.manager.name)
                     )}
                   </Typography>
                 )}

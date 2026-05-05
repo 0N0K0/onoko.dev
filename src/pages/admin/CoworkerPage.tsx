@@ -4,6 +4,7 @@ import CoworkerFormDialog from "../../components/entities/CoworkerFormDialog";
 import type { Role } from "../../types/entities/roleTypes";
 import useCoworkers from "../../hooks/queries/useCoworkers";
 import useEntityPage from "../../hooks/useEntityPage";
+import { stripHtml } from "../../utils/stringUtils";
 
 export default function Coworkers() {
   const { coworkers, loading, error, refetch } = useCoworkers();
@@ -32,12 +33,13 @@ export default function Coworkers() {
           {
             key: "name",
             label: "Nom",
+            content: (item) => stripHtml(item.name),
           },
           {
             key: "roles",
             label: "Rôles",
             content: (item) =>
-              item.roles?.map((role: Role) => role.label).join(", "),
+              item.roles?.map((role: Role) => stripHtml(role.label)).join(", "),
           },
         ]}
         {...contentProps}
