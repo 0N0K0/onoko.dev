@@ -1,6 +1,7 @@
 import useCoworkers from "../../../../hooks/queries/useCoworkers";
 import type { Project } from "../../../../types/entities/projectTypes";
 import type { Role } from "../../../../types/entities/roleTypes";
+import { stripHtml } from "../../../../utils/stringUtils";
 import { WysiwygBox } from "../../../custom/WysiwygBox";
 import ProjectTableRow from "./ProjectTableRow";
 
@@ -27,9 +28,9 @@ export default function ProjectOrganizationSection({
               const fullCoworker = coworkers?.find((c) => c.id === coworker.id);
               return (
                 <li key={coworker.id}>
-                  {fullCoworker?.name} :{" "}
+                  {fullCoworker?.name && stripHtml(fullCoworker.name)} :{" "}
                   {coworker.roles
-                    ?.map((role) => (role as Role).label)
+                    ?.map((role) => stripHtml((role as Role).label))
                     .join(" | ")}
                 </li>
               );
@@ -41,7 +42,7 @@ export default function ProjectOrganizationSection({
         <>
           {project.organization.workload && (
             <ProjectTableRow id="workload" title={"Charge de\u00A0travail"}>
-              {project.organization.workload}
+              {stripHtml(project.organization.workload)}
             </ProjectTableRow>
           )}
           {project.organization.methodology && (

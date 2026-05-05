@@ -7,6 +7,7 @@ import {
   ResponsiveStack,
 } from "../../../custom/ResponsiveLayout";
 import ProjectTableRow from "./ProjectTableRow";
+import { stripHtml } from "../../../../utils/stringUtils";
 
 export default function ProjectMainInfosSection({
   project,
@@ -33,7 +34,9 @@ export default function ProjectMainInfosSection({
                       lineHeight: 2,
                     }}
                   >
-                    {typeof role === "string" ? role : role.label}
+                    {typeof role === "string"
+                      ? stripHtml(role)
+                      : stripHtml(role.label)}
                   </li>
                 ))}
             </ul>
@@ -63,7 +66,7 @@ export default function ProjectMainInfosSection({
                   style={{ aspectRatio: "1 / 1" }}
                 />
                 <Typography variant="bodySm">
-                  {stack.label}
+                  {stack.label && stripHtml(stack.label)}
                   {stack.version && ` (${stack.version})`}
                 </Typography>
               </ResponsiveStack>

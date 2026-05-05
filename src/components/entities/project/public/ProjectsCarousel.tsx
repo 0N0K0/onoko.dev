@@ -11,6 +11,7 @@ import type { Media } from "../../../../types/entities/mediaTypes";
 import CustomCursor from "../../../custom/CustomCursor";
 import { handleReverseMouseWheel } from "../../../../utils/scrollUtils";
 import { useBreakpoints, useCanHover } from "../../../../hooks/mediaQueries";
+import { stripHtml } from "../../../../utils/stringUtils";
 
 export default function ProjectsCarousel({
   title,
@@ -321,10 +322,7 @@ export default function ProjectsCarousel({
                         color: theme.palette.text.primary,
                       }}
                     >
-                      {new DOMParser().parseFromString(
-                        project.label,
-                        "text/html",
-                      ).body.textContent ?? project.label}
+                      {stripHtml(project.label)}
                     </Typography>
                     {project.startDate && (
                       <Typography

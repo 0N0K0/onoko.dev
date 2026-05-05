@@ -24,6 +24,7 @@ import useMedias from "../../../hooks/queries/useMedias";
 import useCategories from "../../../hooks/queries/useCategories";
 import type { EntityMutationsReturn } from "../../../hooks/mutations/useEntityMutations";
 import { extractId, getSelectValue } from "../../../utils/normalizeRef";
+import { stripHtml } from "../../../utils/stringUtils";
 
 /**
  * Composant de gestion de la bibliothèque de médias.
@@ -157,14 +158,15 @@ export default function MediaLibrary({
             {
               key: "label",
               label: "Label",
+              content: (media: any) => stripHtml(media.label),
             },
             {
               key: "category",
               label: "Catégorie",
               content: (media: any) =>
                 typeof media.category === "string"
-                  ? media.category
-                  : media.category?.label || "",
+                  ? stripHtml(media.category)
+                  : stripHtml(media.category?.label || ""),
             },
           ]}
           items={medias}
@@ -213,8 +215,8 @@ export default function MediaLibrary({
                   .map((c: Category) => ({
                     id: c.id,
                     label: c.depth
-                      ? "__".repeat(c.depth) + ` ${c.label}`
-                      : c.label,
+                      ? "__".repeat(c.depth) + ` ${stripHtml(c.label)}`
+                      : stripHtml(c.label),
                   })) || []
               }
             />

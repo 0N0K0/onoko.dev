@@ -13,6 +13,7 @@ import {
   getSelectValue,
 } from "../../../../utils/normalizeRef";
 import type { ProjectSectionProps } from "../../../../types/entities/projectTypes";
+import { stripHtml } from "../../../../utils/stringUtils";
 
 interface Props extends ProjectSectionProps {
   roles: Role[];
@@ -101,7 +102,7 @@ export default function ProjectOrganizationSection({
             JSON.stringify([...initial].sort()) !==
               JSON.stringify([...value].sort()) && setHasChanges(true);
           }}
-          options={roles.map((r) => ({ id: r.id, label: r.label }))}
+          options={roles.map((r) => ({ id: r.id, label: stripHtml(r.label) }))}
         />
         <FieldsRepeater
           label={{ title: "Intervenant", add: "un intervenant" }}
@@ -119,7 +120,10 @@ export default function ProjectOrganizationSection({
                 onChange={(e) => {
                   onChange({ ...item, id: getSelectValue(e) });
                 }}
-                options={coworkers.map((c) => ({ id: c.id, label: c.name }))}
+                options={coworkers.map((c) => ({
+                  id: c.id,
+                  label: stripHtml(c.name),
+                }))}
               />
               <CustomSelect
                 label="Rôles"
@@ -143,7 +147,7 @@ export default function ProjectOrganizationSection({
                         : r,
                     )
                     .filter((r): r is Role => !!r)
-                    .map((r) => ({ id: r.id, label: r.label }));
+                    .map((r) => ({ id: r.id, label: stripHtml(r.label) }));
                 })()}
               />
             </>
@@ -232,7 +236,10 @@ export default function ProjectOrganizationSection({
               onChange={(e) => {
                 onChange({ ...item, id: getSelectValue(e) });
               }}
-              options={stacks.map((s) => ({ id: s.id, label: s.label }))}
+              options={stacks.map((s) => ({
+                id: s.id,
+                label: stripHtml(s.label),
+              }))}
             />
             <CustomSelect
               label="Version"

@@ -16,6 +16,7 @@ import MediaPicker from "./media/MediaPicker";
 import useMedias from "../../hooks/queries/useMedias";
 import type { Media } from "../../types/entities/mediaTypes";
 import { extractId, getSelectValue } from "../../utils/normalizeRef";
+import { stripHtml } from "../../utils/stringUtils";
 
 /**
  * Composant de dialogue pour ajouter ou modifier une technologie (stack).
@@ -137,8 +138,8 @@ export default function StackFormDialog({
                     .map((c: Category) => ({
                       id: c.id,
                       label: c.depth
-                        ? "__".repeat(c.depth) + ` ${c.label}`
-                        : c.label,
+                        ? "__".repeat(c.depth) + ` ${stripHtml(c.label)}`
+                        : stripHtml(c.label),
                     })) || []
                 }
                 sx={{ flex: "1 0 208px" }}

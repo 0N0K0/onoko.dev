@@ -5,6 +5,7 @@ import StackFormDialog from "../../components/entities/StackFormDialog";
 import useStacks from "../../hooks/queries/useStacks";
 import Picture from "../../components/custom/Picture";
 import useEntityPage from "../../hooks/useEntityPage";
+import { stripHtml } from "../../utils/stringUtils";
 
 export default function Stacks() {
   const { stacks, loading, error, refetch } = useStacks();
@@ -38,14 +39,18 @@ export default function Stacks() {
                 <Picture image={item.icon} maxHeight="48px" maxWidth="48px" />
               ) : null,
           },
-          { key: "label", label: "Label" },
+          {
+            key: "label",
+            label: "Label",
+            content: (item: Stack) => stripHtml(item.label),
+          },
           {
             key: "category",
             label: "Catégorie",
             content: (item: Stack) =>
               typeof item.category === "string"
-                ? item.category
-                : item.category?.label,
+                ? stripHtml(item.category)
+                : stripHtml(item.category?.label || ""),
           },
           {
             key: "versions",

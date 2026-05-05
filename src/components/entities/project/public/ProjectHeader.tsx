@@ -7,6 +7,7 @@ import type { Media } from "../../../../types/entities/mediaTypes";
 import type { Category } from "../../../../types/entities/categoryTypes";
 import { API_URL } from "../../../../constants/apiConstants";
 import { useLayoutEffect, useRef, useState } from "react";
+import { stripHtml } from "../../../../utils/stringUtils";
 
 export default function ProjectHeader({ project }: { project: Project }) {
   const theme = useTheme();
@@ -72,10 +73,7 @@ export default function ProjectHeader({ project }: { project: Project }) {
         >
           {/* Titre */}
           <Typography variant="h1" style={{ fontWeight: "900" }}>
-            {project
-              ? (new DOMParser().parseFromString(project.label, "text/html")
-                  .body.textContent ?? project.label)
-              : "Project not found"}
+            {stripHtml(project.label)}
           </Typography>
 
           {/* Client */}
@@ -100,7 +98,7 @@ export default function ProjectHeader({ project }: { project: Project }) {
                   fontWeight: "100",
                 }}
               >
-                {project.client.label}
+                {stripHtml(project.client.label)}
               </Typography>
             </ResponsiveStack>
           )}
@@ -126,7 +124,7 @@ export default function ProjectHeader({ project }: { project: Project }) {
                   (category) =>
                     (category as Category).label !== "Professionnel",
                 )
-                .map((category) => (category as Category).label)
+                .map((category) => stripHtml((category as Category).label))
                 .join(" | ")}
             </Typography>
           )}
