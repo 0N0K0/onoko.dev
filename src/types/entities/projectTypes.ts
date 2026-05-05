@@ -16,7 +16,7 @@ export interface Project {
   pined?: boolean;
   website?: {
     url: string;
-    label: string;
+    label?: string;
   };
   mockup?: {
     url?: string;
