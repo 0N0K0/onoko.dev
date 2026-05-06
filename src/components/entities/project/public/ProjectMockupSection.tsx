@@ -4,7 +4,6 @@ import { ResponsiveImageList } from "../../../custom/ResponsiveLayout";
 import ProjectTableRow from "./ProjectTableRow";
 import Picture from "../../../custom/Picture";
 import type { Media } from "../../../../types/entities/mediaTypes";
-import { useResponsiveWidth } from "../../../../hooks/layout/useResponsiveWidth";
 import { useMediaQuery } from "@mui/system";
 
 export default function ProjectMockupSection({
