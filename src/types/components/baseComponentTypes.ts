@@ -112,6 +112,7 @@ export interface CustomSelectProps {
     child: ReactNode,
   ) => void;
   options: { id: string; label: string }[];
+  emptyOption?: boolean;
 }
 
 export interface CustomIconButtonProps extends IconButtonProps {

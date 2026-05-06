@@ -1,6 +1,7 @@
 import { Button, Typography, useTheme } from "@mui/material";
 import { ResponsiveStack } from "./custom/ResponsiveLayout";
 import { useResponsiveWidth } from "../hooks/layout/useResponsiveWidth";
+import { useContactForm } from "../context/ContactFormContext";
 
 export default function CallToAction({
   emphasis,
@@ -9,6 +10,7 @@ export default function CallToAction({
   React.ComponentProps<typeof ResponsiveStack>,
   "children"
 >) {
+  const { openContactForm } = useContactForm();
   const theme = useTheme();
   const minWidth = useResponsiveWidth(8);
   return (
@@ -43,8 +45,7 @@ export default function CallToAction({
           margin: "auto",
           whiteSpace: "nowrap",
         }}
-        component="a"
-        href="mailto:hello@onoko.dev"
+        onClick={openContactForm}
       >
         Me contacter
       </Button>
