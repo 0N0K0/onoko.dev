@@ -13,15 +13,14 @@ export default function ProjectOrganizationSection({
   const { coworkers } = useCoworkers();
 
   if (
-    !project.organization ||
-    !project.coworkers ||
-    project.coworkers?.length <= 0
+    !project.organization &&
+    (!project.coworkers || project.coworkers.length <= 0)
   )
     return null;
 
   return (
     <>
-      {project.coworkers.length > 0 && (
+      {project.coworkers && project.coworkers.length > 0 && (
         <ProjectTableRow id="team" title="Équipe">
           <ul style={{ margin: 0, fontSize: "1.5rem", lineHeight: 2 }}>
             {project.coworkers.map((coworker) => {
