@@ -1,13 +1,14 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { ResponsiveStack } from "./custom/ResponsiveLayout";
 import superDuckSrc from "../assets/images/SuperDuck.png";
+import useSettings from "../hooks/queries/useSettings";
 
 export default function Maintenance() {
-  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === "true";
+  const { maintenanceMode, loading } = useSettings();
 
   const theme = useTheme();
 
-  if (!maintenanceMode) return null;
+  if (loading || !maintenanceMode) return null;
 
   return (
     <ResponsiveStack

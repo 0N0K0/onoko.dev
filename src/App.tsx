@@ -37,11 +37,12 @@ import { SingleProject } from "./layout/public/SingleProject";
 import LegalPage from "./pages/public/LegalPage";
 import { useAuthContext } from "./context/AuthContext";
 import NotFound from "./pages/404";
+import useSettings from "./hooks/queries/useSettings";
 
 function MaintenanceGuard() {
   const location = useLocation();
   const { isAuthenticated, loading } = useAuthContext();
-  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === "true";
+  const { maintenanceMode, loading: settingsLoading } = useSettings();
 
   const allowedDuringMaintenance = new Set([
     "/",
@@ -54,6 +55,7 @@ function MaintenanceGuard() {
   if (
     maintenanceMode &&
     !loading &&
+    !settingsLoading &&
     !isAuthenticated &&
     !allowedDuringMaintenance.has(location.pathname)
   ) {

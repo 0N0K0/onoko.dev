@@ -14,13 +14,14 @@ import { useBreakpoints, useCanHover } from "../../hooks/mediaQueries";
 import CustomIconButton from "../../components/custom/CustomIconButton";
 import { mdiClose, mdiMenu } from "@mdi/js";
 import { useEffect, useState } from "react";
+import useSettings from "../../hooks/queries/useSettings";
 
 /**
  * Entête pour les pages publiques, avec des liens vers l'accueil et l'espace admin.
  * Utilisé sur les pages d'accueil, de connexion, etc.
  */
 export default function PublicHeader() {
-  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === "true";
+  const { maintenanceMode, loading } = useSettings();
 
   const theme = useTheme();
   const { isSm } = useBreakpoints();
@@ -29,7 +30,7 @@ export default function PublicHeader() {
   const { isAuthenticated } = useAuthContext();
   const { pathname } = useLocation();
 
-  const canShowNavigation = !maintenanceMode || isAuthenticated;
+  const canShowNavigation = isAuthenticated || (!loading && !maintenanceMode);
 
   const [isLogoOpen, setIsLogoOpen] = useState(!canHover);
   useEffect(() => {

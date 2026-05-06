@@ -9,6 +9,7 @@ import { isResolvedMedia } from "../../utils/mediaUtils";
 import type { Project } from "../../types/entities/projectTypes";
 import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import { useBreakpoints } from "../../hooks/mediaQueries";
+import useSettings from "../../hooks/queries/useSettings";
 
 function isProjectsMediasReady(projects: Project[]): boolean {
   for (const project of projects) {
@@ -21,7 +22,7 @@ function isProjectsMediasReady(projects: Project[]): boolean {
  * Page d'accueil publique du site.
  */
 export default function Home() {
-  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === "true";
+  const { maintenanceMode, loading: settingsLoading } = useSettings();
   const { isAuthenticated } = useAuthContext();
 
   const { isLg, isMd } = useBreakpoints();
@@ -101,7 +102,7 @@ export default function Home() {
         overflow: "hidden",
       }}
     >
-      {maintenanceMode && !isAuthenticated ? (
+      {maintenanceMode && !settingsLoading && !isAuthenticated ? (
         <Maintenance />
       ) : isProjectsMediasReady(projects.projects) ? (
         <ProjectsCarousel
