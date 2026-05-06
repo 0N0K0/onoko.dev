@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useProjects from "../../hooks/queries/useProjects";
 import Layout from "../../layout";
 import ProjectsCarousel from "../../components/entities/project/public/ProjectsCarousel";
@@ -10,12 +10,22 @@ import type { Project } from "../../types/entities/projectTypes";
 import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import { useBreakpoints } from "../../hooks/mediaQueries";
 import useSettings from "../../hooks/queries/useSettings";
+import { API_URL } from "../../constants/apiConstants";
+import type { Media } from "../../types/entities/mediaTypes";
 
 function isProjectsMediasReady(projects: Project[]): boolean {
   for (const project of projects) {
     if (project.thumbnail && !isResolvedMedia(project.thumbnail)) return false;
   }
   return true;
+}
+
+function getProjectThumbnailUrl(project: Project): string | null {
+  if (!project.thumbnail || typeof project.thumbnail === "string") return null;
+
+  return (
+    API_URL + (project.thumbnail as Media).path.replace(/\.webp$/, `_xl.webp`)
+  );
 }
 
 /**
@@ -29,6 +39,7 @@ export default function Home() {
 
   const TITLE_2 = "Web FullStack";
   const [titleLine2, setTitleLine2] = useState(TITLE_2);
+  const [carouselImagesLoaded, setCarouselImagesLoaded] = useState(false);
 
   useEffect(() => {
     const CHARS = "<>{}[]=>/\\|;!@&+_?:-";
@@ -89,9 +100,63 @@ export default function Home() {
 
   const projects = useProjects();
 
-  const pinnedProjects = projects.projects.filter((project) =>
-    project.pined ? project.pined : false,
+  const pinnedProjects = useMemo(
+    () =>
+      projects.projects.filter((project) =>
+        project.pined ? project.pined : false,
+      ),
+    [projects.projects],
   );
+  const pinnedProjectThumbnailUrls = useMemo(
+    () =>
+      pinnedProjects
+        .map(getProjectThumbnailUrl)
+        .filter((url): url is string => !!url),
+    [pinnedProjects],
+  );
+  const arePinnedProjectMediasReady = isProjectsMediasReady(pinnedProjects);
+  const pinnedProjectThumbnailUrlsKey = pinnedProjectThumbnailUrls.join("|");
+
+  useEffect(() => {
+    if (projects.loading || !arePinnedProjectMediasReady) {
+      setCarouselImagesLoaded((loaded) => (loaded ? false : loaded));
+      return;
+    }
+
+    if (pinnedProjectThumbnailUrls.length === 0) {
+      setCarouselImagesLoaded((loaded) => (loaded ? loaded : true));
+      return;
+    }
+
+    let cancelled = false;
+    setCarouselImagesLoaded((loaded) => (loaded ? false : loaded));
+
+    const preloadImage = (src: string) =>
+      new Promise<void>((resolve) => {
+        const image = new Image();
+        image.onload = () => resolve();
+        image.onerror = () => resolve();
+        image.src = src;
+      });
+
+    Promise.all(pinnedProjectThumbnailUrls.map(preloadImage)).then(() => {
+      if (!cancelled) {
+        setCarouselImagesLoaded(true);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    projects.loading,
+    arePinnedProjectMediasReady,
+    pinnedProjectThumbnailUrls.length,
+    pinnedProjectThumbnailUrlsKey,
+  ]);
+
+  const shouldShowSkeleton =
+    projects.loading || !arePinnedProjectMediasReady || !carouselImagesLoaded;
 
   return (
     <Layout.Content
@@ -104,7 +169,7 @@ export default function Home() {
     >
       {maintenanceMode && !settingsLoading && !isAuthenticated ? (
         <Maintenance />
-      ) : isProjectsMediasReady(projects.projects) ? (
+      ) : !shouldShowSkeleton ? (
         <ProjectsCarousel
           title={
             <>
