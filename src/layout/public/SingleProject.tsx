@@ -178,10 +178,14 @@ export function SingleProject() {
                   direction="row"
                   sx={{ alignItems: "center", columnGap: 1, width: "30%" }}
                 >
-                  <Skeleton variant="circular" width={64} height={64} />
+                  <Skeleton
+                    variant="circular"
+                    width={clientLogoSize}
+                    height={clientLogoSize}
+                  />
                   <Skeleton
                     variant="text"
-                    width="calc(100% - 72px)"
+                    width={`calc(100% - ${clientLogoSize}px)`}
                     style={{ fontSize: "64px", lineHeight: "72px" }}
                   />
                 </ResponsiveStack>
