@@ -2,9 +2,11 @@ import { Box, Button, Typography, useTheme } from "@mui/material";
 import { ResponsiveStack } from "./custom/ResponsiveLayout";
 import superDuckSrc from "../assets/images/SuperDuck.png";
 import useSettings from "../hooks/queries/useSettings";
+import { useContactForm } from "../context/ContactFormContext";
 
 export default function Maintenance() {
   const { maintenanceMode, loading } = useSettings();
+  const { openContactForm } = useContactForm();
 
   const theme = useTheme();
 
@@ -70,8 +72,7 @@ export default function Maintenance() {
             margin: "auto",
             whiteSpace: "nowrap",
           }}
-          component="a"
-          href="mailto:hello@onoko.dev"
+          onClick={openContactForm}
         >
           Me contacter
         </Button>
