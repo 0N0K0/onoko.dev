@@ -55,6 +55,7 @@ export default function Picture({
         key={image.id}
         src={API_URL + image.path}
         onLoad={() => setLoaded(true)}
+        loading="lazy"
         style={{
           display: loaded ? undefined : "none",
           width: "100%",
@@ -108,6 +109,7 @@ export default function Picture({
         <img
           src={API_URL + paths.xl}
           onLoad={() => setLoaded(true)}
+          loading="lazy"
           style={{
             width: "100%",
             height: "100%",

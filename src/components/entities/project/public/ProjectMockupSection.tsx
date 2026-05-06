@@ -24,6 +24,7 @@ export default function ProjectMockupSection({
       {project.mockup.images && project.mockup.images.length > 0 && (
         <ResponsiveImageList
           variant="masonry"
+          cols={3}
           gap={16}
           maxWidth="fit-content"
           role="tabpanel"
