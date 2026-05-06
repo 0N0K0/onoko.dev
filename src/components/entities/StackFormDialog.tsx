@@ -97,7 +97,7 @@ export default function StackFormDialog({
             >
               <TextField
                 label="Label"
-                value={editingStack?.label || ""}
+                value={stripHtml(editingStack?.label || "")}
                 onChange={(e) => {
                   setEditingStack(
                     editingStack
@@ -148,7 +148,7 @@ export default function StackFormDialog({
             </ResponsiveStack>
             <TextField
               label="Description"
-              value={editingStack?.description || ""}
+              value={stripHtml(editingStack?.description || "")}
               onChange={(e) => {
                 setEditingStack(
                   editingStack
@@ -184,7 +184,7 @@ export default function StackFormDialog({
               fields={(value, idx, onChange) => (
                 <TextField
                   placeholder={`Compétence ${idx + 1}`}
-                  value={value}
+                  value={stripHtml(value)}
                   onChange={(e) => onChange(e.target.value)}
                   multiline
                 />

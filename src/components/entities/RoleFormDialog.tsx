@@ -5,6 +5,7 @@ import Icon from "@mdi/react";
 import { mdiCheck, mdiClose } from "@mdi/js";
 import type { Role, RoleFormDialogProps } from "../../types/entities/roleTypes";
 import useFormDialog from "../../hooks/useFormDialog";
+import { stripHtml } from "../../utils/stringUtils";
 
 /**
  * Composant de dialogue pour ajouter ou modifier un rôle.
@@ -50,7 +51,7 @@ export default function RoleFormDialog({
           <ResponsiveStack rowGap={3} sx={{ overflow: "visible" }}>
             <TextField
               label="Label"
-              value={editingRole?.label || ""}
+              value={stripHtml(editingRole?.label || "")}
               onChange={(e) => {
                 setEditingRole(
                   editingRole

@@ -45,7 +45,7 @@ export default function ProjectBasicSection({
       />
       <TextField
         label="Label"
-        value={editingProject?.label || ""}
+        value={stripHtml(editingProject?.label || "")}
         onChange={(e) => {
           setEditingProject((prev) =>
             prev
