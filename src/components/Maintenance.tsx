@@ -1,13 +1,14 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 import { ResponsiveStack } from "./custom/ResponsiveLayout";
 import superDuckSrc from "../assets/images/SuperDuck.png";
+import useSettings from "../hooks/queries/useSettings";
 
 export default function Maintenance() {
-  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === "true";
+  const { maintenanceMode, loading } = useSettings();
 
   const theme = useTheme();
 
-  if (!maintenanceMode) return null;
+  if (loading || !maintenanceMode) return null;
 
   return (
     <ResponsiveStack
@@ -40,7 +41,7 @@ export default function Maintenance() {
       }}
     >
       <ResponsiveStack
-        rowGap={6}
+        rowGap={3}
         sx={{
           flex: 1,
           maxWidth: "fit-content",
@@ -62,6 +63,18 @@ export default function Maintenance() {
             Merci de votre&nbsp;patience.
           </Typography>
         </ResponsiveStack>
+        <Button
+          size="large"
+          sx={{
+            marginTop: 9,
+            margin: "auto",
+            whiteSpace: "nowrap",
+          }}
+          component="a"
+          href="mailto:hello@onoko.dev"
+        >
+          Me contacter
+        </Button>
       </ResponsiveStack>
       <Box
         sx={{

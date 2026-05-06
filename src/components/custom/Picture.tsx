@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { Skeleton } from "@mui/material";
 import { API_URL } from "../../constants/apiConstants";
 import { IMAGE_WIDTHS } from "../../constants/imageConstants";
 import type { Media } from "../../types/entities/mediaTypes";
@@ -17,6 +19,7 @@ export default function Picture({
   objectPosition?: string;
   style?: React.CSSProperties;
 }) {
+  const [loaded, setLoaded] = useState(false);
   const paths: { [key: string]: string } = {
     xl: "",
     l: "",
@@ -31,60 +34,91 @@ export default function Picture({
     }
   }
 
+  const skeletonStyle: React.CSSProperties = {
+    maxWidth: maxWidth,
+    maxHeight: maxHeight,
+    boxSizing: "border-box",
+    ...style,
+  };
+
   return image.type === "svg" ? (
-    <img
-      key={image.id}
-      src={API_URL + image.path}
-      style={{
-        width: "100%",
-        height: "100%",
-        maxWidth: maxWidth,
-        maxHeight: maxHeight,
-        objectFit: objectFit,
-        objectPosition: objectPosition || image.focus || "50% 50%",
-        boxSizing: "border-box",
-        ...style,
-      }}
-    />
-  ) : image.type === "webp" ? (
-    <picture
-      key={image.id}
-      style={{
-        display: "block",
-        maxWidth: maxWidth,
-        maxHeight: maxHeight,
-        overflow: "hidden",
-        boxSizing: "border-box",
-        ...style,
-      }}
-    >
-      <source
-        srcSet={API_URL + paths.xs}
-        media={`(max-width: ${IMAGE_WIDTHS.xs}px)`}
-      />
-      <source
-        srcSet={API_URL + paths.s}
-        media={`(max-width: ${IMAGE_WIDTHS.s}px)`}
-      />
-      <source
-        srcSet={API_URL + paths.m}
-        media={`(max-width: ${IMAGE_WIDTHS.m}px)`}
-      />
-      <source
-        srcSet={API_URL + paths.l}
-        media={`(max-width: ${IMAGE_WIDTHS.l}px)`}
-      />
+    <>
+      {!loaded && (
+        <Skeleton
+          variant="rectangular"
+          style={skeletonStyle}
+          width="100%"
+          height="100%"
+        />
+      )}
       <img
-        src={API_URL + paths.xl}
+        key={image.id}
+        src={API_URL + image.path}
+        onLoad={() => setLoaded(true)}
         style={{
+          display: loaded ? undefined : "none",
           width: "100%",
           height: "100%",
           maxWidth: maxWidth,
           maxHeight: maxHeight,
           objectFit: objectFit,
           objectPosition: objectPosition || image.focus || "50% 50%",
+          boxSizing: "border-box",
+          ...style,
         }}
       />
-    </picture>
+    </>
+  ) : image.type === "webp" ? (
+    <>
+      {!loaded && (
+        <Skeleton
+          variant="rectangular"
+          style={skeletonStyle}
+          width="100%"
+          height="100%"
+        />
+      )}
+      <picture
+        key={image.id}
+        style={{
+          display: loaded ? "block" : "none",
+          maxWidth: maxWidth,
+          maxHeight: maxHeight,
+          overflow: "hidden",
+          boxSizing: "border-box",
+          ...style,
+        }}
+      >
+        <source
+          srcSet={API_URL + paths.xs}
+          media={`(max-width: ${IMAGE_WIDTHS.xs}px)`}
+        />
+        <source
+          srcSet={API_URL + paths.s}
+          media={`(max-width: ${IMAGE_WIDTHS.s}px)`}
+        />
+        <source
+          srcSet={API_URL + paths.m}
+          media={`(max-width: ${IMAGE_WIDTHS.m}px)`}
+        />
+        <source
+          srcSet={API_URL + paths.l}
+          media={`(max-width: ${IMAGE_WIDTHS.l}px)`}
+        />
+        <img
+          src={API_URL + paths.xl}
+          onLoad={() => setLoaded(true)}
+          style={{
+            display: "block",
+            width: "100%",
+            height: "100%",
+            maxWidth: maxWidth,
+            maxHeight: maxHeight,
+            objectFit: objectFit,
+            objectPosition: objectPosition || image.focus || "50% 50%",
+          }}
+        />
+      </picture>
+    </>
   ) : null;
 }

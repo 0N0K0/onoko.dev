@@ -51,7 +51,7 @@ export default function ProjectTableRow({
   const fitFontSize = () => {
     if (!title || !titleRef.current || !containerRef.current) return;
     const containerWidth = containerRef.current.offsetWidth - (isLg ? 96 : 64);
-    let fontSize = isLg ? 56 : 32; // px (3.5rem ou 2rem)
+    let fontSize = isLg ? 40 : 32; // px (3rem ou 2rem)
     titleRef.current.style.fontSize = fontSize + "px";
     let titleWidth = titleRef.current.scrollWidth;
     console.log({ titleWidth, containerWidth });
@@ -93,9 +93,9 @@ export default function ProjectTableRow({
               // width: "fit-content",
               fontSize: autoFontSize
                 ? `${autoFontSize}px`
-                : { lg: "3.5rem", xs: "2rem" },
+                : { lg: "2.5rem", xs: "2rem" },
               fontWeight: 700,
-              lineHeight: { lg: "72px", xs: 1.2 },
+              lineHeight: { lg: 1.2, xs: 1.5 },
             }}
           >
             {title}
@@ -117,10 +117,11 @@ export default function ProjectTableRow({
             <Typography
               variant="h2"
               sx={{
-                fontSize: { lg: "3.5rem", xs: "2.5rem" },
+                fontSize: { lg: "2.5rem", xs: "2rem" },
                 fontWeight: 700,
-                lineHeight: { lg: "72px", xs: 1.2 },
+                lineHeight: { lg: 1.2, xs: 1.5 },
                 display: { md: merged ? "block" : "none", xs: "block" },
+                textAlign: "right",
               }}
             >
               {title}

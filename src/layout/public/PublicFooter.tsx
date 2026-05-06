@@ -11,13 +11,18 @@ import { useLocation } from "react-router-dom";
 import CustomIconButton from "../../components/custom/CustomIconButton";
 import { mdiEmail, mdiGithub, mdiLinkedin } from "@mdi/js";
 import { useBreakpoints } from "../../hooks/mediaQueries";
+import { useAuthContext } from "../../context/AuthContext";
+import useSettings from "../../hooks/queries/useSettings";
 
 /**
  * Pied de page pour les pages publiques, affichant un message de copyright.
  * Utilisé sur les pages d'accueil, de connexion, etc.
  */
 export default function PublicFooter() {
-  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === "true";
+  const { maintenanceMode, loading } = useSettings();
+  const { isAuthenticated } = useAuthContext();
+
+  const canShowNavigation = isAuthenticated || (!loading && !maintenanceMode);
 
   const theme = useTheme();
   const { isSm } = useBreakpoints();
@@ -61,7 +66,7 @@ export default function PublicFooter() {
           columnGap: 4,
         }}
       >
-        {isSm && !maintenanceMode && (
+        {isSm && canShowNavigation && (
           <ResponsiveStack
             sx={{
               flexDirection: "row",

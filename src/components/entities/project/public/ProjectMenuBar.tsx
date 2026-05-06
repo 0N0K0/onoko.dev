@@ -4,6 +4,7 @@ import type { Project } from "../../../../types/entities/projectTypes";
 import { useAuthContext } from "../../../../context/AuthContext";
 import { useEffect, useRef, useState } from "react";
 import { mdiChevronLeft, mdiChevronRight } from "@mdi/js";
+import { hasRichTextContent } from "../../../../utils/stringUtils";
 
 export default function ProjectMenuBar({ project }: { project: Project }) {
   const { isAuthenticated } = useAuthContext();
@@ -11,7 +12,11 @@ export default function ProjectMenuBar({ project }: { project: Project }) {
 
   const sections: { id: string; label: string }[] = [];
 
-  if (project?.intro || project?.website?.url || project?.mockup?.url)
+  if (
+    hasRichTextContent(project?.intro) ||
+    project?.website?.url ||
+    project?.mockup?.url
+  )
     sections.push({ id: "intro", label: "Introduction" });
   if (project?.mockup?.images && project.mockup.images.length > 0)
     sections.push({ id: "mockup", label: "Maquettes" });
@@ -27,29 +32,29 @@ export default function ProjectMenuBar({ project }: { project: Project }) {
   )
     sections.push({ id: "kpis", label: "KPI" });
   if (project?.presentation) {
-    if (project.presentation.context)
+    if (hasRichTextContent(project.presentation.context))
       sections.push({ id: "context", label: "Contexte" });
 
-    if (project.presentation.client)
+    if (hasRichTextContent(project.presentation.client))
       sections.push({ id: "client", label: "Client" });
 
-    if (project.presentation.issue)
+    if (hasRichTextContent(project.presentation.issue))
       sections.push({ id: "issue", label: "Finalités" });
 
-    if (project.presentation.audience)
+    if (hasRichTextContent(project.presentation.audience))
       sections.push({ id: "audience", label: "Audience" });
   }
   if (project?.need) {
-    if (project.need.features)
+    if (hasRichTextContent(project.need.features))
       sections.push({ id: "features", label: "Fonctionnalités" });
 
-    if (project.need.functionalConstraints)
+    if (hasRichTextContent(project.need.functionalConstraints))
       sections.push({
         id: "functional-constraints",
         label: "Contraintes fonctionnelles",
       });
 
-    if (project.need.technicalConstraints)
+    if (hasRichTextContent(project.need.technicalConstraints))
       sections.push({
         id: "technical-constraints",
         label: "Contraintes techniques",
@@ -58,22 +63,22 @@ export default function ProjectMenuBar({ project }: { project: Project }) {
   if (project?.coworkers && project.coworkers.length > 0)
     sections.push({ id: "team", label: "Équipe" });
   if (project?.organization) {
-    if (project.organization.methodology)
+    if (hasRichTextContent(project.organization.methodology))
       sections.push({ id: "methodology", label: "Gestion de projet" });
 
-    if (project.organization.anticipation)
+    if (hasRichTextContent(project.organization.anticipation))
       sections.push({ id: "anticipation", label: "Anticipation" });
 
-    if (project.organization.evolution)
+    if (hasRichTextContent(project.organization.evolution))
       sections.push({ id: "evolution", label: "Évolutions" });
 
-    if (project.organization.validation)
+    if (hasRichTextContent(project.organization.validation))
       sections.push({ id: "validation", label: "Validation" });
   }
   if (project?.feedback) {
-    if (project.feedback.client)
+    if (hasRichTextContent(project.feedback.client))
       sections.push({ id: "client-feedback", label: "Retours" });
-    if (project.feedback.general)
+    if (hasRichTextContent(project.feedback.general))
       sections.push({ id: "general-feedback", label: "Bilan" });
   }
 

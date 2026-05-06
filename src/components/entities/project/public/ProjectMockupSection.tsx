@@ -4,7 +4,6 @@ import { ResponsiveImageList } from "../../../custom/ResponsiveLayout";
 import ProjectTableRow from "./ProjectTableRow";
 import Picture from "../../../custom/Picture";
 import type { Media } from "../../../../types/entities/mediaTypes";
-import { useResponsiveWidth } from "../../../../hooks/layout/useResponsiveWidth";
 import { useMediaQuery } from "@mui/system";
 
 export default function ProjectMockupSection({
@@ -14,7 +13,6 @@ export default function ProjectMockupSection({
 }) {
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("md"));
-  const pictureMaxWidth = useResponsiveWidth(8);
 
   if (!project.mockup?.images?.length && (!project.mockup?.embed || isSmall))
     return null;
@@ -24,7 +22,8 @@ export default function ProjectMockupSection({
       {project.mockup.images && project.mockup.images.length > 0 && (
         <ResponsiveImageList
           variant="masonry"
-          gap={16}
+          cols={isSmall ? 2 : 4}
+          gap={8}
           maxWidth="fit-content"
           role="tabpanel"
           sx={{
@@ -42,12 +41,11 @@ export default function ProjectMockupSection({
             >
               <Picture
                 image={image as Media}
-                maxWidth={pictureMaxWidth}
                 style={{
                   border: `1px solid ${theme.palette.divider}`,
-                  borderRadius: "8px",
-                  overflow: "hidden",
+                  borderRadius: "4px",
                   width: "fit-content",
+                  height: "fit-content",
                 }}
               />
             </ImageListItem>

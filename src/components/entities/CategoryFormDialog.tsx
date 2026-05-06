@@ -62,7 +62,7 @@ export default function CategoryFormDialog({
           <ResponsiveStack rowGap={3} sx={{ overflow: "visible" }}>
             <TextField
               label="Label"
-              value={editingCategory?.label || ""}
+              value={stripHtml(editingCategory?.label || "")}
               onChange={(e) => {
                 setEditingCategory(
                   editingCategory
@@ -96,7 +96,7 @@ export default function CategoryFormDialog({
             />
             <TextField
               label="Description"
-              value={editingCategory?.description || ""}
+              value={stripHtml(editingCategory?.description || "")}
               onChange={(e) => {
                 setEditingCategory(
                   editingCategory

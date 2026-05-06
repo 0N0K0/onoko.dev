@@ -3,6 +3,7 @@ import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
 import MediaPicker from "../../media/MediaPicker";
 import type { Media } from "../../../../types/entities/mediaTypes";
 import type { ProjectSectionProps } from "../../../../types/entities/projectTypes";
+import { stripHtml } from "../../../../utils/stringUtils";
 
 export default function ProjectLinksSection({
   editingProject,
@@ -42,7 +43,7 @@ export default function ProjectLinksSection({
           />
           <TextField
             label="Label"
-            value={editingProject?.website?.label || ""}
+            value={stripHtml(editingProject?.website?.label || "")}
             onChange={(e) => {
               setEditingProject((prev) =>
                 prev
@@ -139,7 +140,7 @@ export default function ProjectLinksSection({
           />
           <TextField
             label="Label"
-            value={editingProject?.mockup?.label || ""}
+            value={stripHtml(editingProject?.mockup?.label || "")}
             onChange={(e) => {
               setEditingProject((prev) =>
                 prev

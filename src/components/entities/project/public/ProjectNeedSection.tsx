@@ -1,4 +1,5 @@
 import type { Project } from "../../../../types/entities/projectTypes";
+import { hasRichTextContent } from "../../../../utils/stringUtils";
 import { WysiwygBox } from "../../../custom/WysiwygBox";
 import ProjectTableRow from "./ProjectTableRow";
 
@@ -7,25 +8,25 @@ export default function ProjectNeedSection({ project }: { project: Project }) {
 
   return (
     <>
-      {project.need.features && (
+      {hasRichTextContent(project.need.features) && (
         <ProjectTableRow id="features" title="Fonctionnalités attendues">
-          <WysiwygBox __html={project.need.features} />
+          <WysiwygBox __html={project.need.features!} />
         </ProjectTableRow>
       )}
-      {project.need.functionalConstraints && (
+      {hasRichTextContent(project.need.functionalConstraints) && (
         <ProjectTableRow
           id="functional-constraints"
           title="Contraintes fonctionnelles"
         >
-          <WysiwygBox __html={project.need.functionalConstraints} />
+          <WysiwygBox __html={project.need.functionalConstraints!} />
         </ProjectTableRow>
       )}
-      {project.need.technicalConstraints && (
+      {hasRichTextContent(project.need.technicalConstraints) && (
         <ProjectTableRow
           id="technical-constraints"
           title="Contraintes techniques"
         >
-          <WysiwygBox __html={project.need.technicalConstraints} />
+          <WysiwygBox __html={project.need.technicalConstraints!} />
         </ProjectTableRow>
       )}
     </>

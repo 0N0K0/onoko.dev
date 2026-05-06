@@ -4,6 +4,7 @@ import MediaPicker from "../../media/MediaPicker";
 import type { Media } from "../../../../types/entities/mediaTypes";
 import { extractId } from "../../../../utils/normalizeRef";
 import type { ProjectSectionProps } from "../../../../types/entities/projectTypes";
+import { stripHtml } from "../../../../utils/stringUtils";
 
 interface Props extends ProjectSectionProps {
   medias: Media[];
@@ -51,7 +52,7 @@ export default function ProjectPeopleSection({
         />
         <TextField
           label="Label"
-          value={editingProject?.client?.label || ""}
+          value={stripHtml(editingProject?.client?.label || "")}
           onChange={(e) => {
             setEditingProject((prev) =>
               prev
@@ -81,7 +82,7 @@ export default function ProjectPeopleSection({
         >
           <TextField
             label="Nom"
-            value={editingProject?.manager?.name || ""}
+            value={stripHtml(editingProject?.manager?.name || "")}
             onChange={(e) => {
               setEditingProject((prev) =>
                 prev
