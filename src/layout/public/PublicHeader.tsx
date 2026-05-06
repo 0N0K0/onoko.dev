@@ -29,6 +29,8 @@ export default function PublicHeader() {
   const { isAuthenticated } = useAuthContext();
   const { pathname } = useLocation();
 
+  const canShowNavigation = !maintenanceMode || isAuthenticated;
+
   const [isLogoOpen, setIsLogoOpen] = useState(!canHover);
   useEffect(() => {
     setTimeout(() => {
@@ -139,7 +141,7 @@ export default function PublicHeader() {
           <span className="show right">K</span>
           <span className="hide right">O</span>
         </Link>
-        {isSm && !maintenanceMode ? (
+        {isSm && canShowNavigation ? (
           <ResponsiveStack
             sx={{
               flexGrow: 1,
@@ -207,7 +209,7 @@ export default function PublicHeader() {
               );
             })}
           </ResponsiveStack>
-        ) : !maintenanceMode ? (
+        ) : canShowNavigation ? (
           <>
             <CustomIconButton
               icon={open ? mdiClose : mdiMenu}
