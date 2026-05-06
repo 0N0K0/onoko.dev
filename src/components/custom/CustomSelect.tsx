@@ -13,6 +13,7 @@ export default function CustomSelect({
   value,
   onChange,
   options,
+  emptyOption = true,
   ...props
 }: CustomSelectProps & Omit<FormControlProps, "onChange">) {
   return (
@@ -25,7 +26,7 @@ export default function CustomSelect({
         onChange={onChange}
         multiple={Array.isArray(value) ? true : false}
       >
-        <MenuItem value="">Aucune</MenuItem>
+        {emptyOption && <MenuItem value="">Aucune</MenuItem>}
         {options?.map((o: { id: string; label: string }) => (
           <MenuItem key={o.id} value={o.id}>
             {o.label}

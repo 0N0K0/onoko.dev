@@ -12,6 +12,7 @@ import { useBreakpoints } from "../../hooks/mediaQueries";
 import useSettings from "../../hooks/queries/useSettings";
 import { API_URL } from "../../constants/apiConstants";
 import type { Media } from "../../types/entities/mediaTypes";
+import { useContactForm } from "../../context/ContactFormContext";
 
 function isProjectsMediasReady(projects: Project[]): boolean {
   for (const project of projects) {
@@ -34,6 +35,7 @@ function getProjectThumbnailUrl(project: Project): string | null {
 export default function Home() {
   const { maintenanceMode, loading: settingsLoading } = useSettings();
   const { isAuthenticated } = useAuthContext();
+  const { openContactForm } = useContactForm();
 
   const { isLg, isMd } = useBreakpoints();
 
@@ -201,8 +203,7 @@ export default function Home() {
                 whiteSpace: "nowrap",
                 width: "fit-content",
               }}
-              component="a"
-              href="mailto:hello@onoko.dev"
+              onClick={openContactForm}
             >
               Me contacter
             </Button>

@@ -3,6 +3,7 @@ import PublicFooter from "./PublicFooter";
 import Layout from "..";
 import AdminHeader from "../admin/AdminHeader";
 import { useAuthContext } from "../../context/AuthContext";
+import { ContactFormProvider } from "../../context/ContactFormContext";
 
 /**
  * Layout principal pour les pages publiques (accueil, connexion, etc.).
@@ -16,18 +17,20 @@ export default function PublicLayout({
   const { isAuthenticated } = useAuthContext();
 
   return (
-    <Layout
-      sx={{
-        minHeight: "100dvh",
-        overflowX: "clip",
-        paddingBottom: "48px !important",
-        paddingTop: isAuthenticated ? "96px !important" : "48px !important",
-      }}
-    >
-      {isAuthenticated ? <AdminHeader position="fixed" /> : null}
-      <PublicHeader />
-      {children}
-      <PublicFooter />
-    </Layout>
+    <ContactFormProvider>
+      <Layout
+        sx={{
+          minHeight: "100dvh",
+          overflowX: "clip",
+          paddingBottom: "48px !important",
+          paddingTop: isAuthenticated ? "96px !important" : "48px !important",
+        }}
+      >
+        {isAuthenticated ? <AdminHeader position="fixed" /> : null}
+        <PublicHeader />
+        {children}
+        <PublicFooter />
+      </Layout>
+    </ContactFormProvider>
   );
 }
