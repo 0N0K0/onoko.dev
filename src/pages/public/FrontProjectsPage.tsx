@@ -32,35 +32,43 @@ export function FrontProjectsPage() {
 
   return (
     <Layout.Content rowGap={6} sx={{ paddingX: 0, overflowY: "auto" }}>
-      <ProjectsCarousel
-        title={<>Sites Web</>}
-        subtitle={<>Du pixel à la prod</>}
-        projects={webSiteProjects}
-        minHeight="calc(100dvh - 18rem)"
-      />
-      <ProjectsCarousel
-        title={<>Logiciels</>}
-        subtitle={<>Des solutions sur mesure</>}
-        projects={softwareProjects}
-        minHeight="calc(100dvh - 18rem)"
-      />
-      <ProjectsCarousel
-        title={<>Modules</>}
-        subtitle={
-          <>
-            Librairies, Plugins
-            <br />& Automatisations
-          </>
-        }
-        projects={toolProjects}
-        minHeight="calc(100dvh - 18rem)"
-      />
-      <ProjectsCarousel
-        title={<>Bac à sable</>}
-        subtitle={<>Libres curiosités</>}
-        projects={persoProjects}
-        minHeight="calc(100dvh - 18rem)"
-      />
+      {webSiteProjects.length > 0 && (
+        <ProjectsCarousel
+          title={<>Sites Web</>}
+          subtitle={<>Du pixel à la prod</>}
+          projects={webSiteProjects}
+          minHeight="calc(100dvh - 18rem)"
+        />
+      )}
+      {softwareProjects.length > 0 && (
+        <ProjectsCarousel
+          title={<>Logiciels</>}
+          subtitle={<>Des solutions sur mesure</>}
+          projects={softwareProjects}
+          minHeight="calc(100dvh - 18rem)"
+        />
+      )}
+      {toolProjects.length > 0 && (
+        <ProjectsCarousel
+          title={<>Modules</>}
+          subtitle={
+            <>
+              Librairies, Plugins
+              <br />& Automatisations
+            </>
+          }
+          projects={toolProjects}
+          minHeight="calc(100dvh - 18rem)"
+        />
+      )}
+      {persoProjects.length > 0 && (
+        <ProjectsCarousel
+          title={<>Bac à sable</>}
+          subtitle={<>Libres curiosités</>}
+          projects={persoProjects}
+          minHeight="calc(100dvh - 18rem)"
+        />
+      )}
       <CallToAction emphasis />
     </Layout.Content>
   );
