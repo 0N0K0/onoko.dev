@@ -49,7 +49,7 @@ export default function ProjectMainInfosSection({
             rowGap={6}
             sx={{
               display: "grid",
-              gridTemplateColumns: `repeat(auto-fit, minmax(72px, 1fr))`,
+              gridTemplateColumns: `repeat(auto-fit, minmax(9rem, ${project.stacks.length < 5 ? "20%" : "1fr"}))`,
               columnGap: 4,
               width: "100%",
               maxWidth: "100%",
