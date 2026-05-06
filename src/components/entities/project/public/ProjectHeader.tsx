@@ -8,12 +8,15 @@ import type { Category } from "../../../../types/entities/categoryTypes";
 import { API_URL } from "../../../../constants/apiConstants";
 import { useLayoutEffect, useRef, useState } from "react";
 import { stripHtml } from "../../../../utils/stringUtils";
+import { useAuthContext } from "../../../../context/AuthContext";
 
 export default function ProjectHeader({ project }: { project: Project }) {
   const theme = useTheme();
   const isXS = useMediaQuery(theme.breakpoints.up("xs"));
   const isSM = useMediaQuery(theme.breakpoints.up("sm"));
   const isMD = useMediaQuery(theme.breakpoints.up("md"));
+
+  const { isAuthenticated } = useAuthContext();
 
   const thumbnailUrl =
     API_URL + (project.thumbnail as Media)?.path.replace(/\.webp$/, `_xl.webp`);
@@ -46,7 +49,7 @@ export default function ProjectHeader({ project }: { project: Project }) {
       <Box
         sx={{
           position: "relative",
-          minHeight: `calc(100dvh - 96px - ${infosHeight}px)`,
+          minHeight: `calc(100dvh - ${isAuthenticated ? "144px" : "96px"} - ${infosHeight}px)`,
           background: `url(${thumbnailUrl}) ${(project.thumbnail as Media)?.focus || "center"} / cover no-repeat`,
           backgroundAttachment: "fixed",
           justifyContent: "end",
