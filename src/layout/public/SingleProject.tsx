@@ -16,20 +16,11 @@ import ProjectFeedbackSection from "../../components/entities/project/public/Pro
 import CallToAction from "../../components/CallToAction";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 import { useBreakpoints } from "../../hooks/mediaQueries";
-import type { Media } from "../../types/entities/mediaTypes";
 import type { Project } from "../../types/entities/projectTypes";
 import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import { useAuthContext } from "../../context/AuthContext";
 import { useLayoutEffect, useRef, useState } from "react";
-
-function isResolvedMedia(value: unknown): value is Media {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "type" in value &&
-    "path" in value
-  );
-}
+import { isResolvedMedia } from "../../utils/mediaUtils";
 
 function isProjectMediaReady(project: Project): boolean {
   if (project.thumbnail && !isResolvedMedia(project.thumbnail)) return false;
