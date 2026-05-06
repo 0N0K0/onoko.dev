@@ -5,18 +5,22 @@ import { WysiwygBox } from "../../../custom/WysiwygBox";
 import ProjectTableRow from "./ProjectTableRow";
 import { Link as ReactLink } from "react-router-dom";
 import { useResponsiveWidth } from "../../../../hooks/layout/useResponsiveWidth";
-import { stripHtml } from "../../../../utils/stringUtils";
+import { hasRichTextContent, stripHtml } from "../../../../utils/stringUtils";
 
 export default function ProjectIntro({ project }: { project: Project }) {
   const maxWidth = useResponsiveWidth(8);
 
-  if (project.intro || project.website?.url || project.mockup?.url)
+  if (
+    hasRichTextContent(project.intro) ||
+    project.website?.url ||
+    project.mockup?.url
+  )
     return (
       <ProjectTableRow id="intro" merged>
         <ResponsiveStack rowGap={6}>
-          {project.intro && (
+          {hasRichTextContent(project.intro) && (
             <WysiwygBox
-              __html={project.intro}
+              __html={project.intro!}
               sx={{
                 maxWidth: maxWidth,
                 margin: "0 auto",
