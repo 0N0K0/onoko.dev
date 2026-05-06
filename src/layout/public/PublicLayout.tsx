@@ -20,7 +20,8 @@ export default function PublicLayout({
       sx={{
         minHeight: "100dvh",
         overflowX: "clip",
-        paddingY: "48px !important",
+        paddingBottom: "48px !important",
+        paddingTop: isAuthenticated ? "96px !important" : "48px !important",
       }}
     >
       {isAuthenticated ? <AdminHeader position="fixed" /> : null}

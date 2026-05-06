@@ -5,7 +5,7 @@ import Picture from "../../../custom/Picture";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
 import { WysiwygBox } from "../../../custom/WysiwygBox";
 import ProjectTableRow from "./ProjectTableRow";
-import { stripHtml } from "../../../../utils/stringUtils";
+import { hasRichTextContent, stripHtml } from "../../../../utils/stringUtils";
 
 export default function ProjectPresentationSection({
   project,
@@ -18,12 +18,12 @@ export default function ProjectPresentationSection({
 
   return (
     <>
-      {project.presentation.context && (
+      {hasRichTextContent(project.presentation.context) && (
         <ProjectTableRow id="context" title="Contexte">
-          <WysiwygBox __html={project.presentation.context} />
+          <WysiwygBox __html={project.presentation.context!} />
         </ProjectTableRow>
       )}
-      {project.presentation.client && (
+      {hasRichTextContent(project.presentation.client) && (
         <ProjectTableRow id="client" title="Client">
           <ResponsiveStack sx={{ rowGap: { md: 6, xs: 3 } }}>
             {(project.client || project.manager) && (
@@ -117,21 +117,21 @@ export default function ProjectPresentationSection({
                 )}
               </ResponsiveStack>
             )}
-            <WysiwygBox __html={project.presentation.client} />
+            <WysiwygBox __html={project.presentation.client!} />
           </ResponsiveStack>
         </ProjectTableRow>
       )}
-      {project.presentation.issue && (
+      {hasRichTextContent(project.presentation.issue) && (
         <ProjectTableRow id="issue" title="Finalités & enjeux">
-          <WysiwygBox __html={project.presentation.issue} />
+          <WysiwygBox __html={project.presentation.issue!} />
         </ProjectTableRow>
       )}
-      {project.presentation.audience && (
+      {hasRichTextContent(project.presentation.audience) && (
         <ProjectTableRow
           id="audience"
           title={"Utilisateurs\u00A0& audience\u00A0cible"}
         >
-          <WysiwygBox __html={project.presentation.audience} />
+          <WysiwygBox __html={project.presentation.audience!} />
         </ProjectTableRow>
       )}
     </>

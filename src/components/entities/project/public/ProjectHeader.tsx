@@ -1,6 +1,6 @@
 import { Box } from "@mui/system";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
-import { Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Typography, useTheme } from "@mui/material";
 import Picture from "../../../custom/Picture";
 import type { Project } from "../../../../types/entities/projectTypes";
 import type { Media } from "../../../../types/entities/mediaTypes";
@@ -8,12 +8,14 @@ import type { Category } from "../../../../types/entities/categoryTypes";
 import { API_URL } from "../../../../constants/apiConstants";
 import { useLayoutEffect, useRef, useState } from "react";
 import { stripHtml } from "../../../../utils/stringUtils";
+import { useAuthContext } from "../../../../context/AuthContext";
+import { useBreakpoints } from "../../../../hooks/mediaQueries";
 
 export default function ProjectHeader({ project }: { project: Project }) {
   const theme = useTheme();
-  const isXS = useMediaQuery(theme.breakpoints.up("xs"));
-  const isSM = useMediaQuery(theme.breakpoints.up("sm"));
-  const isMD = useMediaQuery(theme.breakpoints.up("md"));
+  const { isXs, isSm, isMd, isXxl } = useBreakpoints();
+
+  const { isAuthenticated } = useAuthContext();
 
   const thumbnailUrl =
     API_URL + (project.thumbnail as Media)?.path.replace(/\.webp$/, `_xl.webp`);
@@ -32,9 +34,9 @@ export default function ProjectHeader({ project }: { project: Project }) {
   }, []);
 
   let clientLogoSize;
-  if (isMD) clientLogoSize = theme.typography.h1.fontSize;
-  else if (isSM) clientLogoSize = theme.typography.h4.fontSize;
-  else if (isXS) clientLogoSize = theme.typography.h5.fontSize;
+  if (isMd) clientLogoSize = theme.typography.h1.fontSize;
+  else if (isSm) clientLogoSize = theme.typography.h4.fontSize;
+  else if (isXs) clientLogoSize = theme.typography.h5.fontSize;
 
   return (
     <ResponsiveStack
@@ -46,11 +48,14 @@ export default function ProjectHeader({ project }: { project: Project }) {
       <Box
         sx={{
           position: "relative",
-          minHeight: `calc(100dvh - 96px - ${infosHeight}px)`,
-          background: `url(${thumbnailUrl}) ${(project.thumbnail as Media)?.focus || "center"} / cover no-repeat`,
+          minHeight: `calc(min(1080px, 100dvh) - ${isAuthenticated ? "144px" : "96px"} - ${infosHeight}px)`,
+          backgroundImage: `url(${thumbnailUrl})`,
+          backgroundPosition: isXxl
+            ? "center top"
+            : (project.thumbnail as Media)?.focus || "center",
+          backgroundRepeat: "no-repeat",
           backgroundAttachment: "fixed",
-          justifyContent: "end",
-          alignItems: "center",
+          backgroundSize: isXxl ? "1920px auto" : "cover",
           borderTop: `1px solid ${theme.palette.divider}`,
           borderBottom: `1px solid ${theme.palette.divider}`,
         }}

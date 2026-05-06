@@ -77,6 +77,14 @@ export function WysiwygBox({
                 margin: 0,
               },
             },
+            "&.ql-indent-1": { paddingLeft: "0.5rem" },
+            "&.ql-indent-2": { paddingLeft: "1rem" },
+            "&.ql-indent-3": { paddingLeft: "1.5rem" },
+            "&.ql-indent-4": { paddingLeft: "2rem" },
+            "&.ql-indent-5": { paddingLeft: "2.5rem" },
+            "&.ql-indent-6": { paddingLeft: "3rem" },
+            "&.ql-indent-7": { paddingLeft: "3.5rem" },
+            "&.ql-indent-8": { paddingLeft: "4rem" },
           },
         },
         "& a": {
@@ -117,6 +125,7 @@ export function WysiwygBox({
         "& .ql-indent-6": { paddingLeft: { lg: "12rem", xs: "6rem" } },
         "& .ql-indent-7": { paddingLeft: { lg: "14rem", xs: "7rem" } },
         "& .ql-indent-8": { paddingLeft: { lg: "16rem", xs: "8rem" } },
+
         ...props.sx,
       }}
       dangerouslySetInnerHTML={{ __html }}

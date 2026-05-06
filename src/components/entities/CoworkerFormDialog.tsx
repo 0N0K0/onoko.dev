@@ -62,7 +62,7 @@ export default function CoworkerFormDialog({
           <ResponsiveStack rowGap={3} sx={{ overflow: "visible" }}>
             <TextField
               label="Nom"
-              value={editingCoworker?.name || ""}
+              value={stripHtml(editingCoworker?.name || "")}
               onChange={(e) => {
                 setEditingCoworker(
                   editingCoworker

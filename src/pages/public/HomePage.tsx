@@ -2,16 +2,30 @@ import { useEffect, useState } from "react";
 import useProjects from "../../hooks/queries/useProjects";
 import Layout from "../../layout";
 import ProjectsCarousel from "../../components/entities/project/public/ProjectsCarousel";
-import { Button } from "@mui/material";
+import { Button, Skeleton } from "@mui/material";
 import Maintenance from "../../components/Maintenance";
 import { useAuthContext } from "../../context/AuthContext";
+import { isResolvedMedia } from "../../utils/mediaUtils";
+import type { Project } from "../../types/entities/projectTypes";
+import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
+import { useBreakpoints } from "../../hooks/mediaQueries";
+import useSettings from "../../hooks/queries/useSettings";
+
+function isProjectsMediasReady(projects: Project[]): boolean {
+  for (const project of projects) {
+    if (project.thumbnail && !isResolvedMedia(project.thumbnail)) return false;
+  }
+  return true;
+}
 
 /**
  * Page d'accueil publique du site.
  */
 export default function Home() {
-  const maintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === "true";
+  const { maintenanceMode, loading: settingsLoading } = useSettings();
   const { isAuthenticated } = useAuthContext();
+
+  const { isLg, isMd } = useBreakpoints();
 
   const TITLE_2 = "Web FullStack";
   const [titleLine2, setTitleLine2] = useState(TITLE_2);
@@ -81,11 +95,16 @@ export default function Home() {
 
   return (
     <Layout.Content
-      sx={{ padding: 0, flex: "1 1 auto", minHeight: 0, overflow: "hidden" }}
+      sx={{
+        padding: 0,
+        flex: "1 1 auto",
+        minHeight: 0,
+        overflow: "hidden",
+      }}
     >
-      {maintenanceMode && !isAuthenticated ? (
+      {maintenanceMode && !settingsLoading && !isAuthenticated ? (
         <Maintenance />
-      ) : (
+      ) : isProjectsMediasReady(projects.projects) ? (
         <ProjectsCarousel
           title={
             <>
@@ -126,6 +145,28 @@ export default function Home() {
           projects={pinnedProjects}
           reverseMouseWheel
         />
+      ) : (
+        <ResponsiveStack
+          sx={{
+            flexDirection: "row",
+            gap: 2,
+            width: "100%",
+            cursor: "none",
+            maxHeight: "100%",
+            paddingLeft: { xs: 4, lg: 8 },
+            overflow: "hidden",
+          }}
+        >
+          {[...Array(4)].map((_, i) => (
+            <Skeleton
+              key={i}
+              variant="rectangular"
+              width={`calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : isMd ? 2.5 : 1.5})`}
+              height={`calc(100dvh - ${isAuthenticated ? "196px" : "144px"})`}
+              sx={{ borderRadius: "8px", flexShrink: 0 }}
+            />
+          ))}
+        </ResponsiveStack>
       )}
     </Layout.Content>
   );
