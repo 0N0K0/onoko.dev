@@ -49,7 +49,7 @@ export function ProjectRelatedSection({
         sx: {
           paddingX: "0 !important",
           "& h2": {
-            marginLeft: { lg: 8, xs: 4 },
+            marginX: { lg: 8, xs: 4 },
           },
         },
       }}
