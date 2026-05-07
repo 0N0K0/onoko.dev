@@ -30,7 +30,7 @@ export default function PublicFooter() {
   const { pathname } = useLocation();
 
   const pages = [
-    { label: "Ego", sublabel: "A propos", route: "/about", disabled: true },
+    { label: "Ego", sublabel: "A propos", route: "/about" },
     {
       label: "Musae",
       sublabel: "Inspirations",

@@ -38,6 +38,7 @@ import LegalPage from "./pages/public/LegalPage";
 import { useAuthContext } from "./context/AuthContext";
 import NotFound from "./pages/404";
 import useSettings from "./hooks/queries/useSettings";
+import AboutPage from "./pages/public/AboutPage";
 
 function MaintenanceGuard() {
   const location = useLocation();
@@ -142,6 +143,14 @@ export default function App() {
                       element={
                         <PublicLayout>
                           <SingleProject />
+                        </PublicLayout>
+                      }
+                    />
+                    <Route
+                      path="/about"
+                      element={
+                        <PublicLayout>
+                          <AboutPage />
                         </PublicLayout>
                       }
                     />

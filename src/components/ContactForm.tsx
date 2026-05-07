@@ -1,4 +1,4 @@
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
 import CustomDialog from "./custom/CustomDialog";
 import { ResponsiveStack } from "./custom/ResponsiveLayout";
 import CustomSelect from "./custom/CustomSelect";
@@ -11,26 +11,27 @@ import {
 } from "../services/contact/contactService";
 import { useMutation } from "@apollo/client/react";
 import HoneyPot from "./HoneyPot";
+import { mdiPhone } from "@mdi/js";
+import Icon from "@mdi/react";
 
 const PROJECT_MESSAGE_TEMPLATE = `Bonjour,
 
-J'aimerais que nous collaborions sur un projet ensemble. En voici une brève description :
+J'aimerais que nous collaborions sur un projet. En voici une brève description :
 
-Objectif principal :
-Public cible :
-Maquette ? (Oui/Non)
-Fonctionnalites à implémenter :
-- ...
-- ...
-- ...
-Hébergement ? (Oui/Non)
-Référencement ? (Oui/Non)
-Contraintes :
-- ...
-- ...
-- ...
-Delais :
-Budget indicatif :
+Objectif principal : ...
+Public cible : ...
+Besoins : 
+- Maquette ? (Oui/Non)
+- Fonctionnalites à implémenter :
+  - ...
+  - ...
+- Contraintes :
+  - ...
+  - ...
+- Référencement ? (Oui/Non)
+- Hébergement ? (Oui/Non)
+Delais : ...
+Budget indicatif : ...
 
 Merci !`;
 
@@ -191,96 +192,144 @@ export default function ContactForm({
         open={open}
         width={8}
         height="100%"
-        title="Me contacter"
         content={
-          <form
-            id="contact-form"
-            onSubmit={handleSubmit}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              rowGap: "1.5rem",
-            }}
-          >
-            <ResponsiveStack
-              rowGap={3}
-              sx={{ flexDirection: { xs: "column", sm: "row" }, columnGap: 1 }}
-            >
-              <TextField
-                label="Société"
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-              />
-              <TextField
-                label="Nom"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </ResponsiveStack>
-            <ResponsiveStack
-              rowGap={3}
-              sx={{ flexDirection: { xs: "column", sm: "row" }, columnGap: 1 }}
-            >
-              <HoneyPot
-                label="Email"
-                id="email"
-                autoComplete="email"
-                onChange={(e) => setHoneypot(e.target.value)}
-              />
-              <TextField
-                label="Email"
-                type="email"
-                id="F2mW1p5Q"
-                name="F2mW1p5Q"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <TextField
-                label="Téléphone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </ResponsiveStack>
-            <CustomSelect
-              label="Sujet"
-              labelId="object-label"
-              options={[
-                { id: "project", label: "Demande de collaboration" },
-                { id: "rdv", label: "Demande de contact téléphonique" },
-                { id: "other", label: "Autre" },
-              ]}
-              value={object}
-              onChange={(e) => {
-                const value = Array.isArray(e.target.value)
-                  ? e.target.value[0]
-                  : e.target.value;
-                handleObjectChange(value as ContactSubject);
+          <ResponsiveStack rowGap={3}>
+            <Typography
+              variant="h2"
+              sx={{
+                marginX: "auto",
+                fontWeight: "100",
+                color: "text.secondary",
               }}
-              emptyOption={false}
-            />
-            {object === "other" && (
-              <TextField
-                label="Objet personnalisé"
-                value={customSubject}
-                onChange={(e) => setCustomSubject(e.target.value)}
+            >
+              CONTACT
+            </Typography>
+
+            <ResponsiveStack
+              rowGap={3}
+              sx={{ flexDirection: "row", columnGap: 2 }}
+            >
+              <Typography variant="bodySm">
+                N’hésitez pas à me contacter pour toute question, demande de
+                projet ou simplement pour échanger.
+                <br />
+                Je réponds généralement sous 24-48h en semaine.
+              </Typography>
+              <Button
+                component="a"
+                href="tel:0632077408"
+                sx={{
+                  display: "flex",
+                  marginX: "auto !important",
+                  width: "fit-content",
+                  minWidth: "208px",
+                }}
+                startIcon={<Icon path={mdiPhone} size={1} />}
+              >
+                06.32.07.74.08
+              </Button>
+            </ResponsiveStack>
+            <form
+              id="contact-form"
+              onSubmit={handleSubmit}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                rowGap: "1.5rem",
+              }}
+            >
+              <ResponsiveStack
+                rowGap={3}
+                sx={{
+                  flexDirection: { xs: "column", sm: "row" },
+                  columnGap: 1,
+                }}
+              >
+                <TextField
+                  label="Société"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                />
+                <TextField
+                  label="Nom"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </ResponsiveStack>
+              <ResponsiveStack
+                rowGap={3}
+                sx={{
+                  flexDirection: { xs: "column", sm: "row" },
+                  columnGap: 1,
+                }}
+              >
+                <HoneyPot
+                  label="Email"
+                  id="email"
+                  autoComplete="email"
+                  onChange={(e) => setHoneypot(e.target.value)}
+                />
+                <TextField
+                  label="Email"
+                  type="email"
+                  id="F2mW1p5Q"
+                  name="F2mW1p5Q"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <TextField
+                  label="Téléphone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </ResponsiveStack>
+              <CustomSelect
+                label="Sujet"
+                labelId="object-label"
+                options={[
+                  { id: "project", label: "Demande de collaboration" },
+                  { id: "rdv", label: "Demande de contact téléphonique" },
+                  { id: "other", label: "Autre" },
+                ]}
+                value={object}
+                onChange={(e) => {
+                  const value = Array.isArray(e.target.value)
+                    ? e.target.value[0]
+                    : e.target.value;
+                  handleObjectChange(value as ContactSubject);
+                }}
+                emptyOption={false}
               />
-            )}
-            <TextField
-              label="Message"
-              multiline
-              required
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-          </form>
+              {object === "other" && (
+                <TextField
+                  label="Objet personnalisé"
+                  value={customSubject}
+                  onChange={(e) => setCustomSubject(e.target.value)}
+                />
+              )}
+              <TextField
+                label="Message"
+                multiline
+                required
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+            </form>
+          </ResponsiveStack>
         }
         actions={
-          <Button type="submit" form="contact-form" disabled={submitting}>
+          <Button
+            type="submit"
+            form="contact-form"
+            disabled={submitting}
+            sx={{ minWidth: "208px" }}
+          >
             {submitting ? "Envoi..." : "Envoyer"}
           </Button>
         }
+        closeButton
       />
       <ClosableSnackbarAlert
         open={successSnackbarOpen}
