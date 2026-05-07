@@ -116,6 +116,7 @@ export default function Picture({
             maxHeight: maxHeight,
             objectFit: objectFit,
             objectPosition: objectPosition || image.focus || "50% 50%",
+            ...style,
           }}
         />
       </picture>

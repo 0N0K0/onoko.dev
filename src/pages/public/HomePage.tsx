@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import useProjects from "../../hooks/queries/useProjects";
 import Layout from "../../layout";
 import ProjectsCarousel from "../../components/entities/project/public/ProjectsCarousel";
-import { Button, Skeleton } from "@mui/material";
+import { Button, Skeleton, useTheme } from "@mui/material";
 import Maintenance from "../../components/Maintenance";
 import { useAuthContext } from "../../context/AuthContext";
 import { isResolvedMedia } from "../../utils/mediaUtils";
@@ -13,6 +13,10 @@ import useSettings from "../../hooks/queries/useSettings";
 import { API_URL } from "../../constants/apiConstants";
 import type { Media } from "../../types/entities/mediaTypes";
 import { useContactForm } from "../../context/ContactFormContext";
+import useStacks from "../../hooks/queries/useStacks";
+import Picture from "../../components/custom/Picture";
+import Marquee from "react-fast-marquee";
+import MultipleMarquee from "../../components/custom/MultipleMarquee";
 
 function isProjectsMediasReady(projects: Project[]): boolean {
   for (const project of projects) {
@@ -33,6 +37,7 @@ function getProjectThumbnailUrl(project: Project): string | null {
  * Page d'accueil publique du site.
  */
 export default function Home() {
+  const theme = useTheme();
   const { maintenanceMode, loading: settingsLoading } = useSettings();
   const { isAuthenticated } = useAuthContext();
   const { openContactForm } = useContactForm();
@@ -100,14 +105,30 @@ export default function Home() {
     };
   }, []);
 
-  const projects = useProjects();
+  const { projects, loading } = useProjects();
+
+  const { stacks } = useStacks();
+  const [stackShuffleSeed] = useState(() => Math.random().toString(36));
+
+  const shuffledStacks = useMemo(() => {
+    const hashWithSeed = (value: string) => {
+      const input = `${stackShuffleSeed}:${value}`;
+      let hash = 2166136261;
+      for (let i = 0; i < input.length; i++) {
+        hash ^= input.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+      return hash >>> 0;
+    };
+
+    return [...stacks].sort(
+      (a, b) => hashWithSeed(String(a.id)) - hashWithSeed(String(b.id)),
+    );
+  }, [stacks, stackShuffleSeed]);
 
   const pinnedProjects = useMemo(
-    () =>
-      projects.projects.filter((project) =>
-        project.pined ? project.pined : false,
-      ),
-    [projects.projects],
+    () => projects.filter((project) => (project.pined ? project.pined : false)),
+    [projects],
   );
   const pinnedProjectThumbnailUrls = useMemo(
     () =>
@@ -120,7 +141,7 @@ export default function Home() {
   const pinnedProjectThumbnailUrlsKey = pinnedProjectThumbnailUrls.join("|");
 
   useEffect(() => {
-    if (projects.loading || !arePinnedProjectMediasReady) {
+    if (loading || !arePinnedProjectMediasReady) {
       setCarouselImagesLoaded((loaded) => (loaded ? false : loaded));
       return;
     }
@@ -151,17 +172,17 @@ export default function Home() {
       cancelled = true;
     };
   }, [
-    projects.loading,
+    loading,
     arePinnedProjectMediasReady,
     pinnedProjectThumbnailUrls.length,
     pinnedProjectThumbnailUrlsKey,
   ]);
 
-  const shouldShowSkeleton =
-    projects.loading || !arePinnedProjectMediasReady || !carouselImagesLoaded;
+  const shouldShowSkeleton = loading || !carouselImagesLoaded;
 
   return (
     <Layout.Content
+      rowGap={3}
       sx={{
         padding: 0,
         flex: "1 1 auto",
@@ -172,67 +193,107 @@ export default function Home() {
       {maintenanceMode && !settingsLoading && !isAuthenticated ? (
         <Maintenance />
       ) : !shouldShowSkeleton ? (
-        <ProjectsCarousel
-          title={
-            <>
-              Développement
-              <br />
-              {titleLine2}
-            </>
-          }
-          subtitle={
-            <>
-              /** <br />
-              {"\u00A0\u00A0"}* Sites web
-              <br />
-              {"\u00A0\u00A0"}* Applicatifs cross-plateformes
-              <br />
-              {"\u00A0\u00A0"}* Solutions métiers
-              <br />
-              {"\u00A0\u00A0"}* Outils d'automatisation
-              <br />
-              {"\u00A0\u00A0"}* Débogage & optimisation <br />
-              {"\u00A0\u00A0"}*/
-            </>
-          }
-          action={
-            <Button
-              size="large"
-              sx={{
-                margin: "auto !important",
-                whiteSpace: "nowrap",
-                width: "fit-content",
-              }}
-              onClick={openContactForm}
-            >
-              Me contacter
-            </Button>
-          }
-          projects={pinnedProjects}
-          reverseMouseWheel
-        />
+        <>
+          <ProjectsCarousel
+            title={
+              <>
+                Développement
+                <br />
+                {titleLine2}
+              </>
+            }
+            subtitle={
+              <>
+                /** <br />
+                {"\u00A0\u00A0"}* Sites web
+                <br />
+                {"\u00A0\u00A0"}* Applicatifs cross-plateformes
+                <br />
+                {"\u00A0\u00A0"}* Solutions métiers
+                <br />
+                {"\u00A0\u00A0"}* Outils d'automatisation
+                <br />
+                {"\u00A0\u00A0"}* Débogage & optimisation <br />
+                {"\u00A0\u00A0"}*/
+              </>
+            }
+            action={
+              <Button
+                size="large"
+                sx={{
+                  margin: "auto !important",
+                  whiteSpace: "nowrap",
+                  width: "fit-content",
+                }}
+                onClick={openContactForm}
+              >
+                Me contacter
+              </Button>
+            }
+            projects={pinnedProjects}
+            reverseMouseWheel
+          />
+          <MultipleMarquee
+            autoFill
+            gradient
+            gradientWidth={isLg ? 128 : 64}
+            gradientColor={theme.palette.background.default}
+            speed={25}
+            distribute
+          >
+            {shuffledStacks
+              .filter((stack) => !!stack.icon)
+              .map((stack) => (
+                <Picture
+                  key={stack.id}
+                  image={stack.icon!}
+                  maxWidth="48px"
+                  maxHeight="48px"
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    aspectRatio: "1 / 1",
+                    marginRight: "16px",
+                  }}
+                />
+              ))}
+          </MultipleMarquee>
+        </>
       ) : (
-        <ResponsiveStack
-          sx={{
-            flexDirection: "row",
-            gap: 2,
-            width: "100%",
-            cursor: "none",
-            maxHeight: "100%",
-            paddingLeft: { xs: 4, lg: 8 },
-            overflow: "hidden",
-          }}
-        >
-          {[...Array(4)].map((_, i) => (
+        <>
+          <ResponsiveStack
+            sx={{
+              flexDirection: "row",
+              gap: 2,
+              width: "100%",
+              cursor: "none",
+              paddingLeft: { xs: 4, lg: 8 },
+              overflow: "hidden",
+              flex: "1 1 auto",
+              minHeight: 0,
+            }}
+          >
+            {[...Array(4)].map((_, i) => (
+              <>
+                <Skeleton
+                  key={i}
+                  variant="rectangular"
+                  width={`calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : isMd ? 2.5 : 1.5})`}
+                  height={`calc(100dvh - ${isAuthenticated ? "196px" : "144px"})`}
+                  sx={{ borderRadius: "8px", flexShrink: 0 }}
+                />
+              </>
+            ))}
+          </ResponsiveStack>
+          <Marquee>
             <Skeleton
-              key={i}
               variant="rectangular"
-              width={`calc((min(100dvw, 1920px) - ${isLg ? "10rem" : "6rem"}) / ${isLg ? 3.5 : isMd ? 2.5 : 1.5})`}
-              height={`calc(100dvh - ${isAuthenticated ? "196px" : "144px"})`}
-              sx={{ borderRadius: "8px", flexShrink: 0 }}
+              width={48}
+              height={48}
+              sx={{ borderRadius: "8px", marginRight: "16px" }}
             />
-          ))}
-        </ResponsiveStack>
+          </Marquee>
+        </>
       )}
     </Layout.Content>
   );
