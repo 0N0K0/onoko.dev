@@ -8,6 +8,7 @@ import ClosableSnackbarAlert from "../../components/custom/ClosableSnackbarAlert
 import { LOGIN_ROUTE } from "../../constants/apiConstants";
 import { useAuthContext } from "../../context/AuthContext";
 import AuthForm from "../../layout/auth/AuthForm";
+import HoneyPot from "../../components/HoneyPot";
 
 /**
  * Page de demande de réinitialisation du mot de passe.
@@ -17,6 +18,7 @@ export default function RequestResetPassword() {
   const { isAuthenticated } = useAuthContext();
 
   const [email, setEmail] = useState("");
+  const [honeypot, setHoneypot] = useState("");
 
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -26,6 +28,10 @@ export default function RequestResetPassword() {
   // Gère la soumission du formulaire de réinitialisation, en envoyant une requête au backend avec le token et le nouveau mot de passe, et en gérant les réponses pour afficher les messages appropriés.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (honeypot) {
+      setSuccessSnackbarOpen(true);
+      return;
+    }
     setSubmitError("");
     setSubmitting(true);
     try {
@@ -52,7 +58,7 @@ export default function RequestResetPassword() {
       }}
       submitButton={{
         text: `${submitting ? "Envoi..." : "Envoyer"}`,
-        disabled: submitting || !email,
+        disabled: submitting,
       }}
     >
       {submitError && (
@@ -65,14 +71,22 @@ export default function RequestResetPassword() {
         severity="success"
       />
       <ResponsiveStack rowGap={3} sx={{ width: "100%" }}>
+        <HoneyPot
+          label="Email"
+          id="email"
+          autoComplete="email"
+          onChange={(e) => setHoneypot(e.target.value)}
+        />
         <TextField
           label="Adresse e-mail"
           type="email"
           value={email}
+          id="F2mW1p5Q"
+          name="F2mW1p5Q"
           onChange={(e) => setEmail(e.target.value)}
           required
           disabled={submitting}
-          autoComplete="email"
+          autoComplete="off"
         />
       </ResponsiveStack>
     </AuthForm>

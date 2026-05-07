@@ -7,6 +7,7 @@ import PasswordField from "../../components/custom/PasswordField";
 import SnackbarAlert from "../../components/custom/SnackbarAlert";
 import { useAuthContext } from "../../context/AuthContext";
 import AuthForm from "../../layout/auth/AuthForm";
+import HoneyPot from "../../components/HoneyPot";
 
 /**
  * Page de connexion à l'espace admin.
@@ -28,12 +29,14 @@ export default function Login() {
 
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
+  const [honeypot, setHoneypot] = useState("");
 
   const [error, setError] = useState("");
 
   // Gère la soumission du formulaire de connexion, en appelant la fonction de login du contexte d'authentification et en gérant les erreurs éventuelles.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (honeypot) return;
     setError("");
     try {
       const ok = await loginContext(login, password);
@@ -62,12 +65,20 @@ export default function Login() {
     >
       {error && <SnackbarAlert open={true} message={error} severity="error" />}
       <ResponsiveStack rowGap={3} sx={{ width: "100%" }}>
+        <HoneyPot
+          label="Identifiant"
+          id="id"
+          autoComplete="username"
+          onChange={(e) => setHoneypot(e.target.value)}
+        />
         <TextField
           label="Identifiant"
           value={login}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setLogin(e.target.value)
           }
+          id="F2mW1p5Q"
+          name="F2mW1p5Q"
           autoComplete="username"
           disabled={loading}
           required
