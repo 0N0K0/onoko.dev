@@ -10,6 +10,7 @@ import {
   type ContactSubject,
 } from "../services/contact/contactService";
 import { useMutation } from "@apollo/client/react";
+import HoneyPot from "./HoneyPot";
 
 const PROJECT_MESSAGE_TEMPLATE = `Bonjour,
 
@@ -137,6 +138,8 @@ export default function ContactForm({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -161,6 +164,11 @@ export default function ContactForm({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (honeypot) {
+      setSuccessSnackbarOpen(true);
+      setOpen(false);
+      return;
+    }
     setErrorMessage("");
     sendContact({
       variables: {
@@ -213,9 +221,17 @@ export default function ContactForm({
               rowGap={3}
               sx={{ flexDirection: { xs: "column", sm: "row" }, columnGap: 1 }}
             >
+              <HoneyPot
+                label="Email"
+                id="email"
+                autoComplete="email"
+                onChange={(e) => setHoneypot(e.target.value)}
+              />
               <TextField
                 label="Email"
                 type="email"
+                id="F2mW1p5Q"
+                name="F2mW1p5Q"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -261,11 +277,7 @@ export default function ContactForm({
           </form>
         }
         actions={
-          <Button
-            type="submit"
-            form="contact-form"
-            disabled={submitting || !email.trim() || !message.trim()}
-          >
+          <Button type="submit" form="contact-form" disabled={submitting}>
             {submitting ? "Envoi..." : "Envoyer"}
           </Button>
         }

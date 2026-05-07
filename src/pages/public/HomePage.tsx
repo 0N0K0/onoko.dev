@@ -39,11 +39,70 @@ export default function Home() {
 
   const { isLg, isMd } = useBreakpoints();
 
-  const TITLE_2 = "Web FullStack";
+  const TITLE_2 = "FullStack";
   const [titleLine2, setTitleLine2] = useState(TITLE_2);
   const [carouselImagesLoaded, setCarouselImagesLoaded] = useState(false);
 
+  const { projects, loading } = useProjects();
+
+  const pinnedProjects = useMemo(
+    () => projects.filter((project) => (project.pined ? project.pined : false)),
+    [projects],
+  );
+  const pinnedProjectThumbnailUrls = useMemo(
+    () =>
+      pinnedProjects
+        .map(getProjectThumbnailUrl)
+        .filter((url): url is string => !!url),
+    [pinnedProjects],
+  );
+  const arePinnedProjectMediasReady = isProjectsMediasReady(pinnedProjects);
+  const pinnedProjectThumbnailUrlsKey = pinnedProjectThumbnailUrls.join("|");
+
   useEffect(() => {
+    if (loading || !arePinnedProjectMediasReady) {
+      setCarouselImagesLoaded((loaded) => (loaded ? false : loaded));
+      return;
+    }
+
+    if (pinnedProjectThumbnailUrls.length === 0) {
+      setCarouselImagesLoaded((loaded) => (loaded ? loaded : true));
+      return;
+    }
+
+    let cancelled = false;
+    setCarouselImagesLoaded((loaded) => (loaded ? false : loaded));
+
+    const preloadImage = (src: string) =>
+      new Promise<void>((resolve) => {
+        const image = new Image();
+        image.onload = () => resolve();
+        image.onerror = () => resolve();
+        image.src = src;
+      });
+
+    Promise.all(pinnedProjectThumbnailUrls.map(preloadImage)).then(() => {
+      if (!cancelled) {
+        setCarouselImagesLoaded(true);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    loading,
+    arePinnedProjectMediasReady,
+    pinnedProjectThumbnailUrls.length,
+    pinnedProjectThumbnailUrlsKey,
+  ]);
+
+  const shouldShowSkeleton =
+    loading || !arePinnedProjectMediasReady || !carouselImagesLoaded;
+
+  useEffect(() => {
+    if (shouldShowSkeleton) return;
+
     const CHARS = "<>{}[]=>/\\|;!@&+_?:-";
     const total = TITLE_2.length;
     const delay = 600;
@@ -98,67 +157,7 @@ export default function Home() {
       clearTimeout(timeout);
       cancelAnimationFrame(rafId);
     };
-  }, []);
-
-  const projects = useProjects();
-
-  const pinnedProjects = useMemo(
-    () =>
-      projects.projects.filter((project) =>
-        project.pined ? project.pined : false,
-      ),
-    [projects.projects],
-  );
-  const pinnedProjectThumbnailUrls = useMemo(
-    () =>
-      pinnedProjects
-        .map(getProjectThumbnailUrl)
-        .filter((url): url is string => !!url),
-    [pinnedProjects],
-  );
-  const arePinnedProjectMediasReady = isProjectsMediasReady(pinnedProjects);
-  const pinnedProjectThumbnailUrlsKey = pinnedProjectThumbnailUrls.join("|");
-
-  useEffect(() => {
-    if (projects.loading || !arePinnedProjectMediasReady) {
-      setCarouselImagesLoaded((loaded) => (loaded ? false : loaded));
-      return;
-    }
-
-    if (pinnedProjectThumbnailUrls.length === 0) {
-      setCarouselImagesLoaded((loaded) => (loaded ? loaded : true));
-      return;
-    }
-
-    let cancelled = false;
-    setCarouselImagesLoaded((loaded) => (loaded ? false : loaded));
-
-    const preloadImage = (src: string) =>
-      new Promise<void>((resolve) => {
-        const image = new Image();
-        image.onload = () => resolve();
-        image.onerror = () => resolve();
-        image.src = src;
-      });
-
-    Promise.all(pinnedProjectThumbnailUrls.map(preloadImage)).then(() => {
-      if (!cancelled) {
-        setCarouselImagesLoaded(true);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    projects.loading,
-    arePinnedProjectMediasReady,
-    pinnedProjectThumbnailUrls.length,
-    pinnedProjectThumbnailUrlsKey,
-  ]);
-
-  const shouldShowSkeleton =
-    projects.loading || !arePinnedProjectMediasReady || !carouselImagesLoaded;
+  }, [shouldShowSkeleton]);
 
   return (
     <Layout.Content
@@ -175,7 +174,7 @@ export default function Home() {
         <ProjectsCarousel
           title={
             <>
-              Développement
+              Développeuse
               <br />
               {titleLine2}
             </>
