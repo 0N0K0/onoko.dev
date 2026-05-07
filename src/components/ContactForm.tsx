@@ -277,11 +277,7 @@ export default function ContactForm({
           </form>
         }
         actions={
-          <Button
-            type="submit"
-            form="contact-form"
-            disabled={submitting || !email.trim() || !message.trim()}
-          >
+          <Button type="submit" form="contact-form" disabled={submitting}>
             {submitting ? "Envoi..." : "Envoyer"}
           </Button>
         }
