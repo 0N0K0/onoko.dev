@@ -15,7 +15,7 @@ export default function AboutPage() {
       sx={{
         flexDirection: "row",
         paddingX: { xs: 4, lg: 8 },
-        columnGap: 8,
+        columnGap: { xs: 4, lg: 8 },
         marginX: "auto !important",
       }}
     >
@@ -62,14 +62,13 @@ export default function AboutPage() {
           </Typography>
         </ResponsiveStack>
         <Typography
-          variant="bodyLg"
+          variant="h1"
+          component="p"
           sx={{
             marginX: "auto",
             whiteSpace: "nowrap",
             WebkitBoxReflect:
               "below -24px linear-gradient(transparent, rgba(0, 0, 0, 0.25))",
-            fontSize: "4rem",
-            lineHeight: 1.125,
             fontWeight: 100,
             color: theme.palette.primary.light,
             cursor: "pointer",

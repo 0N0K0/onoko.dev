@@ -207,13 +207,16 @@ export default function ContactForm({
 
             <ResponsiveStack
               rowGap={3}
-              sx={{ flexDirection: "row", columnGap: 2 }}
+              sx={{
+                flexDirection: { xs: "column", md: "row" },
+                columnGap: 2,
+                alignItems: "center",
+              }}
             >
               <Typography variant="bodySm">
-                N’hésitez pas à me contacter pour toute question, demande de
-                projet ou simplement pour échanger.
+                N’hésitez pas à me contacter.
                 <br />
-                Je réponds généralement sous 24-48h en semaine.
+                Je réponds généralement sous 24 à 48h en semaine.
               </Typography>
               <Button
                 component="a"
