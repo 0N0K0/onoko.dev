@@ -1,14 +1,16 @@
-import { Typography, useTheme } from "@mui/material";
+import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import Layout from "../../layout";
 import { useContactForm } from "../../context/ContactFormContext";
 import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import profil from "../../assets/images/profil.jpeg";
 import { useBreakpoints } from "../../hooks/mediaQueries";
+import useGitHubStats from "../../hooks/queries/useGitHubStats";
 
 export default function AboutPage() {
   const theme = useTheme();
   const { isLg } = useBreakpoints();
   const { openContactForm } = useContactForm();
+  const { stats, loading: statsLoading, error: statsError } = useGitHubStats();
 
   return (
     <Layout.Content
@@ -102,6 +104,93 @@ export default function AboutPage() {
             lorsqu’elle améliore le quotidien des personnes qui l’utilisent.
           </Typography>
         </ResponsiveStack>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Typography variant="h5" component="h2" sx={{ fontStyle: "italic" }}>
+            GitHub Stats
+          </Typography>
+          {statsLoading && <CircularProgress size={24} />}
+          {statsError && (
+            <Typography variant="bodySm" color="error">
+              {statsError.message}
+            </Typography>
+          )}
+          {stats && (
+            <>
+              <Typography variant="h5">Ecosystème & projets</Typography>
+              <ul>
+                <li>
+                  {stats.publicRepos +
+                    stats.privateRepos +
+                    (stats.orgs.find((o) => o.login === "0N0K0")
+                      ?.reposContributedTo ?? 0)}{" "}
+                  repositories personnels
+                </li>
+                <li>
+                  {stats.orgs.find((o) => o.login === "IMASIO-ONOKO")
+                    ?.reposContributedTo ?? 0}{" "}
+                  repositories au sein d'une organisation cofondée
+                </li>
+                <li>{stats.packages} packages publiés</li>
+                <li>
+                  {stats.totalProjects -
+                    stats.orgsProjects +
+                    (stats.orgs.find((o) => o.login === "0N0K0")
+                      ?.totalProjects ?? 0) +
+                    (stats.orgs.find((o) => o.login === "IMASIO-ONOKO")
+                      ?.totalProjects ?? 0)}{" "}
+                  projets structurés
+                </li>
+              </ul>
+              <Typography variant="h5">Contributions</Typography>{" "}
+              {stats.firstActiveDate && (
+                <Typography variant="bodySm">
+                  Depuis{" "}
+                  {new Date(stats.firstActiveDate).toLocaleDateString("fr-FR", {
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </Typography>
+              )}
+              <ul>
+                <li>{stats.issuesOpened} issues rédigées</li>
+                <li>{stats.totalCommits} commits</li>
+                <li>{stats.totalPRs} pull requests</li>
+                <li>
+                  contributions sur {stats.externalReposContributedTo}{" "}
+                  repositories externes
+                </li>
+                <li>
+                  participations à{" "}
+                  {stats.orgsProjects -
+                    (stats.orgs.find((o) => o.login === "IMASIO-ONOKO")
+                      ?.totalProjects ?? 0) -
+                    (stats.orgs.find((o) => o.login === "0N0K0")
+                      ?.totalProjects ?? 0)}{" "}
+                  projets externes
+                </li>
+              </ul>
+              <Typography variant="h5">Cadence</Typography>
+              <ul>
+                {stats.lastActiveDate && (
+                  <li>
+                    Dernière contribution :{" "}
+                    {new Date(stats.lastActiveDate).toLocaleDateString("fr-FR")}
+                  </li>
+                )}
+                <li>{stats.activeDays} jours de contribution active</li>
+
+                <li>
+                  Moyenne de{" "}
+                  {Math.round(
+                    (stats.totalCommits + stats.totalPRs + stats.issuesOpened) /
+                      (stats.activeDays / 5),
+                  )}{" "}
+                  contributions par semaine active
+                </li>
+              </ul>
+            </>
+          )}
+        </Box>
       </ResponsiveStack>
       <img
         src={profil}
