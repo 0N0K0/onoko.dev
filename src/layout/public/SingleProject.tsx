@@ -21,6 +21,7 @@ import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import { useAuthContext } from "../../context/AuthContext";
 import { useLayoutEffect, useRef, useState } from "react";
 import { isResolvedMedia } from "../../utils/mediaUtils";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 function isProjectMediaReady(project: Project): boolean {
   if (project.thumbnail && !isResolvedMedia(project.thumbnail)) return false;
@@ -43,6 +44,8 @@ export function SingleProject() {
   const params = useParams();
   const { projects, loading } = useProjects();
   const project = projects?.find((p) => p.slug === params.slug);
+
+  useDocumentTitle(project ? project.label : "");
 
   const theme = useTheme();
   const { isXs, isSm, isMd, isLg, isXl } = useBreakpoints();
