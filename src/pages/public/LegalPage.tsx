@@ -13,8 +13,11 @@ import {
 } from "../../components/custom/ResponsiveLayout";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 import { useBreakpoints } from "../../hooks/mediaQueries";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function LegalPage() {
+  useDocumentTitle("Mentions légales");
+
   const theme = useTheme();
   const { isMd, isLg, isXl } = useBreakpoints();
   const mainCellWidth = isXl
@@ -62,7 +65,7 @@ export default function LegalPage() {
         Conformément aux dispositions prévues par la loi n° 2004-575 du 21 juin
         2004 pour la confiance dans l’économie numérique à l’égard des
         utilisateur du site https://onoko.dev/, les présentes mentions légales
-        détaille l’identité des différents intervenants dans le cadre de sa
+        détaillent l’identité des différents intervenants dans le cadre de sa
         réalisation.
       </Typography>
 

@@ -1,14 +1,12 @@
 export default function HoneyPot({
   label,
   id,
-  autoComplete,
   type = "text",
   onChange,
 }: {
   label: string;
   id: string;
   type?: "text" | "email" | "password";
-  autoComplete: "username" | "email" | "password";
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 }) {
   return (
@@ -27,9 +25,9 @@ export default function HoneyPot({
         type={type}
         id={id}
         name={id}
-        autoComplete={autoComplete}
         tabIndex={-1}
         onChange={onChange}
+        autoComplete="off"
       />
     </div>
   );

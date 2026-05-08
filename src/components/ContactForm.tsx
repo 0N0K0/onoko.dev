@@ -267,9 +267,8 @@ export default function ContactForm({
                 }}
               >
                 <HoneyPot
-                  label="Email"
-                  id="email"
-                  autoComplete="email"
+                  label="Site web"
+                  id="website"
                   onChange={(e) => setHoneypot(e.target.value)}
                 />
                 <TextField

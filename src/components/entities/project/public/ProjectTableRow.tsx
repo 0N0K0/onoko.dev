@@ -54,7 +54,6 @@ export default function ProjectTableRow({
     let fontSize = isLg ? 40 : 32; // px (3rem ou 2rem)
     titleRef.current.style.fontSize = fontSize + "px";
     let titleWidth = titleRef.current.scrollWidth;
-    console.log({ titleWidth, containerWidth });
     while (titleWidth > containerWidth && fontSize > 16) {
       fontSize -= 2;
       titleRef.current.style.fontSize = fontSize + "px";

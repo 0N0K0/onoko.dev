@@ -13,6 +13,7 @@ import useSettings from "../../hooks/queries/useSettings";
 import { API_URL } from "../../constants/apiConstants";
 import type { Media } from "../../types/entities/mediaTypes";
 import { useContactForm } from "../../context/ContactFormContext";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 function isProjectsMediasReady(projects: Project[]): boolean {
   for (const project of projects) {
@@ -33,13 +34,15 @@ function getProjectThumbnailUrl(project: Project): string | null {
  * Page d'accueil publique du site.
  */
 export default function Home() {
+  useDocumentTitle("");
+
   const { maintenanceMode, loading: settingsLoading } = useSettings();
   const { isAuthenticated } = useAuthContext();
   const { openContactForm } = useContactForm();
 
   const { isLg, isMd } = useBreakpoints();
 
-  const TITLE_2 = "FullStack";
+  const TITLE_2 = "Web FullStack";
   const [titleLine2, setTitleLine2] = useState(TITLE_2);
   const [carouselImagesLoaded, setCarouselImagesLoaded] = useState(false);
 
