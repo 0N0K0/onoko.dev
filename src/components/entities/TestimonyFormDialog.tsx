@@ -44,6 +44,7 @@ export default function TestimonyFormDialog({
     items: testimonies,
     defaults: { name: "", content: "", company: "", createdAt: undefined },
   });
+  console.log(editingTestimony);
 
   return (
     <CustomDialog

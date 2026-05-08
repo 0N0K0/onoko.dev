@@ -1,4 +1,12 @@
-import { Button, Divider, Skeleton, Typography, useTheme } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardContent,
+  Divider,
+  Skeleton,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import Layout from "../../layout";
 import { useContactForm } from "../../context/ContactFormContext";
 import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
@@ -16,6 +24,8 @@ import french from "../../assets/images/french.svg";
 import english from "../../assets/images/english.svg";
 import spanish from "../../assets/images/spanish.svg";
 import CustomIconButton from "../../components/custom/CustomIconButton";
+import useTestimonies from "../../hooks/queries/useTestimonies";
+import { WysiwygBox } from "../../components/custom/WysiwygBox";
 
 const LANGAGES = [
   { id: "french", label: "Français", level: "natif" },
@@ -27,9 +37,13 @@ export default function AboutPage() {
   const theme = useTheme();
   const { openContactForm } = useContactForm();
   const { stats } = useGitHubStats();
+  const { testimonies } = useTestimonies();
 
   return (
-    <Layout.Content rowGap={9}>
+    <Layout.Content
+      rowGap={18}
+      sx={{ paddingX: "0 !important", paddingBottom: 12 }}
+    >
       <ResponsiveStack
         sx={{
           flexDirection: "row",
@@ -562,22 +576,89 @@ export default function AboutPage() {
           </ResponsiveStack>
         </ResponsiveStack>
       </ResponsiveStack>
-      <ResponsiveStack>
-        <Typography
-          variant="bodySm"
-          style={{
-            fontStyle: "italic",
-            color: theme.palette.text.secondary,
-          }}
-        >
-          "J'ai eu le plaisir d'être le mentor de Noémie et de l'accompagner
-          dans sa reconversion professionnelle en tant que développeuse web.
-          J'ai été surpris par son écoute, sa capacité d'apprentissage ainsi que
-          sa curiosité qui lui ont permis de dépasser à plusieurs reprises les
-          attentes de différents projets. Noémie sera un vrai atout dans une
-          équipe et s'adaptera facilement à de nouveaux challenges." <br /> Alix
-          V. | 22/04/2024
-        </Typography>
+      <ResponsiveStack
+        sx={{
+          flexDirection: "row",
+          columnGap: 4,
+          paddingX: { xs: 4, lg: 8 },
+          marginTop: "48px !important",
+          alignItems: "end",
+        }}
+      >
+        {testimonies.map((testimony) => (
+          <Card
+            key={testimony.id}
+            sx={{
+              flex: "1",
+              background: `linear-gradient(rgba(11, 12, 14, 0.9), ${theme.palette.background.paper}) padding-box, linear-gradient(180deg, ${theme.palette.background.paper}, ${theme.palette.primary.dark}) border-box`,
+              backdropFilter: "blur(4px)",
+              borderRadius: 1,
+              border: `1px solid transparent`,
+              zIndex: 2,
+              padding: "0px 32px 36px",
+              overflow: "visible",
+              height: "fit-content",
+            }}
+          >
+            <CardContent
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                rowGap: 6,
+                padding: "0",
+              }}
+            >
+              <ResponsiveStack sx={{ marginBottom: "auto !important" }}>
+                <Typography
+                  variant="h1"
+                  component="h2"
+                  sx={{
+                    fontWeight: "900",
+                    marginTop: "-24px !important",
+                    textTransform: "uppercase",
+                    letterSpacing: "-0.05em",
+                    textAlign: "right",
+                  }}
+                >
+                  {testimony.name}
+                </Typography>
+                <ResponsiveStack
+                  sx={{
+                    flexDirection: "row",
+                    columnGap: 2,
+                    justifyContent: "space-between",
+                  }}
+                >
+                  {/* <Typography
+                      variant="bodyLg"
+                      sx={{
+                        fontStyle: "italic",
+                        fontWeight: "100",
+                        color: theme.palette.text.secondary,
+                      }}
+                    >
+                      {testimony.company}
+                    </Typography> */}
+                  <Typography
+                    variant="bodyLg"
+                    sx={{
+                      fontStyle: "italic",
+                      fontWeight: "100",
+                      color: theme.palette.text.secondary,
+                      textAlign: "right",
+                      width: "100%",
+                    }}
+                  >
+                    {testimony.createdAt
+                      ? testimony.createdAt.locale("fr").format("MMMM YYYY")
+                      : ""}
+                  </Typography>
+                </ResponsiveStack>
+              </ResponsiveStack>
+              <WysiwygBox __html={testimony.content!} />
+            </CardContent>
+          </Card>
+        ))}
       </ResponsiveStack>
     </Layout.Content>
   );

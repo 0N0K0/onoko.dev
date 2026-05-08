@@ -10,6 +10,7 @@ export default function useWysiwyg({ value, onChange }: UseWysiwygOptions) {
   const containerRef = useRef<HTMLDivElement>(null);
   const quillRef = useRef<Quill | null>(null);
   const isInternalChange = useRef(false);
+  const isProgrammaticChange = useRef(false);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -41,6 +42,7 @@ export default function useWysiwyg({ value, onChange }: UseWysiwygOptions) {
     });
     quillRef.current.on("text-change", () => {
       if (!quillRef.current) return;
+      if (isProgrammaticChange.current) return;
       isInternalChange.current = true;
       onChange(quillRef.current.root.innerHTML);
     });
@@ -60,9 +62,11 @@ export default function useWysiwyg({ value, onChange }: UseWysiwygOptions) {
     }
     const current = quillRef.current.root.innerHTML;
     if (current !== value) {
+      isProgrammaticChange.current = true;
       quillRef.current.setContents(
         quillRef.current.clipboard.convert({ html: value || "" }),
       );
+      isProgrammaticChange.current = false;
     }
   }, [value]);
 
