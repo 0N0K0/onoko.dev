@@ -68,7 +68,6 @@ export default function Login() {
         <HoneyPot
           label="Identifiant"
           id="id"
-          autoComplete="username"
           onChange={(e) => setHoneypot(e.target.value)}
         />
         <TextField
