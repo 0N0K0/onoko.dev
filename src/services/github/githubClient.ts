@@ -1,4 +1,8 @@
-import { GITHUB_GRAPHQL_URL, GITHUB_REST_URL, GITHUB_TOKEN } from "../../constants/githubConstants";
+import {
+  GITHUB_GRAPHQL_URL,
+  GITHUB_REST_URL,
+  GITHUB_TOKEN,
+} from "../../constants/githubConstants";
 import type { GitHubStatsQueryResponse } from "../../types/entities/githubTypes";
 
 async function fetchGitHubGraphQL<T>(
@@ -15,13 +19,17 @@ async function fetchGitHubGraphQL<T>(
   });
 
   if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `GitHub API error: ${response.status} ${response.statusText}`,
+    );
   }
 
   const json = await response.json();
 
   if (json.errors?.length) {
-    throw new Error(json.errors.map((e: { message: string }) => e.message).join(", "));
+    throw new Error(
+      json.errors.map((e: { message: string }) => e.message).join(", "),
+    );
   }
 
   return json.data as T;
@@ -70,5 +78,8 @@ export async function fetchGitHubStatsForYear(
 
   const { GITHUB_STATS_QUERY } = await import("./githubQueries");
 
-  return fetchGitHubGraphQL<GitHubStatsQueryResponse>(GITHUB_STATS_QUERY, { from, to });
+  return fetchGitHubGraphQL<GitHubStatsQueryResponse>(GITHUB_STATS_QUERY, {
+    from,
+    to,
+  });
 }

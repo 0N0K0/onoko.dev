@@ -102,10 +102,16 @@ export interface GitHubStats {
   issuesOpened: number;
 
   // Contributions
-  reposContributedTo: number;       // total unique (perso + orgs + externes)
+  reposContributedTo: number; // total unique (perso + orgs + externes)
   externalReposContributedTo: number; // hors repos perso et orgs connues
   orgReposContributedTo: number;
-  orgs: Array<{ login: string; packages: number; reposContributedTo: number; totalRepos: number; totalProjects: number }>;
+  orgs: Array<{
+    login: string;
+    packages: number;
+    reposContributedTo: number;
+    totalRepos: number;
+    totalProjects: number;
+  }>;
 
   // Métriques calculées (depuis l'inscription)
   activeDays: number;

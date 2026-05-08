@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { fetchGitHubStatsForYear, fetchOrgPackagesCount } from "../../services/github/githubClient";
+import {
+  fetchGitHubStatsForYear,
+  fetchOrgPackagesCount,
+} from "../../services/github/githubClient";
 import type {
   GitHubContributionDay,
   GitHubLanguage,
@@ -45,7 +48,11 @@ function computeStreaks(days: GitHubContributionDay[]): {
 }
 
 function aggregateLanguages(
-  nodes: { languages: { edges: { size: number; node: { name: string; color: string | null } }[] } }[],
+  nodes: {
+    languages: {
+      edges: { size: number; node: { name: string; color: string | null } }[];
+    };
+  }[],
 ): GitHubLanguage[] {
   const map = new Map<string, GitHubLanguage>();
   for (const repo of nodes) {
@@ -54,7 +61,11 @@ function aggregateLanguages(
       if (existing) {
         existing.size += edge.size;
       } else {
-        map.set(edge.node.name, { name: edge.node.name, color: edge.node.color, size: edge.size });
+        map.set(edge.node.name, {
+          name: edge.node.name,
+          color: edge.node.color,
+          size: edge.size,
+        });
       }
     }
   }
@@ -104,8 +115,14 @@ export default function useGitHubStats() {
         // Agréger toutes les années (tri chronologique pour cohérence)
         const allYearResponses = [...allResponses].sort(
           (a, b) =>
-            new Date(a.viewer.contributionsCollection.contributionCalendar.weeks[0]?.contributionDays[0]?.date ?? 0).getTime() -
-            new Date(b.viewer.contributionsCollection.contributionCalendar.weeks[0]?.contributionDays[0]?.date ?? 0).getTime(),
+            new Date(
+              a.viewer.contributionsCollection.contributionCalendar.weeks[0]
+                ?.contributionDays[0]?.date ?? 0,
+            ).getTime() -
+            new Date(
+              b.viewer.contributionsCollection.contributionCalendar.weeks[0]
+                ?.contributionDays[0]?.date ?? 0,
+            ).getTime(),
         );
         allYearResponses.push(firstResponse);
 
@@ -114,7 +131,10 @@ export default function useGitHubStats() {
           totalCommits += col.totalCommitContributions;
           for (const contrib of col.commitContributionsByRepository) {
             if (!seenRepos.has(contrib.repository.nameWithOwner)) {
-              seenRepos.set(contrib.repository.nameWithOwner, contrib.repository.owner.login);
+              seenRepos.set(
+                contrib.repository.nameWithOwner,
+                contrib.repository.owner.login,
+              );
             }
           }
           for (const week of col.contributionCalendar.weeks) {
@@ -127,10 +147,15 @@ export default function useGitHubStats() {
           }
         }
 
-        const activeDays = allContributionDays.filter((d) => d.contributionCount > 0);
-        const { current: currentStreak, longest: longestStreak } = computeStreaks(allContributionDays);
+        const activeDays = allContributionDays.filter(
+          (d) => d.contributionCount > 0,
+        );
+        const { current: currentStreak, longest: longestStreak } =
+          computeStreaks(allContributionDays);
 
-        const sortedActive = [...activeDays].sort((a, b) => a.date.localeCompare(b.date));
+        const sortedActive = [...activeDays].sort((a, b) =>
+          a.date.localeCompare(b.date),
+        );
         const firstActiveDate = sortedActive[0]?.date ?? null;
         const lastActiveDate = sortedActive.at(-1)?.date ?? null;
 
@@ -143,7 +168,8 @@ export default function useGitHubStats() {
         const commitsPerWeek = totalCommits / totalWeeks;
 
         // Vélocité : 4 dernières semaines du calendrier de l'année courante
-        const last4Weeks = viewer.contributionsCollection.contributionCalendar.weeks.slice(-4);
+        const last4Weeks =
+          viewer.contributionsCollection.contributionCalendar.weeks.slice(-4);
         const velocityLast4Weeks =
           last4Weeks
             .flatMap((w) => w.contributionDays)
@@ -155,14 +181,17 @@ export default function useGitHubStats() {
 
         const orgLogins = new Set<string>(ORG_LOGINS);
         const reposContributedTo = seenRepos.size;
-        const orgReposContributedTo = Array.from(seenRepos.values()).filter((login) =>
-          orgLogins.has(login),
+        const orgReposContributedTo = Array.from(seenRepos.values()).filter(
+          (login) => orgLogins.has(login),
         ).length;
         const orgReposContributedToPerOrg = ORG_LOGINS.map(
-          (login) => Array.from(seenRepos.values()).filter((v) => v === login).length,
+          (login) =>
+            Array.from(seenRepos.values()).filter((v) => v === login).length,
         );
         // Repos externes = ni perso (viewer.login), ni orgs connues
-        const externalReposContributedTo = Array.from(seenRepos.values()).filter(
+        const externalReposContributedTo = Array.from(
+          seenRepos.values(),
+        ).filter(
           (login) => login !== viewer.login && !orgLogins.has(login),
         ).length;
 
@@ -197,7 +226,9 @@ export default function useGitHubStats() {
           privateRepos: viewer.privateRepos.totalCount,
           archivedRepos: viewer.archivedRepos.totalCount,
           totalRepos:
-            viewer.publicRepos.totalCount + viewer.privateRepos.totalCount + orgTotalRepos,
+            viewer.publicRepos.totalCount +
+            viewer.privateRepos.totalCount +
+            orgTotalRepos,
           packages: viewer.packages.totalCount + orgPackages,
           totalProjects,
           orgsProjects,
@@ -210,7 +241,9 @@ export default function useGitHubStats() {
             packages: orgPackageCounts[i],
             reposContributedTo: orgReposContributedToPerOrg[i],
             totalRepos: orgTotalRepoCounts[i],
-            totalProjects: viewer.organizations.nodes.find((o) => o.login === login)?.projectsV2.totalCount ?? 0,
+            totalProjects:
+              viewer.organizations.nodes.find((o) => o.login === login)
+                ?.projectsV2.totalCount ?? 0,
           })),
           totalPRs: viewer.pullRequests.totalCount,
           totalCommits,
@@ -228,7 +261,8 @@ export default function useGitHubStats() {
           accountAge,
         });
       } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err : new Error(String(err)));
+        if (!cancelled)
+          setError(err instanceof Error ? err : new Error(String(err)));
       } finally {
         if (!cancelled) setLoading(false);
       }
