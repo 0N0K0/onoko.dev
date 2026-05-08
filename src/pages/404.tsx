@@ -2,8 +2,10 @@ import { Box, Button, Typography, useTheme } from "@mui/material";
 import notFoundSrc from "../assets/images/not-found.jpg";
 import { ResponsiveStack } from "../components/custom/ResponsiveLayout";
 import Layout from "../layout";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 export default function NotFound() {
+  useDocumentTitle("Erreur");
   const theme = useTheme();
 
   return (
