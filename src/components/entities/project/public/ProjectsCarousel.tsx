@@ -75,24 +75,11 @@ export default function ProjectsCarousel({
     cursor.style.left = `${e.clientX}px`;
     cursor.style.top = `${e.clientY}px`;
 
-    const projectsList = projectsListRef.current;
-    if (projectsList) {
-      const r = projectsList.getBoundingClientRect();
+    // Le handler étant sur le div englobant les projets, la souris est forcément dessus
+    cursor.style.opacity = "1";
 
-      // Vérifie si la souris est au-dessus de la liste des projets
-      const over =
-        e.clientX >= r.left &&
-        e.clientX <= r.right &&
-        e.clientY >= r.top &&
-        e.clientY <= r.bottom;
-
-      // Affiche le curseur personnalisé
-      cursor.style.opacity = over ? "1" : "0";
-
-      // Masque le curseur natif
-      const container = containerRef.current;
-      if (container) container.style.cursor = over ? "none" : "";
-    }
+    const container = containerRef.current;
+    if (container) container.style.cursor = "none";
   };
 
   // Gère la sortie de la souris du conteneur des projets
