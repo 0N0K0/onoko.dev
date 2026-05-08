@@ -1,16 +1,16 @@
-import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
+import { Button, Divider, Skeleton, Typography, useTheme } from "@mui/material";
 import Layout from "../../layout";
 import { useContactForm } from "../../context/ContactFormContext";
 import { ResponsiveStack } from "../../components/custom/ResponsiveLayout";
 import profil from "../../assets/images/profil.jpeg";
-import { useBreakpoints } from "../../hooks/mediaQueries";
 import useGitHubStats from "../../hooks/queries/useGitHubStats";
+import Icon from "@mdi/react";
+import { mdiTrayArrowDown } from "@mdi/js";
 
 export default function AboutPage() {
   const theme = useTheme();
-  const { isLg } = useBreakpoints();
   const { openContactForm } = useContactForm();
-  const { stats, loading: statsLoading, error: statsError } = useGitHubStats();
+  const { stats } = useGitHubStats();
 
   return (
     <Layout.Content
@@ -21,13 +21,14 @@ export default function AboutPage() {
         marginX: "auto !important",
       }}
     >
+      {/* Contenu principal */}
       <ResponsiveStack
         rowGap={9}
         sx={{
-          width: `calc((min(100vw, 1920px) - (${isLg ? 64 : 32}px * 3)) / 3 * 2)`,
           maxWidth: "656px",
         }}
       >
+        {/* A propos */}
         <Typography
           variant="h1"
           sx={{ fontWeight: "100", textTransform: "uppercase" }}
@@ -58,11 +59,11 @@ export default function AboutPage() {
           </Typography>
           <Typography variant="bodySm">
             Qu’il s’agisse d’un produit ambitieux, d’un besoin métier concret ou
-            d’une idée en germe — je suis toujours partante pour partager
-            différents points de vue et participer à de nouveaux projets.
-            Parlons en !
+            d’une idée en germe — je suis toujours partante pour participer à de
+            nouveaux projets ou partager différents points de vue. Parlons en !
           </Typography>
         </ResponsiveStack>
+        {/* Contact */}
         <Typography
           variant="h1"
           component="p"
@@ -83,20 +84,28 @@ export default function AboutPage() {
         >
           prendre contact
         </Typography>
+        {/* Complément d'information */}
         <ResponsiveStack rowGap={3}>
-          <Typography variant="h5" component="h2" sx={{ fontStyle: "italic" }}>
-            Construire à partir du réel
+          <Typography
+            variant="h5"
+            component="h2"
+            sx={{ fontStyle: "italic", color: theme.palette.text.secondary }}
+          >
+            Expérience de terrain
           </Typography>
           <Typography variant="bodySm">
-            Mon rapport au développement ne date pas de ma reconversion en 2024.
-            <br />
             J'ai occupé pendant plus de 10 ans des fonctions administratives et
             de support technique : secrétariat, RH, comptabilité, assistance
-            informatique... Très vite, je ne me suis plus contentée d'utiliser
-            les outils. J'ai appris le VBA, manipulé des bases SQL, configuré
-            des logiciels métiers, fait du webscraping, de la PAO, de la DAO,
-            automatisé des process — et formé mes pairs aux dispositifs
-            numériques.
+            informatique...
+          </Typography>
+          <Typography variant="bodySm">
+            Mais mon rapport au développement ne date pas de ma reconversion en
+            2023.
+            <br />
+            Très vite, je ne me suis plus contentée d'utiliser les outils. J'ai
+            appris le VBA, manipulé des bases SQL, configuré des logiciels
+            métiers, fait du webscraping, de la PAO, de la DAO, automatisé des
+            process — et formé mes pairs aux dispositifs numériques.
           </Typography>
           <Typography variant="bodySm">
             J'ai acquis de cette expérience rigueur, et compréhension fine des
@@ -104,107 +113,369 @@ export default function AboutPage() {
             lorsqu’elle améliore le quotidien des personnes qui l’utilisent.
           </Typography>
         </ResponsiveStack>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <Typography variant="h5" component="h2" sx={{ fontStyle: "italic" }}>
-            GitHub Stats
-          </Typography>
-          {statsLoading && <CircularProgress size={24} />}
-          {statsError && (
-            <Typography variant="bodySm" color="error">
-              {statsError.message}
-            </Typography>
-          )}
-          {stats && (
-            <>
-              <Typography variant="h5">Ecosystème & projets</Typography>
-              <ul>
-                <li>
-                  {stats.publicRepos +
-                    stats.privateRepos +
-                    (stats.orgs.find((o) => o.login === "0N0K0")
-                      ?.reposContributedTo ?? 0)}{" "}
-                  repositories personnels
-                </li>
-                <li>
-                  {stats.orgs.find((o) => o.login === "IMASIO-ONOKO")
-                    ?.reposContributedTo ?? 0}{" "}
-                  repositories au sein d'une organisation cofondée
-                </li>
-                <li>{stats.packages} packages publiés</li>
-                <li>
-                  {stats.totalProjects -
-                    stats.orgsProjects +
-                    (stats.orgs.find((o) => o.login === "0N0K0")
-                      ?.totalProjects ?? 0) +
-                    (stats.orgs.find((o) => o.login === "IMASIO-ONOKO")
-                      ?.totalProjects ?? 0)}{" "}
-                  projets structurés
-                </li>
-              </ul>
-              <Typography variant="h5">Contributions</Typography>{" "}
-              {stats.firstActiveDate && (
-                <Typography variant="bodySm">
-                  Depuis{" "}
-                  {new Date(stats.firstActiveDate).toLocaleDateString("fr-FR", {
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </Typography>
-              )}
-              <ul>
-                <li>{stats.issuesOpened} issues rédigées</li>
-                <li>{stats.totalCommits} commits</li>
-                <li>{stats.totalPRs} pull requests</li>
-                <li>
-                  contributions sur {stats.externalReposContributedTo}{" "}
-                  repositories externes
-                </li>
-                <li>
-                  participations à{" "}
-                  {stats.orgsProjects -
-                    (stats.orgs.find((o) => o.login === "IMASIO-ONOKO")
-                      ?.totalProjects ?? 0) -
-                    (stats.orgs.find((o) => o.login === "0N0K0")
-                      ?.totalProjects ?? 0)}{" "}
-                  projets externes
-                </li>
-              </ul>
-              <Typography variant="h5">Cadence</Typography>
-              <ul>
-                {stats.lastActiveDate && (
-                  <li>
-                    Dernière contribution :{" "}
-                    {new Date(stats.lastActiveDate).toLocaleDateString("fr-FR")}
-                  </li>
-                )}
-                <li>{stats.activeDays} jours de contribution active</li>
-
-                <li>
-                  Moyenne de{" "}
-                  {Math.round(
-                    (stats.totalCommits + stats.totalPRs + stats.issuesOpened) /
-                      (stats.activeDays / 5),
-                  )}{" "}
-                  contributions par semaine active
-                </li>
-              </ul>
-            </>
-          )}
-        </Box>
       </ResponsiveStack>
-      <img
-        src={profil}
-        style={{
-          minWidth: `min(calc(100vh - 144px), calc((min(100vw, 1920px) - (${isLg ? 64 : 32}px * 3)) / 3))`,
-          maxWidth: `min(calc(100vh - 144px), calc((min(100vw, 1920px) - (${isLg ? 64 : 32}px * 3)) / 3))`,
-          maxHeight: `min(calc(100vh - 144px), calc((min(100vw, 1920px) - (${isLg ? 64 : 32}px * 3)) / 3))`,
-          objectFit: "cover",
-          borderRadius: "50%",
-          position: "sticky",
-          top: "72px",
-          alignSelf: "flex-start",
+      {/* Contenu complémentaire */}
+      <ResponsiveStack
+        component="aside"
+        rowGap={6}
+        sx={{
+          width: "fit-content",
+          alignItems: "center",
         }}
-      />
+      >
+        <img
+          src={profil}
+          style={{
+            maxWidth: `432px`,
+            aspectRatio: "1 / 1",
+            objectFit: "cover",
+            borderRadius: "50%",
+            border: `2px solid ${theme.palette.primary.light}`,
+            alignSelf: "flex-start",
+          }}
+        />
+        {/* Stats */}
+        <ResponsiveStack
+          rowGap={3}
+          sx={{
+            "& li": { display: "list-item !important" },
+          }}
+        >
+          <Divider />
+          <ResponsiveStack>
+            <ul style={{ marginLeft: "0" }}>
+              <li>
+                {stats ? (
+                  <span
+                    style={{
+                      color: theme.palette.primary.light,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {stats.publicRepos +
+                      stats.privateRepos +
+                      (stats.orgs.find(
+                        (o: { login: string; reposContributedTo: number }) =>
+                          o.login === "0N0K0",
+                      )?.reposContributedTo ?? 0) +
+                      (stats.orgs.find(
+                        (o: { login: string; reposContributedTo: number }) =>
+                          o.login === "IMASIO-ONOKO",
+                      )?.reposContributedTo ?? 0)}
+                  </span>
+                ) : (
+                  <Skeleton
+                    variant="text"
+                    width="2ch"
+                    sx={{ display: "inline-block" }}
+                  />
+                )}{" "}
+                repositories dont{" "}
+                {stats ? (
+                  <span
+                    style={{
+                      color: theme.palette.primary.light,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {stats ? (
+                      (stats.orgs.find(
+                        (o: { login: string; reposContributedTo: number }) =>
+                          o.login === "IMASIO-ONOKO",
+                      )?.reposContributedTo ?? 0)
+                    ) : (
+                      <Skeleton
+                        variant="text"
+                        width="2ch"
+                        sx={{ display: "inline-block" }}
+                      />
+                    )}
+                  </span>
+                ) : (
+                  <Skeleton
+                    variant="text"
+                    width="3ch"
+                    sx={{ display: "inline-block" }}
+                  />
+                )}{" "}
+                au sein d'une organisation cofondée
+              </li>
+              <li>
+                {stats ? (
+                  <span
+                    style={{
+                      color: theme.palette.primary.light,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {stats.packages}{" "}
+                  </span>
+                ) : (
+                  <Skeleton
+                    variant="text"
+                    width="3ch"
+                    sx={{ display: "inline-block" }}
+                  />
+                )}{" "}
+                packages publiés
+              </li>
+              <li>
+                {stats ? (
+                  <span
+                    style={{
+                      color: theme.palette.primary.light,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {stats.totalProjects -
+                      stats.orgsProjects +
+                      (stats.orgs.find(
+                        (o: { login: string; totalProjects: number }) =>
+                          o.login === "0N0K0",
+                      )?.totalProjects ?? 0) +
+                      (stats.orgs.find(
+                        (o: { login: string; totalProjects: number }) =>
+                          o.login === "IMASIO-ONOKO",
+                      )?.totalProjects ?? 0)}
+                  </span>
+                ) : (
+                  <Skeleton
+                    variant="text"
+                    width="1ch"
+                    sx={{ display: "inline-block" }}
+                  />
+                )}{" "}
+                projets structurés
+              </li>
+              <li>
+                <span
+                  style={{
+                    color: theme.palette.primary.light,
+                    fontWeight: "bold",
+                  }}
+                >
+                  9
+                </span>{" "}
+                projets Figma dont{" "}
+                <span
+                  style={{
+                    color: theme.palette.primary.light,
+                    fontWeight: "bold",
+                  }}
+                >
+                  1
+                </span>{" "}
+                librairie commune
+              </li>
+            </ul>
+          </ResponsiveStack>
+          <Divider />
+          <ResponsiveStack rowGap={3}>
+            <Typography
+              variant="bodySm"
+              style={{
+                fontStyle: "italic",
+                color: theme.palette.text.secondary,
+              }}
+            >
+              Depuis{" "}
+              {stats && stats.firstActiveDate ? (
+                new Date(stats.firstActiveDate).toLocaleDateString("fr-FR", {
+                  month: "long",
+                  year: "numeric",
+                })
+              ) : (
+                <Skeleton
+                  variant="text"
+                  width="3ch"
+                  sx={{ display: "inline-block" }}
+                />
+              )}
+            </Typography>
+            <ul style={{ marginLeft: "0" }}>
+              <li>
+                {stats ? (
+                  <span
+                    style={{
+                      color: theme.palette.primary.light,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {stats.issuesOpened}
+                  </span>
+                ) : (
+                  <Skeleton
+                    variant="text"
+                    width="3ch"
+                    sx={{ display: "inline-block" }}
+                  />
+                )}{" "}
+                issues rédigées
+              </li>
+              <li>
+                {stats ? (
+                  <span
+                    style={{
+                      color: theme.palette.primary.light,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {stats.totalCommits}
+                  </span>
+                ) : (
+                  <Skeleton
+                    variant="text"
+                    width="3ch"
+                    sx={{ display: "inline-block" }}
+                  />
+                )}{" "}
+                commits
+              </li>
+              <li>
+                {stats ? (
+                  <span
+                    style={{
+                      color: theme.palette.primary.light,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {stats.totalPRs}
+                  </span>
+                ) : (
+                  <Skeleton
+                    variant="text"
+                    width="3ch"
+                    sx={{ display: "inline-block" }}
+                  />
+                )}{" "}
+                pull requests
+              </li>
+              <li>
+                contributions sur{" "}
+                {stats ? (
+                  <span
+                    style={{
+                      color: theme.palette.primary.light,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {stats.externalReposContributedTo}
+                  </span>
+                ) : (
+                  <Skeleton
+                    variant="text"
+                    width="2ch"
+                    sx={{ display: "inline-block" }}
+                  />
+                )}{" "}
+                repositories externes
+              </li>
+              <li>
+                participations à{" "}
+                {stats ? (
+                  <span
+                    style={{
+                      color: theme.palette.primary.light,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {stats.orgsProjects -
+                      (stats.orgs.find(
+                        (o: { login: string; totalProjects: number }) =>
+                          o.login === "IMASIO-ONOKO",
+                      )?.totalProjects ?? 0) -
+                      (stats.orgs.find(
+                        (o: { login: string; totalProjects: number }) =>
+                          o.login === "0N0K0",
+                      )?.totalProjects ?? 0)}
+                  </span>
+                ) : (
+                  <Skeleton
+                    variant="text"
+                    width="1ch"
+                    sx={{ display: "inline-block" }}
+                  />
+                )}{" "}
+                projets externes
+              </li>
+            </ul>
+          </ResponsiveStack>
+          <ResponsiveStack>
+            <ul style={{ marginLeft: "0" }}>
+              <li>
+                {stats ? (
+                  <span
+                    style={{
+                      color: theme.palette.primary.light,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {stats.activeDays}
+                  </span>
+                ) : (
+                  <Skeleton
+                    variant="text"
+                    width="3ch"
+                    sx={{ display: "inline-block" }}
+                  />
+                )}{" "}
+                jours d'activité
+              </li>
+              <li>
+                Moyenne de{" "}
+                {stats ? (
+                  <span
+                    style={{
+                      color: theme.palette.primary.light,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {Math.round(
+                      (stats.totalCommits +
+                        stats.totalPRs +
+                        stats.issuesOpened) /
+                        (stats.activeDays / 5),
+                    )}
+                  </span>
+                ) : (
+                  <Skeleton
+                    variant="text"
+                    width="2ch"
+                    sx={{ display: "inline-block" }}
+                  />
+                )}{" "}
+                contributions par semaine active
+              </li>
+              <li>
+                Dernière contribution le{" "}
+                {stats && stats.lastActiveDate ? (
+                  <span
+                    style={{
+                      color: theme.palette.primary.light,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {new Date(stats.lastActiveDate).toLocaleDateString("fr-FR")}
+                  </span>
+                ) : (
+                  <Skeleton
+                    variant="text"
+                    width="10ch"
+                    sx={{ display: "inline-block" }}
+                  />
+                )}
+              </li>
+            </ul>
+          </ResponsiveStack>
+          <Divider />
+        </ResponsiveStack>
+        <Button
+          startIcon={<Icon path={mdiTrayArrowDown} size={1} />}
+          sx={{ minWidth: "208px" }}
+        >
+          Obtenir mon CV
+        </Button>
+      </ResponsiveStack>
     </Layout.Content>
   );
 }
