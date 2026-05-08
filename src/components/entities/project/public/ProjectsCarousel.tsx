@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { Link, Typography, useTheme } from "@mui/material";
+import { Box, Link, Typography, useTheme } from "@mui/material";
 import { mdiEye } from "@mdi/js";
 import {
   ResponsiveBox,
@@ -152,45 +152,44 @@ export default function ProjectsCarousel({
     const container = containerRef.current;
     if (!container) return;
 
-    const projectRect = e.currentTarget.getBoundingClientRect();
-    let isAfter = true;
-    if (activeProjectId) {
-      const prevActiveProject = document.getElementById(
-        `project-${activeProjectId}`,
-      );
-      const prevActiveProjectRect = prevActiveProject?.getBoundingClientRect();
-      if (prevActiveProjectRect)
-        isAfter = projectRect.left > prevActiveProjectRect.left;
-    }
-    setActiveProjectId(projectId);
-    const isFirstProject = projects[0].id === projectId;
+    // baseWidth = largeur courante du projet survolé, qui est toujours en état
+    // "collapsed" au moment du hover (guard activeProjectId ci-dessus).
+    const baseWidth = e.currentTarget.getBoundingClientRect().width;
+    const expandedWidth = baseWidth * (isMd ? 2 : 1.5);
+    const containerWidth = container.getBoundingClientRect().width;
+    const paddingLeft = parseFloat(getComputedStyle(container).paddingLeft);
+    const marginRight = parseFloat(theme.spacing(2));
+    const projectIndex = projects.findIndex((p) => p.id === projectId);
 
-    const containerRect = container.getBoundingClientRect();
-    const expandedWidth = projectRect.width * (isMd ? 2 : 1.5);
-    const widthDiff = expandedWidth - projectRect.width;
-    const delta =
-      projectRect.left +
-      projectRect.width / 2 +
-      (widthDiff / 2) * (isAfter ? -1 : 1) -
-      containerRect.width / 2;
-
+    // Position analytique finale du centre du projet (indépendante des transitions
+    // CSS en cours sur les autres items — résout les sauts sur Firefox).
+    const finalContentCenter =
+      paddingLeft +
+      projectIndex * (baseWidth + marginRight) +
+      expandedWidth / 2;
+    const targetScrollLeft = Math.max(
+      0,
+      finalContentCenter - containerWidth / 2,
+    );
     const startScroll = container.scrollLeft;
-    const duration = 1500;
-    const startTime = performance.now();
-    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+    const delta = targetScrollLeft - startScroll;
 
-    if (isFirstProject && container.scrollLeft === 0) return;
+    setActiveProjectId(projectId);
+
+    if (delta === 0) return;
 
     if (scrollAnimationRef.current !== null) {
       cancelAnimationFrame(scrollAnimationRef.current);
       scrollAnimationRef.current = null;
     }
 
+    const duration = 1500;
+    const startTime = performance.now();
+    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+
     const animate = (now: number) => {
       const t = Math.min((now - startTime) / duration, 1);
-      container.scrollLeft = isFirstProject
-        ? startScroll * (1 - easeOut(t))
-        : startScroll + delta * easeOut(t);
+      container.scrollLeft = startScroll + delta * easeOut(t);
       if (t < 1) {
         scrollAnimationRef.current = requestAnimationFrame(animate);
       } else {
@@ -294,7 +293,7 @@ export default function ProjectsCarousel({
                 minHeight: "100%",
               }}
             >
-              {projects.map((project, idx) => {
+              {projects.map((project) => {
                 const thumbnailUrl =
                   API_URL +
                   (project.thumbnail as Media)?.path.replace(
@@ -320,8 +319,6 @@ export default function ProjectsCarousel({
                       background: `url(${thumbnailUrl}) ${project.thumbnail && typeof project.thumbnail !== "string" ? project.thumbnail?.focus || "center" : "center"} / cover no-repeat`,
                       transition: `all 1500ms ${theme.transitions.easing.easeOut}`,
                       cursor: "none",
-                      marginRight:
-                        idx === projects.length - 1 ? { lg: 8, xs: 4 } : 0,
                     }}
                     onMouseEnter={(e) => handleProjectHover(e, project.id)}
                   >
@@ -374,6 +371,14 @@ export default function ProjectsCarousel({
                   </ResponsiveBox>
                 );
               })}
+              <Box
+                sx={{
+                  minHeight: "100%",
+                  flexGrow: 0,
+                  flexShrink: 0,
+                  minWidth: { lg: 64, xs: 32 },
+                }}
+              />
             </ResponsiveStack>
           </div>
         )}
