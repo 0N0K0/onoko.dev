@@ -21,7 +21,14 @@ export default function HoneyPot({
       aria-hidden="true"
     >
       <label htmlFor={id}>{label}</label>
-      <input type={type} id={id} name={id} tabIndex={-1} onChange={onChange} />
+      <input
+        type={type}
+        id={id}
+        name={id}
+        tabIndex={-1}
+        onChange={onChange}
+        autoComplete="off"
+      />
     </div>
   );
 }
