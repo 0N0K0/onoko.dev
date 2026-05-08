@@ -44,6 +44,9 @@ export default function ProjectsCarousel({
   const [contentWidth, setContentWidth] = useState(0);
 
   const cursorRef = useRef<HTMLDivElement>(null);
+  const scrollAnimationRef = useRef<number | null>(null);
+  const projectsWrapperRef = useRef<HTMLDivElement>(null);
+  const mouseLeaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Mesure la largeur du hgroup
   useLayoutEffect(() => {
@@ -68,6 +71,11 @@ export default function ProjectsCarousel({
 
   // Affiche le curseur personnalisé au survol des projets
   const handleProjectsListMouseMove = (e: React.MouseEvent) => {
+    if (mouseLeaveTimerRef.current !== null) {
+      clearTimeout(mouseLeaveTimerRef.current);
+      mouseLeaveTimerRef.current = null;
+    }
+
     const cursor = cursorRef.current;
     if (!cursor) return;
 
@@ -84,40 +92,61 @@ export default function ProjectsCarousel({
 
   // Gère la sortie de la souris du conteneur des projets
   const handleProjectsListMouseLeave = () => {
-    // Réinitialise l'état du hgroup et des projets
-    setHgroupVisible(true);
-    setActiveProjectId(null);
+    mouseLeaveTimerRef.current = setTimeout(() => {
+      mouseLeaveTimerRef.current = null;
+      console.log("Mouse left carousel (confirmed)");
 
-    // Masque le curseur personnalisé et réactive les interactions
-    if (cursorRef.current) cursorRef.current.style.opacity = "0";
-    if (containerRef.current) containerRef.current.style.cursor = "";
+      // Réinitialise l'état du hgroup et des projets
+      setHgroupVisible(true);
+      setActiveProjectId(null);
 
-    const container = containerRef.current;
-    if (!container) return;
-    const projectsList = projectsListRef.current;
-    if (!projectsList) return;
+      // Masque le curseur personnalisé et réactive les interactions
+      if (cursorRef.current) cursorRef.current.style.opacity = "0";
+      if (containerRef.current) containerRef.current.style.cursor = "";
 
-    projectsList.style.pointerEvents = "";
+      const container = containerRef.current;
+      if (!container) return;
+      const projectsList = projectsListRef.current;
+      if (!projectsList) return;
 
-    if (container.scrollLeft === 0) return;
+      projectsList.style.pointerEvents = "";
 
-    // Remet le conteneur à la position initiale
-    const startScroll = container.scrollLeft;
-    const startTime = performance.now();
-    const duration = 1500;
-    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
-    const scrollBack = (now: number) => {
-      const t = Math.min((now - startTime) / duration, 1);
-      container.scrollLeft = startScroll * (1 - easeOut(t));
-      if (t < 1) requestAnimationFrame(scrollBack);
-    };
-    requestAnimationFrame(scrollBack);
+      if (scrollAnimationRef.current !== null) {
+        cancelAnimationFrame(scrollAnimationRef.current);
+        scrollAnimationRef.current = null;
+      }
+
+      if (container.scrollLeft === 0) return;
+
+      // Remet le conteneur à la position initiale
+      const startScroll = container.scrollLeft;
+      const startTime = performance.now();
+      const duration = 1500;
+      const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+      const scrollBack = (now: number) => {
+        const t = Math.min((now - startTime) / duration, 1);
+        container.scrollLeft = startScroll * (1 - easeOut(t));
+        if (t < 1) {
+          scrollAnimationRef.current = requestAnimationFrame(scrollBack);
+        } else {
+          scrollAnimationRef.current = null;
+        }
+      };
+      scrollAnimationRef.current = requestAnimationFrame(scrollBack);
+    }, 300);
   };
 
   const handleProjectHover = (
     e: React.MouseEvent<HTMLElement>,
     projectId: string,
   ) => {
+    if (mouseLeaveTimerRef.current !== null) {
+      clearTimeout(mouseLeaveTimerRef.current);
+      mouseLeaveTimerRef.current = null;
+    }
+
+    if (projectId === activeProjectId) return;
+
     setHgroupVisible(false);
 
     const container = containerRef.current;
@@ -144,15 +173,18 @@ export default function ProjectsCarousel({
       projectRect.width / 2 +
       (widthDiff / 2) * (isAfter ? -1 : 1) -
       containerRect.width / 2;
-    console.log({ delta });
 
     const startScroll = container.scrollLeft;
-    console.log({ startScroll });
     const duration = 1500;
     const startTime = performance.now();
     const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
     if (isFirstProject && container.scrollLeft === 0) return;
+
+    if (scrollAnimationRef.current !== null) {
+      cancelAnimationFrame(scrollAnimationRef.current);
+      scrollAnimationRef.current = null;
+    }
 
     const animate = (now: number) => {
       const t = Math.min((now - startTime) / duration, 1);
@@ -160,10 +192,12 @@ export default function ProjectsCarousel({
         ? startScroll * (1 - easeOut(t))
         : startScroll + delta * easeOut(t);
       if (t < 1) {
-        requestAnimationFrame(animate);
+        scrollAnimationRef.current = requestAnimationFrame(animate);
+      } else {
+        scrollAnimationRef.current = null;
       }
     };
-    requestAnimationFrame(animate);
+    scrollAnimationRef.current = requestAnimationFrame(animate);
   };
 
   return (
@@ -242,6 +276,7 @@ export default function ProjectsCarousel({
         )}
         {projects.length > 0 && (
           <div
+            ref={projectsWrapperRef}
             style={{
               minHeight: "100%",
               // flex: "0 1 100%", overflow: "hidden"
