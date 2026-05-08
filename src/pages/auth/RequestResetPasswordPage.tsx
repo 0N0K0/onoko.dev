@@ -74,7 +74,6 @@ export default function RequestResetPassword() {
         <HoneyPot
           label="Email"
           id="email"
-          autoComplete="email"
           onChange={(e) => setHoneypot(e.target.value)}
         />
         <TextField
