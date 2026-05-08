@@ -13,8 +13,11 @@ import {
 } from "../../components/custom/ResponsiveLayout";
 import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 import { useBreakpoints } from "../../hooks/mediaQueries";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function LegalPage() {
+  useDocumentTitle("Mentions légales");
+
   const theme = useTheme();
   const { isMd, isLg, isXl } = useBreakpoints();
   const mainCellWidth = isXl

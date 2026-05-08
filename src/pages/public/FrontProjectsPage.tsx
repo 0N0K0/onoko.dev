@@ -8,8 +8,10 @@ import Layout from "../../layout";
 import { API_URL } from "../../constants/apiConstants";
 import type { Media } from "../../types/entities/mediaTypes";
 import { useAuthContext } from "../../context/AuthContext";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export function FrontProjectsPage() {
+  useDocumentTitle("Projets");
   const { isAuthenticated } = useAuthContext();
 
   const projects = useProjects();

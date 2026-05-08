@@ -1,4 +1,4 @@
-import { ImageListItem, useTheme } from "@mui/material";
+import { ImageListItem, Typography, useTheme } from "@mui/material";
 import type { Project } from "../../../../types/entities/projectTypes";
 import { ResponsiveImageList } from "../../../custom/ResponsiveLayout";
 import ProjectTableRow from "./ProjectTableRow";
@@ -18,7 +18,29 @@ export default function ProjectMockupSection({
     return null;
 
   return (
-    <ProjectTableRow id="mockup" merged>
+    <ProjectTableRow
+      id="mockup"
+      merged
+      title={project.mockup.embed && !isSmall ? "Maquette figma" : ""}
+    >
+      {project.mockup.embed && !isSmall && (
+        <>
+          <Typography variant="bodySm" color="textSecondary" gutterBottom>
+            La maquette ci-dessous est intégrée depuis Figma. Vous pouvez
+            l'afficher en plein écran et interagir avec elle directement.
+          </Typography>
+          <iframe
+            src={project.mockup.embed}
+            allowFullScreen
+            style={{
+              height: "calc(100dvh - 144px)",
+              border: `1px solid ${theme.palette.divider}`,
+              borderRadius: "8px",
+              width: "100%",
+            }}
+          />
+        </>
+      )}
       {project.mockup.images && project.mockup.images.length > 0 && (
         <ResponsiveImageList
           variant="masonry"
@@ -51,18 +73,6 @@ export default function ProjectMockupSection({
             </ImageListItem>
           ))}
         </ResponsiveImageList>
-      )}
-      {project.mockup.embed && !isSmall && (
-        <iframe
-          src={project.mockup.embed}
-          allowFullScreen
-          style={{
-            height: "calc(100dvh - 144px)",
-            border: `1px solid ${theme.palette.divider}`,
-            borderRadius: "8px",
-            width: "100%",
-          }}
-        />
       )}
     </ProjectTableRow>
   );

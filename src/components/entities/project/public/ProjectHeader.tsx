@@ -14,6 +14,9 @@ import { useBreakpoints } from "../../../../hooks/mediaQueries";
 export default function ProjectHeader({ project }: { project: Project }) {
   const theme = useTheme();
   const { isXs, isSm, isMd, isXxl } = useBreakpoints();
+  const isIOS =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
 
   const { isAuthenticated } = useAuthContext();
 
@@ -54,7 +57,7 @@ export default function ProjectHeader({ project }: { project: Project }) {
             ? "center top"
             : (project.thumbnail as Media)?.focus || "center",
           backgroundRepeat: "no-repeat",
-          backgroundAttachment: "fixed",
+          backgroundAttachment: isIOS ? "scroll" : "fixed",
           backgroundSize: isXxl ? "1920px auto" : "cover",
           borderTop: `1px solid ${theme.palette.divider}`,
           borderBottom: `1px solid ${theme.palette.divider}`,

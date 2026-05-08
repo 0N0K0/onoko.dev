@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { Link, Typography, useTheme } from "@mui/material";
+import { Box, Link, Typography, useTheme } from "@mui/material";
 import { mdiEye } from "@mdi/js";
 import {
   ResponsiveBox,
@@ -44,6 +44,9 @@ export default function ProjectsCarousel({
   const [contentWidth, setContentWidth] = useState(0);
 
   const cursorRef = useRef<HTMLDivElement>(null);
+  const scrollAnimationRef = useRef<number | null>(null);
+  const projectsWrapperRef = useRef<HTMLDivElement>(null);
+  const mouseLeaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Mesure la largeur du hgroup
   useLayoutEffect(() => {
@@ -68,6 +71,11 @@ export default function ProjectsCarousel({
 
   // Affiche le curseur personnalisé au survol des projets
   const handleProjectsListMouseMove = (e: React.MouseEvent) => {
+    if (mouseLeaveTimerRef.current !== null) {
+      clearTimeout(mouseLeaveTimerRef.current);
+      mouseLeaveTimerRef.current = null;
+    }
+
     const cursor = cursorRef.current;
     if (!cursor) return;
 
@@ -75,108 +83,120 @@ export default function ProjectsCarousel({
     cursor.style.left = `${e.clientX}px`;
     cursor.style.top = `${e.clientY}px`;
 
-    const projectsList = projectsListRef.current;
-    if (projectsList) {
-      const r = projectsList.getBoundingClientRect();
+    // Le handler étant sur le div englobant les projets, la souris est forcément dessus
+    cursor.style.opacity = "1";
 
-      // Vérifie si la souris est au-dessus de la liste des projets
-      const over =
-        e.clientX >= r.left &&
-        e.clientX <= r.right &&
-        e.clientY >= r.top &&
-        e.clientY <= r.bottom;
-
-      // Affiche le curseur personnalisé
-      cursor.style.opacity = over ? "1" : "0";
-
-      // Masque le curseur natif
-      const container = containerRef.current;
-      if (container) container.style.cursor = over ? "none" : "";
-    }
+    const container = containerRef.current;
+    if (container) container.style.cursor = "none";
   };
 
   // Gère la sortie de la souris du conteneur des projets
   const handleProjectsListMouseLeave = () => {
-    // Réinitialise l'état du hgroup et des projets
-    setHgroupVisible(true);
-    setActiveProjectId(null);
+    mouseLeaveTimerRef.current = setTimeout(() => {
+      mouseLeaveTimerRef.current = null;
+      console.log("Mouse left carousel (confirmed)");
 
-    // Masque le curseur personnalisé et réactive les interactions
-    if (cursorRef.current) cursorRef.current.style.opacity = "0";
-    if (containerRef.current) containerRef.current.style.cursor = "";
+      // Réinitialise l'état du hgroup et des projets
+      setHgroupVisible(true);
+      setActiveProjectId(null);
 
-    const container = containerRef.current;
-    if (!container) return;
-    const projectsList = projectsListRef.current;
-    if (!projectsList) return;
+      // Masque le curseur personnalisé et réactive les interactions
+      if (cursorRef.current) cursorRef.current.style.opacity = "0";
+      if (containerRef.current) containerRef.current.style.cursor = "";
 
-    projectsList.style.pointerEvents = "";
+      const container = containerRef.current;
+      if (!container) return;
+      const projectsList = projectsListRef.current;
+      if (!projectsList) return;
 
-    if (container.scrollLeft === 0) return;
+      projectsList.style.pointerEvents = "";
 
-    // Remet le conteneur à la position initiale
-    const startScroll = container.scrollLeft;
-    const startTime = performance.now();
-    const duration = 1500;
-    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
-    const scrollBack = (now: number) => {
-      const t = Math.min((now - startTime) / duration, 1);
-      container.scrollLeft = startScroll * (1 - easeOut(t));
-      if (t < 1) requestAnimationFrame(scrollBack);
-    };
-    requestAnimationFrame(scrollBack);
+      if (scrollAnimationRef.current !== null) {
+        cancelAnimationFrame(scrollAnimationRef.current);
+        scrollAnimationRef.current = null;
+      }
+
+      if (container.scrollLeft === 0) return;
+
+      // Remet le conteneur à la position initiale
+      const startScroll = container.scrollLeft;
+      const startTime = performance.now();
+      const duration = 1500;
+      const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+      const scrollBack = (now: number) => {
+        const t = Math.min((now - startTime) / duration, 1);
+        container.scrollLeft = startScroll * (1 - easeOut(t));
+        if (t < 1) {
+          scrollAnimationRef.current = requestAnimationFrame(scrollBack);
+        } else {
+          scrollAnimationRef.current = null;
+        }
+      };
+      scrollAnimationRef.current = requestAnimationFrame(scrollBack);
+    }, 300);
   };
 
   const handleProjectHover = (
     e: React.MouseEvent<HTMLElement>,
     projectId: string,
   ) => {
+    if (mouseLeaveTimerRef.current !== null) {
+      clearTimeout(mouseLeaveTimerRef.current);
+      mouseLeaveTimerRef.current = null;
+    }
+
+    if (projectId === activeProjectId) return;
+
     setHgroupVisible(false);
 
     const container = containerRef.current;
     if (!container) return;
 
-    const projectRect = e.currentTarget.getBoundingClientRect();
-    let isAfter = true;
-    if (activeProjectId) {
-      const prevActiveProject = document.getElementById(
-        `project-${activeProjectId}`,
-      );
-      const prevActiveProjectRect = prevActiveProject?.getBoundingClientRect();
-      if (prevActiveProjectRect)
-        isAfter = projectRect.left > prevActiveProjectRect.left;
-    }
-    setActiveProjectId(projectId);
-    const isFirstProject = projects[0].id === projectId;
+    // baseWidth = largeur courante du projet survolé, qui est toujours en état
+    // "collapsed" au moment du hover (guard activeProjectId ci-dessus).
+    const baseWidth = e.currentTarget.getBoundingClientRect().width;
+    const expandedWidth = baseWidth * (isMd ? 2 : 1.5);
+    const containerWidth = container.getBoundingClientRect().width;
+    const paddingLeft = parseFloat(getComputedStyle(container).paddingLeft);
+    const marginRight = parseFloat(theme.spacing(2));
+    const projectIndex = projects.findIndex((p) => p.id === projectId);
 
-    const containerRect = container.getBoundingClientRect();
-    const expandedWidth = projectRect.width * (isMd ? 2 : 1.5);
-    const widthDiff = expandedWidth - projectRect.width;
-    const delta =
-      projectRect.left +
-      projectRect.width / 2 +
-      (widthDiff / 2) * (isAfter ? -1 : 1) -
-      containerRect.width / 2;
-    console.log({ delta });
-
+    // Position analytique finale du centre du projet (indépendante des transitions
+    // CSS en cours sur les autres items — résout les sauts sur Firefox).
+    const finalContentCenter =
+      paddingLeft +
+      projectIndex * (baseWidth + marginRight) +
+      expandedWidth / 2;
+    const targetScrollLeft = Math.max(
+      0,
+      finalContentCenter - containerWidth / 2,
+    );
     const startScroll = container.scrollLeft;
-    console.log({ startScroll });
+    const delta = targetScrollLeft - startScroll;
+
+    setActiveProjectId(projectId);
+
+    if (delta === 0) return;
+
+    if (scrollAnimationRef.current !== null) {
+      cancelAnimationFrame(scrollAnimationRef.current);
+      scrollAnimationRef.current = null;
+    }
+
     const duration = 1500;
     const startTime = performance.now();
     const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
-    if (isFirstProject && container.scrollLeft === 0) return;
-
     const animate = (now: number) => {
       const t = Math.min((now - startTime) / duration, 1);
-      container.scrollLeft = isFirstProject
-        ? startScroll * (1 - easeOut(t))
-        : startScroll + delta * easeOut(t);
+      container.scrollLeft = startScroll + delta * easeOut(t);
       if (t < 1) {
-        requestAnimationFrame(animate);
+        scrollAnimationRef.current = requestAnimationFrame(animate);
+      } else {
+        scrollAnimationRef.current = null;
       }
     };
-    requestAnimationFrame(animate);
+    scrollAnimationRef.current = requestAnimationFrame(animate);
   };
 
   return (
@@ -255,6 +275,7 @@ export default function ProjectsCarousel({
         )}
         {projects.length > 0 && (
           <div
+            ref={projectsWrapperRef}
             style={{
               minHeight: "100%",
               // flex: "0 1 100%", overflow: "hidden"
@@ -272,7 +293,7 @@ export default function ProjectsCarousel({
                 minHeight: "100%",
               }}
             >
-              {projects.map((project, idx) => {
+              {projects.map((project) => {
                 const thumbnailUrl =
                   API_URL +
                   (project.thumbnail as Media)?.path.replace(
@@ -298,8 +319,6 @@ export default function ProjectsCarousel({
                       background: `url(${thumbnailUrl}) ${project.thumbnail && typeof project.thumbnail !== "string" ? project.thumbnail?.focus || "center" : "center"} / cover no-repeat`,
                       transition: `all 1500ms ${theme.transitions.easing.easeOut}`,
                       cursor: "none",
-                      marginRight:
-                        idx === projects.length - 1 ? { lg: 8, xs: 4 } : 0,
                     }}
                     onMouseEnter={(e) => handleProjectHover(e, project.id)}
                   >
@@ -352,6 +371,14 @@ export default function ProjectsCarousel({
                   </ResponsiveBox>
                 );
               })}
+              <Box
+                sx={{
+                  minHeight: "100%",
+                  flexGrow: 0,
+                  flexShrink: 0,
+                  minWidth: { lg: 64, xs: 32 },
+                }}
+              />
             </ResponsiveStack>
           </div>
         )}
