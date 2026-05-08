@@ -222,8 +222,8 @@ export default function ContactForm({
               sx={{ flexDirection: { xs: "column", sm: "row" }, columnGap: 1 }}
             >
               <HoneyPot
-                label="Email"
-                id="email"
+                label="Site web"
+                id="website"
                 onChange={(e) => setHoneypot(e.target.value)}
               />
               <TextField
