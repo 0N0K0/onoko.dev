@@ -73,8 +73,8 @@ export default function AboutPage() {
               Je m'appelle Noémie Koelblen.
             </Typography>
             <Typography variant="bodySm">
-              Je suis développeuse web full-stack, avec une forte appétence pour
-              le backend, l'architecture applicative et les outils bien pensés.
+              Développeuse web full-stack, j'ai une forte appétence pour le
+              backend, l'architecture applicative et les outils bien pensés.
             </Typography>
             <Typography variant="bodySm">
               Je travaille principalement avec PHP & Symfony, Node.js, React et
@@ -85,10 +85,10 @@ export default function AboutPage() {
             <Typography variant="bodySm">
               Viscéralement curieuse, j’aime comprendre comment les choses
               fonctionnent et construire des solutions propres, durables et
-              utiles. J’ai tendance à m’investir à fond dans tout ce qui
-              m’intéresse : creuser un problème, expérimenter, apprendre une
-              nouvelle technologie, optimiser un workflow ou simplifier les
-              manières de travailler.
+              utiles. Pleinement investie dans les domaines qui me passionnent,
+              je prends naturellement le temps de creuser les problèmes,
+              d’expérimenter, d’apprendre de nouvelles technologies et de
+              chercher des façons plus efficaces et plus simples de travailler.
             </Typography>
             <Typography variant="bodySm">
               Qu’il s’agisse d’un produit ambitieux, d’un besoin métier concret
