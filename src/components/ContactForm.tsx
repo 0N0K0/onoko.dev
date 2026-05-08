@@ -224,7 +224,6 @@ export default function ContactForm({
               <HoneyPot
                 label="Email"
                 id="email"
-                autoComplete="email"
                 onChange={(e) => setHoneypot(e.target.value)}
               />
               <TextField
