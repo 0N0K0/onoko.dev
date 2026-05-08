@@ -72,8 +72,8 @@ export default function RequestResetPassword() {
       />
       <ResponsiveStack rowGap={3} sx={{ width: "100%" }}>
         <HoneyPot
-          label="Email"
-          id="email"
+          label="Website"
+          id="website"
           onChange={(e) => setHoneypot(e.target.value)}
         />
         <TextField
