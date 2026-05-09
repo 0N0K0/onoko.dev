@@ -45,6 +45,7 @@ export default function StretchyTypography({
 
   useLayoutEffect(() => {
     fitFontSize();
+    document.fonts.ready.then(fitFontSize);
     window.addEventListener("resize", fitFontSize);
     return () => {
       window.removeEventListener("resize", fitFontSize);
