@@ -29,7 +29,7 @@ import { WysiwygBox } from "../../components/custom/WysiwygBox";
 
 const LANGAGES = [
   { id: "french", label: "Français", level: "natif" },
-  { id: "english", label: "Anglais", level: "courrant" },
+  { id: "english", label: "Anglais", level: "courant" },
   { id: "spanish", label: "Espagnol", level: "notions" },
 ];
 
@@ -175,7 +175,7 @@ export default function AboutPage() {
           >
             <ResponsiveStack direction="row" sx={{ marginX: "-12px" }}>
               <CustomIconButton icon={mdiEmail} onClick={openContactForm} />
-              <CustomIconButton icon={mdiPhone} href="tel:+133632077408" />
+              <CustomIconButton icon={mdiPhone} href="tel:+33632077408" />
               <CustomIconButton
                 icon={mdiGithub}
                 href="https://github.com/Noemie-Koelblen"
@@ -592,7 +592,7 @@ export default function AboutPage() {
               flex: "1",
               background: `linear-gradient(rgba(11, 12, 14, 0.9), ${theme.palette.background.paper}) padding-box, linear-gradient(180deg, ${theme.palette.background.paper}, ${theme.palette.primary.dark}) border-box`,
               backdropFilter: "blur(4px)",
-              borderRadius: 1,
+              borderRadius: "0 0 8px 8px",
               border: `1px solid transparent`,
               zIndex: 2,
               padding: "0px 32px 36px",
