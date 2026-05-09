@@ -13,7 +13,7 @@ export default function ProjectFeedbackSection({
   return (
     <>
       {hasRichTextContent(project.feedback.client) && (
-        <ProjectTableRow id="client-feedback" title="Retours client">
+        <ProjectTableRow id="client-feedback" title="Échos">
           <WysiwygBox __html={project.feedback.client!} />
         </ProjectTableRow>
       )}

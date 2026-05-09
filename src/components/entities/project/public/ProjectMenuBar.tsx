@@ -77,7 +77,7 @@ export default function ProjectMenuBar({ project }: { project: Project }) {
   }
   if (project?.feedback) {
     if (hasRichTextContent(project.feedback.client))
-      sections.push({ id: "client-feedback", label: "Retours" });
+      sections.push({ id: "client-feedback", label: "Échos" });
     if (hasRichTextContent(project.feedback.general))
       sections.push({ id: "general-feedback", label: "Bilan" });
   }
