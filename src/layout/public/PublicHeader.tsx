@@ -66,7 +66,7 @@ export default function PublicHeader() {
       disabled: false,
     });
     pages.push(
-      { label: "Ego", sublabel: "A propos", route: "/about", disabled: true },
+      { label: "Ego", sublabel: "A propos", route: "/about", disabled: false },
       {
         label: "Musae",
         sublabel: "Inspirations",

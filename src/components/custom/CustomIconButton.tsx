@@ -12,15 +12,21 @@ export default function CustomIconButton({
   const linkProps = href
     ? {
         component:
-          href.startsWith("http") || href.startsWith("mailto:")
+          href.startsWith("http") ||
+          href.startsWith("mailto:") ||
+          href.startsWith("tel:")
             ? "a"
             : RouterLink,
         to:
-          href.startsWith("http") || href.startsWith("mailto:")
+          href.startsWith("http") ||
+          href.startsWith("mailto:") ||
+          href.startsWith("tel:")
             ? undefined
             : href,
         href:
-          href.startsWith("http") || href.startsWith("mailto:")
+          href.startsWith("http") ||
+          href.startsWith("mailto:") ||
+          href.startsWith("tel:")
             ? href
             : undefined,
         target: href.startsWith("http") ? "_blank" : undefined,

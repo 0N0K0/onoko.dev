@@ -5,6 +5,7 @@ import {
   mdiFolder,
   mdiHardHat,
   mdiMultimedia,
+  mdiStar,
   mdiTag,
   mdiViewDashboard,
 } from "@mdi/js";
@@ -17,6 +18,10 @@ export const ADMIN_MENU_LINKS = {
   "/admin/projects": {
     icon: mdiFolder,
     label: "Projets",
+  },
+  "/admin/testimonies": {
+    icon: mdiStar,
+    label: "Témoignages",
   },
   "/admin/stacks": {
     icon: mdiApplicationArrayOutline,

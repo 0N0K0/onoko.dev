@@ -7,8 +7,9 @@ import {
 } from "@mui/material";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
 import { useResponsiveWidth } from "../../../../hooks/layout/useResponsiveWidth";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useBreakpoints } from "../../../../hooks/mediaQueries";
+import StretchyTypography from "../../../custom/StretchyTypography";
 
 function ProjectTableCell({
   children,
@@ -42,34 +43,7 @@ export default function ProjectTableRow({
       ? useResponsiveWidth(6)
       : useResponsiveWidth(4);
 
-  const titleRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLTableCellElement>(null);
-  const [autoFontSize, setAutoFontSize] = useState<number | undefined>(
-    undefined,
-  );
-
-  const fitFontSize = () => {
-    if (!title || !titleRef.current || !containerRef.current) return;
-    const containerWidth = containerRef.current.offsetWidth - (isLg ? 96 : 64);
-    let fontSize = isLg ? 40 : 32; // px (3rem ou 2rem)
-    titleRef.current.style.fontSize = fontSize + "px";
-    let titleWidth = titleRef.current.scrollWidth;
-    while (titleWidth > containerWidth && fontSize > 16) {
-      fontSize -= 2;
-      titleRef.current.style.fontSize = fontSize + "px";
-      titleWidth = titleRef.current.scrollWidth;
-    }
-    setAutoFontSize(fontSize);
-  };
-
-  useLayoutEffect(() => {
-    fitFontSize();
-    window.addEventListener("resize", fitFontSize);
-    return () => {
-      window.removeEventListener("resize", fitFontSize);
-    };
-    // eslint-disable-next-line
-  }, [title, isLg, merged]);
 
   return (
     <TableRow {...props}>
@@ -84,21 +58,17 @@ export default function ProjectTableRow({
             display: { md: "table-cell", xs: "none" },
           }}
         >
-          <Typography
-            ref={titleRef}
-            variant="h2"
+          <StretchyTypography
+            fontSize={40}
+            containerRef={containerRef}
             sx={{
               textAlign: "right",
-              // width: "fit-content",
-              fontSize: autoFontSize
-                ? `${autoFontSize}px`
-                : { lg: "2.5rem", xs: "2rem" },
               fontWeight: 700,
               lineHeight: { lg: 1.2, xs: 1.5 },
             }}
           >
             {title}
-          </Typography>
+          </StretchyTypography>
         </ProjectTableCell>
       )}
       <ProjectTableCell
