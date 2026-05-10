@@ -11,7 +11,7 @@ export default function useTestimonies() {
   const testimonies = (data?.testimonies ?? []).map((testimony) => ({
     ...testimony,
     createdAt: testimony.createdAt
-      ? dayjs(Number(testimony.createdAt))
+      ? dayjs(testimony.createdAt as unknown as string | number)
       : testimony.createdAt,
   }));
 

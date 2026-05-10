@@ -1,4 +1,4 @@
-import { Button, TextField } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
 import CustomDialog from "../custom/CustomDialog";
 import { ResponsiveStack } from "../custom/ResponsiveLayout";
 import Icon from "@mdi/react";
@@ -44,7 +44,6 @@ export default function TestimonyFormDialog({
     items: testimonies,
     defaults: { name: "", content: "", company: "", createdAt: undefined },
   });
-  console.log(editingTestimony);
 
   return (
     <CustomDialog
@@ -71,7 +70,6 @@ export default function TestimonyFormDialog({
                   e.target.value !== (initialTestimony?.name || "") &&
                     setHasChanges(true);
                 }}
-                required
               />
               <TextField
                 label="Entité"
@@ -85,8 +83,12 @@ export default function TestimonyFormDialog({
                   e.target.value !== (initialTestimony?.company || "") &&
                     setHasChanges(true);
                 }}
-                required
               />
+            </ResponsiveStack>
+            <ResponsiveStack
+              rowGap={3}
+              sx={{ flexDirection: "row", columnGap: 2 }}
+            >
               <DatePicker
                 label="Date"
                 views={["year", "month"]}
@@ -100,6 +102,22 @@ export default function TestimonyFormDialog({
                   date?.valueOf() !== initialTestimony?.createdAt?.valueOf() &&
                     setHasChanges(true);
                 }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={editingTestimony?.insert || false}
+                    onChange={(e) => {
+                      setEditingTestimony((prev) =>
+                        prev ? { ...prev, insert: e.target.checked } : prev,
+                      );
+                      e.target.checked !==
+                        (initialTestimony?.insert || false) &&
+                        setHasChanges(true);
+                    }}
+                  />
+                }
+                label="Encart"
               />
             </ResponsiveStack>
             <WysiwygField
@@ -141,7 +159,7 @@ export default function TestimonyFormDialog({
               handleAdd({ variables: { input: editingTestimony! } });
             }
           }}
-          disabled={submitting || !hasChanges || !editingTestimony?.name}
+          disabled={submitting || !hasChanges || !editingTestimony?.content}
           startIcon={<Icon path={mdiCheck} size={1} />}
           sx={{ flex: "1 1 auto" }}
         >

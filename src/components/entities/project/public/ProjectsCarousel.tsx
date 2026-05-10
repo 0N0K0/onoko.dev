@@ -94,7 +94,6 @@ export default function ProjectsCarousel({
   const handleProjectsListMouseLeave = () => {
     mouseLeaveTimerRef.current = setTimeout(() => {
       mouseLeaveTimerRef.current = null;
-      console.log("Mouse left carousel (confirmed)");
 
       // Réinitialise l'état du hgroup et des projets
       setHgroupVisible(true);

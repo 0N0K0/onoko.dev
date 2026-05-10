@@ -9,6 +9,7 @@ export const TESTIMONIES_QUERY = gql`
       company
       content
       createdAt
+      insert
     }
   }
 `;
