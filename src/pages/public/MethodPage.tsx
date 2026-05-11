@@ -23,6 +23,8 @@ import type { Stack } from "../../types/entities/stackTypes";
 import type { Media } from "../../types/entities/mediaTypes";
 import { useAuthContext } from "../../context/AuthContext";
 import CallToAction from "../../components/CallToAction";
+import { useMemo, useState } from "react";
+import MultipleMarquee from "../../components/custom/MultipleMarquee";
 
 function SectionTitle({
   title,
@@ -76,6 +78,7 @@ function StackGrid({ stacks }: { stacks: Stack[] }) {
         display: "grid",
         gridTemplateColumns: `repeat(auto-fit, 3rem)`,
         columnGap: 2,
+        marginBottom: "24px !important",
       }}
     >
       {stacks.map(
@@ -185,6 +188,24 @@ export default function MethodPage() {
 
   const { stacks } = useStacks();
   const { categories } = useCategories();
+
+  const [stackShuffleSeed] = useState(() => Math.random().toString(36));
+
+  const shuffledStacks = useMemo(() => {
+    const hashWithSeed = (value: string) => {
+      const input = `${stackShuffleSeed}:${value}`;
+      let hash = 2166136261;
+      for (let i = 0; i < input.length; i++) {
+        hash ^= input.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+      return hash >>> 0;
+    };
+
+    return [...stacks].sort(
+      (a, b) => hashWithSeed(String(a.id)) - hashWithSeed(String(b.id)),
+    );
+  }, [stacks, stackShuffleSeed]);
 
   return (
     <>
@@ -570,10 +591,13 @@ export default function MethodPage() {
           <ResponsiveStack sx={{ flexDirection: "row", columnGap: 4 }}>
             {/* Contenu principal */}
             <ResponsiveStack rowGap={3}>
-              <Typography sx={{ paddingY: "12px" }}>
+              <Typography variant="bodyMd" sx={{ paddingY: "12px" }}>
                 Le pilotage des projets suit une logique agile adaptée au
-                contexte du projet, combinant un flux Kanban et, lorsque cela
-                est pertinent, des cycles courts de type sprint.
+                contexte du projet.
+              </Typography>
+              <Typography>
+                Il combine un flux Kanban et, lorsque cela est pertinent, des
+                cycles courts de type sprint.
               </Typography>
               <Typography>
                 Une organisation GitHub centralise l’ensemble des repositories
@@ -616,7 +640,7 @@ export default function MethodPage() {
             </ResponsiveStack>
             {/* Produit existant */}
             <SectionCard title="Produit existant">
-              <Typography>
+              <Typography variant="bodyMd">
                 Lorsqu’un projet repose sur une base déjà existante, une phase
                 d’audit peut être réalisée en amont.
               </Typography>
@@ -659,7 +683,7 @@ export default function MethodPage() {
                 )}
               />
               <SectionCard title="Design System" sx={{ flex: 1 }}>
-                <Typography>
+                <Typography variant="bodyMd">
                   Le design s’appuie sur une base cohérente qui structure
                   l’ensemble du produit et garantit l’unité visuelle de
                   l’interface avant la conception des pages.
@@ -703,7 +727,7 @@ export default function MethodPage() {
             <ResponsiveStack sx={{ flex: 1, rowGap: 3 }}>
               {/* Wireframes */}
               <SectionCard title="Wireframes">
-                <Typography>
+                <Typography variant="bodyMd">
                   En amont de la phase de maquettage, des wireframes peuvent
                   être utilisés afin de structurer la logique fonctionnelle des
                   interfaces.
@@ -725,10 +749,12 @@ export default function MethodPage() {
               </SectionCard>
               {/* Maquettes */}
               <SectionCard title="Maquettes">
+                <Typography variant="bodyMd">
+                  Chaque interface est conçue selon une logique d’atomic design.
+                </Typography>
                 <Typography>
-                  Chaque interface est conçue selon une logique d’atomic design,
-                  dans laquelle les composants de base sont combinés pour former
-                  des structures plus complexes, jusqu’aux écrans complets.
+                  Les composants de base sont combinés pour former des
+                  structures plus complexes, jusqu’aux écrans complets.
                 </Typography>
                 <Typography>
                   Les maquettes sont construites dès le départ pour être
@@ -751,13 +777,15 @@ export default function MethodPage() {
           <ResponsiveStack sx={{ flexDirection: "row", columnGap: 4 }}>
             {/* Interfaces d'administration */}
             <SectionCard sx={{ flex: 1 }} title="Interface d’administration">
-              <Typography>
+              <Typography variant="bodyMd">
                 Chaque projet dynamique intègre une interface d’administration
-                permettant la gestion des contenus. Cette interface inclut
-                généralement la gestion des pages ou entités, une librairie de
-                médias centralisée, ainsi qu’un système de rôles et de
-                permissions permettant de contrôler les accès des différents
-                utilisateurs.
+                permettant la gestion des contenus.{" "}
+              </Typography>
+              <Typography>
+                Cette interface inclut généralement la gestion des pages ou
+                entités, une librairie de médias centralisée, ainsi qu’un
+                système de rôles et de permissions permettant de contrôler les
+                accès des différents utilisateurs.
               </Typography>
               <Typography>
                 Une attention particulière est portée à la simplicité d’usage.
@@ -770,7 +798,7 @@ export default function MethodPage() {
             </SectionCard>
             {/* Interface publique */}
             <SectionCard sx={{ flex: 1 }} title="Interface publique">
-              <Typography>
+              <Typography variant="bodyMd">
                 L’expérience utilisateur côté visiteur est conçue comme un
                 élément central du produit.
               </Typography>
@@ -817,15 +845,17 @@ export default function MethodPage() {
                     ),
                   )}
               />
-              <Typography>
+              <Typography variant="bodyMd">
                 Dans le cas de sites statiques le frontend constitue la couche
-                principale de l’application. Dans cette configuration,
-                l’application fonctionne comme une interface entièrement
-                autonome, où les contenus sont soit intégrés directement dans le
-                code, soit consommés via des sources externes simples (fichiers
-                ou services).
+                principale de l’application.
               </Typography>
               <Typography>
+                Dans cette configuration, l’application fonctionne comme une
+                interface entièrement autonome, où les contenus sont soit
+                intégrés directement dans le code, soit consommés via des
+                sources externes simples (fichiers ou services).
+              </Typography>
+              <Typography variant="bodyMd">
                 Lorsque le projet nécessite des données dynamiques, le frontend
                 développé en React communique avec une API dédiée.{" "}
               </Typography>
@@ -854,11 +884,13 @@ export default function MethodPage() {
                     ),
                   )}
               />
-              <Typography>
+              <Typography variant="bodyMd">
                 Le backend est mis en place uniquement lorsque le projet dépasse
-                le cadre d’une application frontend autonome. Il est responsable
-                de la logique métier, de la gestion des données et des règles de
-                fonctionnement du produit.
+                le cadre d’une application frontend autonome.
+              </Typography>
+              <Typography>
+                Il est responsable de la logique métier, de la gestion des
+                données et des règles de fonctionnement du produit.
               </Typography>
               <Typography>
                 Le backend, développé en Node.js ou Symfony selon les besoins,
@@ -874,11 +906,14 @@ export default function MethodPage() {
                   stack.categories?.some((c) => c.label === "Wordpress"),
                 )}
               />
-              <Typography>
+              <Typography variant="bodyMd">
                 WordPress permet d'accélérer le développement de projets
                 nécessitant une gestion de contenu via une interface
-                administrative conviviale. Il n'est cependant envisagé que pour
-                des projets dont la structure de données reste simple.
+                administrative conviviale.
+              </Typography>
+              <Typography>
+                Il n'est cependant envisagé que pour des projets dont la
+                structure de données reste simple.
               </Typography>
               <Typography>
                 Dans ce cas, le développement est structuré autour d’un thème
@@ -922,8 +957,10 @@ export default function MethodPage() {
                 )}
               />
               <Typography>
-                Un socle de sécurité est appliqué à l’ensemble des projets. Il
-                inclut notamment la sécurisation des accès API, la validation
+                Un socle de sécurité est appliqué à l’ensemble des projets.
+              </Typography>
+              <Typography>
+                Il inclut notamment la sécurisation des accès API, la validation
                 des données côté serveur, la gestion des permissions
                 utilisateurs et la protection contre les injections et requêtes
                 non autorisées.
@@ -1052,11 +1089,13 @@ export default function MethodPage() {
                 stack.categories?.some((c) => c.label === "Infrastructure"),
               )}
             />
-            <Typography>
+            <Typography variant="bodyMd">
               La gestion des environnements suit une logique claire de
-              séparation entre local, staging et production. L’environnement
-              local est conteneurisé via Docker Compose afin de garantir une
-              reproduction fidèle des conditions d’exécution.
+              séparation entre local, staging et production.
+            </Typography>
+            <Typography>
+              L’environnement local est conteneurisé via Docker Compose afin de
+              garantir une reproduction fidèle des conditions d’exécution.
             </Typography>
             <Typography>
               L’environnement de staging est considéré comme une réplique
@@ -1103,7 +1142,7 @@ export default function MethodPage() {
                 ),
               )}
           />
-          <Typography>
+          <Typography variant="bodyMd">
             Mon environnement de travail est pensé comme un espace de production
             à part entière.
           </Typography>
@@ -1178,13 +1217,38 @@ export default function MethodPage() {
             </SectionCard>
           </ResponsiveStack>
         </ResponsiveStack>
-        <CallToAction
-          emphasis
-          sx={{
-            marginX: { xs: "-32px", lg: "-64px" },
-            width: { xs: "calc(100% + 64px)", lg: "calc(100% + 128px)" },
-          }}
-        />
+        <ResponsiveStack rowGap={3}>
+          <MultipleMarquee
+            autoFill
+            speed={25}
+            distribute
+            sx={{ marginX: { xs: "-32px", lg: "-64px" } }}
+          >
+            {shuffledStacks
+              .filter((stack) => !!stack.icon)
+              .map((stack) => (
+                <Picture
+                  key={stack.id}
+                  image={stack.icon!}
+                  maxWidth="48px"
+                  maxHeight="48px"
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    aspectRatio: "1 / 1",
+                    marginRight: "16px",
+                  }}
+                />
+              ))}
+          </MultipleMarquee>
+          <CallToAction
+            emphasis
+            sx={{
+              marginX: { xs: "-32px", lg: "-64px" },
+              width: { xs: "calc(100% + 64px)", lg: "calc(100% + 128px)" },
+            }}
+          />
+        </ResponsiveStack>
       </Layout.Content>
     </>
   );
