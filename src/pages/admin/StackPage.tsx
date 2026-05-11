@@ -45,12 +45,13 @@ export default function Stacks() {
             content: (item: Stack) => stripHtml(item.label),
           },
           {
-            key: "category",
-            label: "Catégorie",
+            key: "categories",
+            label: "Catégories",
             content: (item: Stack) =>
-              typeof item.category === "string"
-                ? stripHtml(item.category)
-                : stripHtml(item.category?.label || ""),
+              item.categories
+                ?.map((c) => (typeof c === "string" ? c : c.label))
+                .map(stripHtml)
+                .join(", ") || "",
           },
           {
             key: "versions",
