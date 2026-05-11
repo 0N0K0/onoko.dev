@@ -1,6 +1,7 @@
 import {
   Card,
   CardContent,
+  Link,
   Typography,
   useTheme,
   type CardProps,
@@ -20,6 +21,7 @@ import useCategories from "../../hooks/queries/useCategories";
 import StickyMenuBar from "../../components/custom/StickyMenuBar";
 import type { Stack } from "../../types/entities/stackTypes";
 import type { Media } from "../../types/entities/mediaTypes";
+import { useAuthContext } from "../../context/AuthContext";
 
 function SectionTitle({
   title,
@@ -130,6 +132,52 @@ function SectionCard({
   );
 }
 
+function TimelineLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  const theme = useTheme();
+  const { isAuthenticated } = useAuthContext();
+  return (
+    <Link
+      href={href}
+      onClick={(e) => {
+        e.preventDefault();
+        const id = href.replace("#", "");
+        const el = document.getElementById(id);
+        if (el) {
+          const y =
+            el.getBoundingClientRect().top +
+            window.scrollY -
+            (isAuthenticated ? 144 : 96);
+          window.scrollTo({ top: y, behavior: "smooth" });
+        }
+      }}
+      sx={{
+        color: theme.palette.text.primary,
+        textDecoration: "none",
+        display: "inline",
+        // transition: `color ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
+        backgroundImage: `linear-gradient(${theme.palette.primary.main}, ${theme.palette.primary.main})`,
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "100% calc(100%)",
+        backgroundSize: "0% 1px",
+        transition: `color ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}, background-size ${theme.transitions.duration.standard}ms ${theme.transitions.easing.easeInOut}`,
+        "&:hover": {
+          color: theme.palette.primary.main,
+          backgroundSize: "100% 1px",
+          backgroundPosition: "0% calc(100%)",
+        },
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
+
 export default function MethodPage() {
   const theme = useTheme();
 
@@ -152,7 +200,11 @@ export default function MethodPage() {
         ]}
       />
       <Layout.Content
-        sx={{ rowGap: 12, paddingX: { xs: 4, lg: 8 }, paddingY: 6 }}
+        sx={{
+          rowGap: 12,
+          paddingX: { xs: 4, lg: 8 },
+          paddingY: 6,
+        }}
       >
         {/* Header */}
         <ResponsiveStack rowGap={3}>
@@ -178,8 +230,8 @@ export default function MethodPage() {
             title="Cycle de production."
             subtitle="Définir une trajectoire adaptée"
           />
-          <ResponsiveStack sx={{ flexDirection: "row", columnGap: 4 }}>
-            <ResponsiveStack rowGap={7.5} sx={{ flex: 1 }}>
+          <ResponsiveStack sx={{ flexDirection: "row", columnGap: 2 }}>
+            <ResponsiveStack rowGap={7.5} sx={{ flex: "1 1 auto" }}>
               <ResponsiveStack rowGap={1.5}>
                 <Typography
                   variant="h3"
@@ -210,36 +262,46 @@ export default function MethodPage() {
                 }}
               >
                 <CustomTimelineItem
-                  content={<Typography>Cadrage fonctionnel</Typography>}
+                  content={
+                    <TimelineLink href="#project-management">
+                      Cadrage fonctionnel
+                    </TimelineLink>
+                  }
                 />
                 <CustomTimelineItem
                   content={
-                    <Typography>
+                    <TimelineLink href="#design">
                       Wireframes{" "}
                       <span style={{ color: theme.palette.primary.light }}>
                         &
                       </span>
                       &nbsp;Maquettes
-                    </Typography>
+                    </TimelineLink>
                   }
                 />
                 <CustomTimelineItem
-                  content={<Typography>Développement frontend</Typography>}
+                  content={
+                    <TimelineLink href="#dev">
+                      Développement frontend
+                    </TimelineLink>
+                  }
                 />
                 <CustomTimelineItem
                   content={
-                    <Typography>
+                    <TimelineLink href="#dev">
                       Tests{" "}
                       <span style={{ color: theme.palette.primary.light }}>
                         &
                       </span>
                       &nbsp;Validation
-                    </Typography>
+                    </TimelineLink>
                   }
                 />
                 <CustomTimelineItem
                   content={
-                    <Typography>Livraison en&nbsp;production</Typography>
+                    <TimelineLink href="#ia-infra">
+                      Livraison en&nbsp;production
+                    </TimelineLink>
                   }
                 />
                 <CustomTimelineItem
@@ -259,7 +321,11 @@ export default function MethodPage() {
                   }}
                 />
                 <CustomTimelineItem
-                  content={<Typography>Maintenance légère</Typography>}
+                  content={
+                    <TimelineLink href="#contract">
+                      Maintenance légère
+                    </TimelineLink>
+                  }
                   connectorProps={{
                     sx: {
                       background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
@@ -268,7 +334,7 @@ export default function MethodPage() {
                 />
               </Timeline>
             </ResponsiveStack>
-            <ResponsiveStack rowGap={7.5} sx={{ flex: 1 }}>
+            <ResponsiveStack rowGap={7.5} sx={{ flex: "1 1 auto" }}>
               <ResponsiveStack rowGap={1.5}>
                 <Typography
                   variant="h3"
@@ -300,50 +366,54 @@ export default function MethodPage() {
               >
                 <CustomTimelineItem
                   content={
-                    <Typography>
+                    <TimelineLink href="#project-management">
                       Analyse des besoins{" "}
                       <span style={{ color: theme.palette.primary.light }}>
                         &
                       </span>
                       &nbsp;Cadrage&nbsp;fonctionnel
-                    </Typography>
+                    </TimelineLink>
                   }
                 />
                 <CustomTimelineItem
                   content={
-                    <Typography>
+                    <TimelineLink href="#design">
                       Wireframes{" "}
                       <span style={{ color: theme.palette.primary.light }}>
                         &
                       </span>
                       &nbsp;Maquettes
-                    </Typography>
+                    </TimelineLink>
                   }
                 />
                 <CustomTimelineItem
                   content={
-                    <Typography>
+                    <TimelineLink href="#dev">
                       Développement frontend{" "}
                       <span style={{ color: theme.palette.primary.light }}>
                         &
                       </span>
                       &nbsp;backend
-                    </Typography>
+                    </TimelineLink>
                   }
                 />
                 <CustomTimelineItem
                   content={
-                    <Typography>
+                    <TimelineLink href="#dev">
                       Tests{" "}
                       <span style={{ color: theme.palette.primary.light }}>
                         &
                       </span>
                       &nbsp;Validation
-                    </Typography>
+                    </TimelineLink>
                   }
                 />
                 <CustomTimelineItem
-                  content={<Typography>Déploiement continu</Typography>}
+                  content={
+                    <TimelineLink href="#ia-infra">
+                      Déploiement continu
+                    </TimelineLink>
+                  }
                 />
                 <CustomTimelineItem
                   content={
@@ -352,11 +422,15 @@ export default function MethodPage() {
                   dotIcon={mdiReplay}
                 />
                 <CustomTimelineItem
-                  content={<Typography>Formation</Typography>}
+                  content={
+                    <TimelineLink href="#contract">Formation</TimelineLink>
+                  }
                 />
                 <CustomTimelineItem
                   content={
-                    <Typography>Livraison en&nbsp;production</Typography>
+                    <TimelineLink href="#ia-infra">
+                      Livraison en&nbsp;production
+                    </TimelineLink>
                   }
                 />
                 <CustomTimelineItem
@@ -376,7 +450,9 @@ export default function MethodPage() {
                   }}
                 />
                 <CustomTimelineItem
-                  content={<Typography>Maintenance</Typography>}
+                  content={
+                    <TimelineLink href="#contract">Maintenance</TimelineLink>
+                  }
                   connectorProps={{
                     sx: {
                       background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
@@ -385,7 +461,7 @@ export default function MethodPage() {
                 />
               </Timeline>
             </ResponsiveStack>
-            <ResponsiveStack rowGap={7.5} sx={{ flex: 1 }}>
+            <ResponsiveStack rowGap={7.5} sx={{ flex: "1 1 auto" }}>
               <ResponsiveStack rowGap={1.5}>
                 <Typography
                   variant="h3"
@@ -417,25 +493,27 @@ export default function MethodPage() {
               >
                 <CustomTimelineItem
                   content={
-                    <Typography>
+                    <TimelineLink href="#project-management">
                       Audit technique{" "}
                       <span style={{ color: theme.palette.primary.light }}>
                         &
                       </span>
                       &nbsp;fonctionnel
-                    </Typography>
+                    </TimelineLink>
                   }
                 />
                 <CustomTimelineItem
                   content={
-                    <Typography>
+                    <TimelineLink href="#project-management">
                       Cartographie du&nbsp;système&nbsp;existant
-                    </Typography>
+                    </TimelineLink>
                   }
                 />
                 <CustomTimelineItem
                   content={
-                    <Typography>Priorisation des&nbsp;corrections</Typography>
+                    <TimelineLink href="#project-management">
+                      Priorisation des&nbsp;corrections
+                    </TimelineLink>
                   }
                 />
                 <CustomTimelineItem
@@ -461,7 +539,9 @@ export default function MethodPage() {
                   }}
                 />
                 <CustomTimelineItem
-                  content={<Typography>Maintenance</Typography>}
+                  content={
+                    <TimelineLink href="#contract">Maintenance</TimelineLink>
+                  }
                   connectorProps={{
                     sx: {
                       background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
@@ -474,28 +554,22 @@ export default function MethodPage() {
         </ResponsiveStack>
         {/* Gestion de projet */}
         <ResponsiveStack id="project-management" rowGap={3}>
-          <ResponsiveStack
-            sx={{
-              flexDirection: "row",
-              columnGap: 4,
-              justifyContent: "space-between",
-            }}
-          >
-            <SectionTitle
-              title="Gestion de projet."
-              subtitle="Collaborer au rythme du produit"
-            />
-            <StackGrid
-              stacks={stacks.filter((stack) =>
-                stack.categories?.some((c) => c.label === "Gestion de projet"),
-              )}
-            />
-          </ResponsiveStack>
+          <SectionTitle
+            title="Gestion de projet."
+            subtitle="Collaborer au rythme du produit"
+          />
           {/* Contenu */}
           <ResponsiveStack sx={{ flexDirection: "row", columnGap: 4 }}>
             {/* Contenu principal */}
-            <ResponsiveStack rowGap={3} sx={{ paddingY: "12px" }}>
-              <Typography>
+            <ResponsiveStack rowGap={3}>
+              <StackGrid
+                stacks={stacks.filter((stack) =>
+                  stack.categories?.some(
+                    (c) => c.label === "Gestion de projet",
+                  ),
+                )}
+              />
+              <Typography sx={{ paddingY: "12px" }}>
                 Le pilotage des projets suit une logique agile adaptée au
                 contexte du projet, combinant un flux Kanban et, lorsque cela
                 est pertinent, des cycles courts de type sprint.
@@ -568,20 +642,7 @@ export default function MethodPage() {
         </ResponsiveStack>
         {/* Design */}
         <ResponsiveStack id="design" rowGap={3}>
-          <ResponsiveStack
-            sx={{
-              flexDirection: "row",
-              columnGap: 4,
-              justifyContent: "space-between",
-            }}
-          >
-            <SectionTitle title="Design." subtitle="Structurer l’expérience" />
-            <StackGrid
-              stacks={stacks.filter((stack) =>
-                stack.categories?.some((c) => c.label === "Design"),
-              )}
-            />
-          </ResponsiveStack>
+          <SectionTitle title="Design." subtitle="Structurer l’expérience" />
           {/* Contenu */}
           <ResponsiveStack
             sx={{ flexDirection: "row", columnGap: 4, alignItems: "stretch" }}
@@ -591,6 +652,11 @@ export default function MethodPage() {
               rowGap={3}
               sx={{ flex: 1, display: "flex", flexDirection: "column" }}
             >
+              <StackGrid
+                stacks={stacks.filter((stack) =>
+                  stack.categories?.some((c) => c.label === "Design"),
+                )}
+              />
               <SectionCard title="Design System" sx={{ flex: 1 }}>
                 <Typography>
                   Le design s’appuie sur une base cohérente qui structure
