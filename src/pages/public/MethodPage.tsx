@@ -102,6 +102,8 @@ function SectionCard({
     <Card
       {...props}
       sx={{
+        display: "flex",
+        flexDirection: "column",
         background: `linear-gradient(rgba(11, 12, 14), ${theme.palette.background.paper}) padding-box, linear-gradient(180deg, ${theme.palette.primary.dark}, ${theme.palette.background.paper}) border-box`,
         borderRadius: 1,
         borderBottomLeftRadius: 0,
@@ -112,6 +114,7 @@ function SectionCard({
     >
       <CardContent
         sx={{
+          flex: 1,
           display: "flex",
           flexDirection: "column",
           rowGap: 3,
@@ -142,7 +145,7 @@ export default function MethodPage() {
         >
           Dans la pratique
         </Typography>
-        <Typography variant="bodyLg">
+        <Typography variant="bodyMd">
           Cette charte rassemble les intentions, les principes et les exigences
           <br />
           qui structurent ma manière d’aborder chaque projet
@@ -465,7 +468,7 @@ export default function MethodPage() {
         {/* Contenu */}
         <ResponsiveStack sx={{ flexDirection: "row", columnGap: 4 }}>
           {/* Contenu principal */}
-          <ResponsiveStack rowGap={3}>
+          <ResponsiveStack rowGap={3} sx={{ paddingY: "12px" }}>
             <Typography>
               Le pilotage des projets suit une logique agile adaptée au contexte
               du projet, combinant un flux Kanban et, lorsque cela est
@@ -553,10 +556,15 @@ export default function MethodPage() {
           />
         </ResponsiveStack>
         {/* Contenu */}
-        <ResponsiveStack sx={{ flexDirection: "row", columnGap: 4 }}>
+        <ResponsiveStack
+          sx={{ flexDirection: "row", columnGap: 4, alignItems: "stretch" }}
+        >
           {/* Design System */}
-          <ResponsiveStack rowGap={3} sx={{ flex: 1 }}>
-            <SectionCard title="Design System">
+          <ResponsiveStack
+            rowGap={3}
+            sx={{ flex: 1, display: "flex", flexDirection: "column" }}
+          >
+            <SectionCard title="Design System" sx={{ flex: 1 }}>
               <Typography>
                 Le design s’appuie sur une base cohérente qui structure
                 l’ensemble du produit et garantit l’unité visuelle de
@@ -866,7 +874,7 @@ export default function MethodPage() {
         </ResponsiveStack>
       </ResponsiveStack>
       {/* IA & Infrastructure */}
-      <ResponsiveStack sx={{ flexDirection: "row", columnGap: 4 }}>
+      <ResponsiveStack sx={{ flexDirection: "row", columnGap: 8 }}>
         {/* IA */}
         <SectionCard sx={{ flex: 1 }}>
           <ResponsiveStack
@@ -915,7 +923,7 @@ export default function MethodPage() {
           </Typography>
         </SectionCard>
         {/* Infrastructure */}
-        <ResponsiveStack rowGap={3} sx={{ flex: 1 }}>
+        <ResponsiveStack rowGap={3} sx={{ flex: 1, paddingY: "36px" }}>
           <ResponsiveStack
             rowGap={3}
             sx={{
@@ -1022,35 +1030,50 @@ export default function MethodPage() {
           title="Cadre contractuel."
           subtitle="Structurer la continuité du projet"
         />
-        <Typography>
-          La formation fait partie intégrante de la livraison. Elle comprend la
-          prise en main des interfaces d’administration, la compréhension des
-          workflows et, lorsque nécessaire, la remise d’une documentation
-          technique.
-        </Typography>
-        <Typography>
-          Une période de garantie est généralement appliquée après la livraison
-          d’un projet. Durant cette période, les corrections de bugs liés au
-          périmètre initial sont prises en charge sans facturation
-          supplémentaire. Les évolutions fonctionnelles, en revanche, sont
-          considérées comme des prestations additionnelles et font l’objet d’une
-          estimation distincte.
-        </Typography>
-        <Typography>
-          La maintenance d’un projet est divisée entre une approche préventive
-          et une approche curative. La maintenance préventive inclut les mises à
-          jour de dépendances, les corrections de sécurité, la surveillance des
-          performances et la gestion des sauvegardes. La maintenance curative
-          intervient en cas d’anomalie et suit un niveau de priorité défini
-          selon la criticité du problème.
-        </Typography>
-        <Typography>
-          Sur le plan juridique, une clause de confidentialité peut être
-          appliquée afin de protéger les informations sensibles du projet. La
-          propriété intellectuelle quant à elle, est transférée au client une
-          fois le paiement intégral effectué, à l’exception des composants open
-          source ou des librairies tierces utilisées dans le projet.
-        </Typography>
+        <ResponsiveStack sx={{ flexDirection: "row", columnGap: 4 }}>
+          <SectionCard title="Formation">
+            <Typography>
+              La formation fait partie intégrante de la livraison.
+            </Typography>
+            <Typography>
+              Elle comprend la prise en main des interfaces d’administration, la
+              compréhension des workflows et, lorsque nécessaire, la remise
+              d’une documentation technique.
+            </Typography>
+          </SectionCard>
+          <SectionCard title="Garantie & Maintenance">
+            <Typography>
+              Une période de garantie est généralement appliquée après la
+              livraison d’un projet. Durant cette période, les corrections de
+              bugs liés au périmètre initial sont prises en charge sans
+              facturation supplémentaire. Les évolutions fonctionnelles, en
+              revanche, sont considérées comme des prestations additionnelles et
+              font l’objet d’une estimation distincte.
+            </Typography>
+            <Typography>
+              La maintenance d’un projet est divisée entre une approche
+              préventive et une approche curative. La maintenance préventive
+              inclut les mises à jour de dépendances, les corrections de
+              sécurité, la surveillance des performances et la gestion des
+              sauvegardes. La maintenance curative intervient en cas d’anomalie
+              et suit un niveau de priorité défini selon la criticité du
+              problème.
+            </Typography>
+          </SectionCard>
+          <SectionCard title="Confidentialité &&nbsp;Propriété">
+            <Typography>
+              Sur le plan juridique, une clause de confidentialité peut être
+              appliquée afin de protéger les informations sensibles du projet.
+            </Typography>
+            <Typography>
+              {" "}
+              La propriété intellectuelle quant à elle, est transférée au client
+              une fois le paiement intégral effectué, à l’exception des
+              composants open source ou des librairies tierces utilisées dans le
+              projet.
+            </Typography>
+          </SectionCard>
+        </ResponsiveStack>
       </ResponsiveStack>
     </Layout.Content>
   );
