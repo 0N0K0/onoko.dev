@@ -22,6 +22,7 @@ import StickyMenuBar from "../../components/custom/StickyMenuBar";
 import type { Stack } from "../../types/entities/stackTypes";
 import type { Media } from "../../types/entities/mediaTypes";
 import { useAuthContext } from "../../context/AuthContext";
+import CallToAction from "../../components/CallToAction";
 
 function SectionTitle({
   title,
@@ -203,7 +204,8 @@ export default function MethodPage() {
         sx={{
           rowGap: 12,
           paddingX: { xs: 4, lg: 8 },
-          paddingY: 6,
+          paddingTop: 6,
+          paddingBottom: 0,
         }}
       >
         {/* Header */}
@@ -1177,6 +1179,13 @@ export default function MethodPage() {
             </SectionCard>
           </ResponsiveStack>
         </ResponsiveStack>
+        <CallToAction
+          emphasis
+          sx={{
+            marginX: { xs: "-32px", lg: "-64px" },
+            width: { xs: "calc(100% + 64px)", lg: "calc(100% + 128px)" },
+          }}
+        />
       </Layout.Content>
     </>
   );
