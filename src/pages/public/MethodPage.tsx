@@ -113,6 +113,7 @@ function SectionCard({
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
         border: `1px solid transparent`,
+        boxShadow: "none",
         ...props.sx,
       }}
     >
@@ -153,7 +154,7 @@ function TimelineLink({
           const y =
             el.getBoundingClientRect().top +
             window.scrollY -
-            (isAuthenticated ? 144 : 96);
+            (isAuthenticated ? 168 : 120);
           window.scrollTo({ top: y, behavior: "smooth" });
         }
       }}
@@ -560,17 +561,15 @@ export default function MethodPage() {
             title="Gestion de projet."
             subtitle="Collaborer au rythme du produit"
           />
+          <StackGrid
+            stacks={stacks.filter((stack) =>
+              stack.categories?.some((c) => c.label === "Gestion de projet"),
+            )}
+          />
           {/* Contenu */}
           <ResponsiveStack sx={{ flexDirection: "row", columnGap: 4 }}>
             {/* Contenu principal */}
             <ResponsiveStack rowGap={3}>
-              <StackGrid
-                stacks={stacks.filter((stack) =>
-                  stack.categories?.some(
-                    (c) => c.label === "Gestion de projet",
-                  ),
-                )}
-              />
               <Typography sx={{ paddingY: "12px" }}>
                 Le pilotage des projets suit une logique agile adaptée au
                 contexte du projet, combinant un flux Kanban et, lorsque cela

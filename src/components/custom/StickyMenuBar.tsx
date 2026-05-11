@@ -11,13 +11,9 @@ export interface MenuSection {
 
 interface StickyMenuBarProps {
   sections: MenuSection[];
-  scrollOffset?: number;
 }
 
-export default function StickyMenuBar({
-  sections,
-  scrollOffset = 96,
-}: StickyMenuBarProps) {
+export default function StickyMenuBar({ sections }: StickyMenuBarProps) {
   const { isAuthenticated } = useAuthContext();
   const theme = useTheme();
 
@@ -202,7 +198,7 @@ export default function StickyMenuBar({
                 const y =
                   el.getBoundingClientRect().top +
                   window.scrollY -
-                  scrollOffset;
+                  (isAuthenticated ? 168 : 120);
                 window.scrollTo({ top: y, behavior: "smooth" });
               }
             }}
