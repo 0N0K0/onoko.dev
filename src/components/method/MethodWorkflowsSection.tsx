@@ -34,7 +34,7 @@ export default function MethodWorkflowsSection() {
           [theme.breakpoints.values.lg]: { slidesPerView: 2 },
           [theme.breakpoints.values.xl]: { slidesPerView: 3 },
         }}
-        spaceBetween={32}
+        spaceBetween={64}
         freeMode={true}
         navigation={{
           nextEl: ".custom-swiper-button-next",
