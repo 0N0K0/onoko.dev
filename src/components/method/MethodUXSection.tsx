@@ -8,13 +8,13 @@ export default function MethodUXSection() {
   const { isLg } = useBreakpoints();
 
   return (
-    <ResponsiveStack id="ux" rowGap={3}>
+    <ResponsiveStack id="ux" rowGap={6}>
       <SectionTitle
         title="Expérience utilisateur."
         subtitle="Guider les usages"
       />
       <ResponsiveStack
-        rowGap={3}
+        rowGap={6}
         sx={{ flexDirection: { lg: "row", xs: "column" }, columnGap: 4 }}
       >
         {/* Interfaces d'administration */}

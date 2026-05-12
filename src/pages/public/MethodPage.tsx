@@ -17,8 +17,11 @@ import MethodDevSection from "../../components/method/MethodDevSection";
 import MethodIAInfraSection from "../../components/method/MethodIAInfraSection";
 import MethodWorkspaceSection from "../../components/method/MethodWorkSpaceSection";
 import MethodContractSection from "../../components/method/MethodContractSection";
+import { useResponsiveWidth } from "../../hooks/layout/useResponsiveWidth";
 
 export default function MethodPage() {
+  const introWidth = useResponsiveWidth(6);
+
   const { stacks } = useStacks();
   const { categories } = useCategories();
 
@@ -71,7 +74,7 @@ export default function MethodPage() {
           >
             Dans la pratique
           </Typography>
-          <Typography variant="bodyMd">
+          <Typography variant="bodyMd" sx={{ width: introWidth }}>
             Cette charte rassemble les intentions, les principes et les
             exigences qui structurent ma manière d’aborder chaque projet -
             envisagé comme un produit à part entière aux enjeux réels et pensé

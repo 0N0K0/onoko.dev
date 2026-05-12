@@ -21,7 +21,7 @@ export default function TimelineLink({
           const y =
             el.getBoundingClientRect().top +
             window.scrollY -
-            (isAuthenticated ? 168 : 120);
+            (isAuthenticated ? 180 : 132);
           window.scrollTo({ top: y, behavior: "smooth" });
         }
       }}

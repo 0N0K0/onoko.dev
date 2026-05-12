@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useLayoutEffect, useCallback } from "react";
 import { Typography, useTheme } from "@mui/material";
 import type { Category } from "../../types/entities/categoryTypes";
 import type { Stack } from "../../types/entities/stackTypes";
@@ -41,9 +41,10 @@ export default function MethodWorkspaceSection({
     img.style.marginLeft = `${-offset}px`;
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const img = imgRef.current;
-    if (!img) return;
+    const container = containerRef.current;
+    if (!img || !container) return;
 
     const handleScroll = () => {
       const rect = img.getBoundingClientRect();
@@ -65,34 +66,42 @@ export default function MethodWorkspaceSection({
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", init);
 
+    // Ajout d'un ResizeObserver sur le conteneur
+    const resizeObserver = new window.ResizeObserver(() => {
+      calculateOffset();
+      handleScroll();
+    });
+    resizeObserver.observe(container);
+
     if (img.complete && img.naturalWidth) {
       init();
-    } else {
-      img.addEventListener("load", init);
     }
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", init);
-      img.removeEventListener("load", init);
+      resizeObserver.disconnect();
     };
   }, [calculateOffset]);
 
   return (
-    <ResponsiveStack id="workspace" rowGap={3} sx={{ flex: "1 1 auto" }}>
+    <ResponsiveStack id="workspace" rowGap={6} sx={{ flex: "1 1 auto" }}>
       <SectionTitle
         title="Environnement de&nbsp;travail."
         subtitle="S'organiser au&nbsp;quotidien"
       />
       <ResponsiveStack
-        rowGap={3}
+        rowGap={6}
         sx={{
           flexDirection: { xs: "column", xl: "row" },
           columnGap: 4,
           alignItems: { xl: "flex-end", xs: "stretch" },
         }}
       >
-        <ResponsiveStack rowGap={3}>
+        <ResponsiveStack
+          rowGap={6}
+          sx={{ alignSelf: { xl: "flex-start", xs: "stretch" } }}
+        >
           <StackGrid
             stacks={stacks
               .filter((stack) =>
@@ -111,28 +120,30 @@ export default function MethodWorkspaceSection({
                 ),
               )}
           />
-          <Typography variant="bodyMd">
-            Mon environnement de travail est pensé comme un espace de production
-            à part entière.
-          </Typography>
-          <Typography>
-            Je travaille principalement sous Debian. Mais j'utilise également un
-            environnement sous Windows 11 avec WSL et Ubuntu. L’ensemble repose
-            sur une stack de travail cohérente et homogène : terminal Zsh,
-            Homebrew, VS Code, Docker Compose pour les environnements
-            conteneurisés, TablePlus pour l’administration des bases de données
-            et Postman pour les tests et la validation des APIs.
-          </Typography>
-          <Typography>
-            L’objectif n’est pas tant de disposer d’un environnement confortable
-            que d’assurer une production fiable, reproductible et maintenable,
-            quel que soit le contexte d’exécution du projet.
-          </Typography>
-          <Typography>
-            Une place particulière est également laissée à la musique qui
-            m'accompagne au quotidien et fait partie intégrante de mon équilibre
-            de conception et de développement.
-          </Typography>
+          <ResponsiveStack rowGap={3}>
+            <Typography variant="bodyMd">
+              Mon environnement de travail est pensé comme un espace de
+              production à part entière.
+            </Typography>
+            <Typography>
+              Je travaille principalement sous Debian. Mais j'utilise également
+              un environnement sous Windows 11 avec WSL et Ubuntu. L’ensemble
+              repose sur une stack de travail cohérente et homogène : terminal
+              Zsh, Homebrew, VS Code, Docker Compose pour les environnements
+              conteneurisés, TablePlus pour l’administration des bases de
+              données et Postman pour les tests et la validation des APIs.
+            </Typography>
+            <Typography>
+              L’objectif n’est pas tant de disposer d’un environnement
+              confortable que d’assurer une production fiable, reproductible et
+              maintenable, quel que soit le contexte d’exécution du projet.
+            </Typography>
+            <Typography>
+              Une place particulière est également laissée à la musique qui
+              m'accompagne au quotidien et fait partie intégrante de mon
+              équilibre de conception et de développement.
+            </Typography>
+          </ResponsiveStack>
         </ResponsiveStack>
         <div
           style={{
@@ -143,7 +154,6 @@ export default function MethodWorkspaceSection({
             border: `1px solid ${theme.palette.divider}`,
             borderRadius: 8,
             flexShrink: 0,
-            marginTop: !isXl ? 24 : 0,
           }}
           ref={containerRef}
         >
@@ -152,11 +162,16 @@ export default function MethodWorkspaceSection({
             src={setupSrc}
             style={{
               display: "block",
-              width: `calc((100dvh - ${isAuthenticated ? 288 : 240}px) * (842 / 1869))`,
+              // width supprimée, gérée dynamiquement par JS
               height: "100%",
               maxHeight: `calc(100dvh - ${isAuthenticated ? 288 : 240}px)`,
               objectFit: "cover",
               willChange: "transform",
+            }}
+            onLoad={() => {
+              if (imgRef.current) {
+                calculateOffset();
+              }
             }}
           />
         </div>
