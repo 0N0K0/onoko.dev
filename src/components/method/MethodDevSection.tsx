@@ -103,7 +103,7 @@ export default function MethodDevSection({
   stacks: Stack[];
   categories: Category[];
 }) {
-  const { isLg, isMd } = useBreakpoints();
+  const { isLg } = useBreakpoints();
 
   return (
     <ResponsiveStack id="dev" rowGap={3}>
