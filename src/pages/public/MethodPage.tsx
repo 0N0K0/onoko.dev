@@ -8,7 +8,13 @@ import {
 } from "@mui/material";
 import Layout from "../../layout";
 import Icon from "@mdi/react";
-import { mdiCheck, mdiRabbit, mdiReplay } from "@mdi/js";
+import {
+  mdiCheck,
+  mdiChevronLeft,
+  mdiChevronRight,
+  mdiRabbit,
+  mdiReplay,
+} from "@mdi/js";
 import {
   ResponsiveBox,
   ResponsiveStack,
@@ -25,6 +31,15 @@ import { useAuthContext } from "../../context/AuthContext";
 import CallToAction from "../../components/CallToAction";
 import { useMemo, useState } from "react";
 import MultipleMarquee from "../../components/custom/MultipleMarquee";
+import setupSrc from "../../assets/images/setup.png";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/free-mode";
+import CustomIconButton from "../../components/custom/CustomIconButton";
+import { useBreakpoints } from "../../hooks/mediaQueries";
 
 function SectionTitle({
   title,
@@ -44,6 +59,7 @@ function SectionTitle({
       sx={{
         flexDirection: "row",
         columnGap: "1ch",
+        flexWrap: "wrap",
       }}
     >
       <Typography
@@ -62,6 +78,7 @@ function SectionTitle({
         sx={{
           fontWeight: "100",
           color: subtitleColor || "inherit",
+          whiteSpace: "nowrap",
         }}
       >
         {subtitle}
@@ -185,11 +202,13 @@ function TimelineLink({
 
 export default function MethodPage() {
   const theme = useTheme();
+  const { isLg } = useBreakpoints();
 
   const { stacks } = useStacks();
   const { categories } = useCategories();
 
   const [stackShuffleSeed] = useState(() => Math.random().toString(36));
+  const [swiperLocked, setSwiperLocked] = useState(false);
 
   const shuffledStacks = useMemo(() => {
     const hashWithSeed = (value: string) => {
@@ -216,8 +235,8 @@ export default function MethodPage() {
           { id: "design", label: "Design" },
           { id: "ux", label: "Expérience utilisateur" },
           { id: "dev", label: "Développement" },
-          { id: "ia-infra", label: "IA" },
-          { id: "ia-infra", label: "Infrastructure" },
+          { id: "ia", label: "IA" },
+          { id: "infra", label: "Infrastructure" },
           { id: "workspace", label: "Environnement de travail" },
           { id: "contract", label: "Cadre contractuel" },
         ]}
@@ -254,327 +273,404 @@ export default function MethodPage() {
             title="Cycle de production."
             subtitle="Définir une trajectoire adaptée"
           />
-          <ResponsiveStack sx={{ flexDirection: "row", columnGap: 2 }}>
-            <ResponsiveStack rowGap={7.5} sx={{ flex: "1 1 auto" }}>
-              <ResponsiveStack rowGap={1.5}>
-                <Typography
-                  variant="h3"
+          <Swiper
+            modules={[FreeMode, Navigation, Pagination]}
+            slidesPerView={1}
+            breakpoints={{
+              [theme.breakpoints.values.lg]: { slidesPerView: 2 },
+              [theme.breakpoints.values.xl]: { slidesPerView: 3 },
+            }}
+            spaceBetween={32}
+            freeMode={true}
+            navigation={{
+              nextEl: ".custom-swiper-button-next",
+              prevEl: ".custom-swiper-button-prev",
+            }}
+            pagination={{
+              clickable: true,
+              renderBullet: function (_, className) {
+                return `<span class="${className}" style="width: 16px; height: 2px; border-radius: 2px;"></span>`;
+              },
+            }}
+            loop={!swiperLocked}
+            watchOverflow
+            onSwiper={(swiper) => setSwiperLocked(swiper.isLocked)}
+            onUpdate={(swiper) => setSwiperLocked(swiper.isLocked)}
+            onResize={(swiper) => setSwiperLocked(swiper.isLocked)}
+            style={
+              {
+                width: `calc(100% + ${isLg ? 128 : 64}px)`,
+                minWidth: 0,
+                paddingBottom: "72px",
+                marginBottom: "-72px",
+                marginLeft: isLg ? -64 : -32,
+                marginRight: isLg ? -64 : -32,
+                paddingLeft: isLg ? 64 : 52,
+                paddingRight: isLg ? 64 : 52,
+                "--swiper-navigation-color": theme.palette.text.secondary,
+                "--swiper-pagination-color": theme.palette.text.secondary,
+                "--swiper-pagination-bullet-inactive-color":
+                  theme.palette.divider,
+                "--swiper-pagination-bullet-inactive-opacity": "1",
+              } as React.CSSProperties
+            }
+          >
+            <SwiperSlide>
+              <ResponsiveStack rowGap={7.5}>
+                <ResponsiveStack rowGap={1.5}>
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      textAlign: "center",
+                      fontWeight: "100",
+                    }}
+                  >
+                    Site statique
+                  </Typography>
+                  <Typography
+                    variant="bodyMd"
+                    sx={{
+                      fontStyle: "italic",
+                      textAlign: "center",
+                      color: theme.palette.text.secondary,
+                      fontWeight: "300",
+                    }}
+                  >
+                    Production focalisée sur l’expérience&nbsp;utilisateur
+                  </Typography>
+                </ResponsiveStack>
+                <Timeline
+                  position="alternate"
                   sx={{
-                    textAlign: "center",
-                    fontWeight: "100",
+                    margin: "0 !important",
+                    padding: "0 !important",
                   }}
                 >
-                  Site statique
-                </Typography>
-                <Typography
-                  variant="bodyMd"
-                  sx={{
-                    fontStyle: "italic",
-                    textAlign: "center",
-                    color: theme.palette.text.secondary,
-                    fontWeight: "300",
-                  }}
-                >
-                  Production focalisée sur l’expérience utilisateur
-                </Typography>
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#project-management">
+                        Cadrage fonctionnel
+                      </TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#design">
+                        Wireframes{" "}
+                        <span style={{ color: theme.palette.primary.light }}>
+                          &
+                        </span>
+                        &nbsp;Maquettes
+                      </TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#dev">
+                        Développement frontend
+                      </TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#dev">
+                        Tests{" "}
+                        <span style={{ color: theme.palette.primary.light }}>
+                          &
+                        </span>
+                        &nbsp;Validation
+                      </TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#infra">
+                        Livraison en&nbsp;production
+                      </TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <Typography>
+                        <span style={{ color: theme.palette.primary.light }}>
+                          Résultat :
+                        </span>{" "}
+                        Site&nbsp;autonome
+                      </Typography>
+                    }
+                    dotIcon={mdiCheck}
+                    connectorProps={{
+                      sx: {
+                        background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
+                      },
+                    }}
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#contract">
+                        Maintenance légère
+                      </TimelineLink>
+                    }
+                    connectorProps={{
+                      sx: {
+                        background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
+                      },
+                    }}
+                  />
+                </Timeline>
               </ResponsiveStack>
-              <Timeline
-                position="alternate"
-                sx={{
-                  margin: "0 !important",
-                  padding: "0 !important",
-                }}
-              >
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#project-management">
-                      Cadrage fonctionnel
-                    </TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#design">
-                      Wireframes{" "}
-                      <span style={{ color: theme.palette.primary.light }}>
-                        &
-                      </span>
-                      &nbsp;Maquettes
-                    </TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#dev">
-                      Développement frontend
-                    </TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#dev">
-                      Tests{" "}
-                      <span style={{ color: theme.palette.primary.light }}>
-                        &
-                      </span>
-                      &nbsp;Validation
-                    </TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#ia-infra">
-                      Livraison en&nbsp;production
-                    </TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <Typography>
-                      <span style={{ color: theme.palette.primary.light }}>
-                        Résultat :
-                      </span>{" "}
-                      Site&nbsp;autonome
-                    </Typography>
-                  }
-                  dotIcon={mdiCheck}
-                  connectorProps={{
-                    sx: {
-                      background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
-                    },
-                  }}
-                />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#contract">
-                      Maintenance légère
-                    </TimelineLink>
-                  }
-                  connectorProps={{
-                    sx: {
-                      background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
-                    },
-                  }}
-                />
-              </Timeline>
-            </ResponsiveStack>
-            <ResponsiveStack rowGap={7.5} sx={{ flex: "1 1 auto" }}>
-              <ResponsiveStack rowGap={1.5}>
-                <Typography
-                  variant="h3"
+            </SwiperSlide>
+            <SwiperSlide>
+              <ResponsiveStack rowGap={7.5}>
+                <ResponsiveStack rowGap={1.5}>
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      textAlign: "center",
+                      fontWeight: "100",
+                    }}
+                  >
+                    Produit dynamique
+                  </Typography>
+                  <Typography
+                    variant="bodyMd"
+                    sx={{
+                      fontStyle: "italic",
+                      textAlign: "center",
+                      color: theme.palette.text.secondary,
+                      fontWeight: "300",
+                    }}
+                  >
+                    Architecture évolutive orientée&nbsp;produit
+                  </Typography>
+                </ResponsiveStack>
+                <Timeline
+                  position="alternate"
                   sx={{
-                    textAlign: "center",
-                    fontWeight: "100",
+                    margin: "0 !important",
+                    padding: "0 !important",
                   }}
                 >
-                  Produit dynamique
-                </Typography>
-                <Typography
-                  variant="bodyMd"
-                  sx={{
-                    fontStyle: "italic",
-                    textAlign: "center",
-                    color: theme.palette.text.secondary,
-                    fontWeight: "300",
-                  }}
-                >
-                  Architecture évolutive orientée produit
-                </Typography>
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#project-management">
+                        Analyse des besoins{" "}
+                        <span style={{ color: theme.palette.primary.light }}>
+                          &
+                        </span>
+                        &nbsp;Cadrage&nbsp;fonctionnel
+                      </TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#design">
+                        Wireframes{" "}
+                        <span style={{ color: theme.palette.primary.light }}>
+                          &
+                        </span>
+                        &nbsp;Maquettes
+                      </TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#dev">
+                        Développement frontend{" "}
+                        <span style={{ color: theme.palette.primary.light }}>
+                          &
+                        </span>
+                        &nbsp;backend
+                      </TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#dev">
+                        Tests{" "}
+                        <span style={{ color: theme.palette.primary.light }}>
+                          &
+                        </span>
+                        &nbsp;Validation
+                      </TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#infra">
+                        Déploiement continu
+                      </TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <Typography>Évolution par&nbsp;itérations</Typography>
+                    }
+                    dotIcon={mdiReplay}
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#contract">Formation</TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#infra">
+                        Livraison en&nbsp;production
+                      </TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <Typography>
+                        <span style={{ color: theme.palette.primary.light }}>
+                          Résulat :{" "}
+                        </span>
+                        Produit&nbsp;évolutif
+                      </Typography>
+                    }
+                    dotIcon={mdiCheck}
+                    connectorProps={{
+                      sx: {
+                        background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
+                      },
+                    }}
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#contract">Maintenance</TimelineLink>
+                    }
+                    connectorProps={{
+                      sx: {
+                        background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
+                      },
+                    }}
+                  />
+                </Timeline>
               </ResponsiveStack>
-              <Timeline
-                position="alternate"
-                sx={{
-                  margin: "0 !important",
-                  padding: "0 !important",
-                }}
-              >
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#project-management">
-                      Analyse des besoins{" "}
-                      <span style={{ color: theme.palette.primary.light }}>
-                        &
-                      </span>
-                      &nbsp;Cadrage&nbsp;fonctionnel
-                    </TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#design">
-                      Wireframes{" "}
-                      <span style={{ color: theme.palette.primary.light }}>
-                        &
-                      </span>
-                      &nbsp;Maquettes
-                    </TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#dev">
-                      Développement frontend{" "}
-                      <span style={{ color: theme.palette.primary.light }}>
-                        &
-                      </span>
-                      &nbsp;backend
-                    </TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#dev">
-                      Tests{" "}
-                      <span style={{ color: theme.palette.primary.light }}>
-                        &
-                      </span>
-                      &nbsp;Validation
-                    </TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#ia-infra">
-                      Déploiement continu
-                    </TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <Typography>Évolution par&nbsp;itérations</Typography>
-                  }
-                  dotIcon={mdiReplay}
-                />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#contract">Formation</TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#ia-infra">
-                      Livraison en&nbsp;production
-                    </TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <Typography>
-                      <span style={{ color: theme.palette.primary.light }}>
-                        Résulat :{" "}
-                      </span>
-                      Produit&nbsp;évolutif
-                    </Typography>
-                  }
-                  dotIcon={mdiCheck}
-                  connectorProps={{
-                    sx: {
-                      background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
-                    },
-                  }}
-                />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#contract">Maintenance</TimelineLink>
-                  }
-                  connectorProps={{
-                    sx: {
-                      background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
-                    },
-                  }}
-                />
-              </Timeline>
-            </ResponsiveStack>
-            <ResponsiveStack rowGap={7.5} sx={{ flex: "1 1 auto" }}>
-              <ResponsiveStack rowGap={1.5}>
-                <Typography
-                  variant="h3"
+            </SwiperSlide>
+            <SwiperSlide>
+              <ResponsiveStack rowGap={7.5}>
+                <ResponsiveStack rowGap={1.5}>
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      textAlign: "center",
+                      fontWeight: "100",
+                    }}
+                  >
+                    Produit existant
+                  </Typography>
+                  <Typography
+                    variant="bodyMd"
+                    sx={{
+                      fontStyle: "italic",
+                      textAlign: "center",
+                      color: theme.palette.text.secondary,
+                      fontWeight: "300",
+                    }}
+                  >
+                    Adaptation à&nbsp;la&nbsp;réalité du&nbsp;projet
+                  </Typography>
+                </ResponsiveStack>
+                <Timeline
+                  position="alternate"
                   sx={{
-                    textAlign: "center",
-                    fontWeight: "100",
+                    margin: "0 !important",
+                    padding: "0 !important",
                   }}
                 >
-                  Produit existant
-                </Typography>
-                <Typography
-                  variant="bodyMd"
-                  sx={{
-                    fontStyle: "italic",
-                    textAlign: "center",
-                    color: theme.palette.text.secondary,
-                    fontWeight: "300",
-                  }}
-                >
-                  Adaptation à la réalité du projet
-                </Typography>
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#project-management">
+                        Audit technique{" "}
+                        <span style={{ color: theme.palette.primary.light }}>
+                          &
+                        </span>
+                        &nbsp;fonctionnel
+                      </TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#project-management">
+                        Cartographie du&nbsp;système&nbsp;existant
+                      </TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#project-management">
+                        Priorisation des&nbsp;corrections
+                      </TimelineLink>
+                    }
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <Typography>Évolution par&nbsp;itérations</Typography>
+                    }
+                    dotIcon={mdiReplay}
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <Typography>
+                        <span style={{ color: theme.palette.primary.light }}>
+                          Résulat :{" "}
+                        </span>
+                        Système&nbsp;fiabilisé
+                      </Typography>
+                    }
+                    dotIcon={mdiCheck}
+                    connectorProps={{
+                      sx: {
+                        background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
+                      },
+                    }}
+                  />
+                  <CustomTimelineItem
+                    content={
+                      <TimelineLink href="#contract">Maintenance</TimelineLink>
+                    }
+                    connectorProps={{
+                      sx: {
+                        background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
+                      },
+                    }}
+                  />
+                </Timeline>
               </ResponsiveStack>
-              <Timeline
-                position="alternate"
-                sx={{
-                  margin: "0 !important",
-                  padding: "0 !important",
-                }}
-              >
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#project-management">
-                      Audit technique{" "}
-                      <span style={{ color: theme.palette.primary.light }}>
-                        &
-                      </span>
-                      &nbsp;fonctionnel
-                    </TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#project-management">
-                      Cartographie du&nbsp;système&nbsp;existant
-                    </TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#project-management">
-                      Priorisation des&nbsp;corrections
-                    </TimelineLink>
-                  }
-                />
-                <CustomTimelineItem
-                  content={
-                    <Typography>Évolution par&nbsp;itérations</Typography>
-                  }
-                  dotIcon={mdiReplay}
-                />
-                <CustomTimelineItem
-                  content={
-                    <Typography>
-                      <span style={{ color: theme.palette.primary.light }}>
-                        Résulat :{" "}
-                      </span>
-                      Système&nbsp;fiabilisé
-                    </Typography>
-                  }
-                  dotIcon={mdiCheck}
-                  connectorProps={{
-                    sx: {
-                      background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
-                    },
+            </SwiperSlide>
+            {!swiperLocked && (
+              <>
+                <CustomIconButton
+                  className="custom-swiper-button-prev"
+                  icon={mdiChevronLeft}
+                  iconSize={1.5}
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    position: "absolute",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    zIndex: 2,
+                    left: 0,
                   }}
                 />
-                <CustomTimelineItem
-                  content={
-                    <TimelineLink href="#contract">Maintenance</TimelineLink>
-                  }
-                  connectorProps={{
-                    sx: {
-                      background: `repeating-linear-gradient(to bottom, ${theme.palette.primary.dark} 0px, ${theme.palette.primary.dark} 2px, transparent 2px, transparent 4px)`,
-                    },
+                <CustomIconButton
+                  className="custom-swiper-button-next"
+                  icon={mdiChevronRight}
+                  iconSize={1.5}
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    position: "absolute",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    zIndex: 2,
+                    right: 0,
                   }}
                 />
-              </Timeline>
-            </ResponsiveStack>
-          </ResponsiveStack>
+              </>
+            )}
+          </Swiper>
         </ResponsiveStack>
         {/* Gestion de projet */}
         <ResponsiveStack id="project-management" rowGap={3}>
@@ -1011,12 +1107,9 @@ export default function MethodPage() {
           </ResponsiveStack>
         </ResponsiveStack>
         {/* IA & Infrastructure */}
-        <ResponsiveStack
-          id="ia-infra"
-          sx={{ flexDirection: "row", columnGap: 8 }}
-        >
+        <ResponsiveStack sx={{ flexDirection: "row", columnGap: 8 }}>
           {/* IA */}
-          <SectionCard sx={{ flex: 1 }}>
+          <SectionCard id="ia" sx={{ flex: 1 }}>
             <ResponsiveStack
               rowGap={3}
               sx={{
@@ -1063,7 +1156,11 @@ export default function MethodPage() {
             </Typography>
           </SectionCard>
           {/* Infrastructure */}
-          <ResponsiveStack rowGap={3} sx={{ flex: 1, paddingY: "36px" }}>
+          <ResponsiveStack
+            id="infra"
+            rowGap={3}
+            sx={{ flex: 1, paddingY: "36px" }}
+          >
             <ResponsiveStack
               rowGap={3}
               sx={{
@@ -1120,51 +1217,64 @@ export default function MethodPage() {
           </ResponsiveStack>
         </ResponsiveStack>
         {/* Environnement de travail */}
-        <ResponsiveStack id="workspace" rowGap={3}>
+        <ResponsiveStack id="workspace" rowGap={3} sx={{ flex: "1 1 auto" }}>
           <SectionTitle
             title="Environnement de travail."
             subtitle="S'organiser au quotidien"
           />
-          <StackGrid
-            stacks={stacks
-              .filter((stack) =>
-                stack.categories?.some(
-                  (c) =>
-                    c.parent ===
-                      categories.find(
-                        (cat) => cat.label === "Environnement de travail",
-                      )?.id || c.label === "Environnement de travail",
-                ),
-              )
-              .sort((a, b) =>
-                (a.categories?.[0]?.label ?? "").localeCompare(
-                  b.categories?.[0]?.label ?? "",
-                ),
-              )}
-          />
-          <Typography variant="bodyMd">
-            Mon environnement de travail est pensé comme un espace de production
-            à part entière.
-          </Typography>
-          <Typography>
-            Je travaille principalement sous Debian. Mais j'utilise également un
-            environnement sous Windows 11 avec WSL et Ubuntu. L’ensemble repose
-            sur une stack de travail cohérente et homogène : terminal Zsh,
-            Homebrew, VS Code, Docker Compose pour les environnements
-            conteneurisés, TablePlus pour l’administration des bases de données
-            et Postman pour les tests et la validation des APIs.
-          </Typography>
-
-          <Typography>
-            L’objectif n’est pas tant de disposer d’un environnement confortable
-            que d’assurer une production fiable, reproductible et maintenable,
-            quel que soit le contexte d’exécution du projet.
-          </Typography>
-          <Typography>
-            Une place particulière est également laissée à la musique qui
-            m'accompagne au quotidien et fait partie intégrante de mon équilibre
-            de conception et de développement.
-          </Typography>
+          <ResponsiveStack sx={{ flexDirection: "row", columnGap: 4 }}>
+            <ResponsiveStack rowGap={3}>
+              <StackGrid
+                stacks={stacks
+                  .filter((stack) =>
+                    stack.categories?.some(
+                      (c) =>
+                        c.parent ===
+                          categories.find(
+                            (cat) => cat.label === "Environnement de travail",
+                          )?.id || c.label === "Environnement de travail",
+                    ),
+                  )
+                  .sort((a, b) =>
+                    (a.categories?.[0]?.label ?? "").localeCompare(
+                      b.categories?.[0]?.label ?? "",
+                    ),
+                  )}
+              />
+              <Typography variant="bodyMd">
+                Mon environnement de travail est pensé comme un espace de
+                production à part entière.
+              </Typography>
+              <Typography>
+                Je travaille principalement sous Debian. Mais j'utilise
+                également un environnement sous Windows 11 avec WSL et Ubuntu.
+                L’ensemble repose sur une stack de travail cohérente et homogène
+                : terminal Zsh, Homebrew, VS Code, Docker Compose pour les
+                environnements conteneurisés, TablePlus pour l’administration
+                des bases de données et Postman pour les tests et la validation
+                des APIs.
+              </Typography>
+              <Typography>
+                L’objectif n’est pas tant de disposer d’un environnement
+                confortable que d’assurer une production fiable, reproductible
+                et maintenable, quel que soit le contexte d’exécution du projet.
+              </Typography>
+              <Typography>
+                Une place particulière est également laissée à la musique qui
+                m'accompagne au quotidien et fait partie intégrante de mon
+                équilibre de conception et de développement.
+              </Typography>
+            </ResponsiveStack>
+            <img
+              src={setupSrc}
+              style={{
+                maxWidth: "calc((100% - 32px) / 2)",
+                objectFit: "cover",
+                border: `1px solid ${theme.palette.divider}`,
+                borderRadius: 8,
+              }}
+            />
+          </ResponsiveStack>
         </ResponsiveStack>
         {/* Cadre contractuel */}
         <ResponsiveStack id="contract" rowGap={3}>
