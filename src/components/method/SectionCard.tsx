@@ -45,8 +45,8 @@ export default function SectionCard({
           rowGap: 3,
           padding: invisible
             ? "0px !important"
-            : `36px ${isMd ? 32 : 16}px !important`,
-          paddingBottom: invisible ? "0px !important" : "36px !important",
+            : `24px ${isMd ? 32 : 16}px !important`,
+          paddingBottom: "0px !important",
         }}
       >
         {title && (

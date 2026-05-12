@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { Typography, useTheme } from "@mui/material";
 import type { Category } from "../../types/entities/categoryTypes";
 import type { Stack } from "../../types/entities/stackTypes";
@@ -20,6 +20,26 @@ export default function MethodWorkspaceSection({
   const { isXl } = useBreakpoints();
   const { isAuthenticated } = useAuthContext();
   const imgRef = useRef<HTMLImageElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const offsetRef = useRef(0);
+
+  const calculateOffset = useCallback(() => {
+    const img = imgRef.current;
+    const container = containerRef.current;
+    if (!img || !container || !img.naturalWidth || !img.naturalHeight) return;
+
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+    // largeur naturelle de l'image si elle remplissait la hauteur du conteneur
+    const naturalWidthAtHeight =
+      (img.naturalWidth / img.naturalHeight) * containerHeight;
+    const overflow = Math.max(0, naturalWidthAtHeight - containerWidth);
+    const offset = overflow / 2;
+
+    offsetRef.current = offset;
+    img.style.width = `calc(100% + ${overflow}px)`;
+    img.style.marginLeft = `${-offset}px`;
+  }, []);
 
   useEffect(() => {
     const img = imgRef.current;
@@ -31,15 +51,32 @@ export default function MethodWorkspaceSection({
       // progress: 0 when entering bottom of viewport, 1 when leaving top
       const progress = (vh - rect.top) / (vh + rect.height);
       const clamped = Math.max(0, Math.min(1, progress));
-      // shift from +40px (right) to -40px (left)
-      const translateX = 40 - clamped * 80;
+      const offset = offsetRef.current;
+      // shift from +offset (right) to -offset (left)
+      const translateX = offset - clamped * 2 * offset;
       img.style.transform = `translateX(${translateX}px)`;
     };
 
+    const init = () => {
+      calculateOffset();
+      handleScroll();
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("resize", init);
+
+    if (img.complete && img.naturalWidth) {
+      init();
+    } else {
+      img.addEventListener("load", init);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", init);
+      img.removeEventListener("load", init);
+    };
+  }, [calculateOffset]);
 
   return (
     <ResponsiveStack id="workspace" rowGap={3} sx={{ flex: "1 1 auto" }}>
@@ -100,22 +137,25 @@ export default function MethodWorkspaceSection({
         <div
           style={{
             maxWidth: isXl ? "calc((100% - 32px) / 2)" : "100%",
-            maxHeight: `calc(100dvh - ${isAuthenticated ? 240 : 192}px)`,
+            maxHeight: `calc(100dvh - ${isAuthenticated ? 288 : 240}px)`,
+            aspectRatio: "16 / 9",
             overflow: "hidden",
             border: `1px solid ${theme.palette.divider}`,
             borderRadius: 8,
             flexShrink: 0,
+            marginTop: !isXl ? 24 : 0,
           }}
+          ref={containerRef}
         >
           <img
             ref={imgRef}
             src={setupSrc}
             style={{
               display: "block",
-              width: "calc(100% + 80px)",
-              maxHeight: `calc(100dvh - ${isAuthenticated ? 240 : 192}px)`,
+              width: `calc((100dvh - ${isAuthenticated ? 288 : 240}px) * (842 / 1869))`,
+              height: "100%",
+              maxHeight: `calc(100dvh - ${isAuthenticated ? 288 : 240}px)`,
               objectFit: "cover",
-              marginLeft: -40,
               willChange: "transform",
             }}
           />

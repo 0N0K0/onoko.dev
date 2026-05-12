@@ -55,7 +55,11 @@ export default function MethodIAInfraSection({ stacks }: { stacks: Stack[] }) {
         </Typography>
       </SectionCard>
       {/* Infrastructure */}
-      <ResponsiveStack id="infra" rowGap={3} sx={{ flex: 1, paddingY: "36px" }}>
+      <ResponsiveStack
+        id="infra"
+        rowGap={3}
+        sx={{ flex: 1, paddingTop: { xl: "24px", xs: 0 } }}
+      >
         <SectionTitle
           title="Infrastructure."
           subtitle="Préserver la cohérence"

@@ -1,17 +1,38 @@
 import { Typography } from "@mui/material";
-import { ResponsiveStack } from "../custom/ResponsiveLayout";
+import { ResponsiveBox, ResponsiveStack } from "../custom/ResponsiveLayout";
 import SectionCard from "./SectionCard";
 import SectionTitle from "./SectionTitle";
+import { useBreakpoints } from "../../hooks/mediaQueries";
 
 export default function MethodContractSection() {
+  const { isLg } = useBreakpoints();
+
   return (
     <ResponsiveStack id="contract" rowGap={3}>
       <SectionTitle
         title="Cadre contractuel."
         subtitle="Structurer la continuité du projet"
       />
-      <ResponsiveStack sx={{ flexDirection: "row", columnGap: 4 }}>
-        <SectionCard title="Formation">
+      <ResponsiveBox
+        rowGap={6}
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xl: "1fr 2fr 1fr",
+            lg: "1fr 2fr",
+            xs: "1fr",
+          },
+          columnGap: { lg: 4, xs: 2 },
+        }}
+      >
+        <SectionCard
+          title="Formation"
+          sx={{
+            gridColumn: { xl: "1 / 2", lg: "1 / 2", xs: "1 / 2" },
+            gridRow: { xl: "1 / 2", lg: "2 / 3", xs: "1 / 2" },
+          }}
+          invisible={!isLg}
+        >
           <Typography>
             La formation fait partie intégrante de la livraison.
           </Typography>
@@ -21,7 +42,14 @@ export default function MethodContractSection() {
             documentation technique.
           </Typography>
         </SectionCard>
-        <SectionCard title="Garantie & Maintenance">
+        <SectionCard
+          title="Garantie & Maintenance"
+          sx={{
+            gridColumn: { xl: "2 / 2", lg: "1 / 3", xs: "1 / 2" },
+            gridRow: { xl: "1 / 2", lg: "1 / 2", xs: "2 / 3" },
+          }}
+          invisible={!isLg}
+        >
           <Typography>
             Une période de garantie est généralement appliquée après la
             livraison d’un projet. Durant cette période, les corrections de bugs
@@ -39,7 +67,13 @@ export default function MethodContractSection() {
             défini selon la criticité du problème.
           </Typography>
         </SectionCard>
-        <SectionCard title="Confidentialité &&nbsp;Propriété">
+        <SectionCard
+          title="Confidentialité &&nbsp;Propriété"
+          sx={{
+            gridColumn: { xl: "3 / 4", lg: "2 / 3", xs: "1 / 2" },
+            gridRow: { xl: "1 / 2", lg: "2 / 3", xs: "3 / 4" },
+          }}
+        >
           <Typography>
             Sur le plan juridique, une clause de confidentialité peut être
             appliquée afin de protéger les informations sensibles du projet.
@@ -50,7 +84,7 @@ export default function MethodContractSection() {
             open source ou des librairies tierces utilisées dans le projet.
           </Typography>
         </SectionCard>
-      </ResponsiveStack>
+      </ResponsiveBox>
     </ResponsiveStack>
   );
 }
