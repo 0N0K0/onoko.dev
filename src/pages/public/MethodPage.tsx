@@ -73,12 +73,9 @@ export default function MethodPage() {
           </Typography>
           <Typography variant="bodyMd">
             Cette charte rassemble les intentions, les principes et les
-            exigences
-            <br />
-            qui structurent ma manière d’aborder chaque projet
-            <br />- envisagé comme un produit à part entière aux enjeux réels
-            <br />
-            et pensé pour être exploitable dans le temps.
+            exigences qui structurent ma manière d’aborder chaque projet -
+            envisagé comme un produit à part entière aux enjeux réels et pensé
+            pour être exploitable dans le temps.
           </Typography>
         </ResponsiveStack>
 

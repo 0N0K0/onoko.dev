@@ -81,8 +81,8 @@ export default function MethodWorkspaceSection({
   return (
     <ResponsiveStack id="workspace" rowGap={3} sx={{ flex: "1 1 auto" }}>
       <SectionTitle
-        title="Environnement de travail."
-        subtitle="S'organiser au quotidien"
+        title="Environnement de&nbsp;travail."
+        subtitle="S'organiser au&nbsp;quotidien"
       />
       <ResponsiveStack
         rowGap={3}
