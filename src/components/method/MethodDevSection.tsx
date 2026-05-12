@@ -8,12 +8,12 @@ import type { Stack } from "../../types/entities/stackTypes";
 import { useBreakpoints } from "../../hooks/mediaQueries";
 
 function SecondaryContent({ stacks }: { stacks: Stack[] }) {
-  const { isMd } = useBreakpoints();
+  const { isLg } = useBreakpoints();
 
   return (
     <>
       {/* Performance */}
-      <SectionCard sx={{ flex: 1 }} title="Performance" invisible={!isMd}>
+      <SectionCard sx={{ flex: 1 }} title="Performance" invisible={!isLg}>
         <StackGrid
           stacks={stacks.filter((stack) =>
             stack.categories?.some(
@@ -34,7 +34,7 @@ function SecondaryContent({ stacks }: { stacks: Stack[] }) {
         </Typography>
       </SectionCard>
       {/* Sécurité */}
-      <SectionCard sx={{ flex: 1 }} title="Sécurité" invisible={!isMd}>
+      <SectionCard sx={{ flex: 1 }} title="Sécurité" invisible={!isLg}>
         <StackGrid
           stacks={stacks.filter((stack) =>
             stack.categories?.some((c) => (c as Category).label === "Sécurité"),
@@ -54,7 +54,7 @@ function SecondaryContent({ stacks }: { stacks: Stack[] }) {
         </Typography>
       </SectionCard>
       {/* Tests */}
-      <SectionCard sx={{ flex: 1 }} title="Tests" invisible={!isMd}>
+      <SectionCard sx={{ flex: 1 }} title="Tests" invisible={!isLg}>
         <StackGrid
           stacks={stacks.filter((stack) =>
             stack.categories?.some((c) => (c as Category).label === "Tests"),
@@ -73,7 +73,7 @@ function SecondaryContent({ stacks }: { stacks: Stack[] }) {
         </Typography>
       </SectionCard>
       {/* Documentation */}
-      <SectionCard sx={{ flex: 1 }} title="Documentation" invisible={!isMd}>
+      <SectionCard sx={{ flex: 1 }} title="Documentation" invisible={!isLg}>
         <StackGrid
           stacks={stacks.filter((stack) =>
             stack.categories?.some(
@@ -228,7 +228,7 @@ export default function MethodDevSection({
         </SectionCard>
       </ResponsiveBox>
       {/* Contenu secondaire */}
-      {isMd ? (
+      {isLg ? (
         <ResponsiveBox
           rowGap={3}
           sx={{

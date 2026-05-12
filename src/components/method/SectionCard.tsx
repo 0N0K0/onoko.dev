@@ -14,7 +14,7 @@ export default function SectionCard({
   invisible?: boolean;
 } & CardProps) {
   const theme = useTheme();
-  const { isMd } = useBreakpoints();
+  const { isMd, isSm } = useBreakpoints();
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -52,7 +52,7 @@ export default function SectionCard({
         {title && (
           <StretchyTypography
             containerRef={containerRef}
-            fontSize={48}
+            fontSize={isMd ? 48 : isSm ? 40 : 32}
             variant="h3"
           >
             {title}

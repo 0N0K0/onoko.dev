@@ -6,11 +6,13 @@ export default function SectionTitle({
   titleColor,
   subtitle,
   subtitleColor,
+  nowrap = true,
 }: {
   title: React.ReactNode;
   subtitle: React.ReactNode;
   titleColor?: string;
   subtitleColor?: string;
+  nowrap?: boolean;
 }) {
   const theme = useTheme();
 
@@ -27,7 +29,7 @@ export default function SectionTitle({
         sx={{
           color: titleColor || theme.palette.primary.light,
           letterSpacing: "-0.05em",
-          whiteSpace: { lg: "nowrap", xs: "normal" },
+          whiteSpace: { lg: nowrap ? "nowrap" : "normal", xs: "normal" },
         }}
       >
         {title}
@@ -38,7 +40,7 @@ export default function SectionTitle({
         sx={{
           fontWeight: "100",
           color: subtitleColor || "inherit",
-          whiteSpace: { lg: "nowrap", xs: "normal" },
+          whiteSpace: { lg: nowrap ? "nowrap" : "normal", xs: "normal" },
         }}
       >
         {subtitle}
