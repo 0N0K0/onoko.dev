@@ -1,11 +1,7 @@
-import {
-  Card,
-  CardContent,
-  Typography,
-  useTheme,
-  type CardProps,
-} from "@mui/material";
+import { Card, CardContent, useTheme, type CardProps } from "@mui/material";
 import { useBreakpoints } from "../../hooks/mediaQueries";
+import StretchyTypography from "../custom/StretchyTypography";
+import { useRef } from "react";
 
 export default function SectionCard({
   title,
@@ -19,6 +15,7 @@ export default function SectionCard({
 } & CardProps) {
   const theme = useTheme();
   const { isMd } = useBreakpoints();
+  const containerRef = useRef<HTMLDivElement>(null);
 
   return (
     <Card
@@ -40,6 +37,7 @@ export default function SectionCard({
       }}
     >
       <CardContent
+        ref={containerRef}
         sx={{
           flex: 1,
           display: "flex",
@@ -51,7 +49,15 @@ export default function SectionCard({
           paddingBottom: invisible ? "0px !important" : "36px !important",
         }}
       >
-        {title && <Typography variant="h3">{title}</Typography>}
+        {title && (
+          <StretchyTypography
+            containerRef={containerRef}
+            fontSize={48}
+            variant="h3"
+          >
+            {title}
+          </StretchyTypography>
+        )}
         {children}
       </CardContent>
     </Card>

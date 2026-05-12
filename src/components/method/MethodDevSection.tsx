@@ -112,12 +112,20 @@ export default function MethodDevSection({
         subtitle="Concevoir des&nbsp;architectures durables"
       />
       {/* Contenu principal */}
-      <ResponsiveStack
+      <ResponsiveBox
         rowGap={3}
-        sx={{ flexDirection: { lg: "row", xs: "column" }, columnGap: 4 }}
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xl: "repeat(3, 1fr)",
+            lg: "repeat(2, 1fr)",
+            xs: "1fr",
+          },
+          columnGap: { lg: 4, xs: 2 },
+        }}
       >
         {/* Frontend */}
-        <SectionCard sx={{ flex: 1 }} title="Frontend" invisible={!isLg}>
+        <SectionCard title="Frontend" invisible={!isLg}>
           <StackGrid
             stacks={stacks
               .filter((stack) =>
@@ -156,7 +164,7 @@ export default function MethodDevSection({
           </Typography>
         </SectionCard>
         {/* Backend */}
-        <SectionCard sx={{ flex: 1 }} title="Backend" invisible={!isLg}>
+        <SectionCard title="Backend" invisible={!isLg}>
           <StackGrid
             stacks={stacks
               .filter((stack) =>
@@ -187,7 +195,11 @@ export default function MethodDevSection({
           </Typography>
         </SectionCard>
         {/* Wordpress */}
-        <SectionCard sx={{ flex: 1 }} title="Wordpress" invisible={!isLg}>
+        <SectionCard
+          sx={{ gridColumn: { xl: "3/3", lg: "1/3", xs: "1/1" } }}
+          title="Wordpress"
+          invisible={!isLg}
+        >
           <StackGrid
             stacks={stacks.filter((stack) =>
               stack.categories?.some(
@@ -214,7 +226,7 @@ export default function MethodDevSection({
             afin de permettre une édition plus modulaire des contenus.
           </Typography>
         </SectionCard>
-      </ResponsiveStack>
+      </ResponsiveBox>
       {/* Contenu secondaire */}
       {isMd ? (
         <ResponsiveBox
@@ -222,8 +234,8 @@ export default function MethodDevSection({
           sx={{
             display: "grid",
             gridTemplateColumns: {
-              lg: "repeat(4, 1fr)",
-              md: "repeat(2, 1fr)",
+              xl: "repeat(4, 1fr)",
+              lg: "repeat(2, 1fr)",
               xs: "1fr",
             },
             columnGap: { lg: 4, xs: 2 },
