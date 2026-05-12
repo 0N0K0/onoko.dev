@@ -11,7 +11,7 @@ export default function MethodDesignSection({ stacks }: { stacks: Stack[] }) {
   const { isLg } = useBreakpoints();
 
   return (
-    <ResponsiveStack id="design" rowGap={3}>
+    <ResponsiveStack id="design" rowGap={6}>
       <SectionTitle title="Design." subtitle="Structurer l’expérience" />
       <StackGrid
         stacks={stacks.filter((stack) =>
@@ -20,7 +20,7 @@ export default function MethodDesignSection({ stacks }: { stacks: Stack[] }) {
       />
       {/* Contenu */}
       <ResponsiveStack
-        rowGap={3}
+        rowGap={6}
         sx={{
           flexDirection: { lg: "row", xs: "column-reverse" },
           columnGap: 4,
@@ -73,7 +73,7 @@ export default function MethodDesignSection({ stacks }: { stacks: Stack[] }) {
           </SectionCard>
         </ResponsiveStack>
         {/* Wireframe & Maquettes */}
-        <ResponsiveStack sx={{ flex: 1, rowGap: 3 }}>
+        <ResponsiveStack sx={{ flex: 1, rowGap: 6 }}>
           {/* Wireframes */}
           <SectionCard title="Wireframes" invisible={!isLg}>
             <Typography variant="bodyMd">

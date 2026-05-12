@@ -11,7 +11,6 @@ export default function StackGrid({ stacks }: { stacks: Stack[] }) {
         display: "grid",
         gridTemplateColumns: `repeat(auto-fit, 3rem)`,
         columnGap: 2,
-        marginBottom: "24px !important",
       }}
     >
       {stacks.map(

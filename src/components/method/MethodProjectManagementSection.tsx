@@ -12,7 +12,7 @@ export default function MethodProjectManagementSection({
   stacks: Stack[];
 }) {
   return (
-    <ResponsiveStack id="project-management" rowGap={3}>
+    <ResponsiveStack id="project-management" rowGap={6}>
       <SectionTitle
         title="Gestion de&nbsp;projet."
         subtitle="Collaborer au&nbsp;rythme du&nbsp;produit"
@@ -26,7 +26,7 @@ export default function MethodProjectManagementSection({
       />
       {/* Contenu */}
       <ResponsiveStack
-        rowGap={3}
+        rowGap={6}
         sx={{ flexDirection: { lg: "row", xs: "column" }, columnGap: 4 }}
       >
         {/* Contenu principal */}

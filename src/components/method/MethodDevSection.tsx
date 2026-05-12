@@ -106,14 +106,14 @@ export default function MethodDevSection({
   const { isLg } = useBreakpoints();
 
   return (
-    <ResponsiveStack id="dev" rowGap={3}>
+    <ResponsiveStack id="dev" rowGap={6}>
       <SectionTitle
         title="Développement."
         subtitle="Concevoir des&nbsp;architectures durables"
       />
       {/* Contenu principal */}
       <ResponsiveBox
-        rowGap={3}
+        rowGap={6}
         sx={{
           display: "grid",
           gridTemplateColumns: {
@@ -230,7 +230,7 @@ export default function MethodDevSection({
       {/* Contenu secondaire */}
       {isLg ? (
         <ResponsiveBox
-          rowGap={3}
+          rowGap={6}
           sx={{
             display: "grid",
             gridTemplateColumns: {

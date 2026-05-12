@@ -121,6 +121,8 @@ export default function StickyMenuBar({ sections }: StickyMenuBarProps) {
         overflow: "hidden",
         flexDirection: "row",
         justifyContent: "center",
+        height: "60px",
+        paddingTop: "12px",
       }}
     >
       {showMenuBarArrows && (
@@ -192,7 +194,7 @@ export default function StickyMenuBar({ sections }: StickyMenuBarProps) {
                 const y =
                   el.getBoundingClientRect().top +
                   window.scrollY -
-                  (isAuthenticated ? 168 : 120);
+                  (isAuthenticated ? 180 : 132);
                 window.scrollTo({ top: y, behavior: "smooth" });
               }
             }}
