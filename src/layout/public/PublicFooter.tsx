@@ -19,7 +19,11 @@ import { useContactForm } from "../../context/ContactFormContext";
  * Pied de page pour les pages publiques, affichant un message de copyright.
  * Utilisé sur les pages d'accueil, de connexion, etc.
  */
-export default function PublicFooter() {
+export default function PublicFooter({
+  ref,
+}: {
+  ref: React.Ref<HTMLDivElement>;
+}) {
   const { maintenanceMode, loading } = useSettings();
   const { isAuthenticated } = useAuthContext();
 
@@ -50,6 +54,7 @@ export default function PublicFooter() {
   return (
     <>
       <AppBar
+        ref={ref}
         component="footer"
         sx={{
           maxWidth: "1920px",

@@ -14,7 +14,7 @@ export interface Stack {
   description?: string;
   versions: string[];
   skills: string[];
-  category?: string | Category;
+  categories?: (string | Category)[];
 }
 
 export interface StackFormDialogProps extends EntityFormDialogProps {

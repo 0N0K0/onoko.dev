@@ -10,7 +10,7 @@ export const STACKS_QUERY = gql`
       description
       versions
       skills
-      category
+      categories
     }
   }
 `;
