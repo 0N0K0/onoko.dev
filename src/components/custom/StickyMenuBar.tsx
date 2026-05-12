@@ -1,7 +1,7 @@
 import { AppBar, Link, Toolbar, useTheme } from "@mui/material";
 import CustomIconButton from "./CustomIconButton";
 import { useAuthContext } from "../../context/AuthContext";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { mdiChevronLeft, mdiChevronRight } from "@mdi/js";
 
 export interface MenuSection {
@@ -19,12 +19,12 @@ export default function StickyMenuBar({ sections }: StickyMenuBarProps) {
 
   const menuBarRef = useRef<HTMLDivElement | null>(null);
   const [activeSection, setActiveSection] = useState<string>("");
-  const [canAutoScroll, setCanAutoScroll] = useState(true);
+  const canAutoScrollRef = useRef(true);
   const [showMenuBarArrows, setShowMenuBarArrows] = useState(false);
   const [disableLeftMenuButton, setDisableLeftMenuButton] = useState(false);
   const [disableRightMenuButton, setDisableRightMenuButton] = useState(false);
 
-  const checkOverflow = () => {
+  const checkOverflow = useCallback(() => {
     if (menuBarRef.current) {
       setShowMenuBarArrows(
         menuBarRef.current.scrollWidth > menuBarRef.current.clientWidth,
@@ -35,7 +35,7 @@ export default function StickyMenuBar({ sections }: StickyMenuBarProps) {
           menuBarRef.current.scrollWidth,
       );
     }
-  };
+  }, []);
 
   const setMenuBarRef = (node: HTMLDivElement | null) => {
     if (menuBarRef.current) {
@@ -48,25 +48,16 @@ export default function StickyMenuBar({ sections }: StickyMenuBarProps) {
     menuBarRef.current = node;
   };
 
-  // Désactive l'auto-scroll si l'utilisateur scrolle la toolbar
-  useEffect(() => {
-    const toolbar = document.getElementById("toolbar-scrollable");
-    if (!toolbar) return;
-    const handleToolbarScroll = () => setCanAutoScroll(false);
-    toolbar.addEventListener("scroll", handleToolbarScroll, { passive: true });
-    return () => toolbar.removeEventListener("scroll", handleToolbarScroll);
-  }, []);
-
-  // Réactive l'auto-scroll quand l'utilisateur scrolle la page
-  useEffect(() => {
-    const handleWindowScroll = () => setCanAutoScroll(true);
-    window.addEventListener("scroll", handleWindowScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleWindowScroll);
-  }, []);
-
   // Scrollspy + auto-scroll de la toolbar
   useEffect(() => {
+    const handleToolbarScroll = () => {
+      canAutoScrollRef.current = false;
+    };
+    const toolbar = document.getElementById("toolbar-scrollable");
+    toolbar?.addEventListener("scroll", handleToolbarScroll, { passive: true });
+
     const handleScrollSpy = () => {
+      canAutoScrollRef.current = true;
       let lastSectionId = "";
       for (const { id } of sections) {
         const el = document.getElementById(id);
@@ -82,7 +73,7 @@ export default function StickyMenuBar({ sections }: StickyMenuBarProps) {
       }
       setActiveSection(lastSectionId);
 
-      if (!canAutoScroll) return;
+      if (!canAutoScrollRef.current) return;
       const activeLink = document.querySelector(
         `#toolbar-scrollable a[href="#${lastSectionId}"]`,
       );
@@ -105,8 +96,11 @@ export default function StickyMenuBar({ sections }: StickyMenuBarProps) {
 
     window.addEventListener("scroll", handleScrollSpy, { passive: true });
     handleScrollSpy();
-    return () => window.removeEventListener("scroll", handleScrollSpy);
-  }, [sections, canAutoScroll]);
+    return () => {
+      window.removeEventListener("scroll", handleScrollSpy);
+      toolbar?.removeEventListener("scroll", handleToolbarScroll);
+    };
+  }, [sections]);
 
   useEffect(() => {
     window.addEventListener("resize", checkOverflow);
