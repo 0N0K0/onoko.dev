@@ -13,35 +13,29 @@ export default function MethodIAInfraSection({ stacks }: { stacks: Stack[] }) {
   const theme = useTheme();
 
   return (
-    <ResponsiveStack sx={{ flexDirection: "row", columnGap: 8 }}>
+    <ResponsiveStack
+      rowGap={12}
+      sx={{ flexDirection: { xl: "row", xs: "column-reverse" }, columnGap: 8 }}
+    >
       {/* IA */}
       <SectionCard id="ia" sx={{ flex: 1 }}>
-        <ResponsiveStack
-          rowGap={3}
-          sx={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            columnGap: 4,
-            justifyContent: "space-between",
-          }}
-        >
-          <SectionTitle
-            title={
-              <>
-                IA <Icon path={mdiRabbit} size={1} />
-              </>
-            }
-            titleColor={theme.palette.text.primary}
-            subtitle="Encadrer l'outil grâce à&nbsp;l’expertise métier"
-            subtitleColor={theme.palette.primary.light}
-          />
+        <SectionTitle
+          title={
+            <>
+              IA <Icon path={mdiRabbit} size={1} />
+            </>
+          }
+          titleColor={theme.palette.text.primary}
+          subtitle="Encadrer&nbsp;par l’expertise&nbsp;métier"
+          subtitleColor={theme.palette.primary.light}
+          nowrap={false}
+        />
 
-          <StackGrid
-            stacks={stacks.filter((stack) =>
-              stack.categories?.some((c) => (c as Category).label === "IA"),
-            )}
-          />
-        </ResponsiveStack>
+        <StackGrid
+          stacks={stacks.filter((stack) =>
+            stack.categories?.some((c) => (c as Category).label === "IA"),
+          )}
+        />
         <Typography>
           Les outils d’assistance par IA font partie des workflows modernes de
           développement. Je les utilise pour accélérer certaines tâches
@@ -62,26 +56,10 @@ export default function MethodIAInfraSection({ stacks }: { stacks: Stack[] }) {
       </SectionCard>
       {/* Infrastructure */}
       <ResponsiveStack id="infra" rowGap={3} sx={{ flex: 1, paddingY: "36px" }}>
-        <ResponsiveStack
-          rowGap={3}
-          sx={{
-            flexDirection: "row",
-            columnGap: "1ch",
-          }}
-        >
-          <Typography
-            variant="h2"
-            sx={{
-              color: theme.palette.primary.light,
-              letterSpacing: "-0.05em",
-            }}
-          >
-            Infrastructure.
-          </Typography>
-          <Typography variant="h2" component="p" sx={{ fontWeight: "100" }}>
-            Préserver la cohérence
-          </Typography>
-        </ResponsiveStack>
+        <SectionTitle
+          title="Infrastructure."
+          subtitle="Préserver la cohérence"
+        />
         <StackGrid
           stacks={stacks.filter((stack) =>
             stack.categories?.some(
