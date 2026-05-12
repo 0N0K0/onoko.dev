@@ -55,7 +55,12 @@ export default function PublicHeader() {
       route: "/projects",
       disabled: false,
     },
-    { label: "Exerceo", sublabel: "Méthode", route: "/method", disabled: true },
+    {
+      label: "Exerceo",
+      sublabel: "Méthode",
+      route: "/method",
+      disabled: false,
+    },
     { label: "Pretium", sublabel: "Tarifs", route: "/pricing", disabled: true },
   ];
   if (!isSm) {

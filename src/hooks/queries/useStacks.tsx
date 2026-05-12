@@ -3,7 +3,7 @@ import { STACKS_QUERY } from "../../services/stack/stackQueries";
 import useCategories from "./useCategories";
 import type { Stack } from "../../types/entities/stackTypes";
 import useMedias from "./useMedias";
-import { normalizeRef } from "../../utils/normalizeRef";
+import { normalizeRef, normalizeRefs } from "../../utils/normalizeRef";
 
 export default function useStacks() {
   const { categories } = useCategories();
@@ -15,7 +15,7 @@ export default function useStacks() {
   const stacks = (data?.stacks ?? []).map((stack) => ({
     ...stack,
     icon: normalizeRef(stack.icon, medias),
-    category: normalizeRef(stack.category, categories),
+    categories: normalizeRefs(stack.categories ?? [], categories),
   }));
   return { stacks, loading, error, refetch };
 }

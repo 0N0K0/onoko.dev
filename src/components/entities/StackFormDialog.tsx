@@ -15,7 +15,7 @@ import useCategories from "../../hooks/queries/useCategories";
 import MediaPicker from "./media/MediaPicker";
 import useMedias from "../../hooks/queries/useMedias";
 import type { Media } from "../../types/entities/mediaTypes";
-import { extractId, getSelectValue } from "../../utils/normalizeRef";
+import { extractId, extractIds, getMultiSelectValue } from "../../utils/normalizeRef";
 import { stripHtml } from "../../utils/stringUtils";
 
 /**
@@ -56,7 +56,7 @@ export default function StackFormDialog({
       description: "",
       versions: [],
       skills: [],
-      category: "",
+      categories: [],
     },
   });
 
@@ -112,25 +112,21 @@ export default function StackFormDialog({
                 sx={{ flex: "1 0 208px" }}
               />
               <CustomSelect
-                label="Catégorie"
-                labelId="category-label"
+                label="Catégories"
+                labelId="categories-label"
                 value={
-                  typeof editingStack?.category === "string"
-                    ? editingStack.category
-                    : editingStack?.category?.id || ""
+                  (editingStack?.categories ?? []).map((c) =>
+                    typeof c === "string" ? c : c.id,
+                  )
                 }
                 onChange={(e) => {
-                  const categoryValue = getSelectValue(e);
+                  const categoryValues = getMultiSelectValue(e);
                   setEditingStack(
                     editingStack
-                      ? { ...editingStack, category: categoryValue }
+                      ? { ...editingStack, categories: categoryValues }
                       : null,
                   );
-                  categoryValue !==
-                    (typeof initialStack?.category === "string"
-                      ? initialStack.category
-                      : initialStack?.category?.id || "") &&
-                    setHasChanges(true);
+                  setHasChanges(true);
                 }}
                 options={
                   categories
@@ -142,6 +138,7 @@ export default function StackFormDialog({
                         : stripHtml(c.label),
                     })) || []
                 }
+                emptyOption={false}
                 sx={{ flex: "1 0 208px" }}
                 fullWidth={false}
               />
@@ -207,16 +204,18 @@ export default function StackFormDialog({
           key="confirm"
           color="success"
           onClick={() => {
-            if (typeof open === "string" && editingStack?.id) {
-              const input = editingStack;
+            if (!editingStack) return;
+            const input: any = {
+              ...editingStack,
+              icon: extractId(editingStack.icon),
+              categories: extractIds(editingStack.categories),
+            };
+            delete input.__typename;
+            if (typeof open === "string") {
               delete input.id;
-              delete (input as any).__typename;
-              input.category = extractId(input.category);
-              handleEdit({
-                variables: { id: open, input },
-              });
+              handleEdit({ variables: { id: open, input } });
             } else {
-              handleAdd({ variables: { input: editingStack! } });
+              handleAdd({ variables: { input } });
             }
           }}
           disabled={

@@ -40,6 +40,7 @@ import NotFound from "./pages/404";
 import useSettings from "./hooks/queries/useSettings";
 import AboutPage from "./pages/public/AboutPage";
 import Testimonies from "./pages/admin/TestimonyPage";
+import MethodPage from "./pages/public/MethodPage";
 
 function MaintenanceGuard() {
   const location = useLocation();
@@ -90,7 +91,7 @@ export default function App() {
           "::-webkit-scrollbar-corner": {
             background: "transparent",
           },
-          "ul:not(.MuiList-root, .MuiImageList-root)": {
+          "ul:not(.MuiList-root, .MuiImageList-root, .MuiTimeline-root)": {
             margin: "0 0 0 2rem",
             paddingLeft: "0",
             li: {
@@ -152,6 +153,14 @@ export default function App() {
                       element={
                         <PublicLayout>
                           <AboutPage />
+                        </PublicLayout>
+                      }
+                    />
+                    <Route
+                      path="/method"
+                      element={
+                        <PublicLayout>
+                          <MethodPage />
                         </PublicLayout>
                       }
                     />
