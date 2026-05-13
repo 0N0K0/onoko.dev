@@ -3,10 +3,12 @@ import { useLayoutEffect, useRef, useState } from "react";
 
 export default function StretchyTypography({
   fontSize,
+  baselineHeight,
   containerRef,
   ...props
 }: TypographyProps & {
   fontSize: number;
+  baselineHeight?: number;
   containerRef: React.RefObject<any>;
 }) {
   const titleRef = useRef<HTMLDivElement>(null);
@@ -40,7 +42,8 @@ export default function StretchyTypography({
     }
 
     setAutoFontSize(finalFontSize);
-    setAutoLineHeight(Math.round(finalFontSize / 16) * 24); // Adjust line height based on font size
+    baselineHeight &&
+      setAutoLineHeight(Math.round(finalFontSize / 16) * baselineHeight); // Adjust line height based on font size
   };
 
   useLayoutEffect(() => {
@@ -60,7 +63,7 @@ export default function StretchyTypography({
       sx={{
         ...props.sx,
         fontSize: autoFontSize,
-        lineHeight: `${autoLineHeight}px`,
+        lineHeight: autoLineHeight ? `${autoLineHeight}px` : 1,
       }}
     >
       {props.children}
