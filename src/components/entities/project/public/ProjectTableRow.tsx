@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { ResponsiveStack } from "../../../custom/ResponsiveLayout";
 import { useResponsiveWidth } from "../../../../hooks/layout/useResponsiveWidth";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useBreakpoints } from "../../../../hooks/mediaQueries";
 import StretchyTypography from "../../../custom/StretchyTypography";
 

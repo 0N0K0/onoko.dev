@@ -32,7 +32,7 @@ export default function Testimonies() {
           {
             key: "name",
             label: "Nom",
-            content: (item) => stripHtml(item.name),
+            content: (item) => stripHtml(item.name || ""),
           },
           {
             key: "company",
