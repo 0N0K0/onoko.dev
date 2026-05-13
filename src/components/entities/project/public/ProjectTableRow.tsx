@@ -60,6 +60,7 @@ export default function ProjectTableRow({
         >
           <StretchyTypography
             fontSize={40}
+            baselineHeight={24}
             containerRef={containerRef}
             sx={{
               textAlign: "right",

@@ -50,6 +50,7 @@ function TestimonyCard({ testimony }: { testimony: Testimony }) {
                 variant="h1"
                 component="h2"
                 fontSize={64}
+                baselineHeight={24}
                 containerRef={testimonyRef}
                 sx={{
                   fontWeight: "900",
